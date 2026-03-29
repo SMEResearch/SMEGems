@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SME Gems — Hidden Champions of the SME Platform</title>
-<!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-74FX7W8BWC"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -222,39 +221,6 @@
     background: rgba(232,160,32,0.05);
   }
 
-  .hero-stats {
-    position: relative;
-    display: inline-flex;
-    gap: 0;
-    border: 0.5px solid var(--border);
-    border-radius: 4px;
-    overflow: hidden;
-    opacity: 0;
-    animation: fadeUp 0.7s ease 0.5s forwards;
-  }
-
-  .hstat {
-    padding: 16px 32px;
-    border-right: 0.5px solid var(--border);
-    text-align: center;
-  }
-  .hstat:last-child { border-right: none; }
-  .hstat-val {
-    font-family: 'Playfair Display', serif;
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--gold);
-    display: block;
-  }
-  .hstat-lbl {
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 0.06em;
-    display: block;
-    margin-top: 2px;
-    text-transform: uppercase;
-  }
-
   /* ── DIVIDER ── */
   .section-divider {
     height: 0.5px;
@@ -314,19 +280,6 @@
     border-color: rgba(232,160,32,0.35);
     transform: translateY(-2px);
   }
-
-  .card:nth-child(1) { animation-delay: 0.05s; }
-  .card:nth-child(2) { animation-delay: 0.1s; }
-  .card:nth-child(3) { animation-delay: 0.15s; }
-  .card:nth-child(4) { animation-delay: 0.2s; }
-  .card:nth-child(5) { animation-delay: 0.25s; }
-  .card:nth-child(6) { animation-delay: 0.3s; }
-  .card:nth-child(7) { animation-delay: 0.35s; }
-  .card:nth-child(8) { animation-delay: 0.4s; }
-  .card:nth-child(9) { animation-delay: 0.45s; }
-  .card:nth-child(10) { animation-delay: 0.5s; }
-  .card:nth-child(11) { animation-delay: 0.55s; }
-  .card:nth-child(12) { animation-delay: 0.6s; }
 
   .card-head {
     padding: 16px 16px 12px;
@@ -470,6 +423,102 @@
   }
   .btn-preview:hover { border-color: var(--gold); color: var(--gold); }
 
+  /* ── HISTORIES SECTION (NEW) ── */
+  .history-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 900px) { .history-grid { grid-template-columns: 1fr; } }
+
+  .history-card {
+    background: var(--navy2);
+    border: 0.5px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+  .history-card:hover {
+    border-color: rgba(232,160,32,0.35);
+  }
+  .history-card.active {
+    border-color: var(--gold);
+    background: var(--navy3);
+  }
+
+  .hc-head {
+    padding: 20px 24px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .hc-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .hc-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+
+  .hc-tagline {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .hc-icon {
+    position: absolute;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gold);
+    font-size: 20px;
+    font-family: 'DM Mono', monospace;
+    transition: transform 0.3s ease;
+  }
+  .history-card.active .hc-icon {
+    transform: translateY(-50%) rotate(45deg);
+  }
+
+  .hc-body {
+    padding: 0 24px;
+    max-height: 0;
+    opacity: 0;
+    transition: all 0.4s ease;
+    overflow: hidden;
+  }
+  .history-card.active .hc-body {
+    padding: 0 24px 24px;
+    max-height: 800px;
+    opacity: 1;
+  }
+
+  .history-timeline {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+    border-top: 0.5px solid var(--border);
+    padding-top: 16px;
+    white-space: pre-line;
+  }
+  .history-timeline b {
+    color: var(--gold);
+    font-weight: 500;
+    font-family: 'DM Mono', monospace;
+  }
+
   /* ── ABOUT STRIP ── */
   .about-strip {
     padding: 52px 40px;
@@ -481,7 +530,6 @@
 
   @media (max-width: 700px) { .about-strip { grid-template-columns: 1fr; gap: 32px; } }
 
-  .about-block {}
   .about-label {
     font-family: 'DM Mono', monospace;
     font-size: 9px;
@@ -526,7 +574,6 @@
     flex-shrink: 0;
   }
 
-  .sectors-block {}
   .sector-grid {
     display: flex;
     flex-wrap: wrap;
@@ -592,23 +639,21 @@
     .about-strip { padding: 40px 20px; }
     footer { padding: 20px; }
     .section-divider { margin: 0 20px; }
-    .hstat { padding: 14px 20px; }
   }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
   <div class="nav-brand">SME <span>Gems</span></div>
   <div class="nav-links">
     <a href="#reports">Reports</a>
+    <a href="#histories">Histories</a>
     <a href="#about">About</a>
     <a href="https://x.com/sachprat07" target="_blank" class="nav-cta">Follow ↗</a>
   </div>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
   <div class="hero-grid-bg"></div>
   <div class="hero-glow"></div>
@@ -636,13 +681,10 @@
     <span class="pill">Fintech DSA</span>
     <span class="pill">B2B Jewellery</span>
   </div>
-
-
 </section>
 
 <div class="section-divider"></div>
 
-<!-- REPORTS -->
 <section class="reports-section" id="reports">
   <div class="sec-header">
     <h2 class="sec-title">Research Reports</h2>
@@ -651,7 +693,6 @@
 
   <div class="card-grid">
 
-    <!-- 1. Oriana Power -->
     <div class="card">
       <div class="card-head">
         <span class="card-num">01</span>
@@ -692,7 +733,6 @@
       </div>
     </div>
 
-    <!-- 2. OBSC Perfection -->
     <div class="card">
       <div class="card-head">
         <span class="card-num">02</span>
@@ -728,467 +768,4 @@
         </div>
       </div>
       <div class="card-footer">
-        <a href="https://drive.google.com/file/d/1pReGDU0wsOTkkRIi0SDlRbTbUgdr4hd2/view?usp=drive_link" target="_blank" class="btn-report" onclick="trackReport('OBSC Perfection')">Read Report →</a>
-        <a href="https://drive.google.com/file/d/1pReGDU0wsOTkkRIi0SDlRbTbUgdr4hd2/view?usp=drive_link" target="_blank" class="btn-preview" onclick="trackReport('OBSC Perfection')">↗</a>
-      </div>
-    </div>
-
-    <!-- 3. L.T. Elevator -->
-    <div class="card">
-      <div class="card-head">
-        <span class="card-num">03</span>
-        <span class="card-badge">Capital Goods</span>
-        <div class="card-exchange">BSE SME · Elevators / D2C Home</div>
-        <div class="card-name">L.T. Elevator</div>
-        <div class="card-tagline">India's Only Listed Pure-Play Elevator Manufacturer</div>
-      </div>
-      <div class="card-metrics">
-        <div class="metric">
-          <span class="metric-val gold">~₹300 Cr</span>
-          <span class="metric-lbl">Market cap</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">₹84 Cr</span>
-          <span class="metric-lbl">TTM revenue</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val teal">21.3%</span>
-          <span class="metric-lbl">EBITDA H1FY26</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">₹289+ Cr</span>
-          <span class="metric-lbl">Combined order book</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">21×</span>
-          <span class="metric-lbl">P/E TTM</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val teal">33%</span>
-          <span class="metric-lbl">ROCE FY25</span>
-        </div>
-      </div>
-      <div class="card-footer">
-        <a href="https://drive.google.com/file/d/13EU4cYEnyV81j6HQv4P9H-qDlGm_REiH/view?usp=sharing" target="_blank" class="btn-report" onclick="trackReport('L.T. Elevator')">Read Report →</a>
-        <a href="https://drive.google.com/file/d/13EU4cYEnyV81j6HQv4P9H-qDlGm_REiH/view?usp=sharing" target="_blank" class="btn-preview" onclick="trackReport('L.T. Elevator')">↗</a>
-      </div>
-    </div>
-
-    <!-- 4. DSM Fresh Foods -->
-    <div class="card">
-      <div class="card-head">
-        <span class="card-num">04</span>
-        <span class="card-badge">Food Tech</span>
-        <div class="card-exchange">BSE SME · Fresh Protein / D2C</div>
-        <div class="card-name">DSM Fresh Foods</div>
-        <div class="card-tagline">Zappfresh · Farm-to-Fork Platform</div>
-      </div>
-      <div class="card-metrics">
-        <div class="metric">
-          <span class="metric-val gold">~₹206 Cr</span>
-          <span class="metric-lbl">Market cap</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">~₹160 Cr</span>
-          <span class="metric-lbl">TTM revenue</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val teal">15.9%</span>
-          <span class="metric-lbl">EBITDA H1FY26</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">43%</span>
-          <span class="metric-lbl">Revenue growth YoY</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">15×</span>
-          <span class="metric-lbl">TTM P/E</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val teal">97%</span>
-          <span class="metric-lbl">PAT CAGR 3yr</span>
-        </div>
-      </div>
-      <div class="card-footer">
-        <a href="https://drive.google.com/file/d/1VuBwRmZEW_KMp5i-fhI-RrwqR632OQVe/view?usp=sharing" target="_blank" class="btn-report" onclick="trackReport('DSM Fresh Foods')">Read Report →</a>
-        <a href="https://drive.google.com/file/d/1VuBwRmZEW_KMp5i-fhI-RrwqR632OQVe/view?usp=sharing" target="_blank" class="btn-preview" onclick="trackReport('DSM Fresh Foods')">↗</a>
-      </div>
-    </div>
-
-<!-- 5. Aimtron -->
-    <div class="card">
-      <div class="card-head">
-        <span class="card-num">05</span>
-        <span class="card-badge">ESDM</span>
-        <div class="card-exchange">NSE SME · Electronics</div>
-        <div class="card-name">Aimtron Electronics</div>
-        <div class="card-tagline">Building India's First Global ESDM Platform</div>
-      </div>
-      <div class="card-metrics">
-        <div class="metric">
-          <span class="metric-val gold">~₹1,710 Cr</span>
-          <span class="metric-lbl">Market cap</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">₹224 Cr</span>
-          <span class="metric-lbl">TTM revenue</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val teal">~25%</span>
-          <span class="metric-lbl">EBITDA margin</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">₹463+ Cr</span>
-          <span class="metric-lbl">Order book H1FY26</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">49×</span>
-          <span class="metric-lbl">TTM P/E</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val teal">29%</span>
-          <span class="metric-lbl">ROCE FY25</span>
-        </div>
-      </div>
-      <div class="card-footer">
-        <a href="https://drive.google.com/file/d/1mtjbTf2XSdqQYmkaY0ApzKbEIJ4xFqvM/view?usp=drive_link" target="_blank" class="btn-report" onclick="trackReport('Aimtron Electronics')">Read Report →</a>
-        <a href="https://drive.google.com/file/d/1mtjbTf2XSdqQYmkaY0ApzKbEIJ4xFqvM/view?usp=drive_link" target="_blank" class="btn-preview" onclick="trackReport('Aimtron Electronics')">↗</a>
-      </div>
-    </div>
-
-    <!-- 6. Monolithisch -->
-    <div class="card">
-      <div class="card-head">
-        <span class="card-num">06</span>
-        <span class="card-badge">Refractory</span>
-        <div class="card-exchange">NSE SME · Secondary Steel</div>
-        <div class="card-name">Monolithisch India</div>
-        <div class="card-tagline">India's Ramming Mass Consolidator</div>
-      </div>
-      <div class="card-metrics">
-        <div class="metric">
-          <span class="metric-val gold">~₹885 Cr</span>
-          <span class="metric-lbl">Market cap</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">~₹125 Cr</span>
-          <span class="metric-lbl">TTM revenue</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val teal">23.9%</span>
-          <span class="metric-lbl">EBITDA Q3FY26</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">5,74,000 MT</span>
-          <span class="metric-lbl">Target capacity</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">44.6×</span>
-          <span class="metric-lbl">Trailing P/E</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val teal">5× FY28</span>
-          <span class="metric-lbl">Revenue target</span>
-        </div>
-      </div>
-      <div class="card-footer">
-        <a href="https://drive.google.com/file/d/15a-FOMBJ0duJr4rMf2EguNRHi861i8Hs/view?usp=sharing" target="_blank" class="btn-report" onclick="trackReport('Monolithisch India')">Read Report →</a>
-        <a href="https://drive.google.com/file/d/15a-FOMBJ0duJr4rMf2EguNRHi861i8Hs/view?usp=sharing" target="_blank" class="btn-preview" onclick="trackReport('Monolithisch India')">↗</a>
-      </div>
-    </div>
-
-    <!-- 7. Yash Highvoltage -->
-    <div class="card">
-      <div class="card-head">
-        <span class="card-num">07</span>
-        <span class="card-badge">Power T&D</span>
-        <div class="card-exchange">BSE SME · Electrical Equipment</div>
-        <div class="card-name">Yash Highvoltage</div>
-        <div class="card-tagline">India's Bushing Backbone — RIP Leader</div>
-      </div>
-      <div class="card-metrics">
-        <div class="metric">
-          <span class="metric-val gold">~₹1,238 Cr</span>
-          <span class="metric-lbl">Market cap</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">~₹193 Cr</span>
-          <span class="metric-lbl">TTM revenue</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val teal">22.8%</span>
-          <span class="metric-lbl">EBITDA H1FY26</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">₹300+ Cr</span>
-          <span class="metric-lbl">Order book Oct'25</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">43×</span>
-          <span class="metric-lbl">TTM P/E</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val teal">50%</span>
-          <span class="metric-lbl">PAT CAGR 5yr</span>
-        </div>
-      </div>
-      <div class="card-footer">
-        <a href="https://drive.google.com/file/d/1plprhVPB4Xju0u0Pzf7v_kT91eDavolj/view?usp=sharing" target="_blank" class="btn-report" onclick="trackReport('Yash Highvoltage')">Read Report →</a>
-        <a href="https://drive.google.com/file/d/1plprhVPB4Xju0u0Pzf7v_kT91eDavolj/view?usp=sharing" target="_blank" class="btn-preview" onclick="trackReport('Yash Highvoltage')">↗</a>
-      </div>
-    </div>
-
-    <!-- 8. CFF Fluid Control -->
-    <div class="card">
-      <div class="card-head">
-        <span class="card-num">08</span>
-        <span class="card-badge">Defence</span>
-        <div class="card-exchange">BSE SME · Aerospace &amp; Defence</div>
-        <div class="card-name">CFF Fluid Control</div>
-        <div class="card-tagline">Building India's Submarine Defence Ecosystem</div>
-      </div>
-      <div class="card-metrics">
-        <div class="metric">
-          <span class="metric-val gold">~₹1,127 Cr</span>
-          <span class="metric-lbl">Market cap</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">~₹170 Cr</span>
-          <span class="metric-lbl">TTM revenue</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val teal">28%</span>
-          <span class="metric-lbl">EBITDA H1FY26</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">~₹540+ Cr</span>
-          <span class="metric-lbl">Order book Nov'25</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">39×</span>
-          <span class="metric-lbl">TTM P/E</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val teal">45%</span>
-          <span class="metric-lbl">PAT CAGR 3yr</span>
-        </div>
-      </div>
-      <div class="card-footer">
-        <a href="https://drive.google.com/file/d/18znSl98QFmGhpFxnTp4nNQ2pJJXkDHvf/view?usp=sharing" target="_blank" class="btn-report" onclick="trackReport('CFF Fluid Control')">Read Report →</a>
-        <a href="https://drive.google.com/file/d/18znSl98QFmGhpFxnTp4nNQ2pJJXkDHvf/view?usp=sharing" target="_blank" class="btn-preview" onclick="trackReport('CFF Fluid Control')">↗</a>
-      </div>
-    </div>
-
-    <!-- 9. GSM Foils -->
-    <div class="card">
-      <div class="card-head">
-        <span class="card-num">09</span>
-        <span class="card-badge">Pharma Pack</span>
-        <div class="card-exchange">NSE SME · Pharma Packaging</div>
-        <div class="card-name">GSM Foils</div>
-        <div class="card-tagline">Vasai to Ahmedabad. Capacity Doubled.</div>
-      </div>
-      <div class="card-metrics">
-        <div class="metric">
-          <span class="metric-val gold">~₹262 Cr</span>
-          <span class="metric-lbl">Market cap</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">₹222 Cr</span>
-          <span class="metric-lbl">TTM revenue</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val teal">~11%</span>
-          <span class="metric-lbl">EBITDA margin</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">2,00,000 MT</span>
-          <span class="metric-lbl">Total capacity</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">~15-16×</span>
-          <span class="metric-lbl">Trailing P/E</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val teal">0.24</span>
-          <span class="metric-lbl">Debt/Equity</span>
-        </div>
-      </div>
-      <div class="card-footer">
-        <a href="https://drive.google.com/file/d/1gsNHlIWsqJuPvc96qLX4qHmduY8hAIv1/view?usp=sharing" target="_blank" class="btn-report" onclick="trackReport('GSM Foils')">Read Report →</a>
-        <a href="https://drive.google.com/file/d/1gsNHlIWsqJuPvc96qLX4qHmduY8hAIv1/view?usp=sharing" target="_blank" class="btn-preview" onclick="trackReport('GSM Foils')">↗</a>
-      </div>
-    </div>
-
-    <!-- 10. OSEL Devices -->
-    <div class="card">
-      <div class="card-head">
-        <span class="card-num">10</span>
-        <span class="card-badge">ESDM</span>
-        <div class="card-exchange">NSE SME · LED / MedTech / Mobile</div>
-        <div class="card-name">Osel Devices</div>
-        <div class="card-tagline">From LED Displays &amp; Hearing Aids to India's Exclusive Philips Mobile Partner</div>
-      </div>
-      <div class="card-metrics">
-        <div class="metric">
-          <span class="metric-val gold">~₹937 Cr</span>
-          <span class="metric-lbl">Market cap</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">₹246 Cr</span>
-          <span class="metric-lbl">TTM revenue</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val teal">17%</span>
-          <span class="metric-lbl">EBITDA H1FY26</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">+89% YoY</span>
-          <span class="metric-lbl">H1 FY26 PAT</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">34.4×</span>
-          <span class="metric-lbl">Trailing P/E</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val teal">111%</span>
-          <span class="metric-lbl">PAT CAGR 3yr</span>
-        </div>
-      </div>
-      <div class="card-footer">
-        <a href="https://drive.google.com/file/d/1A7En5f7YIVM5vWU-YfL8VrBkH2-A0r-K/view?usp=sharing" target="_blank" class="btn-report" onclick="trackReport('Osel Devices')">Read Report →</a>
-        <a href="https://drive.google.com/file/d/1A7En5f7YIVM5vWU-YfL8VrBkH2-A0r-K/view?usp=sharing" target="_blank" class="btn-preview" onclick="trackReport('Osel Devices')">↗</a>
-      </div>
-    </div>
-
-    <!-- 11. Akiko Global -->
-    <div class="card">
-      <div class="card-head">
-        <span class="card-num">11</span>
-        <span class="card-badge">Fintech DSA</span>
-        <div class="card-exchange">NSE SME · Fintech / Credit Distribution</div>
-        <div class="card-name">Akiko Global Services</div>
-        <div class="card-tagline">India's Fastest-Growing Fintech DSA &amp; AkikoPay Ecosystem</div>
-      </div>
-      <div class="card-metrics">
-        <div class="metric">
-          <span class="metric-val gold">₹216 Cr</span>
-          <span class="metric-lbl">Market cap</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">₹154 Cr</span>
-          <span class="metric-lbl">TTM revenue</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val teal">16%</span>
-          <span class="metric-lbl">EBITDA Q3FY26</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">175%</span>
-          <span class="metric-lbl">Q3 FY26 Rev YoY</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">~13.4×</span>
-          <span class="metric-lbl">TTM P/E</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val teal">67%</span>
-          <span class="metric-lbl">Promoter holding</span>
-        </div>
-      </div>
-      <div class="card-footer">
-        <a href="https://drive.google.com/file/d/1Vhw-4PfA8-WMVGMtq_LQtcX59UVyOBwg/view?usp=sharing" target="_blank" class="btn-report" onclick="trackReport('Akiko Global')">Read Report →</a>
-        <a href="https://drive.google.com/file/d/1Vhw-4PfA8-WMVGMtq_LQtcX59UVyOBwg/view?usp=sharing" target="_blank" class="btn-preview" onclick="trackReport('Akiko Global')">↗</a>
-      </div>
-    </div>
-
-    <!-- 12. Utssav CZ Gold Jewels -->
-    <div class="card">
-      <div class="card-head">
-        <span class="card-num">12</span>
-        <span class="card-badge">B2B Jewellery</span>
-        <div class="card-exchange">NSE SME · Designer Gold Jewellery</div>
-        <div class="card-name">Utssav CZ Gold Jewels</div>
-        <div class="card-tagline">India's Premier B2B Designer Gold Jewellery Manufacturer</div>
-      </div>
-      <div class="card-metrics">
-        <div class="metric">
-          <span class="metric-val gold">₹461 Cr</span>
-          <span class="metric-lbl">Market cap</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">₹837 Cr</span>
-          <span class="metric-lbl">TTM revenue</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val teal">9.45%</span>
-          <span class="metric-lbl">EBITDA H1FY26</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">+197% YoY</span>
-          <span class="metric-lbl">H1 FY26 PAT</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val">10.2×</span>
-          <span class="metric-lbl">TTM P/E</span>
-        </div>
-        <div class="metric">
-          <span class="metric-val teal">31.5%</span>
-          <span class="metric-lbl">ROE FY25</span>
-        </div>
-      </div>
-      <div class="card-footer">
-        <a href="https://drive.google.com/file/d/1xILIPhRFpDpF5rl3Re-4w_XvrRSuTNAD/view?usp=sharing" target="_blank" class="btn-report" onclick="trackReport('Utssav CZ Gold Jewels')">Read Report →</a>
-        <a href="https://drive.google.com/file/d/1xILIPhRFpDpF5rl3Re-4w_XvrRSuTNAD/view?usp=sharing" target="_blank" class="btn-preview" onclick="trackReport('Utssav CZ Gold Jewels')">↗</a>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ABOUT -->
-<section class="about-strip" id="about">
-  <div class="about-block">
-    <div class="about-label">About the series</div>
-    <h3 class="about-title">Independent research.<br>No agenda.</h3>
-    <p class="about-body">SME Gems surfaces under-researched companies on India's BSE and NSE SME platforms that demonstrate mainboard-quality fundamentals — strong and expanding margins, growing order books, promoters with demonstrated execution capabilities, and structural competitive advantages.<br><br>Each report covers company journey, business model, financial performance, growth roadmap, peer comparison, substantiated and speculation averse risk analysis, and an investor execution checklist. All research is independent. There is no paid promotion.<br><br>Metrics shown on cards may reflect more recent figures
-      than the ones documented in the reports.</p>
-    <div class="about-links">
-      <a href="https://x.com/sachprat07" target="_blank" class="about-link">Follow on Twitter — @sachprat07</a>
-      <a href="#reports" class="about-link">Browse all reports</a>
-      <a href="https://x.com/sachprat07" target="_blank" class="about-link">Suggest a company</a>
-    </div>
-  </div>
-
-  <div class="sectors-block">
-    <div class="about-label">Sectors covered</div>
-    <h3 class="about-title">Across industries,<br>One common thread.</h3>
-    <div class="sector-grid">
-      <span class="stag live">ESDM / Electronics</span>
-      <span class="stag live">Precision Manufacturing</span>
-      <span class="stag live">Defence &amp; Aerospace</span>
-      <span class="stag live">Power T&amp;D</span>
-      <span class="stag live">Refractory / Steel</span>
-      <span class="stag live">Pharma Packaging</span>
-      <span class="stag live">Fresh Protein / D2C</span>
-      <span class="stag live">Elevators / Capital Goods</span>
-      <span class="stag live">Clean Energy / Solar</span>
-      <span class="stag live">LED / MedTech</span>
-      <span class="stag live">Fintech DSA</span>
-      <span class="stag live">B2B Jewellery</span>
-      <span class="stag coming">Specialty Chemicals</span>
-      <span class="stag coming">Agri-tech</span>
-      <span class="stag coming">Logistics</span>
-      <span class="stag coming">More coming</span>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <p class="footer-disc">For informational purposes only. Not investment advice. SME stocks carry elevated risk due to limited trading liquidity, smaller scale, and evolving governance standards. Readers must independently verify all information and consult a SEBI-registered investment advisor before making any investment decision. The author may or may not hold positions in the securities discussed.</p>
-  <div class="footer-brand">SME Gems · March 2026</div>
-</footer>
-
-</body>
-</html>
+        <a
