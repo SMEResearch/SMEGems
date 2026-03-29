@@ -34,6 +34,11 @@
             display: flex;
             height: 100vh;
             overflow: hidden;
+            /* Security: Disable Selection */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
 
         /* Sidebar Navigation - Fixed for Scrolling */
@@ -267,6 +272,22 @@
         .mt-2 { margin-top: 2rem; }
         .mb-1 { margin-bottom: 1rem; }
         .text-center { text-align: center; }
+
+        /* Security: Disable Print */
+        @media print {
+            body {
+                display: none !important;
+            }
+            html::after {
+                content: "Printing and saving as PDF is strictly disabled for this proprietary research.";
+                font-family: 'Plus Jakarta Sans', sans-serif;
+                text-align: center;
+                display: block;
+                padding: 50px;
+                font-size: 20px;
+                color: black;
+            }
+        }
     </style>
 </head>
 <body>
@@ -831,6 +852,17 @@
                 }
             }
         });
+    </script>
+    
+    <script>
+        document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && (e.key === 'c' || e.key === 'x' || e.key === 'p' || e.key === 's' || e.key === 'u')) { e.preventDefault(); }
+            if (e.metaKey && (e.key === 'c' || e.key === 'x' || e.key === 'p' || e.key === 's' || e.key === 'u')) { e.preventDefault(); }
+            if (e.key === 'F12') { e.preventDefault(); }
+            if ((e.ctrlKey && e.shiftKey && e.key === 'I') || (e.metaKey && e.altKey && e.key === 'i')) { e.preventDefault(); }
+        });
+        document.addEventListener('dragstart', function(e) { e.preventDefault(); });
     </script>
 </body>
 </html>
