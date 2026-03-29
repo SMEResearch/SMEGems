@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SME Gems — Hidden Champions of the SME Platform</title>
-<!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-74FX7W8BWC"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -57,6 +56,11 @@
     font-weight: 300;
     line-height: 1.6;
     overflow-x: hidden;
+    /* Security: Disable Selection */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
   }
 
   /* ── NOISE OVERLAY ── */
@@ -595,11 +599,26 @@
     .section-divider { margin: 0 20px; }
     .hstat { padding: 14px 20px; }
   }
+
+  /* Security: Disable Print */
+  @media print {
+      body {
+          display: none !important;
+      }
+      html::after {
+          content: "Printing and saving as PDF is strictly disabled for this proprietary research.";
+          font-family: 'DM Sans', sans-serif;
+          text-align: center;
+          display: block;
+          padding: 50px;
+          font-size: 20px;
+          color: black;
+      }
+  }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
   <div class="nav-brand">SME <span>Gems</span></div>
   <div class="nav-links">
@@ -609,7 +628,6 @@
   </div>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
   <div class="hero-grid-bg"></div>
   <div class="hero-glow"></div>
@@ -644,7 +662,6 @@
 
 <div class="section-divider"></div>
 
-<!-- REPORTS -->
 <section class="reports-section" id="reports">
   <div class="sec-header">
     <h2 class="sec-title">Research Reports</h2>
@@ -653,7 +670,6 @@
 
   <div class="card-grid">
 
-    <!-- 1. Oriana Power -->
     <div class="card">
       <div class="card-head">
         <span class="card-num">01</span>
@@ -694,7 +710,6 @@
       </div>
     </div>
 
-    <!-- 2. OBSC Perfection -->
     <div class="card">
       <div class="card-head">
         <span class="card-num">02</span>
@@ -735,7 +750,6 @@
       </div>
     </div>
 
-    <!-- 3. L.T. Elevator -->
     <div class="card">
       <div class="card-head">
         <span class="card-num">03</span>
@@ -776,7 +790,6 @@
       </div>
     </div>
 
-    <!-- 4. DSM Fresh Foods -->
     <div class="card">
       <div class="card-head">
         <span class="card-num">04</span>
@@ -817,8 +830,7 @@
       </div>
     </div>
 
-<!-- 5. Aimtron -->
-    <div class="card">
+<div class="card">
       <div class="card-head">
         <span class="card-num">05</span>
         <span class="card-badge">ESDM</span>
@@ -858,7 +870,6 @@
       </div>
     </div>
 
-    <!-- 6. Monolithisch -->
     <div class="card">
       <div class="card-head">
         <span class="card-num">06</span>
@@ -899,7 +910,6 @@
       </div>
     </div>
 
-    <!-- 7. Yash Highvoltage -->
     <div class="card">
       <div class="card-head">
         <span class="card-num">07</span>
@@ -940,7 +950,6 @@
       </div>
     </div>
 
-    <!-- 8. CFF Fluid Control -->
     <div class="card">
       <div class="card-head">
         <span class="card-num">08</span>
@@ -981,7 +990,6 @@
       </div>
     </div>
 
-    <!-- 9. GSM Foils -->
     <div class="card">
       <div class="card-head">
         <span class="card-num">09</span>
@@ -1022,7 +1030,6 @@
       </div>
     </div>
 
-    <!-- 10. OSEL Devices -->
     <div class="card">
       <div class="card-head">
         <span class="card-num">10</span>
@@ -1063,7 +1070,6 @@
       </div>
     </div>
 
-    <!-- 11. Akiko Global -->
     <div class="card">
       <div class="card-head">
         <span class="card-num">11</span>
@@ -1104,7 +1110,6 @@
       </div>
     </div>
 
-    <!-- 12. Utssav CZ Gold Jewels -->
     <div class="card">
       <div class="card-head">
         <span class="card-num">12</span>
@@ -1188,7 +1193,6 @@
   </div>
 </section>
 
-<!-- ABOUT -->
 <section class="about-strip" id="about">
   <div class="about-block">
     <div class="about-label">About the series</div>
@@ -1227,11 +1231,21 @@
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
   <p class="footer-disc">For informational purposes only. Not investment advice. SME stocks carry elevated risk due to limited trading liquidity, smaller scale, and evolving governance standards. Readers must independently verify all information and consult a SEBI-registered investment advisor before making any investment decision. The author may or may not hold positions in the securities discussed.</p>
   <div class="footer-brand">SME Gems · March 2026</div>
 </footer>
+
+<script>
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && (e.key === 'c' || e.key === 'x' || e.key === 'p' || e.key === 's' || e.key === 'u')) { e.preventDefault(); }
+        if (e.metaKey && (e.key === 'c' || e.key === 'x' || e.key === 'p' || e.key === 's' || e.key === 'u')) { e.preventDefault(); }
+        if (e.key === 'F12') { e.preventDefault(); }
+        if ((e.ctrlKey && e.shiftKey && e.key === 'I') || (e.metaKey && e.altKey && e.key === 'i')) { e.preventDefault(); }
+    });
+    document.addEventListener('dragstart', function(e) { e.preventDefault(); });
+</script>
 
 </body>
 </html>
