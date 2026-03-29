@@ -11,7 +11,7 @@
     
     <style>
         :root {
-            --bg-dark: #0a0e17; /* Deep Navy/Indigo */
+            --bg-dark: #0a0e17; 
             --bg-panel: #131a28;
             --accent-gold: #e5b300;
             --accent-teal: #00d2ff;
@@ -41,7 +41,39 @@
             user-select: none;
         }
 
-        /* Sidebar Navigation - Fixed for Scrolling */
+        /* Mobile Header (Hidden on Desktop) */
+        .mobile-header {
+            display: none;
+            background: var(--bg-panel);
+            padding: 1rem 1.5rem;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 99;
+        }
+
+        .menu-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .mobile-brand {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .mobile-brand span {
+            color: var(--accent-gold);
+        }
+
+        /* Sidebar Navigation */
         .sidebar {
             width: 300px;
             min-width: 300px;
@@ -50,17 +82,24 @@
             flex-direction: column;
             padding: 2rem 0;
             border-right: 1px solid var(--border-color);
-            z-index: 10;
-            overflow-y: auto; /* Allows scrolling */
+            z-index: 100;
+            overflow-y: auto; 
+            transition: left 0.3s ease;
         }
 
-        /* Custom scrollbar for sidebar */
-        .sidebar::-webkit-scrollbar {
-            width: 6px;
-        }
+        .sidebar::-webkit-scrollbar { width: 6px; }
         .sidebar::-webkit-scrollbar-thumb {
             background: rgba(255,255,255,0.1);
             border-radius: 4px;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 90;
+            backdrop-filter: blur(2px);
         }
 
         .brand-logo {
@@ -76,9 +115,7 @@
             letter-spacing: 1px;
         }
 
-        .brand-logo span {
-            color: var(--accent-gold);
-        }
+        .brand-logo span { color: var(--accent-gold); }
 
         .nav-item {
             padding: 1rem 2rem;
@@ -120,9 +157,7 @@
             margin: 0 auto;
         }
 
-        .slide.active {
-            display: block;
-        }
+        .slide.active { display: block; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -167,7 +202,6 @@
             padding: 1.8rem;
             position: relative;
             overflow: hidden;
-            transition: transform 0.2s ease;
         }
 
         .card::before {
@@ -256,7 +290,6 @@
             border-top: 1px solid var(--border-color);
         }
 
-        /* Glossary Term Styling */
         .glossary-link {
             color: var(--accent-teal);
             border-bottom: 1px dotted var(--accent-teal);
@@ -273,11 +306,57 @@
         .mb-1 { margin-bottom: 1rem; }
         .text-center { text-align: center; }
 
+        /* ------------------------------------------- */
+        /* RESPONSIVE MEDIA QUERIES FOR MOBILE/TABLET  */
+        /* ------------------------------------------- */
+
+        /* Tablets and smaller laptops */
+        @media (max-width: 1024px) {
+            .grid-4 { grid-template-columns: repeat(2, 1fr); }
+            .main-container { padding: 2rem; }
+            .title { font-size: 2rem; }
+        }
+
+        /* Mobile Devices */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            
+            /* Show mobile top header */
+            .mobile-header { display: flex; }
+            
+            /* Hide and animate the sidebar */
+            .sidebar {
+                position: fixed;
+                left: -320px;
+                top: 0;
+                height: 100vh;
+                box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+            }
+            .sidebar.open { left: 0; }
+            
+            /* Main container adjustments */
+            .main-container {
+                padding: 1.2rem;
+                padding-top: 5rem; /* Make room for the fixed top header */
+            }
+
+            /* Collapse all grids to single column */
+            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; gap: 1rem; }
+            
+            /* Typography scaling */
+            .title { font-size: 1.6rem; }
+            .subtitle { font-size: 0.95rem; margin-bottom: 1.5rem; }
+            .metric-value { font-size: 1.8rem; }
+            .card { padding: 1.2rem; }
+            .chart-box { height: 300px; padding: 1rem; }
+            
+            /* Table adjustments for mobile */
+            .table-custom th, .table-custom td { padding: 0.8rem 0.5rem; font-size: 0.85rem; }
+        }
+
         /* Security: Disable Print */
         @media print {
-            body {
-                display: none !important;
-            }
+            body { display: none !important; }
             html::after {
                 content: "Printing and saving as PDF is strictly disabled for this proprietary research.";
                 font-family: 'Plus Jakarta Sans', sans-serif;
@@ -291,6 +370,13 @@
     </style>
 </head>
 <body>
+
+    <div class="mobile-header">
+        <div class="mobile-brand">RNFI <span>Services</span></div>
+        <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    </div>
+
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
     <div class="sidebar">
         <div class="brand-logo">
@@ -753,6 +839,12 @@
     </div>
 
     <script>
+        // Toggle Sidebar for Mobile
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('open');
+            document.querySelector('.sidebar-overlay').classList.toggle('active');
+        }
+
         // Navigation Logic
         function switchSlide(slideId, el) {
             document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
@@ -767,6 +859,12 @@
                 // If triggered by glossary shortcut, find the right nav item to highlight
                 const index = parseInt(slideId.split('-')[1]) - 1;
                 document.querySelectorAll('.nav-item')[index].classList.add('active');
+            }
+
+            // Close sidebar on mobile after clicking a link
+            if (window.innerWidth <= 768) {
+                document.querySelector('.sidebar').classList.remove('open');
+                document.querySelector('.sidebar-overlay').classList.remove('active');
             }
         }
 
