@@ -21,8 +21,8 @@
             --accent-primary: #34d399;   /* Bright Mint Green */
             --accent-primary-dim: rgba(52, 211, 153, 0.15);
             --accent-secondary: #10b981; /* Solid Emerald */
-            --accent-tertiary: #eab308; /* Solar Yellow */
             --accent-secondary-dim: rgba(16, 185, 129, 0.15);
+            --accent-tertiary: #eab308;  /* Solar Yellow for specific highlights */
             --text-main: #f8fafc;        /* Crisp White for headings */
             --text-muted: #94a3b8;       /* Slate for readable body text */
             --danger: #fb7185;           /* Softened Rose Red for dark mode */
@@ -143,8 +143,10 @@
         .metric-value { font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 800; color: var(--text-main); margin: 0.5rem 0; font-family: 'Outfit', sans-serif; letter-spacing: -0.5px;}
         .metric-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
 
+        /* Highlight Classes */
         .highlight-primary { color: var(--accent-primary); font-weight: 600; }
         .highlight-secondary { color: var(--accent-secondary); font-weight: 600; }
+        .highlight-yellow { color: var(--accent-tertiary); font-weight: 700; }
 
         /* LIST CSS */
         ul.custom-list { 
@@ -462,7 +464,7 @@
                         <div class="table-responsive">
                             <table class="table-custom" style="margin-top: 0; min-width: auto;">
                                 <tbody>
-                                    <tr><td>Current Price</td><td style="font-size: 1.1rem; font-weight: bold; color: #e2e8f0;">₹167</td></tr>
+                                    <tr><td>Current Price</td><td style="font-size: 1.1rem; font-weight: bold; color: var(--text-main);">₹167</td></tr>
                                     <tr><td>Market Cap</td><td class="highlight-primary" style="font-size: 1.1rem; font-weight: bold;">₹236 Cr</td></tr>
                                     <tr><td>Trailing P/E</td><td class="highlight-secondary" style="font-size: 1.1rem; font-weight: bold;">~16-17x</td></tr>
                                 </tbody>
@@ -473,8 +475,8 @@
                     <div class="valuation-callout">
                         <p>
                             At the current market cap of <strong>₹236 Cr</strong> and a CMP of <strong>₹167</strong>, GSM Foils trades at a severely compressed implied trailing P/E of just <span class="highlight-primary">~16-17x</span>.<br><br>
-                            This recent price correction is <strong>heavily decoupled</strong> from the company's robust 80%+ YoY growth fundamentals. The de-rating appears driven almost entirely by the severe liquidity drain in the SME platform and the broader Indian market correction.<br><br>
-                            This <span class="highlight-tertiary">structural mispricing</span> presents a glaring valuation disconnect—relative to its newly doubled capacity, high-margin product expansion, and impending export ramp-up.
+                            This recent price correction is <strong class="highlight-yellow">heavily decoupled</strong> from the company's robust 80%+ YoY growth fundamentals. The de-rating appears driven almost entirely by the severe liquidity drain in the SME platform and the broader Indian market correction.<br><br>
+                            This <strong class="highlight-yellow">structural mispricing</strong> presents a glaring valuation disconnect—the stock appears <span class="highlight-secondary">severely undervalued</span> relative to its newly doubled capacity, high-margin product expansion, and impending export ramp-up.
                         </p>
                     </div>
                 </div>
@@ -482,7 +484,7 @@
         </div>
 
         <div id="slide-8" class="slide">
-            <div class="badge stagger s1" style="background: var(--danger-dim); border-color: rgba(251, 113, 133, 0.3); color: var(--danger);">08 • KEY RISKS</div>
+            <div class="badge stagger s1" style="background: rgba(251, 113, 133, 0.1); border-color: rgba(251, 113, 133, 0.3); color: var(--danger);">08 • KEY RISKS</div>
             <h1 class="title stagger s1">Risks & Watchpoints</h1>
             <p class="subtitle stagger s1">Evaluating the friction points in the growth thesis</p>
 
