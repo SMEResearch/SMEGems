@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L.T. Elevator Ltd - SME Gems Deck</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.0"></script>
+    
+    <style>
+        /* --- INDUSTRIAL RED & STEEL THEME --- */
+        :root {
+            --bg-dark: #0f0505;       /* Deep Crimson Night */
+            --bg-panel: rgba(24, 10, 10, 0.75); /* Frosted Glass Red-Black */
+            --accent-primary: #ef4444; /* Power Red */
+            --accent-dim: rgba(239, 68, 68, 0.15);
+            --accent-secondary: #cbd5e1; /* Steel Silver */
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --danger: #f97316; /* Shifted danger to orange to contrast with red primary */
+            --success: #22c55e;
+            --border-color: rgba(239, 68, 68, 0.2); 
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            background-color: var(--bg-dark); color: var(--text-main);
+            width: 100%; height: 100%; overflow: hidden; 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        h1, h2, h3, .header-font { font-family: 'Outfit', sans-serif; }
+
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: auto; }
+        #app-container { display: flex; width: 100%; height: 100%; overflow: hidden; position: relative; z-index: 1; pointer-events: none; }
+        .sidebar, .main-container, .mobile-header { pointer-events: auto; }
+
+        /* Mobile Header */
+        .mobile-header {
+            display: none; background: #1a0808; padding: 1rem 1.5rem;
+            align-items: center; justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            position: fixed; top: 0; width: 100%; z-index: 99;
+        }
+        .menu-toggle { background: transparent; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer; }
+        .mobile-brand { font-size: 1.4rem; font-weight: 800; color: var(--text-main); font-family: 'Outfit', sans-serif; }
+        .mobile-brand span { color: var(--accent-primary); }
+
+        /* Sidebar */
+        .sidebar {
+            width: 300px; min-width: 300px; background: rgba(15, 5, 5, 0.95); backdrop-filter: blur(10px);
+            display: flex; flex-direction: column; padding: 2rem 0; border-right: 1px solid var(--border-color);
+            z-index: 100; overflow-y: auto; transition: left 0.3s ease;
+        }
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 90; backdrop-filter: blur(3px); pointer-events: auto;}
+        .sidebar-overlay.active { display: block; }
+
+        .brand-logo { padding: 0 2rem 1.5rem 2rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem; flex-shrink: 0; }
+        .brand-logo h2 { font-size: 2.2rem; font-weight: 800; color: var(--text-main); line-height: 1.1; font-family: 'Outfit', sans-serif;}
+        .brand-logo span { color: var(--accent-primary); font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase;}
+
+        .nav-item {
+            padding: 0.8rem 2rem; color: var(--text-muted); cursor: pointer; transition: all 0.3s ease;
+            display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 0.85rem;
+            border-left: 3px solid transparent; flex-shrink: 0; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .nav-item:hover { color: var(--accent-primary); background: rgba(255,255,255,0.03); padding-left: 2.3rem; }
+        .nav-item.active { color: var(--accent-primary); background: var(--accent-dim); border-left-color: var(--accent-primary); }
+
+        /* Main Area */
+        .main-container {
+            flex: 1; padding: 3rem 4rem; overflow-y: auto; scroll-behavior: smooth; height: 100%; -webkit-overflow-scrolling: touch; 
+        }
+
+        .slide { display: none; max-width: 1200px; margin: 0 auto; padding-bottom: 5rem; position: relative; z-index: 2;}
+        .slide.active { display: block; }
+
+        /* Animations */
+        .stagger { animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        .s1 { animation-delay: 0.1s; } .s2 { animation-delay: 0.2s; } .s3 { animation-delay: 0.3s; } .s4 { animation-delay: 0.4s; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .badge {
+            display: inline-block; background: var(--accent-dim); color: var(--accent-primary);
+            padding: 0.4rem 1.2rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700;
+            letter-spacing: 2px; margin-bottom: 1.5rem; text-transform: uppercase; border: 1px solid var(--border-color);
+        }
+        .badge.silver { background: rgba(203, 213, 225, 0.1); color: var(--accent-secondary); border-color: rgba(203, 213, 225, 0.3); }
+
+        .title { font-size: 2.8rem; font-weight: 800; margin-bottom: 0.8rem; line-height: 1.1; color: var(--text-main); }
+        .subtitle { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 2.5rem; font-weight: 400; }
+        .subtitle span { color: var(--accent-primary); font-weight: 600; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; }
+
+        /* 3D Glass Cards */
+        .card {
+            background: var(--bg-panel); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color); border-radius: 12px; padding: 1.8rem; position: relative; 
+            overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.4); transition: all 0.3s ease;
+        }
+        .card:hover { border-color: var(--accent-primary); transform: translateY(-4px); box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 20px rgba(239, 68, 68, 0.15); }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--text-muted); opacity: 0.3; }
+        .card.primary-border::before { background: var(--accent-primary); opacity: 1; }
+        .card.silver-border::before { background: var(--accent-secondary); opacity: 1; }
+        .card.danger-border::before { background: var(--danger); opacity: 1; }
+
+        .metric-value { font-size: 2.4rem; font-weight: 800; color: var(--text-main); margin: 0.5rem 0; font-family: 'Outfit', sans-serif; }
+        .metric-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+
+        .highlight-primary { color: var(--accent-primary); font-weight: 600; }
+        .highlight-silver { color: var(--accent-secondary); font-weight: 600; }
+
+        ul.custom-list { list-style: none; }
+        ul.custom-list li { position: relative; padding-left: 1.8rem; margin-bottom: 1rem; line-height: 1.6; color: #cbd5e1; font-size: 0.95rem; }
+        ul.custom-list li::before { content: '\f058'; font-family: 'FontAwesome'; position: absolute; left: 0; color: var(--accent-primary); font-size: 1rem; top: 3px; }
+        ul.risk-list li::before { content: '\f071'; color: var(--danger); }
+        ul.silver-list li::before { content: '\f0a9'; color: var(--accent-secondary); }
+
+        .table-custom { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        .table-custom th, .table-custom td { padding: 1rem 0.8rem; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; }
+        .table-custom th { color: var(--accent-primary); text-transform: uppercase; font-weight: 700; font-size: 0.75rem; }
+        .table-custom tr:hover { background: rgba(239, 68, 68, 0.05); }
+
+        .chart-box { background: var(--bg-panel); backdrop-filter: blur(12px); padding: 1.5rem; border-radius: 12px; height: 400px; border: 1px solid var(--border-color); }
+
+        .footer-branding { text-align: center; margin-top: 3rem; padding: 2rem 0; border-top: 1px solid var(--border-color); }
+        .footer-branding a { color: var(--accent-primary); text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 8px;}
+        .footer-branding a:hover { color: var(--text-main); }
+        
+        /* Custom SVG Icon for X */
+        .icon-x { width: 16px; height: 16px; fill: currentColor; }
+
+        @media (max-width: 1024px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) {
+            .mobile-header { display: flex; }
+            .sidebar { position: fixed; left: -320px; top: 0; height: 100%; box-shadow: 5px 0 20px rgba(0,0,0,0.8); }
+            .sidebar.open { left: 0; }
+            .main-container { padding: 1.5rem; padding-top: 6rem; padding-bottom: 8rem; }
+            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; gap: 1.2rem; }
+            .title { font-size: 2.2rem; } .metric-value { font-size: 2rem; }
+            .chart-box { height: 300px; padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div id="app-container">
+
+    <div class="mobile-header">
+        <div class="mobile-brand">L.T. <span>Elevator</span></div>
+        <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    </div>
+
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <div class="sidebar">
+        <div class="brand-logo">
+            <h2>L.T.</h2><span>Elevator Ltd</span>
+        </div>
+        <div class="nav-item active" onclick="switchSlide('slide-1', this)"><i class="fas fa-building"></i> 01 Snapshot</div>
+        <div class="nav-item" onclick="switchSlide('slide-2', this)"><i class="fas fa-route"></i> 02 Journey</div>
+        <div class="nav-item" onclick="switchSlide('slide-3', this)"><i class="fas fa-layer-group"></i> 03 Verticals</div>
+        <div class="nav-item" onclick="switchSlide('slide-4', this)"><i class="fas fa-chart-bar"></i> 04 Financials</div>
+        <div class="nav-item" onclick="switchSlide('slide-5', this)"><i class="fas fa-handshake"></i> 05 Ricardo Deal</div>
+        <div class="nav-item" onclick="switchSlide('slide-6', this)"><i class="fas fa-calculator"></i> 06 Unit Economics</div>
+        <div class="nav-item" onclick="switchSlide('slide-7', this)"><i class="fas fa-map-signs"></i> 07 Growth Map</div>
+        <div class="nav-item" onclick="switchSlide('slide-8', this)"><i class="fas fa-chart-line"></i> 08 Valuation</div>
+        <div class="nav-item" onclick="switchSlide('slide-9', this)"><i class="fas fa-exclamation-triangle"></i> 09 Key Risks</div>
+        <div class="nav-item" onclick="switchSlide('slide-10', this)"><i class="fas fa-clipboard-check"></i> 10 Watchlist</div>
+        <div class="nav-item" onclick="switchSlide('slide-11', this)"><i class="fas fa-balance-scale"></i> 11 Thesis</div>
+        <div class="nav-item" onclick="switchSlide('slide-12', this)"><i class="fas fa-shield-alt"></i> 12 Disclaimer</div>
+    </div>
+
+    <div class="main-container">
+
+        <div id="slide-1" class="slide active">
+            <div class="badge stagger s1">SME GEMS • HIDDEN CHAMPIONS OF THE SME PLATFORM</div>
+            <h1 class="title stagger s1">India's Only Listed Pure-Play Elevator Maker</h1>
+            <p class="subtitle stagger s2">Now adding India's fastest-growing D2C home elevator brand. <span>Three engines, one factory.</span></p>
+
+            <div class="grid-4 stagger s2">
+                <div class="card primary-border"><div class="metric-label">Market Cap</div><div class="metric-value">₹292 Cr</div><div class="metric-label" style="color:var(--text-muted)">Listed Sep 2025 at ₹78</div></div>
+                <div class="card primary-border"><div class="metric-label">FY25 Revenue</div><div class="metric-value">₹57 Cr</div><div class="metric-label" style="color:var(--success)">H1 FY26: ₹47 Cr</div></div>
+                <div class="card primary-border"><div class="metric-label">Order Book</div><div class="metric-value">₹289 Cr</div><div class="metric-label" style="color:var(--text-muted)">Combined Visibility</div></div>
+                <div class="card primary-border"><div class="metric-label">ROCE (FY25)</div><div class="metric-value">33%</div><div class="metric-label" style="color:var(--success)">ROE 3-Yr Avg: 31%</div></div>
+            </div>
+
+            <div class="card mt-2 stagger s3">
+                <h3 class="header-font highlight-primary mb-1">Executive Summary</h3>
+                <p style="color: var(--text-muted); line-height: 1.8;">Promoted by Arvind, Usha & Yash Gupta, L.T. Elevator Ltd (BSE SME: 544518) leverages 17 years of engineering DNA to build vertical transport infrastructure. The company operates core B2B elevators, a booming B2G automated parking subsidiary (Park Smart), and is acquiring a hyper-growth D2C home lift brand (Ricardo) to structurally improve working capital and margins.</p>
+            </div>
+        </div>
+
+        <div id="slide-2" class="slide">
+            <div class="badge stagger s1">02 • COMPANY JOURNEY</div>
+            <h1 class="title stagger s1">17 Years of Engineering DNA</h1>
+            
+            <div class="grid-2 stagger s2">
+                <div class="card primary-border">
+                    <h3 class="header-font highlight-primary mb-1">Building The Foundation</h3>
+                    <ul class="custom-list">
+                        <li><strong>2008:</strong> Incorporated in Kolkata; began elevator design & manufacturing.</li>
+                        <li><strong>2018:</strong> ISO 9001:2008 certification achieved — quality systems institutionalised.</li>
+                        <li><strong>2020:</strong> Expanded to 20 branch offices; 8,000+ installations under AMC service.</li>
+                        <li><strong>2021:</strong> Park Smart Solutions launched (WOS) for automated car parking systems.</li>
+                    </ul>
+                </div>
+                <div class="card silver-border">
+                    <h3 class="header-font highlight-silver mb-1">The Acceleration Phase</h3>
+                    <ul class="custom-list silver-list">
+                        <li><strong>2023:</strong> Revenue crosses ₹34 Cr; Smart City project wins in Silchar & Imphal.</li>
+                        <li><strong>Sep 2025:</strong> SME IPO at ₹78 raises ₹39 Cr for capacity & working capital.</li>
+                        <li><strong>Nov 2025:</strong> H1 FY26 blockbuster results (+140% Rev YoY).</li>
+                        <li><strong>Jan 2026:</strong> Ricardo Elevators merger term sheet signed — D2C home entry.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-3" class="slide">
+            <div class="badge stagger s1">03 • BUSINESS VERTICALS</div>
+            <h1 class="title stagger s1">Three Distinct Engines</h1>
+            <p class="subtitle stagger s1">All feeding from a <span>single manufacturing platform</span></p>
+
+            <div class="grid-3 stagger s2">
+                <div class="card primary-border">
+                    <h4 class="highlight-primary">01. B2B Elevators (Core)</h4>
+                    <ul class="custom-list mt-2" style="font-size: 0.85rem;">
+                        <li>800 units/yr capacity (62% util).</li>
+                        <li>Passenger, goods, hospital lifts.</li>
+                        <li>Strong in East India; now 50%+ orders outside East.</li>
+                        <li>8,000+ AMC installations.</li>
+                    </ul>
+                </div>
+                <div class="card primary-border">
+                    <h4 class="highlight-primary">02. Park Smart (B2G/B2B)</h4>
+                    <ul class="custom-list mt-2" style="font-size: 0.85rem;">
+                        <li>Automated multi-level parking.</li>
+                        <li>1,600 units/yr capacity (71% util).</li>
+                        <li>H1 FY26: ₹16 Cr revenue (Hypergrowth).</li>
+                        <li>New 324 decimal land acquired.</li>
+                    </ul>
+                </div>
+                <div class="card silver-border">
+                    <h4 class="highlight-silver">03. Ricardo (D2C Homes)</h4>
+                    <ul class="custom-list silver-list mt-2" style="font-size: 0.85rem;">
+                        <li>Compact bungalows/duplex lifts.</li>
+                        <li>₹10–11 L avg selling price.</li>
+                        <li>60 orders/month; ₹6 Cr/month bookings.</li>
+                        <li>18 Pan-India experience centers.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-4" class="slide">
+            <div class="badge stagger s1">04 • FINANCIAL PERFORMANCE</div>
+            <h1 class="title stagger s1">Profitability Inflection</h1>
+            
+            <div class="grid-2 stagger s2">
+                <div class="card primary-border">
+                    <h3 class="header-font highlight-primary mb-1">H1 FY26 Results (Unaudited)</h3>
+                    <ul class="custom-list">
+                        <li><strong>Revenue:</strong> ₹46.99 Cr <span style="color:var(--success)">(+140% YoY)</span></li>
+                        <li><strong>EBITDA:</strong> ₹10.01 Cr (21.3% Margin)</li>
+                        <li><strong>PAT:</strong> ₹6.45 Cr <span style="color:var(--success)">(+597% YoY)</span></li>
+                        <li><strong>PAT Margin:</strong> 13.6%</li>
+                        <li><strong>TTM Revenue:</strong> ₹84 Cr</li>
+                        <li><strong>TTM PAT:</strong> ₹14 Cr</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 class="header-font highlight-primary mb-1">Historical Trajectory</h3>
+                    <table class="table-custom">
+                        <thead><tr><th>Metric</th><th>3-Yr CAGR</th><th>FY25 Target</th></tr></thead>
+                        <tbody>
+                            <tr><td>Revenue</td><td>31%</td><td>₹57 Cr Base</td></tr>
+                            <tr><td>PAT</td><td>184%</td><td>Steep Acceleration</td></tr>
+                            <tr><td>ROCE</td><td>-</td><td>33% (Capital Efficient)</td></tr>
+                        </tbody>
+                    </table>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 15px;">H1 typically represents ~40% of the annual revenue, with H2 historically stronger (~60%). Structural margin growth is clearly visible.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-5" class="slide">
+            <div class="badge stagger s1">05 • RICARDO ACQUISITION</div>
+            <h1 class="title stagger s1">Manufacturing meets D2C</h1>
+            <p class="subtitle stagger s1">Adding <span>₹60-70 Cr</span> of entirely incremental FY27 revenue.</p>
+
+            <div class="grid-2 stagger s2">
+                <div class="card silver-border">
+                    <h4 class="highlight-silver mb-1">The D2C Engine (Ricardo)</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">100% digital acquisition via Meta/Insta. Spending just ₹10-12L/month to generate 2,500+ inquiries and ~60 orders.</p>
+                    <ul class="custom-list silver-list" style="font-size: 0.85rem;">
+                        <li>₹45 Cr+ Current Order Book.</li>
+                        <li>~₹5.5 Cr revenue in first full year.</li>
+                        <li>3-6 month delivery cycle.</li>
+                    </ul>
+                </div>
+                <div class="card primary-border">
+                    <h4 class="highlight-primary mb-1">Why It Makes Sense</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Ricardo outsourced 100% of production. LT brings it in-house, fixing quality & margins.</p>
+                    <ul class="custom-list" style="font-size: 0.85rem;">
+                        <li><strong>Cash Flow:</strong> B2C pays 95-100% upfront (vs slow B2G).</li>
+                        <li><strong>Geographic Match:</strong> East (LT) + Pan-India 18 centers (Ricardo).</li>
+                        <li><strong>Terms:</strong> 2-3% equity dilution; 3-4 year lock-in.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-6" class="slide">
+            <div class="badge stagger s1">06 • UNIT ECONOMICS</div>
+            <h1 class="title stagger s1">The B2C Margin Premium</h1>
+
+            <div class="grid-3 stagger s2">
+                <div class="card primary-border">
+                    <h4 class="highlight-primary">ASP & COGS</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">Avg Selling Price is ₹10-11 Lacs. COGS (incl. installation) is ~₹6 Lacs (55-60%). Bringing manufacturing in-house expands this spread.</p>
+                </div>
+                <div class="card silver-border">
+                    <h4 class="highlight-silver">Opex & Marketing</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">Digital marketing is extremely efficient (2-5% of ASP). Branch & team opex is ~10%. High leverage as volume scales.</p>
+                </div>
+                <div class="card primary-border">
+                    <h4 class="highlight-primary">Target Margins</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">B2G Elevators & Parking yield ~13-15% net margins. B2C Home Lifts target 20%+. Combined target: 18-22% net margin.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-7" class="slide">
+            <div class="badge stagger s1">07 • GROWTH ROADMAP</div>
+            <h1 class="title stagger s1">Executing The Order Book</h1>
+            <p class="subtitle stagger s1">Combined Order Book: <span>₹289 Cr (90% executable in 18 months)</span></p>
+
+            <div class="grid-3 stagger s2">
+                <div class="card primary-border">
+                    <h4 class="highlight-primary mb-1">1. Factory Capex & Expansion</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Base capex and Howrah land acquisition are already funded via IPO. Q4 FY27 Go-Live targets 2.5x capacity. Planned preferential allotment will act as a war chest for strategic M&A and accelerated scaling.</p>
+                </div>
+                <div class="card silver-border">
+                    <h4 class="highlight-silver mb-1">2. Ricardo Integration</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Executing the ₹60-70 Cr FY27 run-rate. Expanding from 18 to 30 experience centers. Scaling ad spend safely.</p>
+                </div>
+                <div class="card primary-border">
+                    <h4 class="highlight-primary mb-1">3. Park Smart Saturation</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Near 100% util in FY26. 324.5 decimal dedicated land acquired for parking vertical expansion. Diversifying beyond East India.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-8" class="slide">
+            <div class="badge stagger s1">08 • VALUATION OPPORTUNITY</div>
+            <h1 class="title stagger s1">Growth Not Yet Priced In</h1>
+
+            <div class="grid-2 stagger s2">
+                <div class="chart-box"><canvas id="priceChart"></canvas></div>
+                <div class="card">
+                    <h3 class="header-font highlight-primary mb-1">De-rating via Earnings</h3>
+                    <ul class="custom-list" style="font-size: 0.9rem;">
+                        <li><strong>Current State:</strong> ₹292 Cr Mkt Cap. TTM P/E ~21x.</li>
+                        <li><strong>FY26E Compression:</strong> As blockbuster H1 flows through entirely, P/E naturally compresses to ~16x.</li>
+                        <li><strong>FY27E Potential:</strong> If mgmt guided capacity (₹170-180 Cr Core + ₹60-70 Cr Ricardo) is delivered at 13-15% net margins...</li>
+                    </ul>
+                    
+                    <div style="background: rgba(239, 68, 68, 0.05); border: 1px dashed var(--accent-secondary); padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
+                        <p style="font-size: 1.05rem; color: var(--text-muted); margin: 0; line-height: 1.6;">
+                            At an implied <span style="color: var(--accent-primary); font-weight: 700;">~10x FY27E Forward P/E</span>, the current valuation appears to assign minimal premium to the successful execution of the Ricardo integration and upcoming capacity expansion.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-9" class="slide">
+            <div class="badge stagger s1" style="border-color: var(--danger); color: var(--danger); background: rgba(249, 115, 22, 0.1);">09 • KEY RISKS</div>
+            <h1 class="title stagger s1">What Could Break the Thesis</h1>
+
+            <div class="grid-2 stagger s2">
+                <div class="card danger-border">
+                    <h4 style="color: var(--danger); margin-bottom: 5px;">1. Negative Operating Cash Flow</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">OCF was -₹3 Cr in FY24/FY25. Normal for high-growth project phases, but must improve as B2C advance-payment mix scales up.</p>
+                </div>
+                <div class="card danger-border">
+                    <h4 style="color: var(--danger); margin-bottom: 5px;">2. Working Capital Stretch</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Inventory days rose to 478 in FY25. Cash conversion cycle hit 515 days. Close quarterly monitoring of WC compression is required.</p>
+                </div>
+                <div class="card danger-border">
+                    <h4 style="color: var(--danger); margin-bottom: 5px;">3. Integration Execution</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Migrating 100% outsourced Ricardo manufacturing to in-house involves process and quality risks. Delivery slippage affects the D2C brand.</p>
+                </div>
+                <div class="card danger-border">
+                    <h4 style="color: var(--danger); margin-bottom: 5px;">4. Preferential Execution</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">While initial capex is IPO-funded, aggressive M&A and further scale rely on a planned preferential raise. Pricing, dilution, and promoter participation are key watch points.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-10" class="slide">
+            <div class="badge stagger s1">10 • WHAT TO TRACK</div>
+            <h1 class="title stagger s1">Quarterly Execution Checklist</h1>
+
+            <div class="card primary-border stagger s2">
+                <ul class="custom-list">
+                    <li><strong style="color: var(--accent-secondary);">OCF Trajectory (Watch):</strong> Ricardo advance payments should pull OCF positive in FY26.</li>
+                    <li><strong style="color: var(--danger);">Working Capital Days (Critical):</strong> Needs to compress from 133 days/478 inventory days as B2C scales.</li>
+                    <li><strong style="color: var(--accent-secondary);">Ricardo Order Intake (Watch):</strong> Maintain >60 orders/month and 15% MoM growth.</li>
+                    <li><strong style="color: var(--accent-secondary);">Factory Timeline (Watch):</strong> Disclosures on Q4 FY27 progress (land already secured).</li>
+                    <li><strong style="color: var(--danger);">Preferential Allotment (Critical):</strong> Needed for M&A scale. Promoters subscribing is a strong confidence signal.</li>
+                    <li><strong style="color: var(--accent-secondary);">MNC Entry (Watch):</strong> Are Otis/Kone pushing aggressively into the D2C home space?</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="slide-11" class="slide">
+            <div class="badge stagger s1" style="background: transparent; border-color: var(--text-main); color: var(--text-main);">11 • THESIS SUMMARY</div>
+            <h1 class="title stagger s1">Opportunity vs. Risk</h1>
+
+            <div class="grid-2 stagger s2">
+                <div class="card" style="border-left: 4px solid var(--success);">
+                    <h3 class="header-font mb-1" style="color: var(--success);">Strengths & Upside</h3>
+                    <ul class="custom-list">
+                        <li>Only listed pure-play elevator co.</li>
+                        <li>31% Rev / 184% PAT 3-yr CAGR.</li>
+                        <li>Ricardo + Park Smart = Triple engine.</li>
+                        <li>B2C pivot fixes structural cash flow.</li>
+                        <li>FY27E implied P/E ~10x (Provides margin of safety).</li>
+                    </ul>
+                </div>
+                <div class="card" style="border-left: 4px solid var(--danger);">
+                    <h3 class="header-font mb-1" style="color: var(--danger);">Risks & Watch-points</h3>
+                    <ul class="custom-list risk-list">
+                        <li>Historical OCF negative (-₹3 Cr).</li>
+                        <li>Inventory days massively elevated (478).</li>
+                        <li>Aggressive M&A relies on timely preferential raise.</li>
+                        <li>Ricardo merger execution unproven.</li>
+                        <li>High promoter remuneration ratio.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-12" class="slide">
+            <h1 class="title stagger s1">Disclaimer</h1>
+            <p class="subtitle stagger s1">L.T. ELEVATOR LTD · BSE SME: 544518 · March 2026</p>
+
+            <div class="card stagger s2" style="border-color: var(--danger); background: rgba(249, 115, 22, 0.05);">
+                <p style="font-size: 0.85rem; line-height: 1.8; color: var(--text-main);"><strong>IMPORTANT NOTICE:</strong><br><br>This presentation is prepared solely for educational and informational purposes. It does not constitute personalised investment advice or a recommendation to buy, sell, or hold any security. SME stocks carry elevated risk due to limited trading liquidity, smaller scale, and evolving governance standards. All financial data is sourced from publicly available filings: BSE disclosures, company press releases, RHP, and concall transcripts. Readers must independently verify all information and consult a SEBI-registered advisor before making any investment decision. The author may or may not hold positions in the securities discussed.</p>
+            </div>
+
+            <div class="footer-branding stagger s3">
+                <p style="color: var(--text-muted);">Research & Analysis: <strong style="color: var(--accent-primary);">SME Gems</strong></p>
+                <p style="margin-top: 15px;">
+                    <a href="https://x.com/sachprat07" target="_blank">
+                        <svg class="icon-x" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+                        @sachprat07
+                    </a>
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    /* --- INTERACTIVE ELEVATOR/ENGINEERING BACKGROUND --- */
+    const canvas = document.getElementById('bg-canvas');
+    const ctxCanvas = canvas.getContext('2d');
+    let width, height;
+    let elements = [];
+    
+    // Track Mouse
+    let mouse = { x: null, y: null, radius: 150 };
+    window.addEventListener('mousemove', function(event) {
+        mouse.x = event.x;
+        mouse.y = event.y;
+    });
+    window.addEventListener('mouseout', function() {
+        mouse.x = undefined;
+        mouse.y = undefined;
+    });
+
+    function resizeCanvas() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class InfraElement {
+        constructor() {
+            this.x = Math.random() * width;
+            this.y = Math.random() * height;
+            this.baseX = this.x;
+            this.baseY = this.y;
+            this.size = Math.random() * 20 + 10; 
+            this.speedY = Math.random() * -0.5 - 0.2; 
+            this.opacity = Math.random() * 0.1 + 0.02; 
+            this.type = Math.floor(Math.random() * 3); // 0: Elevator Box, 1: Up Chevron, 2: Structural Square
+            this.color = Math.random() > 0.5 ? '239, 68, 68' : '203, 213, 225'; // Red or Steel
+        }
+        
+        draw() {
+            ctxCanvas.beginPath();
+            ctxCanvas.strokeStyle = `rgba(${this.color}, ${this.opacity})`;
+            ctxCanvas.lineWidth = 1.5;
+
+            if (this.type === 0) {
+                // Elevator Box with Cable
+                ctxCanvas.strokeRect(this.x - this.size/2, this.y - this.size/2, this.size, this.size * 1.2);
+                ctxCanvas.moveTo(this.x, this.y - this.size/2);
+                ctxCanvas.lineTo(this.x, this.y - this.size * 1.5);
+            } else if (this.type === 1) {
+                // Upward Chevron (Growth/Lifting)
+                ctxCanvas.moveTo(this.x - this.size/2, this.y + this.size/4);
+                ctxCanvas.lineTo(this.x, this.y - this.size/4);
+                ctxCanvas.lineTo(this.x + this.size/2, this.y + this.size/4);
+            } else {
+                // Structural Box
+                ctxCanvas.strokeRect(this.x - this.size/3, this.y - this.size/3, this.size/1.5, this.size/1.5);
+            }
+            ctxCanvas.stroke();
+        }
+
+        update() {
+            // Normal upward movement
+            this.y += this.speedY;
+            
+            // Screen wrap
+            if (this.y < -50) {
+                this.y = height + 50;
+                this.x = Math.random() * width;
+                this.baseX = this.x;
+            }
+
+            // Mouse Repulsion Logic
+            if (mouse.x != null && mouse.y != null) {
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < mouse.radius) {
+                    let forceDirectionX = dx / distance;
+                    let forceDirectionY = dy / distance;
+                    let force = (mouse.radius - distance) / mouse.radius;
+                    
+                    // Repel away from cursor
+                    this.x -= forceDirectionX * force * 5;
+                    this.y -= forceDirectionY * force * 5;
+                } else {
+                    // Slowly return to natural vertical path
+                    if (this.x !== this.baseX) {
+                        let dx = this.x - this.baseX;
+                        this.x -= dx / 50;
+                    }
+                }
+            }
+            
+            this.draw();
+        }
+    }
+
+    function initElements() {
+        elements = [];
+        let numElements = Math.floor((width * height) / 25000); 
+        for (let i = 0; i < numElements; i++) elements.push(new InfraElement());
+    }
+
+    function animateElements() {
+        ctxCanvas.clearRect(0, 0, width, height);
+        elements.forEach(el => el.update());
+        requestAnimationFrame(animateElements);
+    }
+
+    initElements();
+    animateElements();
+
+    /* --- SLIDE NAVIGATION LOGIC --- */
+    function toggleSidebar() {
+        document.querySelector('.sidebar').classList.toggle('open');
+        document.querySelector('.sidebar-overlay').classList.toggle('active');
+    }
+
+    function switchSlide(slideId, el) {
+        const targetSlide = document.getElementById(slideId);
+        document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        void targetSlide.offsetWidth; // Trigger reflow
+        targetSlide.classList.add('active');
+        if (el) el.classList.add('active');
+        if (window.innerWidth <= 768) {
+            document.querySelector('.sidebar').classList.remove('open');
+            document.querySelector('.sidebar-overlay').classList.remove('active');
+        }
+    }
+
+    /* --- CHART JS LOGIC INJECTED FROM CSV --- */
+    const chartCtx = document.getElementById('priceChart').getContext('2d');
+    new Chart(chartCtx, {
+        type: 'line',
+        data: {
+            labels: ['19 Sep 25', '06 Oct 25', '20 Oct 25', '04 Nov 25', '19 Nov 25', '03 Dec 25', '17 Dec 25', '01 Jan 26', '16 Jan 26', '01 Feb 26', '13 Feb 26', '27 Feb 26', '16 Mar 26'],
+            datasets: [{
+                label: 'LT Price (₹)',
+                data: [142.9, 137.1, 133.15, 147.7, 179.55, 183.45, 180.75, 221.0, 219.7, 186.5, 179.3, 188.5, 171.25],
+                borderColor: '#ef4444',
+                backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                borderWidth: 3,
+                pointBackgroundColor: '#cbd5e1',
+                pointBorderColor: '#0f0505',
+                pointBorderWidth: 2,
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#180a0a',
+                    titleFont: { family: 'Plus Jakarta Sans', size: 14 },
+                    bodyFont: { family: 'Plus Jakarta Sans', size: 14, weight: 'bold' },
+                    borderColor: 'rgba(239, 68, 68, 0.3)',
+                    borderWidth: 1,
+                    padding: 12,
+                    callbacks: { label: function(context) { return '₹ ' + context.parsed.y; } }
+                }
+            },
+            scales: {
+                y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+                x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+            }
+        }
+    });
+</script>
+</body>
+</html>
