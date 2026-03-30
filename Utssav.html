@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utssav CZ Gold Jewels - SME Gems Deck</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.0"></script>
+    
+    <style>
+        /* --- PREMIUM DARK & GOLD THEME CSS --- */
+        :root {
+            --bg-dark: #0a0a0a;       
+            --bg-panel: rgba(20, 20, 20, 0.75); /* Added slight transparency for glassmorphism */
+            --accent-gold: #d4af37;   
+            --accent-gold-dim: rgba(212, 175, 55, 0.15);
+            --text-main: #f8f9fa;
+            --text-muted: #a1a1aa;
+            --danger: #ef4444;
+            --success: #10b981;
+            --border-color: rgba(212, 175, 55, 0.15); 
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            width: 100%; height: 100%;
+            overflow: hidden; 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        h1, h2, h3, .serif-text { font-family: 'Playfair Display', serif; }
+
+        /* Floating Sparkles Canvas */
+        #bg-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        #app-container {
+            display: flex; width: 100%; height: 100%;
+            overflow: hidden; position: relative; z-index: 1;
+        }
+
+        /* Mobile Header */
+        .mobile-header {
+            display: none; background: var(--bg-panel); padding: 1rem 1.5rem;
+            align-items: center; justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            position: fixed; top: 0; width: 100%; z-index: 99;
+        }
+
+        .menu-toggle { background: transparent; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer; }
+        .mobile-brand { font-size: 1.4rem; font-weight: 700; color: var(--text-main); font-family: 'Playfair Display', serif; }
+        .mobile-brand span { color: var(--accent-gold); font-family: 'Playfair Display', serif;}
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 300px; min-width: 300px; background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex; flex-direction: column; padding: 2.5rem 0;
+            border-right: 1px solid var(--border-color);
+            z-index: 100; overflow-y: auto; transition: left 0.3s ease;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.3); border-radius: 4px; }
+
+        .sidebar-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+            z-index: 90; backdrop-filter: blur(3px);
+        }
+        .sidebar-overlay.active { display: block; }
+
+        .brand-logo {
+            padding: 0 2rem 2rem 2rem; border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.5rem; flex-shrink: 0; text-align: center;
+            position: relative;
+        }
+        .brand-logo h2 { font-size: 2rem; font-weight: 700; letter-spacing: 1px; color: var(--text-main); line-height: 1.2;}
+        .brand-logo span { color: var(--accent-gold); font-size: 1rem; font-family: 'Plus Jakarta Sans', sans-serif;}
+
+        .nav-item {
+            padding: 1rem 2rem; color: var(--text-muted); cursor: pointer; transition: all 0.3s ease;
+            display: flex; align-items: center; gap: 15px; font-weight: 600; font-size: 0.85rem;
+            border-left: 3px solid transparent; flex-shrink: 0;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .nav-item:hover { color: var(--accent-gold); background: rgba(255,255,255,0.02); padding-left: 2.2rem; }
+        .nav-item.active { color: var(--accent-gold); background: var(--accent-gold-dim); border-left-color: var(--accent-gold); }
+
+        .main-container {
+            flex: 1; padding: 3rem 5rem; overflow-y: auto; scroll-behavior: smooth;
+            height: 100%; -webkit-overflow-scrolling: touch; 
+            background: radial-gradient(circle at top right, rgba(212, 175, 55, 0.08), transparent 50%);
+        }
+
+        .slide { display: none; max-width: 1150px; margin: 0 auto; position: relative; z-index: 2; padding-bottom: 5rem;}
+        .slide.active { display: block; }
+
+        /* STAGGERED CASCADING ANIMATIONS */
+        .slide.active .stagger-1 { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; animation-delay: 0.1s; }
+        .slide.active .stagger-2 { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; animation-delay: 0.2s; }
+        .slide.active .stagger-3 { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; animation-delay: 0.3s; }
+        .slide.active .stagger-4 { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; animation-delay: 0.4s; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* LUXURY SHIMMER EFFECT */
+        .badge {
+            display: inline-block; background: var(--accent-gold-dim); color: var(--accent-gold);
+            padding: 0.4rem 1.2rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700;
+            letter-spacing: 2px; margin-bottom: 1.5rem; text-transform: uppercase; 
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            position: relative; overflow: hidden;
+        }
+        
+        .badge::after {
+            content: ''; position: absolute; top: 0; left: -150%; width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.4), rgba(255,255,255,0));
+            transform: skewX(-25deg); animation: shimmer 4s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -150%; }
+            20% { left: 200%; }
+            100% { left: 200%; }
+        }
+
+        .title { font-size: 2.6rem; font-weight: 700; margin-bottom: 0.8rem; line-height: 1.2; color: var(--text-main); }
+        .subtitle { font-size: 1.1rem; color: var(--accent-gold); margin-bottom: 3rem; font-weight: 400; letter-spacing: 0.5px;}
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+
+        /* INTERACTIVE 3D CARDS */
+        .card {
+            background: var(--bg-panel); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); 
+            border: 1px solid var(--border-color); border-radius: 8px;
+            padding: 2rem; position: relative; overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+        }
+        
+        .card:hover { 
+            border-color: rgba(212, 175, 55, 0.6); 
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 20px rgba(212, 175, 55, 0.1);
+        }
+
+        .card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--text-muted); opacity: 0.2; transition: background 0.4s;}
+        .card.gold-border::before { background: var(--accent-gold); opacity: 1;}
+        .card.danger-border::before { background: var(--danger); opacity: 1;}
+        .card.success-border::before { background: var(--success); opacity: 1;}
+
+        /* Icon pop on hover */
+        .card:hover i.fa-gem, .card:hover i.fa-ring, .card:hover i.fa-chart-line {
+            transform: scale(1.1); color: var(--accent-gold); transition: transform 0.3s;
+        }
+
+        .metric-value { font-size: 2.5rem; font-weight: 700; color: var(--text-main); margin: 0.5rem 0; font-family: 'Playfair Display', serif; }
+        .metric-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+
+        .highlight-gold { color: var(--accent-gold); font-weight: 600; }
+
+        ul.custom-list { list-style: none; }
+        ul.custom-list li { position: relative; padding-left: 2rem; margin-bottom: 1.2rem; line-height: 1.7; color: #d4d4d8; font-size: 0.95rem; }
+        ul.custom-list li::before { content: '\f0da'; font-family: 'FontAwesome'; position: absolute; left: 0; color: var(--accent-gold); font-size: 1.2rem; top: 2px; }
+        
+        ul.risk-list li::before { content: '\f071'; color: var(--danger); font-size: 1rem; top: 3px;}
+        ul.success-list li::before { content: '\f058'; color: var(--success); font-size: 1rem; top: 3px;}
+
+        .chart-box { background: var(--bg-panel); backdrop-filter: blur(12px); padding: 1.5rem; border-radius: 8px; height: 450px; border: 1px solid var(--border-color); }
+
+        /* INTERACTIVE TABLE */
+        .table-custom { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 1rem; }
+        .table-custom th, .table-custom td { padding: 1.2rem 1rem; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 0.95rem; transition: background 0.3s; }
+        .table-custom th { color: var(--accent-gold); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; }
+        .table-custom tr:hover td { background: rgba(212, 175, 55, 0.05); cursor: crosshair; }
+
+        .disclaimer-text { background: rgba(239, 68, 68, 0.05); border-left: 3px solid var(--danger); padding: 1.5rem; font-size: 0.85rem; line-height: 1.7; color: #d4d4d8; }
+        .footer-branding { text-align: center; margin-top: 4rem; padding-top: 2rem; border-bottom: 3rem solid transparent; border-top: 1px solid var(--border-color); }
+        .footer-branding a { color: var(--accent-gold); text-decoration: none; transition: color 0.3s;}
+        .footer-branding a:hover { color: var(--text-main);}
+        
+        .mt-2 { margin-top: 2.5rem; }
+        .mb-1 { margin-bottom: 1.5rem; }
+        .text-center { text-align: center; }
+
+        @media (max-width: 1024px) {
+            .grid-4 { grid-template-columns: repeat(2, 1fr); }
+            .main-container { padding: 3rem 2rem; }
+            .title { font-size: 2.2rem; }
+        }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .mobile-header { display: flex; }
+            .sidebar { position: fixed; left: -320px; top: 0; height: 100%; box-shadow: 5px 0 20px rgba(0,0,0,0.8); }
+            .sidebar.open { left: 0; }
+            .main-container { padding: 1.5rem; padding-top: 6rem; padding-bottom: 6rem; }
+            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; gap: 1.2rem; }
+            .title { font-size: 1.8rem; }
+            .subtitle { font-size: 0.95rem; margin-bottom: 2rem; }
+            .metric-value { font-size: 2rem; }
+            .card { padding: 1.5rem; }
+            .chart-box { height: 350px; padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div id="app-container">
+
+    <div class="mobile-header">
+        <div class="mobile-brand">Utssav <span>CZ Gold</span></div>
+        <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    </div>
+
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <div class="sidebar">
+        <div class="brand-logo">
+            <h2>Utssav<br><span style="font-size: 0.9rem; letter-spacing: 2px;">CZ GOLD JEWELS LIMITED</span></h2>
+        </div>
+        <div class="nav-item active" onclick="switchSlide('slide-1', this)"><i class="fas fa-gem"></i> 01 Snapshot</div>
+        <div class="nav-item" onclick="switchSlide('slide-2', this)"><i class="fas fa-history"></i> 02 The Utssav Story</div>
+        <div class="nav-item" onclick="switchSlide('slide-3', this)"><i class="fas fa-sitemap"></i> 03 Group Structure</div>
+        <div class="nav-item" onclick="switchSlide('slide-4', this)"><i class="fas fa-ring"></i> 04 Business Model</div>
+        <div class="nav-item" onclick="switchSlide('slide-5', this)"><i class="fas fa-file-invoice-dollar"></i> 05 Financials</div>
+        <div class="nav-item" onclick="switchSlide('slide-6', this)"><i class="fas fa-chart-pie"></i> 06 Margins & Capacity</div>
+        <div class="nav-item" onclick="switchSlide('slide-7', this)"><i class="fas fa-coins"></i> 07 Warrant & Capital</div>
+        <div class="nav-item" onclick="switchSlide('slide-8', this)"><i class="fas fa-globe"></i> 08 Macro & Competition</div>
+        <div class="nav-item" onclick="switchSlide('slide-9', this)"><i class="fas fa-chart-line"></i> 09 Stock & Valuation</div>
+        <div class="nav-item" onclick="switchSlide('slide-10', this)"><i class="fas fa-chess-knight"></i> 10 Peer Analysis</div>
+        <div class="nav-item" onclick="switchSlide('slide-11', this)"><i class="fas fa-balance-scale"></i> 11 Investment View</div>
+        <div class="nav-item" onclick="switchSlide('slide-12', this)"><i class="fas fa-shield-alt"></i> 12 Disclaimer</div>
+    </div>
+
+    <div class="main-container">
+
+        <div id="slide-1" class="slide active">
+            <div class="badge stagger-1">SME GEMS • HIDDEN CHAMPIONS OF THE SME PLATFORM</div>
+            <h1 class="title stagger-1">India's Premier B2B Designer Gold Jewellery Manufacturer</h1>
+            <p class="subtitle stagger-1">Design-Led · Lightweight · Multi-Segment · Export-Ready</p>
+
+            <div class="grid-4 mb-1">
+                <div class="card gold-border stagger-2">
+                    <div class="metric-label">TTM Revenue</div>
+                    <div class="metric-value">₹837 Cr</div>
+                    <div class="highlight-gold" style="font-size: 0.85rem;">FY26E: ₹1,100–1,200 Cr</div>
+                </div>
+                <div class="card gold-border stagger-2">
+                    <div class="metric-label">Market Cap</div>
+                    <div class="metric-value">₹447 Cr</div>
+                    <div style="color: var(--text-muted); font-size: 0.85rem;">CMP: ₹188 (29-Mar-26)</div>
+                </div>
+                <div class="card gold-border stagger-3">
+                    <div class="metric-label">ROE (FY25)</div>
+                    <div class="metric-value">31.5%</div>
+                    <div style="color: var(--text-muted); font-size: 0.85rem;">TTM P/E: 10.0x</div>
+                </div>
+                <div class="card gold-border stagger-3">
+                    <div class="metric-label">H1 FY26 EBITDA Margin</div>
+                    <div class="metric-value">9.45%</div>
+                    <div class="highlight-gold" style="font-size: 0.85rem;">PAT Margin: 6.17%</div>
+                </div>
+            </div>
+
+            <div class="grid-2 mt-2">
+                <div class="card stagger-4">
+                    <h3 class="serif-text highlight-gold mb-1" style="font-size: 1.8rem;">ABOUT</h3>
+                    <p style="line-height: 1.8; color: var(--text-muted); font-size: 1.05rem;">
+                        Established in 2007, Utssav CZ Gold Jewels is a Mumbai-based 100% B2B designer gold jewellery manufacturer. Designs, manufactures and wholesales 18K, 20K & 22K CZ gold, rose gold and diamond jewellery — supplying to retailers across 23 states & 2 UTs, with a growing export presence in UAE. Listed on NSE Emerge in August 2024, Utssav has delivered outstanding financial performance driven by design-led lightweight jewellery commanding premium margins vs. plain gold peers.
+                    </p>
+                </div>
+                <div class="card stagger-4">
+                    <h3 class="serif-text highlight-gold mb-1" style="font-size: 1.8rem;">H1 FY26 HIGHLIGHTS</h3>
+                    <ul class="custom-list">
+                        <li><strong>Total Income:</strong> ₹477 Cr (+67% YoY)</li>
+                        <li><strong>EBITDA:</strong> ₹45 Cr (+184% YoY)</li>
+                        <li><strong>PAT:</strong> ₹29 Cr (+197% YoY)</li>
+                        <li><strong>Key Operating Metrics:</strong> 320+ Retail Partners, 85%+ Repeat Biz, 70K+ Design Library, 400+ New Designs/Month, 100% In-House Mfg (1,500 kg Annual Capacity).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-2" class="slide">
+            <div class="badge stagger-1">02 • THE UTSSAV STORY</div>
+            <h1 class="title stagger-1">2007 → 2026</h1>
+            <p class="subtitle stagger-1">From Single Facility to Multi-Segment Export-Ready Platform</p>
+
+            <div class="grid-2">
+                <div class="card stagger-2">
+                    <h3 class="serif-text highlight-gold mb-1" style="font-size: 1.5rem;">Timeline</h3>
+                    <ul class="custom-list">
+                        <li><strong>2007 - Founded:</strong> Incorporated in Mumbai as CZ gold jewellery manufacturer.</li>
+                        <li><strong>2010 - 18K Rose Gold:</strong> Began rose gold; crossed ₹100 Cr turnover milestone.</li>
+                        <li><strong>2018 - Capacity 2×:</strong> Output doubled from 750 kg to 1,500 kg per annum.</li>
+                        <li><strong>2023 - Diamond Entry:</strong> Crossed ₹600 Cr revenue; entered lab-grown diamond segment.</li>
+                        <li><strong>Aug 2024 - NSE Listing:</strong> Listed on NSE Emerge @ ₹110; raised ₹69.5 Cr via IPO.</li>
+                        <li><strong>Jun 2025 - Pref Issue:</strong> 11.8L warrants @ ₹222 — promoter & strategic investor.</li>
+                        <li><strong>Feb 2026 - Dubai WOS:</strong> Board approved 100% UAE subsidiary for global exports.</li>
+                    </ul>
+                </div>
+                
+                <div class="card gold-border stagger-3">
+                    <h3 class="serif-text highlight-gold mb-1" style="font-size: 1.5rem;">Key Management</h3>
+                    <ul class="custom-list">
+                        <li><strong>Pankaj Jagawat (Managing Director):</strong> Founder & promoter (20+ yrs). CMD of Shanti Gold International. Vision-driver behind design-led differentiation — overseas expansion & B2B relationships.</li>
+                        <li><strong>Shashank Jagawat (Whole-Time Director):</strong> Co-promoter. Manages daily production, client network and retailer relationships.</li>
+                        <li><strong>Harpreet Guleria (CEO):</strong> Professional hire driving strategic expansion — UAE exports, diamond segment scale-up, investor engagement & governance.</li>
+                        <li><strong>Rakesh Jagawat (CFO):</strong> Financial stewardship; IPO proceeds deployment; working capital discipline and margin management.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-3" class="slide">
+            <div class="badge stagger-1">03 • GROUP STRUCTURE</div>
+            <h1 class="title stagger-1">Promoter Ecosystem</h1>
+            <p class="subtitle stagger-1">Clear Segmentation · Formal Non-Compete Agreements</p>
+
+            <div class="card mb-1 text-center gold-border stagger-2" style="background: rgba(212, 175, 55, 0.05);">
+                <h3 class="serif-text highlight-gold" style="font-size: 1.8rem; margin-bottom: 5px;">JAGAWAT PROMOTER GROUP</h3>
+                <p style="color: var(--text-muted); font-size: 1rem;">Pankaj Jagawat · Shashank Jagawat · Rakesh Jagawat</p>
+            </div>
+
+            <div class="grid-3 mb-1">
+                <div class="card stagger-3">
+                    <h4 class="serif-text highlight-gold mb-1" style="font-size: 1.2rem;">UTSSAV CZ GOLD JEWELS</h4>
+                    <p style="color: var(--success); font-size: 0.8rem; font-weight: bold; margin-bottom: 10px;">NSE EMERGE — LISTED ✓</p>
+                    <ul class="custom-list" style="font-size: 0.85rem;">
+                        <li>18K/20K/22K CZ & Designer Gold</li>
+                        <li>Lightweight B2B Wholesale</li>
+                        <li>Lab-Grown & Natural Diamond Entry</li>
+                        <li style="color: var(--accent-gold); font-weight: bold;">← THIS COMPANY</li>
+                    </ul>
+                </div>
+                <div class="card stagger-3">
+                    <h4 class="serif-text highlight-gold mb-1" style="font-size: 1.2rem;">SHANTI GOLD INTERNATIONAL</h4>
+                    <p style="color: var(--success); font-size: 0.8rem; font-weight: bold; margin-bottom: 10px;">Listed NSE/BSE Main — Aug 2025</p>
+                    <ul class="custom-list" style="font-size: 0.85rem;">
+                        <li>22K CZ Gold Jewellery</li>
+                        <li>Bangles, Rings, Necklaces & Sets</li>
+                        <li>B2B — South & West India</li>
+                        <li>Non-Compete Signed ✓</li>
+                    </ul>
+                </div>
+                <div class="card stagger-3">
+                    <h4 class="serif-text highlight-gold mb-1" style="font-size: 1.2rem;">UZURI JEWELS PRIVATE LTD</h4>
+                    <p style="color: var(--text-muted); font-size: 0.8rem; font-weight: bold; margin-bottom: 10px;">Private Entity</p>
+                    <ul class="custom-list" style="font-size: 0.85rem;">
+                        <li>Complementary Jewellery</li>
+                        <li>Private Label Operations</li>
+                        <li>Separate Client Base</li>
+                        <li>Non-Compete Signed ✓</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card stagger-4">
+                <h3 class="serif-text highlight-gold mb-1" style="font-size: 1.5rem;">WHY NO INTRA-GROUP COMPETITION</h3>
+                <ul class="custom-list">
+                    <li>Formal non-compete agreements signed between Utssav, Shanti Gold & Uzuri Jewels — legally binding, disclosed in NSE exchange filings.</li>
+                    <li>Distinct product focus: Utssav → lightweight designer CZ (18K/20K); Shanti Gold → traditional 22K bangles/sets. Different buyer archetypes.</li>
+                    <li>Separate client networks: Utssav's pan-India 320+ retailer base vs. Shanti Gold's South/West India clients (Joyalukkas, Lalithaa).</li>
+                    <li>Shared promoter expertise (design, sourcing, CAD) benefits both entities — positive-sum, zero channel cannibalisation.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="slide-4" class="slide">
+            <div class="badge stagger-1">04 • BUSINESS MODEL</div>
+            <h1 class="title stagger-1">100% B2B Designer Jewellery</h1>
+            <p class="subtitle stagger-1">Design-Led Differentiation Drives Superior Margins</p>
+
+            <div class="grid-3 mb-1">
+                <div class="card stagger-2">
+                    <h3 class="serif-text highlight-gold mb-1" style="font-size: 1.4rem;">CZ GOLD JEWELLERY</h3>
+                    <p style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; margin-bottom: 10px;">Core Revenue Driver (~85%)</p>
+                    <ul class="custom-list" style="font-size: 0.85rem;">
+                        <li>18K/20K/22K CZ-studded lightweight gold jewellery</li>
+                        <li>Rings, earrings, pendants, bracelets, necklaces, watches</li>
+                        <li>Avg piece weight ~10g — accessible B2B price points</li>
+                        <li>Designer focus: ~10% gross margin vs. ~4–5% plain gold</li>
+                        <li>400+ new CAD designs every month from 50+ designers</li>
+                    </ul>
+                </div>
+                <div class="card stagger-3">
+                    <h3 class="serif-text highlight-gold mb-1" style="font-size: 1.4rem;">DIAMOND JEWELLERY</h3>
+                    <p style="color: var(--success); font-size: 0.8rem; text-transform: uppercase; margin-bottom: 10px;">Premium Growth Segment (~1%)</p>
+                    <ul class="custom-list" style="font-size: 0.85rem;">
+                        <li>Natural & lab-grown diamond jewellery in 18K gold</li>
+                        <li>Higher margin potential: 10–15% EBITDA vs. plain gold</li>
+                        <li>Early client traction "extremely encouraging" (Concall)</li>
+                        <li>Targeting ₹100–500 Cr segment revenue medium term</li>
+                        <li>Lab-grown diamonds: sustainability-driven demand surge</li>
+                    </ul>
+                </div>
+                <div class="card stagger-4">
+                    <h3 class="serif-text highlight-gold mb-1" style="font-size: 1.4rem;">PLAIN GOLD CASTING</h3>
+                    <p style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; margin-bottom: 10px;">New Category (FY26 Entry)</p>
+                    <ul class="custom-list" style="font-size: 0.85rem;">
+                        <li>22K plain gold casting and paper casting jewellery</li>
+                        <li>Broader retailer appeal beyond CZ specialisation</li>
+                        <li>Same manufacturing infra — zero marginal capex</li>
+                        <li>Lower margin but high volume opportunity</li>
+                        <li>Expands wallet share with existing retailer base</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card gold-border stagger-4">
+                <h3 class="serif-text highlight-gold mb-1" style="font-size: 1.5rem;">B2B MODEL ADVANTAGES</h3>
+                <ul class="custom-list">
+                    <li><strong>50% from Top 10 Clients:</strong> Marquee clients: Kalyan Jewellers, Lalithaa Jewellery, South/North India chains. 85%+ repeat business signals deep stickiness.</li>
+                    <li><strong>No Distribution Layer:</strong> Direct factory-to-retailer — eliminates margin leakage. No channel intermediaries, full pricing power retained.</li>
+                    <li><strong>Fixed % Markup on Gold:</strong> Revenue is fixed % markup on gold value — structural passthrough. Rising gold prices expand absolute EBITDA directly.</li>
+                    <li><strong>Design as Moat:</strong> 70,000+ design library; 400+ new CAD designs/month. Retailer-exclusive designs create switching costs and loyalty.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="slide-5" class="slide">
+            <div class="badge stagger-1">05 • FINANCIALS</div>
+            <h1 class="title stagger-1">P&L Summary</h1>
+            <p class="subtitle stagger-1">FY20–FY25 Audited · H1 FY26 Unaudited · FY26E Management Guidance</p>
+
+            <div class="card gold-border stagger-2">
+                <div style="overflow-x: auto;">
+                    <table class="table-custom">
+                        <tr style="border-bottom: 2px solid var(--accent-gold);">
+                            <th>Period</th>
+                            <th>Revenue (₹Cr)</th>
+                            <th>EBITDA (₹Cr)</th>
+                            <th>EBITDA%</th>
+                            <th>PAT (₹Cr)</th>
+                            <th>PAT%</th>
+                        </tr>
+                        <tr>
+                            <td>H1 FY25</td>
+                            <td>₹285 Cr</td>
+                            <td>₹16 Cr</td>
+                            <td>5.6%</td>
+                            <td>₹10 Cr</td>
+                            <td>3.5%</td>
+                        </tr>
+                        <tr>
+                            <td>H2 FY25</td>
+                            <td>₹362 Cr</td>
+                            <td>₹24 Cr</td>
+                            <td>6.6%</td>
+                            <td>₹15 Cr</td>
+                            <td>4.1%</td>
+                        </tr>
+                        <tr style="background: rgba(255,255,255,0.02);">
+                            <td style="font-weight: bold; color: var(--text-main);">FY25 Full Year</td>
+                            <td style="font-weight: bold; color: var(--text-main);">₹648 Cr</td>
+                            <td style="font-weight: bold; color: var(--text-main);">₹40 Cr</td>
+                            <td style="font-weight: bold; color: var(--text-main);">6.2%</td>
+                            <td style="font-weight: bold; color: var(--text-main);">₹25 Cr</td>
+                            <td style="font-weight: bold; color: var(--text-main);">3.9%</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight-gold" style="font-weight: bold; font-size: 1.1rem;">H1 FY26</td>
+                            <td class="highlight-gold" style="font-weight: bold; font-size: 1.1rem;">₹477 Cr</td>
+                            <td class="highlight-gold" style="font-weight: bold; font-size: 1.1rem;">₹45 Cr</td>
+                            <td class="highlight-gold" style="font-weight: bold; font-size: 1.1rem;">9.45%</td>
+                            <td class="highlight-gold" style="font-weight: bold; font-size: 1.1rem;">₹29 Cr</td>
+                            <td class="highlight-gold" style="font-weight: bold; font-size: 1.1rem;">6.17%</td>
+                        </tr>
+                        <tr style="border-top: 2px dashed var(--border-color);">
+                            <td style="color: var(--success); font-weight: bold;">FY26E Guidance</td>
+                            <td style="color: var(--success); font-weight: bold;">₹1,100–1,200 Cr</td>
+                            <td style="color: var(--success); font-weight: bold;">~₹100–110 Cr</td>
+                            <td style="color: var(--success); font-weight: bold;">~9–10%</td>
+                            <td style="color: var(--success); font-weight: bold;">~₹55–65 Cr</td>
+                            <td style="color: var(--success); font-weight: bold;">~4–6%+</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-6" class="slide">
+            <div class="badge stagger-1">06 • MARGINS & CAPACITY</div>
+            <h1 class="title stagger-1">Margin Expansion Drivers & Capacity Roadmap</h1>
+            <p class="subtitle stagger-1">What Drives Margin Expansion · Capacity Utilisation · Capex Roadmap</p>
+
+            <div class="grid-2 mb-1">
+                <div class="card stagger-2">
+                    <h3 class="serif-text highlight-gold mb-1" style="font-size: 1.5rem;">Margin Expansion Drivers</h3>
+                    <ul class="custom-list">
+                        <li><strong>Designer Mix Shift:</strong> Plain gold: ~4–5% PAT. Designer CZ: 8–10%. Watches & diamond: 10–15%. Every % shift toward premium mix is directly accretive.</li>
+                        <li><strong>Operating Leverage:</strong> Fixed overhead (8,275 sq. ft., 50+ designers) spread over rising volumes. H1 FY26 utilisation at 67% with 2.5T capacity commissioning.</li>
+                        <li><strong>Gold Price Passthrough:</strong> Revenue is fixed % markup on gold value. Rising gold prices inflate revenue & EBITDA without any cost increase — structural tailwind.</li>
+                        <li><strong>Natural Hedging on Gold:</strong> Transaction-level natural hedging. Gold procured and sold on same basis. Receivable days (62 FY25) is the primary working capital watch-point.</li>
+                        <li><strong>Diamond Segment Uplift:</strong> Lab-grown & natural diamond carries 10–15% EBITDA potential. Early client traction provides clear margin re-rating catalyst into FY27.</li>
+                    </ul>
+                    <div style="background: rgba(212,175,55,0.1); padding: 1rem; border-left: 3px solid var(--accent-gold); margin-top: 1rem; border-radius: 0 4px 4px 0;">
+                        <p style="font-style: italic; color: var(--text-main);">"9–10% EBITDA sustainable. 4.5–5% PAT baseline. Diamond segment will push margins higher."</p>
+                        <p style="font-size: 0.8rem; color: var(--accent-gold); text-align: right; margin-top: 5px;">— Mr. Pankaj Jagawat, MD (Concall Oct 31, 2025)</p>
+                    </div>
+                </div>
+
+                <div class="card gold-border stagger-3">
+                    <h3 class="serif-text highlight-gold mb-1" style="font-size: 1.5rem;">Capacity & Capex Roadmap</h3>
+                    <div style="overflow-x: auto;">
+                        <table class="table-custom mb-1" style="font-size: 0.85rem;">
+                            <tr><th>Period</th><th>Capacity</th><th>Utilisation</th><th>Note</th></tr>
+                            <tr><td>FY22</td><td>750 kg</td><td>80%</td><td>Pre-listing base capacity</td></tr>
+                            <tr><td>FY25</td><td>1,500 kg</td><td>67%</td><td>Post-expansion; utilisation steady</td></tr>
+                            <tr><td>H1 FY26</td><td>1,500 kg</td><td>67%</td><td>Confirmed in H1 earnings concall</td></tr>
+                            <tr style="color: var(--success); font-weight: bold;"><td>FY26E</td><td>2,500 kg</td><td>50%</td><td>Commissioning; expected H2 FY26 / FY27</td></tr>
+                        </table>
+                    </div>
+                    <h4 class="highlight-gold mt-2 mb-1" style="font-size: 1rem;">CAPEX & TECHNOLOGY UPGRADES</h4>
+                    <ul class="custom-list" style="font-size: 0.85rem;">
+                        <li>+ 5,600 sq. ft. additional production space for the 2.5T expansion</li>
+                        <li>CAM machine, 3D wax printers — precision manufacturing & rapid prototyping</li>
+                        <li>Yasui casting machine & Flask Burnout — higher casting accuracy</li>
+                        <li>Rainbo Pro meena machine — enhances enamel artistry & premium SKUs</li>
+                        <li>R&D infra upgrade for diamond jewellery prototyping</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-7" class="slide">
+            <div class="badge stagger-1">07 • WARRANT ISSUE & CAPITAL</div>
+            <h1 class="title stagger-1">IPO · Convertible Warrants · Fund Deployment</h1>
+            <p class="subtitle stagger-1">How Capital is Powering Growth</p>
+
+            <div class="grid-2 mb-1">
+                <div class="card stagger-2">
+                    <h3 class="serif-text highlight-gold mb-1" style="font-size: 1.5rem;">IPO — AUGUST 2024</h3>
+                    <ul class="custom-list">
+                        <li><strong>Issue Size:</strong> ₹69.5 Crore (100% Fresh Issue)</li>
+                        <li><strong>Price Band:</strong> ₹104–₹110 per share</li>
+                        <li><strong>Subscription:</strong> 31.68× oversubscribed</li>
+                        <li><strong>Anchor Allotment:</strong> 18L shares @ ₹110 to 13 anchors</li>
+                        <li><strong>Use of Proceeds:</strong> Working capital + general corporate purposes</li>
+                        <li><strong>CMP (29-Mar-26):</strong> ₹188 — +71% vs. IPO price of ₹110</li>
+                    </ul>
+                    <p style="color: var(--text-main); font-size: 0.9rem; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 4px;">
+                        <strong>Impact:</strong> IPO proceeds → working capital → FY25 revenue doubled ₹340 Cr → ₹648 Cr. Now targeting ₹1,100–1,200 Cr FY26E.
+                    </p>
+                </div>
+                <div class="card stagger-3">
+                    <h3 class="serif-text highlight-gold mb-1" style="font-size: 1.5rem;">WARRANT ISSUE — JUNE 2025</h3>
+                    <ul class="custom-list">
+                        <li><strong>Warrants Issued:</strong> 11,80,000 warrants (11.8 lakh)</li>
+                        <li><strong>Issue Price:</strong> ₹222 per warrant</li>
+                        <li><strong>Total Size:</strong> ₹26.2 Crore (on full conversion)</li>
+                        <li><strong>Upfront (25%):</strong> ₹6.55 Cr received at allotment</li>
+                        <li><strong>Balance (75%):</strong> ₹19.65 Cr on exercise (18-month window)</li>
+                        <li><strong>Allottees:</strong> Pankaj Jagawat (8.5L) + Paresh Shah (3.3L)</li>
+                    </ul>
+                    <p style="color: var(--text-main); font-size: 0.9rem; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 4px;">
+                        <strong>CONVERSION UPDATE (Aug 29, 2025):</strong> Paresh Shah exercised all 3.3L warrants → equity shares @ ₹166.5 each. Capital raised: ₹5.49 Cr. Pankaj Jagawat's 8.5L warrants remain unconverted — ongoing skin-in-the-game. On full exercise: additional ₹31.4 Cr inflow.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card gold-border stagger-4">
+                <h3 class="serif-text highlight-gold mb-1" style="font-size: 1.5rem;">HOW CAPITAL IS POWERING GROWTH</h3>
+                <div class="grid-4" style="margin-top: 1rem;">
+                    <div>
+                        <h4 style="color: var(--text-main); font-size: 0.95rem;">Working Capital Scale-Up</h4>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 5px;">Revenue doubled FY24→FY25. On track ₹1,100–1,200 Cr FY26E. WC is the primary growth fuel in B2B jewellery.</p>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--text-main); font-size: 0.95rem;">Capacity Expansion to 2.5T</h4>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 5px;">Capex for 5,600 sq. ft. + machinery (CAM, 3D wax, Yasui) commissioned FY26. Full revenue impact expected FY27.</p>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--text-main); font-size: 0.95rem;">Dubai Subsidiary Seeding</h4>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 5px;">100% UAE WOS approved Feb 2026. Initial capital from pref proceeds + accruals to establish export infra.</p>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--text-main); font-size: 0.95rem;">Diamond Segment Entry</h4>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 5px;">Proceeds enabling R&D prototyping, design library expansion and first client onboarding.</p>
+                    </div>
+                </div>
+                <div style="margin-top: 1.5rem; background: rgba(16, 185, 129, 0.1); padding: 1rem; border-left: 3px solid var(--success); border-radius: 0 4px 4px 0;">
+                    <h4 style="color: var(--success); font-size: 0.95rem;">🟢 RECENT INSIDER BUYING — MD PANKAJ JAGAWAT (OPEN MARKET PURCHASES)</h4>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 5px;">1,39,800 shares on 20-Mar-2026 · 34,200 shares on 24-Mar-2026 · 4,200 shares on 25-Mar-2026 → Total: 1,78,200 shares purchased in open market over 5 days — strong signal of promoter conviction at current price levels.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-8" class="slide">
+            <div class="badge stagger-1">08 • MACRO & COMPETITION</div>
+            <h1 class="title stagger-1">Macro Tailwinds & Competitive Landscape</h1>
+            <p class="subtitle stagger-1">Gold/Silver Prices · Imported Jewellery · Organised Domestic Competition</p>
+
+            <div class="grid-2">
+                <div class="card stagger-2">
+                    <h3 class="serif-text highlight-gold mb-1" style="font-size: 1.5rem;">GOLD & SILVER PRICE DYNAMICS</h3>
+                    <ul class="custom-list">
+                        <li><strong>Rising Gold Prices — Net Positive for Utssav:</strong> Utssav charges a fixed % markup over gold value. When gold rises, absolute revenue and EBITDA grow without cost increase. Gold has compounded ~20% YoY — a significant FY25–FY26 tailwind inflating topline and margins.</li>
+                        <li><strong>Impact on Retail Consumer Demand:</strong> High gold prices can suppress retail consumer demand in volume terms — fewer grams purchased. However, Utssav is B2B wholesale; its pricing model insulates it. Festival/wedding demand and retailer reorder cycles are the real drivers.</li>
+                        <li><strong>Silver Jewellery & Fashion Substitution:</strong> Rising gold prices push some consumers toward silver or imitation jewellery. Utssav's 18K CZ lightweight positioning is affordable relative to 22K traditional gold — structurally insulated from this substitution effect.</li>
+                        <li><strong>Gold Price Hedging — Transaction Level:</strong> Gold is procured and sold within the same ~30-day cycle. No inventory gold price risk. 100% natural transaction-level hedge in place. Receivable days management is the only meaningful financial risk.</li>
+                    </ul>
+                </div>
+                
+                <div class="card gold-border stagger-3">
+                    <h3 class="serif-text highlight-gold mb-1" style="font-size: 1.5rem;">IMPORTED JEWELLERY & COMPETITIVE LANDSCAPE</h3>
+                    <ul class="custom-list">
+                        <li><strong>Chinese Imports — Key Price Threat:</strong> China exports mass-produced CZ & fashion jewellery at ~30–40% lower price points via grey-market and e-commerce. Utssav mitigates this by operating in 18K hallmarked, BIS-certified designer space where provenance and quality dominate.</li>
+                        <li><strong>BIS Hallmarking as Protective Moat:</strong> Mandatory BIS hallmarking (HUID system since 2021) creates a structural barrier for low-quality imports. All Utssav products are BIS-certified — imported products must comply or face seizure. This significantly narrows the import threat at the B2B wholesale level.</li>
+                        <li><strong>UAE Re-Import Route — Risk to Monitor:</strong> Some Chinese/Turkish jewellery enters India via UAE under India-UAE CEPA at reduced tariffs — a potential arbitrage channel. Utssav's Dubai WOS actually positions the company to monitor and navigate this channel proactively.</li>
+                        <li><strong>Organised Domestic Competition:</strong> Sky Gold, Shanti Gold, RBZ, Malabar B2B all competing for the same retailer wallet. Organised share growing from 40% (FY24) to 45% (FY30E). Utssav's design velocity (400+ CAD/month) and exclusive retailer designs create switching costs competitors cannot match.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-9" class="slide">
+            <div class="badge stagger-1">09 • STOCK & VALUATION</div>
+            <h1 class="title stagger-1">1-Year Price Journey & Valuation Snapshot</h1>
+            <p class="subtitle stagger-1">Re-Rating Catalysts & Trading Dynamics</p>
+
+            <div class="grid-2">
+                <div class="chart-box stagger-2">
+                    <canvas id="priceChart"></canvas>
+                </div>
+                <div class="card stagger-3">
+                    <h3 class="serif-text highlight-gold mb-1" style="font-size: 1.5rem;">VALUATION SNAPSHOT</h3>
+                    <div class="grid-2" style="gap: 1rem; margin-bottom: 1.5rem;">
+                        <div>
+                            <p style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">MCap (29-Mar-26)</p>
+                            <p style="font-weight: bold; font-size: 1.2rem; color: var(--text-main);">₹447 Cr</p>
+                        </div>
+                        <div>
+                            <p style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">CMP (29-Mar-26)</p>
+                            <p style="font-weight: bold; font-size: 1.2rem; color: var(--text-main);">₹188</p>
+                        </div>
+                        <div>
+                            <p style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">52W Hi/Lo</p>
+                            <p style="font-weight: bold; font-size: 1.2rem; color: var(--text-main);">₹281 / ₹160</p>
+                        </div>
+                        <div>
+                            <p style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">TTM P/E</p>
+                            <p style="font-weight: bold; font-size: 1.2rem; color: var(--text-main);">10.0x</p>
+                        </div>
+                        <div>
+                            <p style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">FY26E P/E*</p>
+                            <p style="font-weight: bold; font-size: 1.2rem; color: var(--success);">~7.5–8x</p>
+                        </div>
+                        <div>
+                            <p style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">MCap/Sales (TTM)</p>
+                            <p style="font-weight: bold; font-size: 1.2rem; color: var(--text-main);">~0.53x</p>
+                        </div>
+                        <div>
+                            <p style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">ROE (FY25)</p>
+                            <p style="font-weight: bold; font-size: 1.2rem; color: var(--text-main);">31.5%</p>
+                        </div>
+                        <div>
+                            <p style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">P/B</p>
+                            <p style="font-weight: bold; font-size: 1.2rem; color: var(--text-main);">~2.7x</p>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.75rem; color: var(--text-muted); font-style: italic;">*FY26E indicative — H1 run-rate annualised. Not a formal forecast. Book Value ₹70.6</p>
+
+                    <h3 class="serif-text highlight-gold mt-2 mb-1" style="font-size: 1.2rem;">KEY RE-RATING CATALYSTS</h3>
+                    <ul class="custom-list" style="font-size: 0.85rem;">
+                        <li>FY26 Revenue execution: ₹1,100–1,200 Cr guidance — H2 FY26 delivery is the near-term catalyst for sentiment re-rating.</li>
+                        <li>Dubai WOS going live — first export revenues from UAE subsidiary visible in FY27 provide new growth narrative.</li>
+                        <li>Diamond jewellery revenue scale-up contributes to revenue mix improvement and sustained margin re-rating above 9–10%.</li>
+                        <li>Promoter warrant conversion by Pankaj Jagawat (8.5L @ ₹222) — execution signals conviction; watch for exercise timeline.</li>
+                        <li>2.5T capacity ramp-up in FY27 delivers next step of operating leverage without incremental meaningful capex.</li>
+                        <li>Quarterly results cadence (committed in concall) improves investor visibility and enables institutional discovery.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-10" class="slide">
+            <div class="badge stagger-1">10 • PEER ANALYSIS</div>
+            <h1 class="title stagger-1">B2B Jewellery Comparables</h1>
+            <p class="subtitle stagger-1">Where Utssav Stands · SME & Mainboard · Key Differentiators</p>
+
+            <div class="card gold-border stagger-2">
+                <div style="overflow-x: auto;">
+                    <table class="table-custom">
+                        <tr style="border-bottom: 2px solid var(--accent-gold);">
+                            <th>Company</th>
+                            <th>Exchange</th>
+                            <th>MCap (₹Cr)</th>
+                            <th>TTM Rev (₹Cr)</th>
+                            <th>EBITDA%</th>
+                            <th>PAT%</th>
+                            <th>P/E</th>
+                            <th>ROE%</th>
+                            <th>Model / Focus</th>
+                        </tr>
+                        <tr style="background: rgba(212, 175, 55, 0.1);">
+                            <td class="highlight-gold" style="font-weight: bold;">UTSSAV ★</td>
+                            <td>NSE SME</td>
+                            <td>447</td>
+                            <td>837</td>
+                            <td class="highlight-gold">9.45%</td>
+                            <td>6.17%</td>
+                            <td class="highlight-gold">10.0x</td>
+                            <td>31.5%</td>
+                            <td>CZ Designer B2B</td>
+                        </tr>
+                        <tr>
+                            <td>Shanti Gold^</td>
+                            <td>NSE/BSE Main</td>
+                            <td>~1,331</td>
+                            <td>~860</td>
+                            <td>~8%</td>
+                            <td>~5%</td>
+                            <td>~10.4x</td>
+                            <td>~44.8%</td>
+                            <td>22K CZ B2B</td>
+                        </tr>
+                        <tr>
+                            <td>Sky Gold</td>
+                            <td>NSE/BSE Main</td>
+                            <td>~5,269</td>
+                            <td>~5,442</td>
+                            <td>~6.9%</td>
+                            <td>~4.2%</td>
+                            <td>~39.7x</td>
+                            <td>~28%</td>
+                            <td>Plain Gold B2B</td>
+                        </tr>
+                        <tr>
+                            <td>RBZ Jewellers</td>
+                            <td>NSE/BSE Main</td>
+                            <td>~455</td>
+                            <td>~584</td>
+                            <td>~12.3%</td>
+                            <td>~8.9%</td>
+                            <td>~9.2x</td>
+                            <td>~18%</td>
+                            <td>Gold+Diamond B2B/Retail</td>
+                        </tr>
+                        <tr>
+                            <td>Goldiam Intl.</td>
+                            <td>NSE/BSE Main</td>
+                            <td>~3,287</td>
+                            <td>~941</td>
+                            <td>~20.9%</td>
+                            <td>~16.7%</td>
+                            <td>~24.7x</td>
+                            <td>~30%</td>
+                            <td>Diamond B2B Export</td>
+                        </tr>
+                        <tr>
+                            <td>Ashapuri Gold</td>
+                            <td>NSE/BSE Main</td>
+                            <td>~140</td>
+                            <td>~317</td>
+                            <td>~9.9%</td>
+                            <td>~3.8%</td>
+                            <td>~7.9x</td>
+                            <td>~7%</td>
+                            <td>Antique Gold B2B Mfg</td>
+                        </tr>
+                    </table>
+                </div>
+                <p style="margin-top: 1rem; color: var(--text-muted); font-size: 0.8rem; font-style: italic;">
+                    ^Shanti Gold: listed Aug 2025 on NSE/BSE mainboard (IPO ₹199); same promoter group — non-compete in place.<br>
+                    RHP listed peers: Ashapuri Gold, Sky Gold (2024 DRHP). Peer data from Screener/Tickertape (Mar 2026). Not investment advice.
+                </p>
+
+                <h3 class="serif-text highlight-gold mt-2 mb-1" style="font-size: 1.5rem;">UTSSAV DIFFERENTIATION vs. PEERS</h3>
+                <ul class="custom-list">
+                    <li><strong>Superior EBITDA vs. Similar-Scale Peers:</strong> 9.45% H1 FY26 EBITDA — ahead of all comparable CZ/plain gold B2B wholesale peers. Goldiam and RBZ carry higher margins but serve premium diamond export & retail — fundamentally different models.</li>
+                    <li><strong>Design Velocity Moat:</strong> 400+ new CAD designs/month, 70K+ library. Retailer-exclusive designs create deep switching costs competitors cannot replicate at scale.</li>
+                    <li><strong>Pure B2B, No Retail Risk:</strong> No showroom capex, no franchise model — capital-light model delivering 31.5% ROE vs. 10–14% for comparable B2B peers like DP Abhushan and RBZ Jewellers.</li>
+                    <li><strong>Two Growth Optionalities:</strong> Dubai WOS + Diamond segment at 10.0x TTM P/E. Peers at similar profitability trade at 20–35x+ multiples.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="slide-11" class="slide">
+            <div class="badge stagger-1" style="color: var(--text-main); background: transparent; border-color: var(--text-main);">11 • INVESTMENT VIEW</div>
+            <h1 class="title stagger-1">Positives & Risks — Eyes Wide Open</h1>
+            <p class="subtitle stagger-1">Balancing extreme growth potential against sector risks</p>
+
+            <div class="grid-2">
+                <div class="card success-border stagger-2">
+                    <h3 class="serif-text highlight-gold mb-1" style="font-size: 1.5rem; color: var(--success);">✅ POSITIVES / WHAT'S WORKING</h3>
+                    <ul class="custom-list success-list">
+                        <li><strong>📈 Revenue Compounding:</strong> 74% 3-yr revenue CAGR; 97% PAT CAGR. Management guiding ₹1,100–1,200 Cr FY26E — trajectory rarely seen at ₹447 Cr MCap.</li>
+                        <li><strong>💎 Design-Led Margin Moat:</strong> 9.45% EBITDA H1 FY26. Driven by designer CZ + watch/diamond mix. Sustainable 9–10% guided. Not cyclically dependent on gold price.</li>
+                        <li><strong>🏭 Capacity Expansion Live:</strong> 2.5T commissioning underway — provides volume runway for 2 years of growth without material infra spend.</li>
+                        <li><strong>🌍 Dubai WOS — Strategic:</strong> UAE subsidiary creates export franchise. GCC is natural buyer of Indian designer gold. Early mover advantage vs. SME peers.</li>
+                        <li><strong>👥 Promoter Conviction:</strong> Pankaj Jagawat holds 8.5L unconverted warrants @ ₹222 & made open-market purchases of 1,78,200 shares (Mar 2026) — strong insider conviction signal.</li>
+                        <li><strong>💰 Capital-Light B2B Model:</strong> 100% in-house; no retail; B2B only. Fixed-asset turnover: 79x FY25. Capital deployed into working capital, not capex.</li>
+                    </ul>
+                </div>
+
+                <div class="card danger-border stagger-3">
+                    <h3 class="serif-text" style="color: var(--danger); margin-bottom: 1rem; font-size: 1.5rem;">⚠️ RISKS / WATCH POINTS</h3>
+                    <ul class="custom-list risk-list">
+                        <li><strong>💧 Working Capital Intensity:</strong> Borrowings at ₹149 Cr (Sep 2025). Gold B2B is inherently WC-heavy. Revenue scaling requires proportional capital deployment.</li>
+                        <li><strong>📊 Customer Concentration:</strong> Top 10 clients = ~50% revenue. Losing one marquee client materially impacts numbers. Tier 2-3 diversification is ongoing.</li>
+                        <li><strong>🌍 Dubai Geopolitical Risk:</strong> Iran-Israel conflict has disrupted Dubai exhibitions & buyer travel. UAE WOS faces near-term headwinds from regional instability.</li>
+                        <li><strong>📉 SME Platform Liquidity:</strong> Thin volumes, wide bid-ask spreads. Daily volumes 50K–200K shares. Sharp corrections possible on institutional exits.</li>
+                        <li><strong>⚖️ Warrant Dilution Ahead:</strong> 8.5L Pankaj Jagawat warrants unconverted. Exercise within 18 months of Jun 2025 creates modest dilution — EPS timing uncertainty.</li>
+                        <li><strong>🏆 Competition Intensifying:</strong> Sky Gold, Shanti Gold (IPO), imported CZ jewellery all competing for same B2B wallet. Design moat must be continuously renewed.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-12" class="slide">
+            <h1 class="title stagger-1">Disclaimer</h1>
+            <p class="subtitle stagger-1">UTSSAV CZ GOLD JEWELS LIMITED · NSE SME · March 2026</p>
+
+            <div class="disclaimer-text stagger-2">
+                <strong>IMPORTANT NOTICE — PLEASE READ:</strong><br><br>
+                This presentation is prepared for educational and informational purposes only and does not constitute investment advice, a buy/sell recommendation, solicitation, or a research report as defined under SEBI (Research Analysts) Regulations, 2014.<br><br>
+                Investing in SME-listed securities involves significant risks including limited liquidity, higher volatility, lower regulatory disclosure requirements, and concentration risk. Past performance is not indicative of future returns.<br><br>
+                All data, figures and estimates are sourced from publicly available information (NSE filings, Screener, company investor presentations, earnings concall transcripts, exchange announcements). Forward-looking estimates are indicative only and based on management guidance — actual results may differ materially.<br><br>
+                Readers must conduct independent due diligence and consult a SEBI-registered investment advisor before making any investment decision.<br><br>
+                <em>March 2026 · NSE SME: UTSSAV · For Educational Purposes Only — Not Investment Advice</em>
+            </div>
+
+            <div class="footer-branding stagger-3">
+                <h3 class="serif-text highlight-gold">Research & Analysis</h3>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin: 10px 0; font-family: 'Plus Jakarta Sans', sans-serif;">SME Gems • Hidden Champions of the SME Platform</p>
+                <p style="font-weight: 700; color: var(--accent-gold); letter-spacing: 1px; font-size: 1.1rem; font-family: 'Plus Jakarta Sans', sans-serif; margin-top: 15px;">
+                    <a href="https://x.com/sachprat07" target="_blank"><svg class="icon-x" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>@sachprat07</a>
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    /* --- FLOATING SPARKLES CANVAS BACKGROUND --- */
+    const canvas = document.getElementById('bg-canvas');
+    const ctxCanvas = canvas.getContext('2d');
+    let width, height;
+    let particles = [];
+
+    function resizeCanvas() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+        constructor() {
+            this.x = Math.random() * width;
+            this.y = Math.random() * height;
+            this.size = Math.random() * 3 + 1; // 1px to 4px
+            this.speedY = Math.random() * -0.5 - 0.2; // Float upwards slowly
+            this.speedX = (Math.random() - 0.5) * 0.4; // Drift side to side
+            this.opacity = Math.random() * 0.4 + 0.1; // Max opacity 0.5
+            this.type = Math.random() > 0.6 ? 'diamond' : 'circle';
+            this.rotation = Math.random() * Math.PI;
+            this.rotSpeed = (Math.random() - 0.5) * 0.02;
+        }
+        update() {
+            this.y += this.speedY;
+            this.x += this.speedX;
+            this.rotation += this.rotSpeed;
+            // Loop around screen
+            if (this.y < -10) this.y = height + 10;
+            if (this.x < -10) this.x = width + 10;
+            if (this.x > width + 10) this.x = -10;
+        }
+        draw() {
+            ctxCanvas.save();
+            ctxCanvas.translate(this.x, this.y);
+            ctxCanvas.rotate(this.rotation);
+            ctxCanvas.fillStyle = `rgba(212, 175, 55, ${this.opacity})`;
+            ctxCanvas.beginPath();
+            
+            if (this.type === 'diamond') {
+                // Draw a rhombus/diamond shape
+                ctxCanvas.moveTo(0, -this.size * 1.5);
+                ctxCanvas.lineTo(this.size, 0);
+                ctxCanvas.lineTo(0, this.size * 1.5);
+                ctxCanvas.lineTo(-this.size, 0);
+            } else {
+                // Draw a circle sparkle
+                ctxCanvas.arc(0, 0, this.size * 0.6, 0, Math.PI * 2);
+            }
+            
+            ctxCanvas.fill();
+            ctxCanvas.restore();
+        }
+    }
+
+    function initParticles() {
+        particles = [];
+        // Amount of particles based on screen size (keeps mobile performant)
+        let numParticles = Math.floor((width * height) / 12000); 
+        for (let i = 0; i < numParticles; i++) {
+            particles.push(new Particle());
+        }
+    }
+
+    function animateParticles() {
+        ctxCanvas.clearRect(0, 0, width, height);
+        particles.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(animateParticles);
+    }
+
+    initParticles();
+    animateParticles();
+
+    /* --- SLIDE NAVIGATION LOGIC --- */
+    function toggleSidebar() {
+        document.querySelector('.sidebar').classList.toggle('open');
+        document.querySelector('.sidebar-overlay').classList.toggle('active');
+    }
+
+    function switchSlide(slideId, el) {
+        document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById(slideId).classList.add('active');
+        if (el) el.classList.add('active');
+        if (window.innerWidth <= 768) {
+            document.querySelector('.sidebar').classList.remove('open');
+            document.querySelector('.sidebar-overlay').classList.remove('active');
+        }
+    }
+
+    /* --- CHART JS LOGIC --- */
+    const chartCtx = document.getElementById('priceChart').getContext('2d');
+    new Chart(chartCtx, {
+        type: 'line',
+        data: {
+            labels: ['Apr 25', 'May 25', 'Jun 25', 'Jul 25', 'Aug 25', 'Sep 25', 'Oct 25', 'Nov 25', 'Dec 25', 'Jan 26', 'Feb 26', 'Mar 26'],
+            datasets: [{
+                label: 'UTSSAV Price (₹)',
+                data: [225.75, 254.85, 252.60, 230.50, 195.00, 175.05, 258.70, 247.75, 221.10, 215.10, 203.15, 188.00],
+                borderColor: '#d4af37',
+                backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                borderWidth: 3,
+                pointBackgroundColor: '#d4af37',
+                pointBorderColor: '#141414',
+                pointBorderWidth: 2,
+                pointRadius: 5,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#141414',
+                    titleFont: { family: 'Plus Jakarta Sans', size: 14 },
+                    bodyFont: { family: 'Plus Jakarta Sans', size: 14, weight: 'bold' },
+                    borderColor: 'rgba(212, 175, 55, 0.3)',
+                    borderWidth: 1,
+                    padding: 12,
+                    callbacks: { label: function(context) { return '₹ ' + context.parsed.y; } }
+                },
+                annotation: {
+                    annotations: {
+                        line1: {
+                            type: 'line', yMin: 222, yMax: 222, borderColor: 'rgba(212, 175, 55, 0.5)', borderWidth: 2, borderDash: [5, 5],
+                            label: { display: true, content: 'Pref Issue Price (₹222)', position: 'start', backgroundColor: 'rgba(20,20,20,0.8)', color: '#d4af37', font: { family: 'Plus Jakarta Sans', size: 10 } }
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#a1a1aa' } },
+                x: { grid: { display: false }, ticks: { color: '#a1a1aa' } }
+            }
+        }
+    });
+</script>
+</body>
+</html>
