@@ -484,13 +484,26 @@
     let width, height;
     let elements = [];
     
-    // Track Mouse
-    let mouse = { x: null, y: null, radius: 150 };
+    // For Desktop Mouse
     window.addEventListener('mousemove', function(event) {
         mouse.x = event.x;
         mouse.y = event.y;
     });
+    
     window.addEventListener('mouseout', function() {
+        mouse.x = undefined;
+        mouse.y = undefined;
+    });
+
+    // For Mobile Touchscreens
+    window.addEventListener('touchmove', function(event) {
+        if (event.touches.length > 0) {
+            mouse.x = event.touches[0].clientX;
+            mouse.y = event.touches[0].clientY;
+        }
+    }, { passive: true }); // passive: true helps with mobile scrolling performance
+
+    window.addEventListener('touchend', function() {
         mouse.x = undefined;
         mouse.y = undefined;
     });
