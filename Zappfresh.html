@@ -526,13 +526,26 @@
         animateParticles();
     });
 
+    // For Desktop Mouse
     window.addEventListener('mousemove', function(event) {
         mouse.x = event.x;
         mouse.y = event.y;
     });
     
-    // Smooth reset when mouse leaves
     window.addEventListener('mouseout', function() {
+        mouse.x = undefined;
+        mouse.y = undefined;
+    });
+
+    // For Mobile Touchscreens
+    window.addEventListener('touchmove', function(event) {
+        if (event.touches.length > 0) {
+            mouse.x = event.touches[0].clientX;
+            mouse.y = event.touches[0].clientY;
+        }
+    }, { passive: true }); // passive: true helps with mobile scrolling performance
+
+    window.addEventListener('touchend', function() {
         mouse.x = undefined;
         mouse.y = undefined;
     });
