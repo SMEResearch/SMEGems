@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Yash Highvoltage - SME Gems</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+    
+    <style>
+        /* --- INDUSTRIAL POWER THEME --- */
+        :root {
+            --bg-base: #0a0a0c;          
+            --bg-panel: #121318;         
+            --bg-panel-hover: #1a1c23;
+            --accent-primary: #fbbf24;   
+            --accent-primary-dim: rgba(251, 191, 36, 0.1);
+            --accent-secondary: #f97316; 
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --danger: #ef4444;           
+            --success: #10b981;          
+            --border-color: #272a35;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            width: 100%; height: 100vh; overflow: hidden; 
+            font-family: 'Outfit', sans-serif;
+        }
+
+        h1, h2, h3, .heading-font { 
+            font-family: 'Rajdhani', sans-serif; 
+            text-transform: uppercase;
+        }
+
+        #bg-canvas { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: 0; pointer-events: none; opacity: 0.6;
+        }
+
+        #app-container { 
+            display: flex; width: 100%; height: 100%; 
+            overflow: hidden; position: relative; z-index: 1; 
+        }
+
+        /* Mobile Header */
+        .mobile-header {
+            display: none; background: var(--bg-panel);
+            padding: 1rem 1.5rem; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            position: fixed; top: 0; width: 100%; z-index: 99;
+        }
+        .menu-toggle { background: transparent; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer; }
+        .mobile-brand { font-size: 1.8rem; font-weight: 700; font-family: 'Rajdhani', sans-serif; }
+        .mobile-brand span { color: var(--accent-primary); }
+
+        /* Sleek Flush Sidebar (Non-Floating) */
+        .sidebar {
+            width: 280px; min-width: 280px; background: var(--bg-panel);
+            display: flex; flex-direction: column; padding: 0; 
+            border-right: 1px solid var(--border-color);
+            z-index: 100; overflow-y: auto; 
+            height: 100vh;
+        }
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--border-color); }
+
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 90; opacity: 0; transition: opacity 0.3s; }
+        .sidebar-overlay.active { display: block; opacity: 1; }
+
+        .brand-logo { padding: 2rem 1.5rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem; background: var(--bg-base);}
+        .brand-logo h2 { font-size: 2.8rem; font-weight: 700; color: var(--text-main); line-height: 1; margin-bottom: 5px; letter-spacing: 1px;}
+        .brand-logo span { color: var(--accent-primary); font-size: 0.8rem; letter-spacing: 2px; font-weight: 600; font-family: 'Outfit', sans-serif;}
+
+        .nav-item {
+            padding: 1rem 1.5rem; color: var(--text-muted); cursor: pointer; transition: all 0.2s ease;
+            display: flex; align-items: center; gap: 12px; font-weight: 500; font-size: 0.95rem;
+            border-left: 3px solid transparent;
+        }
+        .nav-item:hover { color: var(--text-main); background: var(--bg-panel-hover); }
+        .nav-item.active { 
+            color: var(--accent-primary); 
+            background: rgba(251, 191, 36, 0.05); 
+            border-left: 3px solid var(--accent-primary); 
+            font-weight: 600;
+        }
+        .nav-item i { font-size: 1.1rem; width: 20px; text-align: center; }
+
+        /* Main Area */
+        .main-container {
+            flex: 1; padding: 2.5rem 4rem; overflow-y: auto; height: 100%; scroll-behavior: smooth;
+        }
+
+        .slide { display: none; max-width: 1200px; margin: 0 auto; padding-bottom: 5rem; position: relative; z-index: 2;}
+        .slide.active { display: block; animation: fadeIn 0.4s ease forwards; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .badge {
+            display: inline-block; background: var(--accent-primary-dim); color: var(--accent-primary);
+            padding: 0.4rem 1rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600;
+            letter-spacing: 1.5px; margin-bottom: 1rem; text-transform: uppercase; border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .title { font-size: clamp(2.5rem, 4vw, 3.5rem); font-weight: 700; margin-bottom: 0.5rem; line-height: 1.1; color: var(--text-main); }
+        .subtitle { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 2rem; font-weight: 400; line-height: 1.5; }
+        .subtitle span { color: var(--accent-primary); font-weight: 600; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+
+        /* Engineered Cards */
+        .card {
+            background: var(--bg-panel); 
+            border: 1px solid var(--border-color); 
+            border-radius: 6px; padding: 1.8rem; position: relative; 
+            transition: all 0.3s ease; display: flex; flex-direction: column;
+        }
+        .card:hover { border-color: var(--accent-primary); background: var(--bg-panel-hover); }
+        .card.accent-border { border-top: 3px solid var(--accent-primary); }
+
+        .metric-value { font-size: clamp(2rem, 3vw, 2.8rem); font-weight: 700; color: var(--text-main); margin: 0.5rem 0; font-family: 'Rajdhani', sans-serif;}
+        .metric-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+
+        .highlight-primary { color: var(--accent-primary); font-weight: 600; }
+        .highlight-secondary { color: var(--accent-secondary); font-weight: 600; }
+
+        ul.custom-list { list-style: none; display: flex; flex-direction: column; gap: 1rem; }
+        ul.custom-list li { position: relative; padding-left: 1.5rem; line-height: 1.6; color: var(--text-muted); font-size: 0.95rem; }
+        ul.custom-list li::before { content: '▹'; position: absolute; left: 0; color: var(--accent-primary); font-size: 1.2rem; top: -2px; font-weight: bold;}
+        ul.risk-list li::before { content: '✕'; color: var(--danger); font-size: 0.9rem; top: 2px;}
+
+        /* Tables */
+        .table-responsive { width: 100%; overflow-x: auto; }
+        .table-custom { width: 100%; border-collapse: collapse; margin-top: 1rem; min-width: 500px; }
+        .table-custom th, .table-custom td { padding: 1rem 1.2rem; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 0.95rem; color: var(--text-muted); }
+        .table-custom th { color: var(--accent-primary); text-transform: uppercase; font-weight: 600; font-size: 0.9rem; letter-spacing: 1px; font-family: 'Rajdhani', sans-serif; background: rgba(255,255,255,0.02);}
+        .table-custom td strong { color: var(--text-main); font-weight: 500;}
+
+        .chart-box { background: var(--bg-panel); padding: 1.5rem; border-radius: 6px; height: 380px; border: 1px solid var(--border-color); }
+
+        /* Disclaimer Page */
+        .disclaimer-box { text-align: center; max-width: 800px; margin: 0 auto; }
+        
+        .social-link {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            margin-bottom: 1rem;
+            transition: transform 0.2s ease;
+        }
+        .social-link:hover {
+            transform: translateY(-3px);
+        }
+        .social-link .x-logo { 
+            font-size: 2.5rem; 
+            color: var(--text-main); 
+            margin-bottom: 0.5rem; 
+            transition: color 0.3s;
+        }
+        .social-link:hover .x-logo,
+        .social-link:hover h2 { 
+            color: var(--accent-primary) !important; 
+        }
+
+        @media (max-width: 1200px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } .main-container { padding: 2rem; } }
+        @media (max-width: 992px) { .grid-3, .grid-2 { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) {
+            .mobile-header { display: flex; }
+            .sidebar { 
+                position: fixed; left: 0; top: 0; transform: translateX(-100%); 
+                transition: transform 0.3s ease; z-index: 105; 
+            }
+            .sidebar.open { transform: translateX(0); }
+            .main-container { padding: 1.5rem; padding-top: 6rem; }
+            .chart-box { height: 300px; }
+            .title { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div id="app-container">
+
+    <div class="mobile-header">
+        <div class="mobile-brand">YASH <span>HV</span></div>
+        <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    </div>
+
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <div class="sidebar" id="main-sidebar">
+        <div class="brand-logo">
+            <h2>YASH</h2>
+            <span>HIGHVOLTAGE LTD</span>
+        </div>
+        <div class="nav-item active" onclick="switchSlide('slide-1', this)"><i class="fas fa-bolt"></i> 01. Snapshot</div>
+        <div class="nav-item" onclick="switchSlide('slide-2', this)"><i class="fas fa-route"></i> 02. Timeline</div>
+        <div class="nav-item" onclick="switchSlide('slide-3', this)"><i class="fas fa-shield-halved"></i> 03. The Edge</div>
+        <div class="nav-item" onclick="switchSlide('slide-4', this)"><i class="fas fa-chart-simple"></i> 04. Financials</div>
+        <div class="nav-item" onclick="switchSlide('slide-5', this)"><i class="fas fa-scale-balanced"></i> 05. Valuation & Sukrut</div>
+        <div class="nav-item" onclick="switchSlide('slide-6', this)"><i class="fas fa-arrow-trend-up"></i> 06. Growth Roadmap</div>
+        <div class="nav-item" onclick="switchSlide('slide-7', this)"><i class="fas fa-users-viewfinder"></i> 07. Peer Comparison</div>
+        <div class="nav-item" onclick="switchSlide('slide-8', this)"><i class="fas fa-building-columns"></i> 08. IPO & Capital</div>
+        <div class="nav-item" onclick="switchSlide('slide-9', this)"><i class="fas fa-triangle-exclamation"></i> 09. Key Risks</div>
+        <div class="nav-item" onclick="switchSlide('slide-10', this)"><i class="fas fa-list-check"></i> 10. What to Track</div>
+        <div class="nav-item" onclick="switchSlide('slide-11', this)"><i class="fas fa-clipboard-list"></i> 11. Thesis Summary</div>
+        <div class="nav-item" onclick="switchSlide('slide-12', this)"><i class="fas fa-circle-info"></i> 12. Disclaimer</div>
+    </div>
+
+    <div class="main-container" id="main-scroll">
+
+        <div id="slide-1" class="slide active">
+            <div class="badge">SME GEMS • HIDDEN CHAMPIONS OF THE SME PLATFORM</div>
+            <h1 class="title">YASH HIGHVOLTAGE LIMITED</h1>
+            <p class="subtitle">India's Bushing Backbone • <span>30-Year Demand Runway.</span></p>
+
+            <div class="grid-4 mb-1">
+                <div class="card accent-border tilt-card">
+                    <div class="metric-label">Market Cap</div>
+                    <div class="metric-value highlight-primary">~₹1,193&nbsp;Cr</div>
+                    <div class="metric-label" style="color:var(--text-main);">Current Price: ₹418</div>
+                </div>
+                <div class="card accent-border tilt-card">
+                    <div class="metric-label">TTM P/E</div>
+                    <div class="metric-value highlight-secondary">~41.1x</div>
+                    <div class="metric-label" style="color:var(--text-main);">BSE SME: 544310</div>
+                </div>
+                <div class="card accent-border tilt-card">
+                    <div class="metric-label">EBITDA (H1FY26)</div>
+                    <div class="metric-value">22.8%</div>
+                    <div class="metric-label" style="color:var(--success);">Promoter Holding: 57.9%</div>
+                </div>
+                <div class="card accent-border tilt-card">
+                    <div class="metric-label">Order Book (Oct '25)</div>
+                    <div class="metric-value" style="color: #e5e7eb;">₹300+ Cr</div>
+                    <div class="metric-label" style="color:var(--accent-primary);">1.5 - 2 Yrs Execution</div>
+                </div>
+            </div>
+
+            <div class="card mt-2 tilt-card" style="margin-top: 1.5rem;">
+                <h3 class="heading-font highlight-primary mb-1" style="font-size: 1.8rem; margin-bottom: 0.5rem;">Precision Engineered. Grid-Critical.</h3>
+                <p style="color: var(--text-muted); line-height: 1.6; font-size: 1rem;">
+                    From a Vadodara workshop to a global leader targeting a massive niche market. Yash Highvoltage is the first MSME to localize RIP/RIS technology in India. With a goal to grow their 1% global market share to 5-7%, they are executing an aggressive greenfield expansion (up to 550kV). Think Transformer Bushings, Think Yash.
+                </p>
+            </div>
+        </div>
+
+        <div id="slide-2" class="slide">
+            <div class="badge">02 • TIMELINE</div>
+            <h1 class="title">Vadodara to Global Leader</h1>
+            
+            <div class="card tilt-card" style="margin-top: 1.5rem;">
+                <div class="table-responsive">
+                    <table class="table-custom">
+                        <tbody>
+                            <tr><td style="color: var(--accent-primary); width: 140px; font-weight: bold;">2002-2008</td><td>Incorporated in Vadodara. Initial focus on OIP condenser bushings. Current management takeover in 2008. Building utility approvals.</td></tr>
+                            <tr><td style="color: var(--accent-primary); font-weight: bold;">2009-2016</td><td>First export (2009). Swiss collaboration with MGC Moser Glaser (2013). <strong>First MSME to localize RIP/RIS technology in India (2016).</strong></td></tr>
+                            <tr><td style="color: var(--accent-primary); font-weight: bold;">2016-2022</td><td>First in world to develop 52kV 6300A Hybrid RIP+OIP for STATCOM. India's first localized RIS (2019). 245kV RIP launched (2020).</td></tr>
+                            <tr><td style="color: var(--accent-secondary); font-weight: bold;">2023-2024</td><td>First bulk export to USA. Revenue crosses ₹108 Cr (FY24). First 25,000A high-current bushing order in India. Listed Dec 2024.</td></tr>
+                            <tr><td style="color: var(--accent-secondary); font-weight: bold;">FY25-H1FY26</td><td>Revenue ₹150 Cr (+39% in FY25). H1FY26 hits ₹102 Cr. Established Yash HV USA Inc. and UK/Europe distribution partnerships.</td></tr>
+                            <tr><td style="color: var(--success); font-weight: bold;">Oct 2025+</td><td>Order book >₹300 Cr. Greenfield building ready Dec 2025. Addressable market expands to ₹15,000-16,000 Cr post-550kV.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-3" class="slide">
+            <div class="badge">03 • PRODUCT & MOAT</div>
+            <h1 class="title">The Yash Edge</h1>
+            <p class="subtitle">Structurally Differentiated Market Position</p>
+
+            <div class="grid-2">
+                <div class="card tilt-card accent-border">
+                    <h3 class="heading-font highlight-primary mb-1" style="font-size: 1.6rem; margin-bottom: 0.5rem;">Massive Headroom</h3>
+                    <p style="font-size: 0.95rem;">
+                        Holds >30% domestic market share in operating segment up to 245kV. Only <strong>1% global market share</strong> today targeting 5-7%. Even 8-10x revenue growth leaves them below 5% globally.
+                    </p>
+                </div>
+                <div class="card tilt-card accent-border">
+                    <h3 class="heading-font highlight-secondary mb-1" style="font-size: 1.6rem; margin-bottom: 0.5rem;">High-Current (70% GM)</h3>
+                    <p style="font-size: 0.95rem;">
+                        First Indian manufacturer of 25,000A high-current bushing. Serves data centers, renewables, defense, railways. Near-monopoly position domestically, indirectly supplying Google via OEMs.
+                    </p>
+                </div>
+                <div class="card tilt-card accent-border">
+                    <h3 class="heading-font highlight-primary mb-1" style="font-size: 1.6rem; margin-bottom: 0.5rem;">550kV Upgrade</h3>
+                    <p style="font-size: 0.95rem;">
+                        Originally planned to 220kV, the greenfield was upgraded to 550kV. Post-commissioning, this adds ₹3,400-3,500 Cr more to the addressable global market.
+                    </p>
+                </div>
+                <div class="card tilt-card accent-border">
+                    <h3 class="heading-font highlight-secondary mb-1" style="font-size: 1.6rem; margin-bottom: 0.5rem;">Qualification & R&D Moat</h3>
+                    <p style="font-size: 0.95rem;">
+                        Bushing qualification takes 2-3 years. Approved by every Indian utility including nuclear. ILAC-accredited in-house test lab. Zero dependency on imported "Transfer of Technology" (TOT).
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-4" class="slide">
+            <div class="badge">04 • FINANCIALS</div>
+            <h1 class="title">Revenue & Margin Trajectory</h1>
+
+            <div class="grid-2" style="margin-top: 1.5rem;">
+                <div class="chart-box tilt-card">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+                <div class="card tilt-card">
+                    <h3 class="heading-font mb-1" style="color: var(--text-main); font-size: 1.6rem;">H1FY26 Snapshot (₹ Lakhs)</h3>
+                    <div class="table-responsive">
+                        <table class="table-custom" style="min-width: auto; margin-top: 0.5rem;">
+                            <tbody>
+                                <tr><td>Revenue (Ops)</td><td><strong>₹10,014</strong></td><td style="color: var(--success);">+78.6% YoY</td></tr>
+                                <tr><td>Total Revenue</td><td><strong>₹10,218</strong></td><td></td></tr>
+                                <tr><td>EBITDA</td><td><strong>₹2,331</strong></td><td class="highlight-primary">22.8% Margin</td></tr>
+                                <tr><td>Finance Cost</td><td><strong>₹198</strong></td><td></td></tr>
+                                <tr><td>PAT</td><td><strong>₹1,402</strong></td><td class="highlight-secondary">13.7% Margin</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p style="margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-muted); border-left: 3px solid var(--accent-primary); padding-left: 1rem;">
+                        EBITDA path (Mar 26 meeting): 22-24% today ➔ <strong>30-35%+ in 2 years</strong> via localization (import duty + freight saved) + RIP export mix (30-40% price premium) + reduced Swiss imports.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-5" class="slide">
+            <div class="badge">05 • ACQUISITION & VALUATION</div>
+            <h1 class="title">Sukrut Effect & FY27E</h1>
+
+            <div class="grid-2">
+                <div class="card tilt-card accent-border">
+                    <h3 class="heading-font highlight-primary mb-1" style="font-size: 1.6rem; margin-bottom: 0.5rem;">Sukrut Electric Status</h3>
+                    <ul class="custom-list">
+                        <li><strong>Stake:</strong> 50% (Yash) + 50% (Quality Power).</li>
+                        <li><strong>Products:</strong> Transformer relays, indicators, control panels.</li>
+                        <li><strong>Legal:</strong> SPA signed (Jan 2026); shareholder execution pending. NIL revenue FY26.</li>
+                        <li><strong>Growth Target:</strong> 2.5-4x revenue in 3-4 years ➔ ₹60-70 Cr potential from existing Pune facility.</li>
+                        <li><strong>MGC Bridge:</strong> Swiss supply continues till June 2027 ensuring zero disruption during indigenous transition.</li>
+                    </ul>
+                </div>
+
+                <div class="card tilt-card accent-border">
+                    <h3 class="heading-font highlight-secondary mb-1" style="font-size: 1.6rem; margin-bottom: 0.5rem;">FY27E Scenarios (Concall Anchored)</h3>
+                    <p style="font-size: 0.95rem; margin-bottom: 1rem;">Current TTM P/E compressed from ~58x post-IPO to <strong>~41.1x</strong> (at ₹418 CMP). Market factoring near-term dilution concerns, creating setup for FY27.</p>
+                    <ul class="custom-list">
+                        <li><strong>Bear (28x P/E):</strong> Greenfield delays, EBITDA stays 21%, PAT ₹36 Cr. EPS ~14.</li>
+                        <li><strong>Base (35x P/E):</strong> Commercial prod H2FY27, EBITDA 24%, PAT ₹45 Cr. EPS ~20.</li>
+                        <li><strong>Bull (45x P/E):</strong> Export ramp post-greenfield, 30-40% higher realisations, EBITDA 28%+, PAT ₹55 Cr. EPS ~26.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-6" class="slide">
+            <div class="badge">06 • EXPANSION</div>
+            <h1 class="title">The Growth Roadmap</h1>
+            
+            <div class="grid-3" style="margin-top: 1.5rem;">
+                <div class="card tilt-card accent-border">
+                    <h3 class="heading-font highlight-primary mb-1" style="font-size: 1.5rem;">01. Greenfield (550kV)</h3>
+                    <p style="font-size: 0.9rem;">
+                        Building ready Dec 2025. Trial Feb-Mar 2026. Commercial H2 FY27. ₹140-145 Cr Greenfield + ₹30-40 Cr Brownfield = <strong>₹180 Cr total capex</strong>. Combined potential: ₹600-700 Cr revenue.
+                    </p>
+                </div>
+                <div class="card tilt-card accent-border">
+                    <h3 class="heading-font highlight-secondary mb-1" style="font-size: 1.5rem;">02. Export Ramp</h3>
+                    <p style="font-size: 0.9rem;">
+                        Currently 4.5-5% of revenue. Target is 35-40% in 3-5 Years. Yash commands a <strong>30-40% price premium</strong> in export markets vs domestic. Yash HV USA Inc. and Weidmann (Europe) are active.
+                    </p>
+                </div>
+                <div class="card tilt-card accent-border">
+                    <h3 class="heading-font highlight-primary mb-1" style="font-size: 1.5rem;">03. High-Current</h3>
+                    <p style="font-size: 0.9rem;">
+                        Scaling segment with <strong>70% Gross Margins</strong>. Meeting demand from data centers (Google supply via OEMs), AI, and renewable transformers. Break-even on greenfield at 30-35% utilization.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-7" class="slide">
+            <div class="badge">07 • COMPARABLES</div>
+            <h1 class="title">Peer Comparison</h1>
+            <p class="subtitle">Electrical Equipment / Power T&D (Mar 2026)</p>
+            
+            <div class="card tilt-card">
+                <div class="table-responsive">
+                    <table class="table-custom">
+                        <thead>
+                            <tr><th>Company</th><th>Mkt Cap</th><th>Revenue</th><th>EBITDA</th><th>P/E</th><th>Focus</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>Yash Highvoltage</strong></td><td class="highlight-primary">~₹1,193 Cr</td><td>₹193 Cr (TTM)</td><td>~22.8%</td><td class="highlight-secondary">41.1x</td><td>Bushing mfg ➔ Export ramp</td></tr>
+                            <tr><td><strong>GE Vernova T&D</strong></td><td>~₹94,200 Cr</td><td>₹5,722 Cr</td><td>~19%</td><td>~88x</td><td>GIS, transformers (Yash Customer)</td></tr>
+                            <tr><td><strong>Hitachi Energy</strong></td><td>~₹1,10,000 Cr</td><td>₹7,277 Cr</td><td>~18%</td><td>~132x</td><td>Transformers, HVDC (Yash Competitor)</td></tr>
+                            <tr><td><strong>T&R India</strong></td><td>~₹8,670 Cr</td><td>₹2,403 Cr</td><td>~17%</td><td>~40x</td><td>Transformers, reactors</td></tr>
+                            <tr><td><strong>Apar Industries</strong></td><td>~₹38,550 Cr</td><td>₹14,000 Cr</td><td>~9%</td><td>~32x</td><td>Conductors, cables, transformer oil</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-muted);">
+                    Yash's ~41x P/E sits at a deep discount to Hitachi Energy (132x) and GE Vernova (88x).
+                </p>
+            </div>
+        </div>
+
+        <div id="slide-8" class="slide">
+            <div class="badge">08 • STRUCTURE</div>
+            <h1 class="title">IPO & Litigation Profile</h1>
+            
+            <div class="grid-2" style="margin-top: 1.5rem;">
+                <div class="card tilt-card accent-border">
+                    <h3 class="heading-font highlight-primary mb-1" style="font-size: 1.5rem; margin-bottom: 0.5rem;">Capital Structure (Dec 2024 IPO)</h3>
+                    <ul class="custom-list">
+                        <li><strong>Issue Type:</strong> Book Built (Fresh + OFS).</li>
+                        <li><strong>Promoter Holding:</strong> 57.9% (Keyur G. Shah).</li>
+                        <li><strong>Public:</strong> 31.7%, <strong>DIIs:</strong> 10.1%, <strong>FIIs:</strong> 0.2%.</li>
+                        <li><strong>Proceeds Status:</strong> 45% deployed by Sep 25; balance ₹51 Cr earmarked for Greenfield completion.</li>
+                    </ul>
+                </div>
+                <div class="card tilt-card accent-border">
+                    <h3 class="heading-font highlight-secondary mb-1" style="font-size: 1.5rem; margin-bottom: 0.5rem;">Litigation (Low Risk)</h3>
+                    <ul class="custom-list">
+                        <li><strong>Company Tax Cases:</strong> 3 proceedings totaling just ₹48.97 lakhs.</li>
+                        <li><strong>Director/Promoter:</strong> NIL litigations. Clean governance.</li>
+                        <li><strong>Group Companies:</strong> 2 cases totaling ₹0.79 lakhs. No NCLT or criminal cases.</li>
+                        <li>Materially cleaner versus most SME peers.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-9" class="slide">
+            <div class="badge" style="color: var(--danger); border-color: var(--danger); background: rgba(239,68,68,0.1);">09 • WATCHPOINTS</div>
+            <h1 class="title">Key Risks</h1>
+            
+            <div class="grid-2" style="margin-top: 1.5rem;">
+                <div class="card tilt-card" style="border-top: 3px solid var(--danger);">
+                    <h3 class="heading-font mb-1" style="color: var(--danger); font-size: 1.4rem;">Greenfield Execution Chain</h3>
+                    <p style="font-size: 0.95rem;">
+                        Delay at any step propagates: Trial ➔ Type Test ➔ Plant Visits ➔ Commercial Production (H2 FY27).
+                    </p>
+                </div>
+                <div class="card tilt-card" style="border-top: 3px solid var(--danger);">
+                    <h3 class="heading-font mb-1" style="color: var(--danger); font-size: 1.4rem;">Customer Concentration</h3>
+                    <p style="font-size: 0.95rem;">
+                        Top 10 concentrated in NTPC, Power Grid, Discoms. Mitigated by 500+ OEM base and selective order intake.
+                    </p>
+                </div>
+                <div class="card tilt-card" style="border-top: 3px solid var(--accent-primary);">
+                    <h3 class="heading-font mb-1" style="color: var(--accent-primary); font-size: 1.4rem;">EBITDA Expansion Necessity</h3>
+                    <p style="font-size: 0.95rem;">
+                        H1FY26 EBITDA at 22.8% must structurally move toward 28-32% to fundamentally justify current P/E levels.
+                    </p>
+                </div>
+                <div class="card tilt-card" style="border-top: 3px solid var(--accent-primary);">
+                    <h3 class="heading-font mb-1" style="color: var(--accent-primary); font-size: 1.4rem;">Macro: Iran War & Trade</h3>
+                    <p style="font-size: 0.95rem;">
+                        Brent crude spike impacts transformer oil costs (OPM risk). US 18% tariff deal is a net positive but invites long-term US competition.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-10" class="slide">
+            <div class="badge">10 • CHECKLIST</div>
+            <h1 class="title">Half-Yearly Tracking</h1>
+            
+            <div class="card tilt-card accent-border" style="margin-top: 1.5rem;">
+                <ul class="custom-list" style="gap: 1.5rem;">
+                    <li><strong>Greenfield Milestones:</strong> Equipment Install (Jan 26) ➔ Trial Prod (Feb-Mar 26) ➔ Type Tests (H1 FY27). Watch BSE.</li>
+                    <li><strong>Order Book Flow:</strong> Maintaining >₹300 Cr balance with fresh higher-margin additions.</li>
+                    <li><strong>EBITDA Trajectory:</strong> Are localization savings reflecting in margins? Moving past 23%?</li>
+                    <li><strong>Sukrut Execution:</strong> Shareholder completion announced? First revenue showing in consolidated P&L?</li>
+                    <li><strong>Transformer Oil Hedging:</strong> Addressing crude spikes from Middle-East tensions.</li>
+                    <li><strong>First RIP Export Order:</strong> The landmark event proving the 30-40% price premium post-greenfield.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="slide-11" class="slide">
+            <div class="badge">11 • SUMMARY</div>
+            <h1 class="title">Investment Thesis</h1>
+            
+            <div class="grid-2" style="margin-top: 1.5rem;">
+                <div class="card tilt-card accent-border">
+                    <h3 class="heading-font highlight-primary mb-1" style="font-size: 1.6rem; margin-bottom: 1rem;">The Opportunity (Bull)</h3>
+                    <ul class="custom-list">
+                        <li>>30% Indian share + 1% global ➔ 8-10x revenue target.</li>
+                        <li>H1FY26 Rev +78.6% YoY; EBITDA expanding.</li>
+                        <li>₹180 Cr confirmed capex unlocks ₹600-700 Cr potential.</li>
+                        <li>Export price delta of 30-40% confirmed.</li>
+                        <li>MGC supply bridge till June 2027 limits transition risk.</li>
+                        <li>Clean IPO litigation; strong OEM customer validation.</li>
+                    </ul>
+                </div>
+                <div class="card tilt-card" style="border-top: 3px solid var(--danger);">
+                    <h3 class="heading-font mb-1" style="color: var(--danger); font-size: 1.6rem; margin-bottom: 1rem;">The Risks (Watch)</h3>
+                    <ul class="custom-list risk-list">
+                        <li>Greenfield trial-to-commercial execution chain dependencies.</li>
+                        <li>Must reach 28%+ EBITDA to justify current ~41x P/E.</li>
+                        <li>Transformer oil cost pressure from crude spikes.</li>
+                        <li>Sukrut shareholder execution pending (as of Oct 25).</li>
+                        <li>SME platform liquidity constraints.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-12" class="slide">
+            <div style="display: flex; align-items: center; justify-content: center; min-height: 80vh;">
+                <div class="disclaimer-box tilt-card">
+                    
+                    <a href="https://x.com/sachprat07" target="_blank" class="social-link">
+                        <i class="fa-brands fa-x-twitter x-logo"></i>
+                        <h2 class="heading-font" style="font-size: 1.2rem; color: var(--accent-primary);">@sachprat07</h2>
+                    </a>
+
+                    <div style="background: var(--bg-panel); border: 1px solid var(--border-color); padding: 2rem; border-radius: 8px;">
+                        <h3 class="heading-font" style="color: var(--danger); margin-bottom: 1rem;">FOR INFORMATIONAL PURPOSES ONLY • NOT INVESTMENT ADVICE</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem;">
+                            This presentation is prepared solely for educational and informational purposes. It does not constitute personalised investment advice or a recommendation to buy, sell, or hold any security.
+                        </p>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem;">
+                            Electrical equipment and power T&D SME stocks carry elevated risk due to programme delays, limited trading liquidity, customer concentration, and greenfield execution risk. Past revenue growth or stock price performance does not guarantee future results.
+                        </p>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.6;">
+                            <em>Sources: BSE Exchange Filings (544310) • IPO Prospectus • FY25-H1FY26 Investor Presentation • Earnings Concalls • Mar 2026 Investor Meeting.</em>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    /* --- VANILLA TILT --- */
+    VanillaTilt.init(document.querySelectorAll(".tilt-card"), {
+        max: 2,
+        speed: 400,
+        glare: true,
+        "max-glare": 0.05,
+        scale: 1.01
+    });
+
+    /* --- ELECTRIC PLASMA / TRANSFORMER CANVAS --- */
+    const canvas = document.getElementById('bg-canvas');
+    const ctxCanvas = canvas.getContext('2d');
+    let width, height;
+    let particles = [];
+    let mouse = { x: null, y: null, radius: 250 };
+    
+    window.addEventListener('mousemove', function(event) {
+        mouse.x = event.x; mouse.y = event.y;
+    });
+    window.addEventListener('mouseout', function() {
+        mouse.x = undefined; mouse.y = undefined;
+    });
+
+    function resizeCanvas() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        initParticles();
+    }
+    window.addEventListener('resize', resizeCanvas);
+    
+    class Particle {
+        constructor() {
+            this.x = Math.random() * width;
+            this.y = Math.random() * height;
+            this.vx = (Math.random() - 0.5) * 0.8;
+            this.vy = (Math.random() - 0.5) * 0.8;
+            this.baseX = this.x;
+            this.baseY = this.y;
+            this.radius = Math.random() * 2 + 1;
+        }
+        
+        update() {
+            // Slight magnetic drift
+            this.x += this.vx;
+            this.y += this.vy;
+            
+            // Mouse interaction (Magnetic attraction)
+            if (mouse.x != null) {
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < mouse.radius) {
+                    const forceDirectionX = dx / distance;
+                    const forceDirectionY = dy / distance;
+                    const force = (mouse.radius - distance) / mouse.radius;
+                    this.x += forceDirectionX * force * 2;
+                    this.y += forceDirectionY * force * 2;
+                }
+            }
+            
+            // Bounds
+            if (this.x < 0 || this.x > width) this.vx = -this.vx;
+            if (this.y < 0 || this.y > height) this.vy = -this.vy;
+        }
+        
+        draw() {
+            ctxCanvas.beginPath();
+            ctxCanvas.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctxCanvas.fillStyle = 'rgba(251, 191, 36, 0.6)'; // Amber
+            ctxCanvas.fill();
+        }
+    }
+
+    // Draw jagged electric arcs
+    function drawLightning(x1, y1, x2, y2, opacity) {
+        ctxCanvas.beginPath();
+        ctxCanvas.moveTo(x1, y1);
+        let segments = 4;
+        let prevX = x1, prevY = y1;
+        
+        for(let i=1; i<=segments; i++) {
+            let targetX = x1 + (x2-x1)*(i/segments);
+            let targetY = y1 + (y2-y1)*(i/segments);
+            // Add jitter
+            if(i < segments) {
+                targetX += (Math.random() - 0.5) * 15;
+                targetY += (Math.random() - 0.5) * 15;
+            }
+            ctxCanvas.lineTo(targetX, targetY);
+        }
+        ctxCanvas.strokeStyle = `rgba(249, 115, 22, ${opacity})`; // Orange glow
+        ctxCanvas.lineWidth = 1;
+        ctxCanvas.stroke();
+    }
+
+    function initParticles() {
+        particles = [];
+        let numNodes = Math.floor((width * height) / 25000); 
+        for (let i = 0; i < numNodes; i++) {
+            particles.push(new Particle());
+        }
+    }
+
+    function animatePlasma() {
+        ctxCanvas.clearRect(0, 0, width, height);
+        
+        for (let i = 0; i < particles.length; i++) {
+            particles[i].update();
+            particles[i].draw();
+            
+            for (let j = i; j < particles.length; j++) {
+                let dx = particles[i].x - particles[j].x;
+                let dy = particles[i].y - particles[j].y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 150) {
+                    // Randomly spark if close
+                    if(Math.random() > 0.95) {
+                        drawLightning(particles[i].x, particles[i].y, particles[j].x, particles[j].y, 1 - distance/150);
+                    }
+                }
+            }
+        }
+        requestAnimationFrame(animatePlasma);
+    }
+
+    resizeCanvas();
+    animatePlasma();
+
+    /* --- NAVIGATION --- */
+    function toggleSidebar() {
+        document.getElementById('main-sidebar').classList.toggle('open');
+        document.querySelector('.sidebar-overlay').classList.toggle('active');
+    }
+
+    function switchSlide(slideId, el) {
+        const targetSlide = document.getElementById(slideId);
+        document.getElementById('main-scroll').scrollTo(0, 0);
+
+        document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        
+        void targetSlide.offsetWidth; // Reflow for animation
+        
+        targetSlide.classList.add('active');
+        if (el) el.classList.add('active');
+        
+        if (window.innerWidth <= 768) {
+            document.getElementById('main-sidebar').classList.remove('open');
+            document.querySelector('.sidebar-overlay').classList.remove('active');
+        }
+
+        if(slideId === 'slide-4') renderRevenueChart();
+    }
+
+    /* --- CHART JS --- */
+    let revChartInstance = null;
+
+    function renderRevenueChart() {
+        const chartCtx = document.getElementById('revenueChart').getContext('2d');
+        if (revChartInstance) revChartInstance.destroy();
+
+        revChartInstance = new Chart(chartCtx, {
+            type: 'bar',
+            data: {
+                labels: ['FY20', 'FY21', 'FY22', 'FY23', 'FY24', 'FY25', 'H1FY26*'],
+                datasets: [{
+                    label: 'Revenue (₹ Cr)',
+                    data: [38, 37, 65, 90, 108, 150, 102],
+                    backgroundColor: 'rgba(251, 191, 36, 0.8)',
+                    borderColor: '#f97316',
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#121318', titleColor: '#9ca3af', bodyColor: '#fbbf24',
+                        titleFont: { family: 'Outfit', size: 13 },
+                        bodyFont: { family: 'Rajdhani', size: 18, weight: 'bold' },
+                        borderColor: '#272a35', borderWidth: 1, padding: 12
+                    }
+                },
+                scales: {
+                    y: { grid: { color: '#272a35' }, ticks: { color: '#9ca3af', font: {family: 'Outfit'} } },
+                    x: { grid: { display: false }, ticks: { color: '#9ca3af', font: {family: 'Outfit'} } }
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>
