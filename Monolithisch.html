@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Monolithisch India - SME Gems</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Teko:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+    
+    <style>
+        /* --- FURNACE & SLAG THEME --- */
+        :root {
+            --bg-dark: #121214;          /* Deep Ash / Charcoal */
+            --bg-panel: rgba(26, 26, 30, 0.85); /* Machined Grey Glass */
+            --accent-primary: #ff4500;   /* Molten Orange */
+            --accent-primary-dim: rgba(255, 69, 0, 0.15);
+            --accent-secondary: #ff8c00; /* Core Amber */
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --danger: #e11d48;           
+            --success: #10b981;
+            --border-color: rgba(255, 69, 0, 0.2);
+            --gradient-fire: linear-gradient(135deg, #ff4500 0%, #ff8c00 100%);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            width: 100%; 
+            height: 100vh;
+            height: 100dvh; /* Fix for iOS/Android dynamic browser bars */
+            overflow: hidden; 
+            font-family: 'Manrope', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        h1, h2, h3, .heading-font { 
+            font-family: 'Teko', sans-serif; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #bg-canvas { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: 0; pointer-events: none; 
+        }
+
+        #app-container { 
+            display: flex; width: 100%; height: 100%; 
+            overflow: hidden; position: relative; z-index: 1; 
+        }
+
+        /* Mobile Header */
+        .mobile-header {
+            display: none; background: rgba(18, 18, 20, 0.95); backdrop-filter: blur(12px); 
+            padding: 1rem 1.5rem; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            position: fixed; top: 0; width: 100%; z-index: 99;
+        }
+        .menu-toggle { background: transparent; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer; transition: color 0.3s; }
+        .menu-toggle:hover { color: var(--accent-primary); }
+        .mobile-brand { font-size: 1.8rem; font-weight: 600; color: var(--text-main); font-family: 'Teko', sans-serif; }
+        .mobile-brand span { color: var(--accent-primary); }
+
+        /* Floating Sidebar */
+        .sidebar {
+            width: 280px; min-width: 280px; background: rgba(22, 22, 26, 0.8); backdrop-filter: blur(15px);
+            display: flex; flex-direction: column; padding: 2rem 0; border-right: 1px solid var(--border-color);
+            z-index: 100; overflow-y: auto; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            margin: 1rem; border-radius: 12px; height: calc(100% - 2rem);
+            box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
+        }
+        .sidebar::-webkit-scrollbar { width: 0px; }
+
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 90; backdrop-filter: blur(3px); opacity: 0; transition: opacity 0.3s; }
+        .sidebar-overlay.active { display: block; opacity: 1; }
+
+        .brand-logo { padding: 0 1.5rem 1.5rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 1rem; flex-shrink: 0; }
+        .brand-logo h2 { font-size: 2.2rem; font-weight: 600; color: var(--text-main); line-height: 1; margin-bottom: 5px; letter-spacing: 0.5px; }
+        .brand-logo span { color: var(--accent-secondary); font-size: 0.75rem; letter-spacing: 3px; font-weight: 700; font-family: 'Manrope', sans-serif;}
+
+        .nav-item {
+            padding: 0.8rem 1.5rem; color: var(--text-muted); cursor: pointer; transition: all 0.3s ease;
+            display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 0.9rem;
+            position: relative; margin: 0.2rem 1rem; border-radius: 8px;
+        }
+        .nav-item:hover { color: var(--text-main); background: rgba(255,255,255,0.05); }
+        .nav-item.active { color: var(--text-main); background: var(--gradient-fire); box-shadow: 0 4px 15px rgba(255, 69, 0, 0.3); }
+        .nav-item.active i { color: #fff; }
+        .nav-item i { font-size: 1.1rem; width: 20px; text-align: center; }
+
+        /* Main Area */
+        .main-container {
+            flex: 1; padding: 2rem 4rem; overflow-y: auto; scroll-behavior: smooth; height: 100%; -webkit-overflow-scrolling: touch; 
+            display: flex; flex-direction: column;
+        }
+
+        .slide-container {
+            flex: 1; 
+        }
+
+        .slide { display: none; max-width: 1200px; margin: 0 auto; padding-bottom: 3rem; position: relative; z-index: 2;}
+        .slide.active { display: block; }
+
+        .stagger { animation: slideUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; opacity: 0; }
+        .s1 { animation-delay: 0.1s; } .s2 { animation-delay: 0.2s; } .s3 { animation-delay: 0.3s; } .s4 { animation-delay: 0.4s; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .badge {
+            display: inline-block; background: var(--accent-primary-dim); color: var(--accent-secondary);
+            padding: 0.4rem 1rem; border-radius: 4px; font-size: 0.8rem; font-weight: 700;
+            letter-spacing: 1.5px; margin-bottom: 1rem; text-transform: uppercase; border: 1px solid var(--border-color);
+        }
+
+        .title { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 600; margin-bottom: 0.5rem; line-height: 1; color: var(--text-main); }
+        .subtitle { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 2rem; font-weight: 500; line-height: 1.5; }
+        .subtitle span { color: var(--accent-secondary); font-weight: 700; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; }
+
+        /* Industrial Cards */
+        .card {
+            background: var(--bg-panel); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 1.5rem; position: relative; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: all 0.3s ease;
+            display: flex; flex-direction: column;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .card:hover { border-bottom-color: var(--accent-primary); transform: translateY(-4px); box-shadow: 0 15px 40px rgba(0,0,0,0.5), 0 0 20px rgba(255, 69, 0, 0.1); }
+        
+        .card.primary-border { border-bottom-color: var(--accent-primary); }
+        .card.danger-border { border-bottom-color: var(--danger); }
+
+        .metric-value { 
+            font-size: clamp(1.8rem, 3.5vw, 2.8rem); 
+            font-weight: 600; color: var(--text-main); margin: 0.2rem 0; 
+            font-family: 'Teko', sans-serif; letter-spacing: 1px;
+            white-space: nowrap; 
+        }
+        .metric-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+
+        .highlight-primary { color: var(--accent-primary); font-weight: 700; }
+        .highlight-secondary { color: var(--accent-secondary); font-weight: 700; }
+
+        /* LIST CSS */
+        ul.custom-list { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; padding: 0; margin: 0; }
+        ul.custom-list li { position: relative; padding-left: 1.5rem; line-height: 1.6; color: #d1d5db; font-size: 0.95rem; }
+        ul.custom-list li::before { content: '■'; position: absolute; left: 0; color: var(--accent-primary); font-size: 0.7rem; top: 4px; }
+        ul.risk-list li::before { content: '▲'; color: var(--danger); }
+        
+        /* Tables */
+        .table-responsive { width: 100%; overflow-x: auto; }
+        .table-custom { width: 100%; border-collapse: collapse; margin-top: 1rem; min-width: 400px; }
+        .table-custom th, .table-custom td { padding: 1rem 0.8rem; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.95rem; color: #e5e7eb; }
+        .table-custom th { color: var(--accent-secondary); text-transform: uppercase; font-weight: 600; font-size: 1rem; letter-spacing: 1px; font-family: 'Teko', sans-serif;}
+        .table-custom tr:hover td { background: rgba(255, 69, 0, 0.05); }
+
+        .chart-box { background: var(--bg-panel); padding: 1.5rem; border-radius: 8px; height: 380px; border: 1px solid rgba(255,255,255,0.05); }
+
+        /* Subjective Valuation Callout - Furnace Glow */
+        .valuation-callout {
+            border: 1px solid rgba(255, 69, 0, 0.3);
+            background: linear-gradient(145deg, rgba(255, 69, 0, 0.1), rgba(0,0,0,0.6));
+            border-radius: 8px; padding: 1.8rem; margin-top: 1.5rem; position: relative; overflow: hidden; 
+            box-shadow: inset 0 0 30px rgba(255, 69, 0, 0.05);
+        }
+        .valuation-callout p { font-size: 1.05rem; color: var(--text-main); line-height: 1.7; margin: 0; position: relative; z-index: 1; }
+
+        @media (max-width: 1200px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } .main-container { padding: 2rem; } }
+        @media (max-width: 992px) { .grid-3 { grid-template-columns: 1fr; } .grid-2 { grid-template-columns: 1fr; } }
+        
+        /* Fixed Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .mobile-header { display: flex; }
+            .sidebar { 
+                position: fixed; 
+                left: 0; 
+                top: 0; 
+                margin: 0; 
+                height: 100dvh; 
+                border-radius: 0; 
+                box-shadow: 5px 0 30px rgba(0,0,0,0.9); 
+                transform: translateX(-100%); 
+                z-index: 105; 
+            }
+            .sidebar.open { 
+                transform: translateX(0); 
+            }
+            .main-container { padding: 1.2rem; padding-top: 6rem; padding-bottom: 2rem; }
+            .chart-box { height: 300px; padding: 1rem; }
+            .title { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div id="app-container">
+
+    <div class="mobile-header">
+        <div class="mobile-brand">MONOLITHISCH</div>
+        <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    </div>
+
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <div class="sidebar" id="main-sidebar">
+        <div class="brand-logo">
+            <h2>MONOLITHISCH</h2>
+            <span>INDIA LIMITED</span>
+        </div>
+        <div class="nav-item active" onclick="switchSlide('slide-1', this)"><i class="fas fa-fire"></i> 01. Snapshot</div>
+        <div class="nav-item" onclick="switchSlide('slide-2', this)"><i class="fas fa-route"></i> 02. Journey</div>
+        <div class="nav-item" onclick="switchSlide('slide-3', this)"><i class="fas fa-shield-alt"></i> 03. The Moat</div>
+        <div class="nav-item" onclick="switchSlide('slide-4', this)"><i class="fas fa-chart-bar"></i> 04. Financials</div>
+        <div class="nav-item" onclick="switchSlide('slide-5', this)"><i class="fas fa-building"></i> 05. MIGPL Impact</div>
+        <div class="nav-item" onclick="switchSlide('slide-6', this)"><i class="fas fa-industry"></i> 06. Market Dynamics</div>
+        <div class="nav-item" onclick="switchSlide('slide-7', this)"><i class="fas fa-map-marked-alt"></i> 07. Roadmap</div>
+        <div class="nav-item" onclick="switchSlide('slide-8', this)"><i class="fas fa-chess-board"></i> 08. Peers</div>
+        <div class="nav-item" onclick="switchSlide('slide-9', this)"><i class="fas fa-wallet"></i> 09. IPO Deployment</div>
+        <div class="nav-item" onclick="switchSlide('slide-10', this)"><i class="fas fa-chart-line"></i> 10. Valuation</div>
+        <div class="nav-item" onclick="switchSlide('slide-11', this)"><i class="fas fa-exclamation-triangle"></i> 11. Key Risks</div>
+        <div class="nav-item" onclick="switchSlide('slide-12', this)"><i class="fas fa-clipboard-list"></i> 12. Checklist</div>
+        <div class="nav-item" onclick="switchSlide('slide-13', this)"><i class="fas fa-balance-scale"></i> 13. Thesis Summary</div>
+        <div class="nav-item" onclick="switchSlide('slide-14', this)"><i class="fas fa-gavel"></i> 14. Disclaimer</div>
+    </div>
+
+    <div class="main-container" id="main-scroll">
+        
+        <div class="slide-container">
+            <div id="slide-1" class="slide active">
+                <div class="badge stagger s1">SME GEMS • HIDDEN CHAMPIONS OF THE SME PLATFORM</div>
+                <h1 class="title stagger s1">Monolithisch India Limited</h1>
+                <p class="subtitle stagger s2">India's Ramming Mass Consolidator. World's Largest Capacity en Route. <span>5x Revenue Target by FY28.</span></p>
+
+                <div class="grid-4 stagger s2 mb-1">
+                    <div class="card tilt-card">
+                        <div class="metric-label">Market Cap</div>
+                        <div class="metric-value highlight-primary">~₹820 Cr</div>
+                        <div class="metric-label" style="color:var(--text-muted); font-weight: 600;">CMP: ₹377</div>
+                    </div>
+                    <div class="card tilt-card">
+                        <div class="metric-label">Trailing P/E</div>
+                        <div class="metric-value highlight-secondary">~38-40x</div>
+                        <div class="metric-label" style="color:var(--danger); font-weight: 600;">Multiple</div>
+                    </div>
+                    <div class="card tilt-card">
+                        <div class="metric-label">EBITDA (Q3 FY26)</div>
+                        <div class="metric-value">23.9%</div>
+                        <div class="metric-label" style="color:var(--accent-primary); font-weight: 600;">Record Margins</div>
+                    </div>
+                    <div class="card tilt-card">
+                        <div class="metric-label">FY26E Revenue</div>
+                        <div class="metric-value" style="color: #cbd5e1;">~150 Cr</div>
+                        <div class="metric-label" style="color:var(--accent-secondary); font-weight: 600;">Consolidated</div>
+                    </div>
+                </div>
+
+                <div class="card mt-2 stagger s3 tilt-card">
+                    <h3 class="heading-font highlight-primary mb-1" style="font-size: 2rem;">Executive Summary</h3>
+                    <p style="color: var(--text-muted); line-height: 1.6; font-size: 1rem;">
+                        Promoted by Prabhat & Harsh Tekriwal (NSE SME: MONOLITH), Monolithisch operates in the highly critical, non-discretionary niche of acidic ramming mass (refractory lining for induction steel furnaces). <br><br>With a massive Eastern India freight moat, world-class Metso Outotec machinery, and a fully funded greenfield expansion targeting 5.74L MTPA, the company is executing aggressively toward a stated 5x revenue and EBITDA target by FY28.
+                    </p>
+                </div>
+            </div>
+
+            <div id="slide-2" class="slide">
+                <div class="badge stagger s1">02 • JOURNEY</div>
+                <h1 class="title stagger s1">Purulia to Global Ambition</h1>
+                
+                <div class="card stagger s2 tilt-card">
+                    <div class="table-responsive">
+                        <table class="table-custom">
+                            <tbody>
+                                <tr><td style="color: var(--accent-primary); width: 120px;">2018-2019</td><td>Incorporated in Purulia/Ranchi. 36,000 MTPA plant at the heart of India's largest induction furnace steel cluster. Pioneered premixed ramming mass adoption.</td></tr>
+                                <tr><td style="color: var(--accent-primary);">2020-2022</td><td>Rapid Eastern India customer ramp. Rev sub-20 Cr → 42 Cr. Referral-based onboarding driven by consistency.</td></tr>
+                                <tr><td style="color: var(--accent-primary);">FY23-FY24</td><td>Revenue 42 Cr → 69 Cr (+65%). Customers 41 → 63. Confirmed acidic ramming mass as durable cost moat vs. basic/neutral.</td></tr>
+                                <tr><td style="color: var(--accent-primary);">FY25</td><td>Revenue 97 Cr (+41% YoY). Brownfield Capex-1 approved - full line upgrade to Swedish Metso Outotec crushing equipment.</td></tr>
+                                <tr><td style="color: var(--accent-secondary);">Jun 2025</td><td>Listed NSE SME (MONOLITH). Raised 44.5 Cr. Stock delivered ~200% in 44 days. FY26 guidance: 140-150 Cr.</td></tr>
+                                <tr><td style="color: var(--accent-secondary);">H1 FY26</td><td>Brownfield Capex-1 complete (11k → 14k tons/mo). MIGPL acquired 100% WOS at book value (Nov). SGB Ltd commercialised.</td></tr>
+                                <tr><td style="color: var(--accent-secondary);">Q3 FY26</td><td>Strongest Quarter Ever: Consol Rev 37.36 Cr (+43%), EBITDA 8.94 Cr (23.9%).</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="slide-3" class="slide">
+                <div class="badge stagger s1">03 • THE EDGE</div>
+                <h1 class="title stagger s1">Structural Differentiation</h1>
+                <p class="subtitle stagger s1">Why this business has an impenetrable moat</p>
+
+                <div class="grid-2 stagger s2">
+                    <div class="card tilt-card">
+                        <h3 class="heading-font highlight-primary mb-1" style="font-size: 1.8rem;">Acidic Ramming Mass Niche</h3>
+                        <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+                            Acidic (₹7-9/kg) is the only cost-effective lining for induction furnaces vs basic (₹70/kg) or neutral (₹100/kg). No viable substitution exists, and there is no "green alternative" due to fixed chemistry.
+                        </p>
+                    </div>
+                    <div class="card tilt-card">
+                        <h3 class="heading-font highlight-secondary mb-1" style="font-size: 1.8rem;">Eastern India Freight Moat</h3>
+                        <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+                            Freight = ₹300-₹1,400/MT. 60% of India's induction furnace steel production sits in Eastern India. Monolithisch is at the epicentre, giving competitors a severe ₹4-5/kg freight disadvantage on a ₹7-8/kg product.
+                        </p>
+                    </div>
+                    <div class="card tilt-card">
+                        <h3 class="heading-font highlight-primary mb-1" style="font-size: 1.8rem;">Metso Outotec Machinery</h3>
+                        <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+                            World-class Swedish crushing equipment. Reduces crushing labour by 20-30%, lowers consumable costs, and cuts electricity usage. Management: <em>"Come to the plant - find inferior machinery if you can."</em>
+                        </p>
+                    </div>
+                    <div class="card tilt-card">
+                        <h3 class="heading-font highlight-secondary mb-1" style="font-size: 1.8rem;">Furnace-Critical Stickiness</h3>
+                        <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+                            78% repeat customers. Furnaces run 24x7 and cannot operate without lining. Customers use multi-vendor splits (60-40, 80-20), guaranteeing Monolithisch a baseline allocation.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="slide-4" class="slide">
+                <div class="badge stagger s1">04 • FINANCIALS</div>
+                <h1 class="title stagger s1">Q3 FY26: Strongest Quarter</h1>
+                <p class="subtitle stagger s1">Marching toward 5x Revenue + EBITDA by FY28</p>
+
+                <div class="grid-4 stagger s2 mb-1">
+                    <div class="card tilt-card text-center">
+                        <div class="metric-label">Q3 Revenue</div>
+                        <div class="metric-value highlight-primary">₹37.36 Cr</div>
+                        <div class="metric-label" style="color:var(--success);">+43% YoY</div>
+                    </div>
+                    <div class="card tilt-card text-center">
+                        <div class="metric-label">Q3 EBITDA</div>
+                        <div class="metric-value highlight-secondary">₹8.94 Cr</div>
+                        <div class="metric-label" style="color:var(--text-muted);">23.9% Margin</div>
+                    </div>
+                    <div class="card tilt-card text-center">
+                        <div class="metric-label">Q3 PAT</div>
+                        <div class="metric-value">₹6.08 Cr</div>
+                        <div class="metric-label" style="color:var(--success);">+54% YoY</div>
+                    </div>
+                    <div class="card tilt-card text-center">
+                        <div class="metric-label">Debt/Equity</div>
+                        <div class="metric-value highlight-primary">Near 0</div>
+                        <div class="metric-label" style="color:var(--text-muted);">₹36 Cr Cash in Bank</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="slide-5" class="slide">
+                <div class="badge stagger s1">05 • MIGPL ACQUISITION</div>
+                <h1 class="title stagger s1">Subsidiary Consolidation</h1>
+                <p class="subtitle stagger s1">MIGPL Deal + Accounting Distortion</p>
+
+                <div class="grid-2 stagger s2">
+                    <div class="card tilt-card">
+                        <h3 class="heading-font highlight-primary mb-1" style="font-size: 1.8rem;">Mineral India Global Pvt Ltd</h3>
+                        <ul class="custom-list">
+                            <li><strong>Stake:</strong> 100% WOS effective Nov 8, 2025.</li>
+                            <li><strong>Acquisition:</strong> Book value ~₹17 Cr. Management: 'A delight to shareholders'.</li>
+                            <li><strong>Revenue:</strong> ~₹10-11 Cr/year.</li>
+                            <li><strong>Capacity:</strong> 50,000 MTPA → 65,000 MTPA by Q4 FY26.</li>
+                            <li><strong>FY27 Impact:</strong> Adds clean ₹35-40 Cr incremental group revenue.</li>
+                        </ul>
+                    </div>
+                    <div class="card primary-border tilt-card">
+                        <h3 class="heading-font highlight-secondary mb-1" style="font-size: 1.8rem;">The Data Distortion</h3>
+                        <p style="color: var(--text-muted); line-height: 1.6; font-size: 0.95rem;">
+                            Q3 9M consolidated (₹94.64 Cr) includes only ~7 weeks of MIGPL. The reported 40%+ YoY growth mixes organic (~25-30%) and consolidation effect (+10-15%). <br><br>
+                            <strong>Q4 FY26</strong> will be the first fully clean consolidated quarter. Investors must decompose organic vs. inorganic growth to properly value execution.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="slide-6" class="slide">
+                <div class="badge stagger s1">06 • MARKET DYNAMICS</div>
+                <h1 class="title stagger s1">Demand Drivers & Pricing</h1>
+
+                <div class="card stagger s2 tilt-card">
+                    <div class="table-responsive">
+                        <table class="table-custom">
+                            <thead><tr><th>Driver / Product</th><th>Details</th><th>Impact</th></tr></thead>
+                            <tbody>
+                                <tr>
+                                    <td style="color: var(--accent-primary); font-weight: bold;">NSP 2017 Target</td>
+                                    <td>India targets 300 MT steel by FY31. 35% via Induction Furnaces (~105 MT). Every tonne needs ramming mass.</td>
+                                    <td style="color: var(--success); font-weight: bold;">Direct Tailwind</td>
+                                </tr>
+                                <tr>
+                                    <td style="color: var(--accent-primary); font-weight: bold;">No EAF Threat</td>
+                                    <td>Electric Arc Furnaces require 3-5x capex. IF route remains dominant in India for the 5-10 year horizon.</td>
+                                    <td style="color: var(--success); font-weight: bold;">Stable Demand</td>
+                                </tr>
+                                <tr style="background: rgba(255, 140, 0, 0.05);">
+                                    <td style="color: var(--accent-secondary); font-weight: bold;">Raw Material Mix</td>
+                                    <td>Alpha quartzite (stone) is cheap/stable. Boron/boric oxide (additives) are imported & dollar-linked. Input cost: ₹3.5-4.3/kg vs realization ₹7-9/kg (~48-52% gross margin).</td>
+                                    <td style="color: var(--text-main); font-weight: bold;">Pass-through required</td>
+                                </tr>
+                                <tr style="background: rgba(255, 69, 0, 0.1);">
+                                    <td style="color: var(--accent-primary); font-weight: bold;">SGB Limited (New)</td>
+                                    <td>Higher bulk density via Metso = fewer fines = 30-35% better heat cycles. Premium of ₹1,000-1,500/MT.</td>
+                                    <td style="color: var(--accent-secondary); font-weight: bold;">+2-3% Margin Lever</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="slide-7" class="slide">
+                <div class="badge stagger s1">07 • ROADMAP</div>
+                <h1 class="title stagger s1">The 5.74L MTPA Execution</h1>
+
+                <div class="grid-3 stagger s2">
+                    <div class="card tilt-card">
+                        <h3 class="heading-font highlight-primary mb-1" style="font-size: 1.5rem;">01. Greenfield (WOS)</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;">
+                            New 12-13 acre site. Crushing unit on site. Mixing/packaging started Jan 2026. Capex is ₹5-6 Cr lower than prospectus estimates. Fully funded by IPO cash. Break-even at 30-40% util. <strong>Target Q1 FY27.</strong>
+                        </p>
+                    </div>
+                    <div class="card tilt-card">
+                        <h3 class="heading-font highlight-secondary mb-1" style="font-size: 1.5rem;">02. Rajasthan Export Hub</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;">
+                            Current freight to Mundra port kills export economics. Solution: Capex-light plant (~₹7-8 Cr) near Mundra in Rajasthan. Unlocks Middle East/Africa markets. Land deal closing Q1 FY27.
+                        </p>
+                    </div>
+                    <div class="card tilt-card">
+                        <h3 class="heading-font highlight-primary mb-1" style="font-size: 1.5rem;">03. SGB Premiumisation</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;">
+                            Commercialised Jan 2026. 50-60% customer transition expected within Q4 FY26. 30-35% better heat cycles = lower total cost for client, higher margin for Monolithisch.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="slide-8" class="slide">
+                <div class="badge stagger s1">08 • PEERS</div>
+                <h1 class="title stagger s1">Competitive Landscape</h1>
+                <p class="subtitle stagger s1">Monolithisch vs Raghav Productivity</p>
+
+                <div class="card stagger s2 tilt-card">
+                    <div class="table-responsive">
+                        <table class="table-custom">
+                            <thead><tr><th>Dimension</th><th>Monolithisch (SME)</th><th>Raghav Productivity (Main)</th></tr></thead>
+                            <tbody>
+                                <tr>
+                                    <td style="font-weight: bold; color: var(--accent-secondary);">P/E Ratio</td>
+                                    <td class="highlight-primary">~38-40x (More attractive growth-adjusted)</td>
+                                    <td>~65-70x (Premium for established franchise)</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold; color: var(--accent-secondary);">Revenue Scale</td>
+                                    <td>~₹150 Cr FY26E (Fast growing from small base)</td>
+                                    <td>~₹700+ Cr (Established scale, slower growth)</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold; color: var(--accent-secondary);">Location Edge</td>
+                                    <td class="highlight-primary">Eastern India moat (Decisive freight advantage)</td>
+                                    <td>Pan-India presence (No single-location moat)</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold; color: var(--accent-secondary);">Export Stage</td>
+                                    <td>Early stage (Rajasthan plant hunt underway)</td>
+                                    <td>Significant exports already operational</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold; color: var(--accent-secondary);">Mukul Agrawal (Holder)</td>
+                                    <td>2.76% (Dec-25)</td>
+                                    <td style="color: var(--danger);">Fully Exited Q2 FY26 (Sector rotation)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="slide-9" class="slide">
+                <div class="badge stagger s1">09 • CAPITAL EFFICIENCY</div>
+                <h1 class="title stagger s1">IPO Objectives & Deployment</h1>
+                <p class="subtitle stagger s1">Zero Deviation Confirmed by Monitoring Agency (Mar 5, 2026)</p>
+
+                <div class="grid-2 stagger s2">
+                    <div class="card tilt-card text-center" style="justify-content: center;">
+                        <div class="metric-value highlight-primary" style="font-size: 4rem;">₹82 Cr</div>
+                        <div class="metric-label">Total IPO Raised</div>
+                    </div>
+                    <div class="card tilt-card text-center" style="justify-content: center;">
+                        <div class="metric-value highlight-secondary" style="font-size: 4rem;">₹36 Cr</div>
+                        <div class="metric-label">Balance in Bank (Fully funds Greenfield)</div>
+                    </div>
+                </div>
+                <p class="stagger s3" style="text-align: center; color: var(--text-muted); margin-top: 15px;">Funds deployed into Brownfield Capex, Working Capital (strategic boron inventory), and Greenfield land acquisition.</p>
+            </div>
+
+            <div id="slide-10" class="slide">
+                <div class="badge stagger s1">10 • VALUATION</div>
+                <h1 class="title stagger s1">Market Discovery & Price Action</h1>
+                <p class="subtitle stagger s1">Tracking the Recent Correction</p>
+
+                <div class="grid-2 stagger s2">
+                    <div class="chart-box tilt-card">
+                        <canvas id="priceChart"></canvas>
+                    </div>
+                    
+                    <div>
+                        <div class="card primary-border tilt-card mb-1">
+                            <div class="table-responsive">
+                                <table class="table-custom" style="margin-top: 0; min-width: auto;">
+                                    <tbody>
+                                        <tr><td>Current Price</td><td style="font-size: 1.2rem; font-weight: bold; color: var(--text-main);">₹377</td></tr>
+                                        <tr><td>Market Cap</td><td class="highlight-primary" style="font-size: 1.2rem; font-weight: bold;">₹820 Cr</td></tr>
+                                        <tr><td>Trailing P/E</td><td class="highlight-secondary" style="font-size: 1.2rem; font-weight: bold;">~38-40x</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="valuation-callout">
+                            <p>
+                                At a market cap of <strong>₹820 Cr</strong> and CMP of <strong>₹377</strong>, the trailing P/E has moderated over recent months. <br><br>
+                                The recent price correction appears <strong class="highlight-secondary">somewhat disconnected</strong> from the company's ongoing expansion roadmap and strong Q3 margins. It seems to have been influenced largely by broader liquidity constraints in the SME platform and general market trends.<br><br>
+                                This divergence between price action and fundamental progress suggests a potential <span class="highlight-primary">valuation mismatch</span>, making the stock an interesting watch as it approaches the commissioning of its new ramming mass facility.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="slide-11" class="slide">
+                <div class="badge stagger s1" style="background: rgba(225, 29, 72, 0.1); border-color: rgba(225, 29, 72, 0.3); color: var(--danger);">11 • KEY RISKS</div>
+                <h1 class="title stagger s1">Risks & Watchpoints</h1>
+
+                <div class="grid-2 stagger s2">
+                    <div class="card danger-border tilt-card">
+                        <h3 class="heading-font mb-1" style="color: var(--danger); font-size: 1.4rem;">Greenfield Timeline</h3>
+                        <p style="color: var(--text-muted); line-height: 1.5; font-size: 0.95rem;">
+                            Q1 FY27 is the committed window with '1 month flex'. Any delay beyond June 2026 directly revises the FY27 revenue-doubling guidance.
+                        </p>
+                    </div>
+                    <div class="card danger-border tilt-card">
+                        <h3 class="heading-font mb-1" style="color: var(--danger); font-size: 1.4rem;">Customer Concentration</h3>
+                        <p style="color: var(--text-muted); line-height: 1.5; font-size: 0.95rem;">
+                            Top 2 groups (Rungta, Shyam Steel) = 24-25% of revenue. Any prolonged halt at these plants hits Monolithisch disproportionately.
+                        </p>
+                    </div>
+                    <div class="card danger-border tilt-card">
+                        <h3 class="heading-font mb-1" style="color: var(--danger); font-size: 1.4rem;">Boron Import Costs</h3>
+                        <p style="color: var(--text-muted); line-height: 1.5; font-size: 0.95rem;">
+                            Boric acid and boron oxide are dollar-linked imports. High Brent/USD levels create a 50-100 bps OPM headwind until pass-through occurs (1-2 quarters).
+                        </p>
+                    </div>
+                    <div class="card danger-border tilt-card">
+                        <h3 class="heading-font mb-1" style="color: var(--danger); font-size: 1.4rem;">Export Timing & Freight</h3>
+                        <p style="color: var(--text-muted); line-height: 1.5; font-size: 0.95rem;">
+                            Diesel surge raises delivery costs. Middle East export plans rely entirely on securing the Rajasthan plant land deal.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="slide-12" class="slide">
+                <div class="badge stagger s1">12 • EXECUTION CHECKLIST</div>
+                <h1 class="title stagger s1">What to Track</h1>
+
+                <div class="card tilt-card">
+                    <ul class="custom-list">
+                        <li><strong style="color: var(--accent-primary);">Greenfield Inauguration (Critical):</strong> BSE announcement of commercial production from Metallurgica WOS in Q1 FY27.</li>
+                        <li><strong style="color: var(--accent-secondary);">Q4 FY26 Results:</strong> First complete quarter with MIGPL included reveals true run-rate group profitability.</li>
+                        <li><strong style="color: var(--accent-primary);">FY27 Revenue Guidance:</strong> Reiteration of doubling FY26 consolidated revenue (~280-300 Cr).</li>
+                        <li><strong style="color: var(--accent-secondary);">SGB Limited Realisations:</strong> Average realisations per kg should move from ₹7.5-8 toward ₹8.5-9 as mix shifts.</li>
+                        <li><strong style="color: var(--accent-primary);">Rajasthan Land Deal:</strong> BSE announcement unlocks the 5-6k MT/month export story.</li>
+                        <li><strong style="color: var(--text-muted);">Mukul Agrawal Holding:</strong> PENDING (Apr/May filing). Increase validates; exit concerns (sentiment signal only).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="slide-13" class="slide">
+                <div class="badge stagger s1" style="background: transparent; border-color: var(--text-muted); color: var(--text-muted);">13 • THESIS SUMMARY</div>
+                <h1 class="title stagger s1">Opportunity vs. Risk</h1>
+
+                <div class="grid-2 stagger s2">
+                    <div class="card tilt-card" style="border-top: 3px solid var(--accent-primary);">
+                        <h3 class="heading-font mb-1" style="color: var(--accent-primary); font-size: 1.5rem;">Strengths & Upside</h3>
+                        <ul class="custom-list">
+                            <li>5x Revenue + 5x EBITDA by FY28 explicitly guided.</li>
+                            <li>Q3 FY26 strongest ever: Rev +43%, EBITDA +50%.</li>
+                            <li>MIGPL at book value (~17 Cr for 10-11 Cr/year earner).</li>
+                            <li>SGB Limited: 1000-1500/MT premium; 2-3% margin expansion.</li>
+                            <li>Eastern India freight moat & Metso Outotec machinery.</li>
+                            <li>Near-zero debt; 36 Cr IPO cash; fully funded expansion.</li>
+                        </ul>
+                    </div>
+                    <div class="card danger-border tilt-card">
+                        <h3 class="heading-font mb-1" style="color: var(--danger); font-size: 1.5rem;">Risks & Watch-points</h3>
+                        <ul class="custom-list risk-list">
+                            <li>Greenfield delay beyond Q1 FY27 revises guidance.</li>
+                            <li>MIGPL consolidation distorts 9M organic growth metrics.</li>
+                            <li>Boron cost headwind from geopolitical volatility.</li>
+                            <li>Top 2 customer groups = 24-25% revenue concentration.</li>
+                            <li>SGB Limited transition pace could lag expectations.</li>
+                            <li>Rajasthan land not yet acquired - exports aspirational.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div id="slide-14" class="slide">
+                <div class="badge stagger s1" style="background: transparent; border-color: var(--text-muted); color: var(--text-muted);">Legal Notice</div>
+                <h1 class="title stagger s1">Disclaimer</h1>
+
+                <div class="card stagger s2 tilt-card" style="margin-top: 2rem; padding: 4rem 2rem; text-align: center; border-bottom: none; border-top: 3px solid var(--text-muted);">
+                    <i class="fas fa-balance-scale" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1.5rem;"></i>
+                    
+                    <p style="color: var(--text-muted); font-size: 1.1rem; line-height: 1.8; max-width: 800px; margin: 0 auto 2.5rem auto;">
+                        The information provided in this presentation is for educational and informational purposes only. It does not constitute financial advice, an endorsement, or a recommendation to buy or sell any securities. Please consult with a SEBI-registered financial advisor before making any investment decisions.
+                    </p>
+                    
+                    <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 2.5rem; display: flex; justify-content: center;">
+                        <a href="https://x.com/sachprat07" target="_blank" aria-label="X (formerly Twitter)" style="color: var(--text-main); transition: color 0.3s; display: inline-flex; align-items: center; gap: 10px; font-family: 'Manrope', sans-serif; font-weight: 600; text-decoration: none; font-size: 1.3rem;">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="width: 26px; height: 26px; fill: currentColor;"><path d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"/></svg>
+                            @sachprat07
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    /* --- INITIALIZE VANILLA TILT --- */
+    VanillaTilt.init(document.querySelectorAll(".tilt-card"), {
+        max: 3,
+        speed: 400,
+        glare: true,
+        "max-glare": 0.05,
+        scale: 1.01
+    });
+
+    /* --- FURNACE EMBERS / SLAG BACKGROUND CANVAS --- */
+    const canvas = document.getElementById('bg-canvas');
+    const ctxCanvas = canvas.getContext('2d');
+    let width, height;
+    let particles = [];
+    
+    let mouse = { x: null, y: null, radius: 150 };
+    
+    window.addEventListener('mousemove', function(event) {
+        mouse.x = event.x; mouse.y = event.y;
+    });
+    window.addEventListener('mouseout', function() {
+        mouse.x = undefined; mouse.y = undefined;
+    });
+
+    // Touch events for mobile interaction
+    window.addEventListener('touchstart', function(event) {
+        if (event.touches.length > 0) {
+            mouse.x = event.touches[0].clientX; 
+            mouse.y = event.touches[0].clientY;
+        }
+    }, { passive: true });
+    
+    window.addEventListener('touchmove', function(event) {
+        if (event.touches.length > 0) {
+            mouse.x = event.touches[0].clientX; 
+            mouse.y = event.touches[0].clientY;
+        }
+    }, { passive: true });
+    
+    window.addEventListener('touchend', function() {
+        mouse.x = undefined; mouse.y = undefined;
+    });
+
+    function resizeCanvas() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        initParticles();
+    }
+    window.addEventListener('resize', resizeCanvas);
+    
+    class Ember {
+        constructor() {
+            this.x = Math.random() * width;
+            this.y = Math.random() * height;
+            this.size = Math.random() * 3 + 1;
+            this.speedY = Math.random() * -1.5 - 0.5; // Float up
+            this.speedX = (Math.random() - 0.5) * 1;
+            this.opacity = Math.random() * 0.5 + 0.1;
+            this.color = Math.random() > 0.3 ? '255, 69, 0' : '255, 140, 0'; // Molten Orange / Amber
+        }
+        
+        update() {
+            this.y += this.speedY;
+            this.x += this.speedX;
+            
+            // Flickering
+            this.opacity += (Math.random() - 0.5) * 0.05;
+            if(this.opacity < 0.1) this.opacity = 0.1;
+            if(this.opacity > 0.7) this.opacity = 0.7;
+
+            if (this.y < -10) {
+                this.y = height + 10;
+                this.x = Math.random() * width;
+            }
+
+            // Mouse/Touch interaction - scatter
+            if (mouse.x != null && mouse.y != null) {
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < mouse.radius) {
+                    let force = (mouse.radius - dist) / mouse.radius;
+                    this.x -= (dx / dist) * force * 5;
+                    this.y -= (dy / dist) * force * 2;
+                }
+            }
+        }
+        
+        draw() {
+            ctxCanvas.beginPath();
+            ctxCanvas.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctxCanvas.fillStyle = `rgba(${this.color}, ${this.opacity})`;
+            ctxCanvas.shadowBlur = 10;
+            ctxCanvas.shadowColor = `rgba(${this.color}, 0.8)`;
+            ctxCanvas.fill();
+            ctxCanvas.shadowBlur = 0; // reset
+        }
+    }
+
+    function initParticles() {
+        particles = [];
+        let numParticles = Math.floor((width * height) / 12000); 
+        for (let i = 0; i < numParticles; i++) {
+            particles.push(new Ember());
+        }
+    }
+
+    function animateParticles() {
+        ctxCanvas.clearRect(0, 0, width, height);
+        for (let i = 0; i < particles.length; i++) {
+            particles[i].update();
+            particles[i].draw();
+        }
+        requestAnimationFrame(animateParticles);
+    }
+
+    resizeCanvas();
+    animateParticles();
+
+    /* --- SLIDE NAVIGATION LOGIC --- */
+    function toggleSidebar() {
+        document.getElementById('main-sidebar').classList.toggle('open');
+        document.querySelector('.sidebar-overlay').classList.toggle('active');
+    }
+
+    function switchSlide(slideId, el) {
+        const targetSlide = document.getElementById(slideId);
+        document.getElementById('main-scroll').scrollTo(0, 0);
+
+        document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        
+        void targetSlide.offsetWidth; // Reflow
+        
+        targetSlide.classList.add('active');
+        if (el) el.classList.add('active');
+        
+        if (window.innerWidth <= 768) {
+            document.getElementById('main-sidebar').classList.remove('open');
+            document.querySelector('.sidebar-overlay').classList.remove('active');
+        }
+
+        if(slideId === 'slide-10') renderChart();
+    }
+
+    /* --- CHART JS LOGIC --- */
+    let priceChartInstance = null;
+
+    function renderChart() {
+        const chartCtx = document.getElementById('priceChart').getContext('2d');
+        if (priceChartInstance) priceChartInstance.destroy();
+
+        priceChartInstance = new Chart(chartCtx, {
+            type: 'line',
+            data: {
+                labels: ['Dec 25', 'Jan 26', 'Feb 26', 'Mar 26', 'Current'],
+                datasets: [{
+                    label: 'MONOLITH Price (₹)',
+                    data: [499.39, 469.94, 423.50, 406.20, 377.30],
+                    borderColor: '#ff4500', 
+                    backgroundColor: 'rgba(255, 69, 0, 0.1)',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#ff8c00', 
+                    pointBorderColor: '#121214',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 7,
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                animation: { duration: 1500, easing: 'easeOutQuart' },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1a1a1e',
+                        titleColor: '#9ca3af',
+                        bodyColor: '#ff4500',
+                        titleFont: { family: 'Manrope', size: 13 },
+                        bodyFont: { family: 'Teko', size: 18, weight: 'bold' },
+                        borderColor: 'rgba(255, 69, 0, 0.3)', borderWidth: 1, padding: 12,
+                        callbacks: { label: function(context) { return '₹ ' + context.parsed.y; } }
+                    }
+                },
+                scales: {
+                    y: { grid: { color: 'rgba(255, 69, 0, 0.08)' }, ticks: { color: '#9ca3af', font: {family: 'Manrope'} } },
+                    x: { grid: { display: false }, ticks: { color: '#9ca3af', font: {family: 'Manrope', size: 11} } }
+                }
+            }
+        });
+    }
+
+    // Init chart if starting on valuation slide
+    if(document.getElementById('slide-10').classList.contains('active')) renderChart();
+</script>
+</body>
+</html>
