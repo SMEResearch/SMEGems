@@ -861,5 +861,68 @@ industry experience and founding Aimtron Corporation in 2009) starts Aimtron Ele
 
     if(document.getElementById('slide-10').classList.contains('active')) renderChart();
 </script>
+    <style>
+  body {
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+  }
+</style>
+
+<script>
+  // Disable Right-Click
+  document.addEventListener('contextmenu', function(event) {
+    event.preventDefault();
+  });
+
+  // Disable specific keyboard shortcuts
+  document.addEventListener('keydown', function(event) {
+    // Prevent F12 (Developer Tools)
+    if (event.key === 'F12') {
+      event.preventDefault();
+    }
+    
+    // Prevent Ctrl+Shift+I / Cmd+Option+I (Inspect Element)
+    if ((event.ctrlKey && event.shiftKey && event.key === 'I') || 
+        (event.metaKey && event.altKey && event.key === 'i')) {
+      event.preventDefault();
+    }
+    
+    // Prevent Ctrl+Shift+J / Cmd+Option+J (Console)
+    if ((event.ctrlKey && event.shiftKey && event.key === 'J') || 
+        (event.metaKey && event.altKey && event.key === 'j')) {
+      event.preventDefault();
+    }
+    
+    // Prevent Ctrl+U / Cmd+U (View Page Source)
+    if ((event.ctrlKey && (event.key === 'U' || event.key === 'u')) || 
+        (event.metaKey && (event.key === 'U' || event.key === 'u'))) {
+      event.preventDefault();
+    }
+
+    // Prevent Ctrl+C / Cmd+C (Copy)
+    if ((event.ctrlKey && (event.key === 'C' || event.key === 'c')) || 
+        (event.metaKey && (event.key === 'C' || event.key === 'c'))) {
+      event.preventDefault();
+    }
+    
+    // Prevent Ctrl+P / Cmd+P (Print to PDF)
+    if ((event.ctrlKey && (event.key === 'P' || event.key === 'p')) || 
+        (event.metaKey && (event.key === 'P' || event.key === 'p'))) {
+      event.preventDefault();
+    }
+  });
+
+  // Disable dragging images/elements
+  document.addEventListener('dragstart', function(event) {
+    event.preventDefault();
+  });
+
+  // Extra layer to disable copying
+  document.addEventListener('copy', function(event) {
+    event.preventDefault();
+  });
+</script>
 </body>
 </html>
