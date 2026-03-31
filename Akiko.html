@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Akiko Global Services — SME Gems</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* ── AKIKO · DARK FINTECH THEME ── */
+        :root {
+            --bg:        #0d0903; /* Dark background to match surrounding environment */
+            --bg-warm:   #1f160a; 
+            --bg-ink:    #1a1206; /* Sidebar & Card background */
+            --orange:    #e8540a;
+            --orange-lt: rgba(232,84,10,0.15);
+            --orange-md: rgba(232,84,10,0.30);
+            --purple:    #a89ee8; /* Brightened for dark mode readability */
+            --purple-lt: rgba(168,158,232,0.15);
+            --gold:      #e8a020;
+            --gold-lt:   rgba(232,160,32,0.15);
+            --ink:       #f5efe4; /* Light text for dark background */
+            --ink-60:    #b8a88a; 
+            --ink-30:    #6b5c3e; 
+            --success:   #27ae60;
+            --danger:    #e74c3c;
+            --border:    rgba(245,239,228,0.10);
+            --card:      #1a1206; /* Matches sidebar for unified look */
+            --serif:     'DM Sans', system-ui, sans-serif; /* Unified Font */
+            --sans:      'DM Sans', system-ui, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: var(--sans);
+            width: 100%; height: 100vh; height: 100dvh;
+            overflow: hidden;
+        }
+
+        /* ── BACKGROUND CANVAS ── */
+        #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+        /* ── LAYOUT ── */
+        #app { display: flex; width: 100%; height: 100%; position: relative; z-index: 1; overflow: hidden; }
+
+        /* ── MOBILE HEADER ── */
+        .mob-bar {
+            display: none; position: fixed; top: 0; width: 100%; z-index: 99;
+            background: rgba(26,18,6,0.96); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0.9rem 1.4rem; align-items: center; justify-content: space-between;
+        }
+        .mob-brand { font-family: var(--serif); font-size: 1.5rem; color: var(--ink); font-weight: 700; }
+        .mob-brand span { color: var(--orange); }
+        .mob-btn { background: none; border: none; cursor: pointer; font-size: 1.4rem; color: var(--ink); }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: 260px; min-width: 260px; flex-shrink: 0;
+            background: var(--bg-ink); color: #f5efe4;
+            display: flex; flex-direction: column;
+            margin: 0.9rem; border-radius: 14px;
+            height: calc(100% - 1.8rem);
+            overflow-y: auto; overflow-x: hidden;
+            transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+            box-shadow: 12px 0 40px rgba(0,0,0,0.4);
+            z-index: 100;
+            border: 1px solid var(--border);
+        }
+        .sidebar::-webkit-scrollbar { width: 0; }
+
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 90; backdrop-filter: blur(2px); opacity: 0; transition: opacity 0.3s; }
+        .overlay.on { display: block; opacity: 1; }
+
+        /* sidebar brand */
+        .sb-brand {
+            padding: 1.6rem 1.4rem 1.3rem;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            flex-shrink: 0;
+        }
+        .sb-brand .name { font-family: var(--serif); font-size: 1.75rem; line-height: 1.05; color: #f5efe4; letter-spacing: -0.5px; font-weight: 700; }
+        .sb-brand .name span { color: var(--orange); }
+        .sb-brand .sub { font-size: 0.68rem; letter-spacing: 2px; color: var(--gold); margin-top: 5px; font-weight: 600; text-transform: uppercase; }
+        .sb-brand .made { font-size: 0.64rem; color: rgba(245,239,228,0.35); margin-top: 3px; letter-spacing: 1px; }
+
+        /* nav items */
+        .nav {
+            padding: 0.6rem 0.9rem; margin: 0.1rem 0.7rem; border-radius: 8px;
+            display: flex; align-items: center; gap: 9px;
+            font-size: 0.82rem; font-weight: 500; color: rgba(245,239,228,0.55);
+            cursor: pointer; transition: all 0.25s ease;
+        }
+        .nav:hover { background: rgba(232,84,10,0.12); color: rgba(245,239,228,0.9); }
+        .nav.active { background: var(--orange); color: #fff; box-shadow: 0 4px 16px rgba(232,84,10,0.35); }
+        .nav i { width: 16px; text-align: center; font-size: 0.85rem; }
+
+        /* ── MAIN ── */
+        .main {
+            flex: 1; overflow-y: auto; height: 100%;
+            padding: 2rem 3.2rem; scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* ── SLIDES ── */
+        .slide { display: none; max-width: 1160px; margin: 0 auto; padding-bottom: 3rem; position: relative; z-index: 2; }
+        .slide.on { display: block; }
+
+        /* stagger animation */
+        .fx { animation: riseIn 0.48s cubic-bezier(0.2,0.8,0.2,1) forwards; opacity: 0; }
+        .d1{animation-delay:.07s} .d2{animation-delay:.17s} .d3{animation-delay:.27s} .d4{animation-delay:.37s}
+        @keyframes riseIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+        /* ── TYPOGRAPHY ── */
+        .eyebrow {
+            display: inline-block; font-size: 0.72rem; font-weight: 700; letter-spacing: 2.5px;
+            text-transform: uppercase; color: var(--orange);
+            border: 1px solid var(--orange-md); background: var(--orange-lt);
+            padding: 0.3rem 0.8rem; border-radius: 3px; margin-bottom: 0.7rem;
+        }
+        .page-title {
+            font-family: var(--serif); font-size: clamp(2.2rem,4.2vw,3.5rem); font-weight: 700;
+            line-height: 1.05; color: var(--ink); margin-bottom: 0.35rem;
+            letter-spacing: -0.5px;
+        }
+        .page-sub {
+            font-size: 0.97rem; color: var(--ink-60); margin-bottom: 1.7rem;
+            font-weight: 400; line-height: 1.5;
+        }
+        .page-sub strong { color: var(--orange); font-weight: 600; }
+        .hl-orange { color: var(--orange); font-weight: 700; }
+        .hl-purple { color: var(--purple); font-weight: 700; }
+        .hl-gold   { color: var(--gold);   font-weight: 700; }
+        .hl-green  { color: var(--success); font-weight: 700; }
+        .hl-red    { color: var(--danger);  font-weight: 700; }
+
+        /* ── GRIDS ── */
+        .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+        .g3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.1rem; }
+        .g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; }
+        .g5 { display: grid; grid-template-columns: repeat(5,1fr); gap: 0.9rem; }
+        .mt1{margin-top:1rem} .mt2{margin-top:1.5rem} .mb1{margin-bottom:1rem}
+
+        /* ── CARDS ── */
+        .card {
+            background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+            padding: 1.3rem; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            transition: all 0.25s ease; display: flex; flex-direction: column;
+            border-bottom: 3px solid transparent;
+        }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,0.5); border-bottom-color: var(--orange); }
+        .card.o-border  { border-bottom-color: var(--orange); }
+        .card.p-border  { border-bottom-color: var(--purple); }
+        .card.g-border  { border-bottom-color: var(--gold); }
+        .card.s-border  { border-bottom-color: var(--success); }
+        .card.r-border  { border-bottom-color: var(--danger); }
+        .card.dark      { background: #0a0702; color: #f5efe4; border-color: var(--border); }
+        .card.warm      { background: var(--bg-warm); border-color: rgba(201,134,15,0.2); }
+
+        /* metric cards */
+        .m-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--ink-60); }
+        .m-value { font-family: var(--serif); font-size: clamp(1.6rem,2.8vw,2.4rem); color: var(--ink); margin: 0.1rem 0; line-height: 1; font-weight: 700;}
+        .m-note  { font-size: 0.72rem; color: var(--ink-60); margin-top: 2px; }
+
+        /* ── SECTION HEADINGS inside cards ── */
+        .c-head { font-family: var(--serif); font-size: 1.4rem; color: var(--ink); margin-bottom: 0.75rem; font-weight: 700;}
+        .c-head.o { color: var(--orange); }
+        .c-head.p { color: var(--purple); }
+
+        /* ── LISTS ── */
+        ul.pts { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+        ul.pts li { position: relative; padding-left: 1.3rem; font-size: 0.9rem; color: var(--ink-60); line-height: 1.55; }
+        ul.pts li::before { content: '▸'; position: absolute; left: 0; color: var(--orange); font-size: 0.75rem; top: 3px; }
+        ul.pts.check li::before { content: '✓'; color: var(--success); font-weight: 900; font-size: 0.8rem; }
+        ul.pts.cross li::before { content: '✗'; color: var(--danger); font-weight: 900; font-size: 0.8rem; }
+
+        /* ── TABLES ── */
+        .tbl-wrap { width: 100%; overflow-x: auto; }
+        table.tbl { width: 100%; border-collapse: collapse; min-width: 380px; }
+        table.tbl th, table.tbl td { padding: 0.75rem 0.7rem; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
+        table.tbl th { font-family: var(--serif); font-weight: 700; font-size: 0.92rem; color: var(--orange); letter-spacing: 0.3px; }
+        table.tbl tr:hover td { background: var(--orange-lt); }
+        table.tbl.dark th { color: var(--gold); }
+        table.tbl.dark td { color: rgba(245,239,228,0.82); border-color: rgba(255,255,255,0.06); }
+        table.tbl.dark tr:hover td { background: rgba(232,84,10,0.1); }
+
+        /* ── CALLOUT BOXES ── */
+        .callout {
+            border-radius: 8px; padding: 1.3rem 1.4rem; margin-top: 1.1rem;
+            border-left: 4px solid var(--orange);
+            background: linear-gradient(135deg, var(--orange-lt), rgba(0,0,0,0.2));
+        }
+        .callout.gold {
+            border-color: var(--gold);
+            background: linear-gradient(135deg, var(--gold-lt), rgba(0,0,0,0.2));
+        }
+        .callout.purple {
+            border-color: var(--purple);
+            background: linear-gradient(135deg, var(--purple-lt), rgba(0,0,0,0.2));
+        }
+        .callout.danger {
+            border-color: var(--danger);
+            background: linear-gradient(135deg, rgba(231,76,60,0.1), rgba(0,0,0,0.2));
+        }
+        .callout p { font-size: 0.9rem; color: var(--ink); line-height: 1.65; }
+
+        /* ── TIMELINE ── */
+        .tl { position: relative; padding-left: 1.7rem; }
+        .tl::before { content:''; position:absolute; left:5px; top:8px; bottom:8px; width:2px; background: linear-gradient(to bottom, var(--orange), rgba(232,84,10,0.1)); }
+        .tl-item { position: relative; margin-bottom: 1.3rem; }
+        .tl-item::before { content:''; position:absolute; left:-1.46rem; top:5px; width:11px; height:11px; border-radius:50%; background:var(--orange); box-shadow: 0 0 0 3px var(--orange-lt); }
+        .tl-date  { font-size: 0.73rem; font-weight: 700; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; }
+        .tl-event { font-size: 0.97rem; font-weight: 600; color: var(--ink); margin: 2px 0 3px; }
+        .tl-detail{ font-size: 0.86rem; color: var(--ink-60); line-height: 1.5; }
+
+        /* ── RISK CARDS ── */
+        .risk-card {
+            background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1.1rem 1.2rem; border-top: 3px solid var(--danger);
+        }
+        .risk-card h4 { font-family: var(--serif); font-weight: 700; font-size: 1.15rem; color: var(--ink); margin-bottom: 0.35rem; }
+        .risk-card .level { display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 1.5px; padding: 0.2rem 0.6rem; border-radius: 3px; margin-left: 0.5rem; vertical-align: middle; }
+        .risk-card .level.high   { background: rgba(231,76,60,0.15); color: var(--danger); }
+        .risk-card .level.medium { background: rgba(232,160,32,0.15); color: var(--gold); }
+        .risk-card p { font-size: 0.86rem; color: var(--ink-60); line-height: 1.55; }
+
+        /* ── PROGRESS BAR ── */
+        .pbar { background: rgba(255,255,255,0.08); border-radius: 3px; height: 6px; overflow: hidden; margin-top: 5px; }
+        .pfill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--orange), var(--gold)); transition: width 1.2s ease; }
+
+        /* ── DIVIDER ── */
+        .rule { border: none; border-top: 1px solid var(--border); margin: 1.1rem 0; }
+
+        /* ── CHART BOX ── */
+        .chart-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1.2rem; }
+
+        /* ── STRUCTURE DIAGRAM ── */
+        .struct-node {
+            border: 2px solid var(--border); border-radius: 8px; padding: 1rem 1.2rem;
+            text-align: center; background: var(--card);
+        }
+        .struct-node.parent { border-color: var(--purple); background: var(--purple); color: #f5efe4; }
+        .struct-node h4 { font-family: var(--serif); font-weight: 700; font-size: 1.1rem; margin-bottom: 4px; }
+        .struct-node .sub-label { font-size: 0.75rem; color: var(--ink-60); }
+        .struct-node.parent .sub-label { color: rgba(245,239,228,0.65); }
+        .struct-line { display: flex; justify-content: center; }
+        .struct-line::before { content:''; width:2px; height:1.5rem; background: var(--border); }
+        .struct-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-top: 0; }
+
+        /* ── ESTIMATES DISCLAIMER ── */
+        .est-note {
+            margin-top: 0.8rem; padding: 0.6rem 0.9rem;
+            background: var(--gold-lt); border: 1px solid rgba(201,134,15,0.25); border-radius: 5px;
+            font-size: 0.78rem; color: var(--ink-60); line-height: 1.5;
+        }
+        .est-note strong { color: var(--gold); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width:1200px) { .g4,.g5 { grid-template-columns: repeat(2,1fr); } .main { padding: 1.5rem 2rem; } }
+        @media (max-width:992px)  { .g3 { grid-template-columns: 1fr 1fr; } .g2 { grid-template-columns: 1fr; } }
+        @media (max-width:768px) {
+            .mob-bar { display: flex; }
+            .sidebar { position: fixed; left: 0; top: 0; margin: 0; height: 100dvh; border-radius: 0; transform: translateX(-100%); z-index: 105; }
+            .sidebar.open { transform: translateX(0); }
+            .main { padding: 1rem; padding-top: 5rem; padding-bottom: 2rem; }
+            .g3,.g4,.g5 { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width:480px) { .g2,.g3,.g4,.g5 { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div id="app">
+
+    <div class="mob-bar">
+        <div class="mob-brand">AKIKO <span>GLOBAL</span></div>
+        <button class="mob-btn" onclick="toggleSB()"><i class="fas fa-bars"></i></button>
+    </div>
+
+    <div class="overlay" onclick="toggleSB()"></div>
+
+    <div class="sidebar" id="sb">
+        <div class="sb-brand">
+            <div class="name">AKIKO <span>GLOBAL</span></div>
+            <div class="sub">NSE SME · AKIKO</div>
+            <div class="made">SME GEMS</div>
+        </div>
+        <div class="nav active" onclick="go('s1',this)"><i class="fas fa-chart-pie"></i> 01. Snapshot</div>
+        <div class="nav" onclick="go('s2',this)"><i class="fas fa-cubes"></i> 02. Business Model</div>
+        <div class="nav" onclick="go('s3',this)"><i class="fas fa-sitemap"></i> 03. Corporate Structure</div>
+        <div class="nav" onclick="go('s4',this)"><i class="fas fa-chart-bar"></i> 04. Financials</div>
+        <div class="nav" onclick="go('s5',this)"><i class="fas fa-sliders-h"></i> 05. Revenue Mix</div>
+        <div class="nav" onclick="go('s6',this)"><i class="fas fa-mobile-alt"></i> 06. AkikoPay</div>
+        <div class="nav" onclick="go('s7',this)"><i class="fas fa-balance-scale"></i> 07. Peer Comparison</div>
+        <div class="nav" onclick="go('s8',this)"><i class="fas fa-exclamation-triangle"></i> 08. Key Risks</div>
+        <div class="nav" onclick="go('s9',this)"><i class="fas fa-star"></i> 09. Thesis Summary</div>
+        <div class="nav" onclick="go('s10',this)"><i class="fas fa-gavel"></i> 10. Disclaimer</div>
+    </div>
+
+    <div class="main" id="main-scroll">
+        <div>
+
+        <div id="s1" class="slide on">
+            <div class="eyebrow fx d1">SME Gems · Hidden Champions of the SME Platform</div>
+            <h1 class="page-title fx d1">Akiko Global Services Ltd</h1>
+            <p class="page-sub fx d2">India's fastest-growing fintech DSA — credit cards, loans &amp; the AkikoPay ecosystem (themoneyfair.com). <strong>From credit card distributor to fintech ecosystem — the story the market is still pricing in.</strong></p>
+
+            <div class="g5 fx d2 mb1">
+                <div class="card o-border">
+                    <div class="m-label">Current Price</div>
+                    <div class="m-value hl-orange">₹200</div>
+                    <div class="m-note">NSE SME: AKIKO</div>
+                </div>
+                <div class="card">
+                    <div class="m-label">Market Cap</div>
+                    <div class="m-value">₹216 Cr</div>
+                    <div class="m-note">Mar 2026</div>
+                </div>
+                <div class="card g-border">
+                    <div class="m-label">TTM P/E</div>
+                    <div class="m-value hl-gold">~13.4×</div>
+                </div>
+                <div class="card">
+                    <div class="m-label">TTM Revenue</div>
+                    <div class="m-value">₹154 Cr</div>
+                    <div class="m-note">Apr–Feb ₹153 Cr filed</div>
+                </div>
+                <div class="card p-border">
+                    <div class="m-label">Q3 FY26 Rev YoY</div>
+                    <div class="m-value hl-purple">175%</div>
+                    <div class="m-note">Highest quarter ever</div>
+                </div>
+            </div>
+
+            <div class="card fx d3 mb1">
+                <h2 class="c-head" style="font-size:1.6rem; margin-bottom:0.8rem;">Executive Summary</h2>
+                <p style="color:var(--ink-60); line-height:1.72; font-size:0.96rem;">
+                    Founded by Ankur Gaba, Akiko Global Services (NSE SME: AKIKO, listed Jul 2025 via Jun 2024 IPO at ₹77) is India's fastest-scaling fintech Direct Selling Agent — distributing credit cards and loans to retail consumers through 40+ banking and NBFC partners including HDFC, ICICI, Axis, Yes Bank, and IndusInd Bank.<br><br>
+                    The company has compounded revenue from <strong>₹22 Cr (FY23) → ₹76 Cr (FY25) → ₹154 Cr TTM</strong>, with margins expanding as loans (70% of revenue, 3–4% commission on ₹300–400 Cr monthly disbursals) overtake cards (30%, flat ₹2,800–4,000/activation). The emerging third leg — <strong class="hl-orange">AkikoPay</strong>, a payments + credit super app with PPI licence and 25M customer database — provides a structural margin optionality that is early-stage but architecturally significant.<br><br>
+                    At 13.4× TTM P/E and 1.41× P/Sales, the market is pricing a growth business cheaply relative to the quality of earnings and velocity of revenue scaling.
+                </p>
+            </div>
+
+            <div class="g3 fx d4">
+                <div class="card warm">
+                    <div class="m-label" style="margin-bottom:0.5rem;">Promoter Holding</div>
+                    <div class="m-value" style="font-size:1.9rem;">67%</div>
+                    <div class="pbar"><div class="pfill" style="width:67%"></div></div>
+                    <div class="m-note" style="margin-top:6px;">Increased 66.92% → 67.29% via open-market buys</div>
+                </div>
+                <div class="card warm">
+                    <div class="m-label" style="margin-bottom:0.5rem;">Monthly Disbursals</div>
+                    <div class="m-value" style="font-size:1.9rem; color:var(--purple);">₹300–400 Cr</div>
+                    <div class="pbar"><div class="pfill" style="width:72%; background: linear-gradient(90deg,var(--purple),#6b5ce7);"></div></div>
+                    <div class="m-note" style="margin-top:6px;">Loan aggregation — 3–4% commission earns</div>
+                </div>
+                <div class="card warm">
+                    <div class="m-label" style="margin-bottom:0.5rem;">Digital Revenue Mix</div>
+                    <div class="m-value" style="font-size:1.9rem; color:var(--success);">40%</div>
+                    <div class="pbar"><div class="pfill" style="width:40%; background: linear-gradient(90deg, var(--success), #27ae60);"></div></div>
+                    <div class="m-note" style="margin-top:6px;">From near-zero FY23 · targeting 60%+</div>
+                </div>
+            </div>
+
+            <div class="callout gold mt2 fx d4">
+                <p><strong class="hl-gold">Governance Standout:</strong> Akiko files monthly revenue disclosures with NSE — most SME peers only disclose half-yearly. Jan ₹19.81 Cr · Feb ₹18.24 Cr · Apr–Feb ₹153 Cr filed on time. Promoter holding <em>increased</em> via open-market purchases per NSE disclosures — skin in the game is genuine.</p>
+            </div>
+        </div>
+
+        <div id="s2" class="slide">
+            <div class="eyebrow fx d1">02 · Business Model</div>
+            <h1 class="page-title fx d1">Asset-Light DSA at Scale + AkikoPay Ecosystem</h1>
+            <p class="page-sub fx d2">Three revenue levers — credit card distribution, loan aggregation, and the emerging AkikoPay super app</p>
+
+            <div class="g3 fx d2 mb1">
+                <div class="card o-border">
+                    <div style="font-size:2rem; margin-bottom:0.6rem;">💳</div>
+                    <h3 class="c-head o">Credit Card Distribution</h3>
+                    <div style="display:inline-block; background:var(--orange); color:#fff; font-size:0.72rem; font-weight:700; padding:0.2rem 0.6rem; border-radius:3px; margin-bottom:0.8rem; letter-spacing:1px;">30% OF REVENUE</div>
+                    <ul class="pts">
+                        <li>₹2,800–₹4,000 commission per activated card</li>
+                        <li>16,000 cards/month distributed</li>
+                        <li>40+ partner banks/NBFCs: HDFC, ICICI, Axis, Yes, IndusInd</li>
+                        <li>Was 65–70% of mix in FY23 — diversifying as loans scale rapidly</li>
+                    </ul>
+                </div>
+                <div class="card p-border">
+                    <div style="font-size:2rem; margin-bottom:0.6rem;">🏦</div>
+                    <h3 class="c-head p">Loan Distribution</h3>
+                    <div style="display:inline-block; background:var(--purple); color:#fff; font-size:0.72rem; font-weight:700; padding:0.2rem 0.6rem; border-radius:3px; margin-bottom:0.8rem; letter-spacing:1px;">70% OF REVENUE</div>
+                    <ul class="pts">
+                        <li>Personal, business, home &amp; mortgage loans</li>
+                        <li>3–4% commission on disbursals</li>
+                        <li>Monthly aggregation ₹300–400 Cr</li>
+                        <li>40/60 split personal vs business loans</li>
+                        <li>90% unsecured, 10% secured</li>
+                        <li>₹30K–₹1.2L revenue per loan lead (10–30× vs card)</li>
+                    </ul>
+                </div>
+                <div class="card g-border">
+                    <div style="font-size:2rem; margin-bottom:0.6rem;">📱</div>
+                    <h3 class="c-head" style="color:var(--gold);">AkikoPay Super App</h3>
+                    <div style="display:inline-block; background:var(--gold); color:#fff; font-size:0.72rem; font-weight:700; padding:0.2rem 0.6rem; border-radius:3px; margin-bottom:0.8rem; letter-spacing:1px;">EARLY STAGE · OPTIONALITY</div>
+                    <ul class="pts">
+                        <li>Payments + credit ecosystem via PPI licence (I Serve You)</li>
+                        <li>Fino Bank as nodal partner — RBI-compliant</li>
+                        <li>25K downloads in first 10 days (Android)</li>
+                        <li>Insurance Apr 2026 · MF advisory Jan/Feb 2026</li>
+                        <li>Cross-sell on 25M customer database — zero incremental CAC</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card dark fx d3">
+                <h3 class="c-head" style="color:var(--gold); font-size:1.3rem; margin-bottom:0.8rem;">Why Loans Beat Cards — The Revenue Quality Shift</h3>
+                <div class="g3" style="gap:0.8rem;">
+                    <div style="padding:1rem; background:rgba(232,84,10,0.12); border-radius:6px; border:1px solid rgba(232,84,10,0.2);">
+                        <div style="font-family:var(--serif); font-weight:700; font-size:1.6rem; color:var(--orange);">₹3,400</div>
+                        <div style="font-size:0.78rem; color:rgba(245,239,228,0.6); margin-top:3px;">Average commission per card activation</div>
+                    </div>
+                    <div style="padding:1rem; background:rgba(45,31,110,0.25); border-radius:6px; border:1px solid rgba(45,31,110,0.4);">
+                        <div style="font-family:var(--serif); font-weight:700; font-size:1.6rem; color:#a89ee8;">₹30K–₹1.2L</div>
+                        <div style="font-size:0.78rem; color:rgba(245,239,228,0.6); margin-top:3px;">Revenue per loan lead (3–4% on ₹10–30L disbursal)</div>
+                    </div>
+                    <div style="padding:1rem; background:rgba(26,122,74,0.15); border-radius:6px; border:1px solid rgba(26,122,74,0.25);">
+                        <div style="font-family:var(--serif); font-weight:700; font-size:1.6rem; color:var(--success);">10–30×</div>
+                        <div style="font-size:0.78rem; color:rgba(245,239,228,0.6); margin-top:3px;">Higher revenue per conversion · loans vs cards</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="callout gold mt2 fx d4">
+                <p><strong class="hl-gold">Zero Credit Risk Model:</strong> Akiko bears no credit risk whatsoever — banks and NBFCs own all NPAs. The company is a pure-commission distribution business. Revenue quality is high: the 10.5% TTM PAT margin is rare in a DSA — most peers earn 3–8%.</p>
+            </div>
+        </div>
+
+        <div id="s3" class="slide">
+            <div class="eyebrow fx d1">03 · Corporate Structure</div>
+            <h1 class="page-title fx d1">Parent, Subsidiaries &amp; Their Roles</h1>
+            <p class="page-sub fx d2">A three-node structure — India DSA core, Dubai DSA sub, and the AkikoPay operating division</p>
+
+            <div class="fx d2 mb1">
+                <div class="struct-node parent" style="max-width:340px; margin:0 auto 0;">
+                    <h4>Akiko Global Services Ltd</h4>
+                    <div class="sub-label">NSE SME: AKIKO · Listed Entity</div>
+                </div>
+                <div class="struct-line"></div>
+                <div class="struct-row">
+                    <div class="struct-node" style="border-color:var(--orange);">
+                        <h4 style="color:var(--orange);">AkikoPay (India)</h4>
+                        <div class="sub-label">Operating Division</div>
+                        <ul class="pts mt1" style="text-align:left;">
+                            <li>PPI licence via I Serve You</li>
+                            <li>Fino Bank as nodal partner</li>
+                            <li>RuPay card, utility payments</li>
+                            <li>Insurance + MF from Apr 2026</li>
+                            <li>₹2.8 Cr IPO proceeds funded app build</li>
+                        </ul>
+                    </div>
+                    <div class="struct-node warm" style="border-color:var(--gold);">
+                        <h4 style="color:var(--gold);">Promoter Group (67%)</h4>
+                        <div class="sub-label">5 Promoters</div>
+                        <div style="margin-top:0.8rem; font-size:0.84rem; color:var(--ink-60); text-align:left; line-height:1.7;">
+                            Ankur Gaba — Founder &amp; BDH<br>
+                            Richa Gaba — CFO &amp; Director<br>
+                            Priyanka Dutta — MD (current)<br>
+                            Puneet Mehta — Director<br>
+                            Gurjeet Singh Walia — Director
+                        </div>
+                    </div>
+                    <div class="struct-node" style="border-color:var(--purple);">
+                        <h4 style="color:var(--purple);">Akiko Global Commercial Broker LLC</h4>
+                        <div class="sub-label">70% owned · Dubai, UAE</div>
+                        <ul class="pts mt1" style="text-align:left;">
+                            <li>Similar DSA model, 3 banking partners</li>
+                            <li>More compliance-focused than India</li>
+                            <li>AED 1.69M revenue FY24 (~₹4 Cr)</li>
+                            <li>Acquired Sep 2024 from Ankur Gaba &amp; Rajat Arora (related party)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="g2 fx d3">
+                <div class="card s-border">
+                    <h3 class="c-head" style="color:var(--success); font-size:1.25rem; margin-bottom:0.7rem;">Structure Benefits</h3>
+                    <ul class="pts">
+                        <li>India entity is the core engine — asset-light DSA with expanding margins</li>
+                        <li>Dubai sub adds NRI expat lending and credit card channel; compliance-focus adds credibility</li>
+                        <li>70% Dubai ownership means consolidated revenue reporting; minority (related-party — watch)</li>
+                        <li>IPO funded real assets: ERP ₹1.7 Cr + app ₹2.8 Cr</li>
+                        <li>Multi-promoter structure (5 promoters) provides operational resilience</li>
+                    </ul>
+                </div>
+                <div class="card r-border">
+                    <h3 class="c-head" style="color:var(--danger); font-size:1.25rem; margin-bottom:0.7rem;">Structure Risks</h3>
+                    <ul class="pts">
+                        <li>30% Dubai minority held by Ankur Gaba (founder) — related-party acquisition Sep 2024; conflict-of-interest optics</li>
+                        <li>Dubai sub AED 1.69M revenue is small vs India base; UAE geopolitical situation adds near-term uncertainty</li>
+                        <li>100% revenue from bank/NBFC relationships — key partner exit = direct income impact</li>
+                        <li>AkikoPay is fully intra-group — no external partner has financial stake in its success</li>
+                        <li>Leadership transition: Ankur Gaba disclosed in Q3 FY26 call he will take MD role next FY — planned, publicly disclosed</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="s4" class="slide">
+            <div class="eyebrow fx d1">04 · Financial Performance</div>
+            <h1 class="page-title fx d1">Compounding Revenue, Expanding Margins</h1>
+            <p class="page-sub fx d2">₹22 Cr (FY23) → ₹154 Cr TTM · Q3 FY26 was the <strong>highest quarter in company history</strong></p>
+
+            <div class="g4 fx d2 mb1">
+                <div class="card o-border">
+                    <div class="m-label">Q3 FY26 Revenue</div>
+                    <div class="m-value hl-orange">₹50.5 Cr</div>
+                    <div class="m-note" style="color:var(--success);">+175% YoY · Highest ever</div>
+                </div>
+                <div class="card">
+                    <div class="m-label">Q3 FY26 PAT</div>
+                    <div class="m-value">₹5.7 Cr</div>
+                    <div class="m-note" style="color:var(--success);">+37% QoQ</div>
+                </div>
+                <div class="card g-border">
+                    <div class="m-label">Q3 EBITDA Margin</div>
+                    <div class="m-value hl-gold">16%</div>
+                    <div class="m-note">Expanding trajectory</div>
+                </div>
+                <div class="card">
+                    <div class="m-label">TTM PAT</div>
+                    <div class="m-value">₹16.1 Cr</div>
+                    <div class="m-note">10.5% TTM PAT margin</div>
+                </div>
+            </div>
+
+            <div class="g2 fx d3 mb1">
+                <div class="chart-wrap">
+                    <div style="font-family:var(--serif); font-size:1.15rem; font-weight:700; margin-bottom:0.7rem; color:var(--ink);">Revenue (₹ Cr)</div>
+                    <div style="height:220px;"><canvas id="revChart"></canvas></div>
+                </div>
+                <div class="chart-wrap">
+                    <div style="font-family:var(--serif); font-size:1.15rem; font-weight:700; margin-bottom:0.7rem; color:var(--ink);">PAT (₹ Cr)</div>
+                    <div style="height:220px;"><canvas id="patChart"></canvas></div>
+                </div>
+            </div>
+
+            <div class="card fx d4">
+                <h3 class="c-head" style="font-size:1.3rem; margin-bottom:0.8rem;">Full Financial Summary</h3>
+                <div class="tbl-wrap">
+                    <table class="tbl">
+                        <thead><tr><th>Metric</th><th>FY23</th><th>FY24</th><th>FY25</th><th>9M FY26</th><th>TTM</th></tr></thead>
+                        <tbody>
+                            <tr><td style="font-weight:600;">Revenue (₹ Cr)</td><td>22</td><td>32</td><td>76</td><td>115</td><td>154</td></tr>
+                            <tr><td style="font-weight:600;">PAT (₹ Cr)</td><td>1</td><td>3</td><td>8</td><td>11.9</td><td>16.1</td></tr>
+                            <tr><td style="font-weight:600;">PAT Margin</td><td>~4.5%</td><td>~9.4%</td><td>~10.5%</td><td>~10.3%</td><td>10.5%</td></tr>
+                            <tr><td style="font-weight:600;">EBITDA Margin</td><td>6%</td><td>9%</td><td>15%</td><td>~14.5%</td><td>~15%</td></tr>
+                            <tr><td style="font-weight:600;">ROE</td><td>—</td><td>—</td><td>16.7%</td><td>—</td><td>—</td></tr>
+                            <tr><td style="font-weight:600;">WC Days</td><td>—</td><td>—</td><td>189</td><td colspan="2" style="color:var(--success); font-weight:700;">98 (H1 FY26, improved)</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="callout mt2 fx d4">
+                <p><strong class="hl-orange">Q3 FY26 context:</strong> Single quarter revenue of ₹50.5 Cr exceeds the entirety of FY24 (₹32 Cr full year). The acceleration is real — Apr–Feb revenue of ₹153 Cr is already published via NSE monthly disclosures. FY26 full year of ~₹170 Cr is tracking well.</p>
+            </div>
+        </div>
+
+        <div id="s5" class="slide">
+            <div class="eyebrow fx d1">05 · Revenue Mix & Operating Leverage</div>
+            <h1 class="page-title fx d1">The Pivot Driving Margin Expansion</h1>
+            <p class="page-sub fx d2">Loan distribution's superior per-lead yield is structurally expanding EBITDA as the revenue mix pivots away from cards</p>
+
+            <div class="g2 fx d2 mb1">
+                <div class="chart-wrap">
+                    <div style="font-family:var(--serif); font-size:1.15rem; font-weight:700; margin-bottom:0.7rem;">Revenue Mix % — Cards vs Loans</div>
+                    <div style="height:240px;"><canvas id="mixChart"></canvas></div>
+                </div>
+                <div class="chart-wrap">
+                    <div style="font-family:var(--serif); font-size:1.15rem; font-weight:700; margin-bottom:0.7rem;">EBITDA Margin Expansion (%)</div>
+                    <div style="height:240px;"><canvas id="marginChart"></canvas></div>
+                </div>
+            </div>
+
+            <div class="g3 fx d3">
+                <div class="card o-border">
+                    <h3 class="c-head o" style="font-size:1.2rem;">Loans Carry Far Higher Yield</h3>
+                    <p style="font-size:0.88rem; color:var(--ink-60); line-height:1.6; margin-top:0.5rem;">Cards: flat ₹2,800–₹4,000 per activation. Loans: 3–4% on ₹10–30L disbursals → ₹30K–₹1.2L revenue per lead. Shift to loans = <strong class="hl-orange">10–30× revenue per conversion</strong>. The mix pivot is the single biggest earnings driver.</p>
+                </div>
+                <div class="card p-border">
+                    <h3 class="c-head p" style="font-size:1.2rem;">40% Revenue Now Digital</h3>
+                    <p style="font-size:0.88rem; color:var(--ink-60); line-height:1.6; margin-top:0.5rem;">Up from near-zero in FY23. Digital leads carry higher margin (no agent commission). In-house proprietary CRM — no outsourcing of customer data. Targeting <strong class="hl-purple">60%+ digital</strong>. Each percentage-point gain in digital mix = structural margin accretion.</p>
+                </div>
+                <div class="card g-border">
+                    <h3 class="c-head" style="color:var(--gold); font-size:1.2rem;">AkikoPay: The Third Layer</h3>
+                    <p style="font-size:0.88rem; color:var(--ink-60); line-height:1.6; margin-top:0.5rem;">Insurance (Apr 2026) + MF advisory at near-zero incremental cost on 25M database. Cross-sell to wallet users = pre-qualified credit leads at <strong class="hl-gold">zero CAC</strong>. If successful, this is a structural margin improvement — not a one-time event.</p>
+                </div>
+            </div>
+
+            <div class="callout purple mt2 fx d4">
+                <p><strong class="hl-purple">The operating leverage thesis in one line:</strong> A predominantly fixed-cost base (tech, team, licences) supporting a rapidly scaling variable-revenue stream means every incremental ₹1 of revenue beyond breakeven drops to PAT at a far higher rate than historical averages suggest. EBITDA expanded from 6% (FY23) to 16% (Q3 FY26) — the direction is unambiguous.</p>
+            </div>
+        </div>
+
+        <div id="s6" class="slide">
+            <div class="eyebrow fx d1">06 · AkikoPay Super App</div>
+            <h1 class="page-title fx d1">Payments + Credit Ecosystem — The Super App Thesis</h1>
+            <p class="page-sub fx d2">AkikoPay is NOT a standalone payments play — it is a <strong>credit-acquisition and retention layer</strong> built on 25M customers</p>
+
+            <div class="g2 fx d2 mb1">
+                <div class="card">
+                    <h3 class="c-head" style="font-size:1.35rem; margin-bottom:0.9rem;">Infrastructure &amp; Features</h3>
+                    <div class="tbl-wrap">
+                        <table class="tbl">
+                            <tbody>
+                                <tr><td style="color:var(--orange); font-weight:700; width:38%;">PPI Licence</td><td>Via I Serve You — enabled for wallet &amp; prepaid payments</td></tr>
+                                <tr><td style="color:var(--orange); font-weight:700;">Nodal Bank</td><td>Fino Bank — RBI-compliant settlement infrastructure</td></tr>
+                                <tr><td style="color:var(--orange); font-weight:700;">RuPay Card</td><td>60% of wallet spend via co-branded RuPay card</td></tr>
+                                <tr><td style="color:var(--orange); font-weight:700;">Credit Cross-sell</td><td>In-app organic lead gen for cards &amp; loans — zero CAC</td></tr>
+                                <tr><td style="color:var(--orange); font-weight:700;">Utility Payments</td><td>Bills, scan &amp; pay, QR — daily habit driver</td></tr>
+                                <tr><td style="color:var(--orange); font-weight:700;">Insurance (Apr '26)</td><td>Health, motor, life — IRDAI broker licence pending</td></tr>
+                                <tr><td style="color:var(--orange); font-weight:700;">MF Advisory</td><td>Jan/Feb 2026 — monetise the 25M database</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card dark">
+                    <h3 class="c-head" style="color:var(--gold); font-size:1.35rem; margin-bottom:0.9rem;">Traction &amp; Vision</h3>
+                    <div style="display:flex; flex-direction:column; gap:0.9rem;">
+                        <div style="display:flex; align-items:center; gap:1rem;">
+                            <div style="font-family:var(--serif); font-weight:700; font-size:2rem; color:var(--orange); min-width:80px;">25,000</div>
+                            <div style="font-size:0.85rem; color:rgba(245,239,228,0.65);">Downloads — first 10 days Android launch</div>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:1rem;">
+                            <div style="font-family:var(--serif); font-weight:700; font-size:2rem; color:#a89ee8; min-width:80px;">₹1.5–2L</div>
+                            <div style="font-size:0.85rem; color:rgba(245,239,228,0.65);">Daily wallet deposits at launch</div>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:1rem;">
+                            <div style="font-family:var(--serif); font-weight:700; font-size:2rem; color:var(--gold); min-width:80px;">60%</div>
+                            <div style="font-size:0.85rem; color:rgba(245,239,228,0.65);">Wallet spend via RuPay card</div>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:1rem;">
+                            <div style="font-family:var(--serif); font-weight:700; font-size:2rem; color:var(--orange); min-width:80px;">1M</div>
+                            <div style="font-size:0.85rem; color:rgba(245,239,228,0.65);">User target — 6 months post full launch (aspirational)</div>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:1rem;">
+                            <div style="font-family:var(--serif); font-weight:700; font-size:2rem; color:var(--success); min-width:80px;">₹15 Cr</div>
+                            <div style="font-size:0.85rem; color:rgba(245,239,228,0.65);">PAT potential at 50M users (management 3yr target)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="g2 fx d3">
+                <div class="callout" style="margin-top:0;">
+                    <p><strong class="hl-orange">Why AkikoPay is structurally valuable:</strong> The 25M customer database is consent-led first-party data — increasingly rare and expensive to build. Every wallet user who transacts daily is a pre-qualified credit lead. Insurance and MF advisory layer on top of an already-engaged user at near-zero incremental cost. The P&amp;L impact is not immediate, but the architecture is correct.</p>
+                </div>
+                <div class="callout danger" style="margin-top:0;">
+                    <p><strong class="hl-red">Honest risk assessment:</strong> KYC integration was pending at Q3 launch. iOS delayed from initial Feb 15 target. Daily wallet deposits of ₹1.5–2L is very early traction. Super apps are notoriously hard to monetise at scale — Paytm-like regulatory intervention on wallets is a real tail risk. The 1M user target in 6 months is aspirational, not a base case.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="s7" class="slide">
+            <div class="eyebrow fx d1">07 · Peer Comparison</div>
+            <h1 class="page-title fx d1">Multi-Metric Valuation — DSA / Fintech Distribution</h1>
+            <p class="page-sub fx d2">Akiko sits at 13.4× TTM P/E between MyMudra (7.5×, pure DSA) and Finbud (22×, NBFC sub) — with the best PAT margins in the peer set</p>
+
+            <div class="card fx d2 mb1">
+                <div class="tbl-wrap">
+                    <table class="tbl">
+                        <thead><tr><th>Company</th><th>Business</th><th>TTM Rev (₹Cr)</th><th>TTM PAT (₹Cr)</th><th>PAT Margin</th><th>Mkt Cap (₹Cr)</th><th>P/E TTM</th><th>P/Sales</th><th>P/Book</th><th>Growth</th></tr></thead>
+                        <tbody>
+                            <tr style="background:var(--orange-lt);">
+                                <td style="font-weight:700; color:var(--orange);">Akiko Global ★</td>
+                                <td>Cards+Loans DSA+App</td>
+                                <td>154</td>
+                                <td>16.1</td>
+                                <td style="color:var(--orange); font-weight:700;">10.5%</td>
+                                <td>216</td>
+                                <td style="color:var(--orange); font-weight:700;">~13.4×</td>
+                                <td>1.41×</td>
+                                <td>4.3×</td>
+                                <td style="color:var(--success); font-weight:700;">175% Q3</td>
+                            </tr>
+                            <tr><td style="font-weight:600;">MyMudra Fincorp</td><td>Loans+Cards DSA</td><td>105</td><td>~9</td><td>~8.6%</td><td>~90</td><td>~7.5×</td><td>0.86×</td><td>~1.5×</td><td>+44% TTM</td></tr>
+                            <tr><td style="font-weight:600;">Finbud Financial</td><td>Loan aggregation + NBFC sub</td><td>260</td><td>~10</td><td>~3.8%</td><td>190</td><td>~22×</td><td>0.73×</td><td>5.3×</td><td>36% 3Y CAGR</td></tr>
+                            <tr><td style="font-weight:600;">BLS E-Services</td><td>BC + finserv kiosks</td><td>1,034</td><td>~68</td><td>~6.6%</td><td>~1,200</td><td>~22×</td><td>1.16×</td><td>~2.5×</td><td>High (inorganic)</td></tr>
+                            <tr><td style="font-weight:600; color:var(--ink-60);">PB Fintech</td><td>Digital ins+loan marketplace</td><td>4,500</td><td>165</td><td>3.7%</td><td>77,000</td><td>~468×</td><td>17×</td><td>~47×</td><td>Mainboard</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="g3 fx d3">
+                <div class="card s-border">
+                    <h3 class="c-head" style="color:var(--success); font-size:1.15rem; margin-bottom:0.6rem;">P/E: Akiko Between Two Peers</h3>
+                    <p style="font-size:0.86rem; color:var(--ink-60); line-height:1.6;">Akiko at 13.4× sits exactly between MyMudra (7.5×, pure DSA with no app) and Finbud (22×, has NBFC sub). Akiko has explicitly chosen distribution-only. The market prices Finbud's lending licence at a premium; Akiko's AkikoPay optionality is the counterweight. FY26E forward P/E ~12×.</p>
+                </div>
+                <div class="card o-border">
+                    <h3 class="c-head o" style="font-size:1.15rem; margin-bottom:0.6rem;">P/Sales 1.41× — Justified by Margins</h3>
+                    <p style="font-size:0.86rem; color:var(--ink-60); line-height:1.6;">Finbud 0.73× and MyMudra 0.86× trade at lower P/Sales — but earn far weaker PAT margins (3.8% and ~8.6% vs Akiko's 10.5%). Higher revenue quality justifies the premium. BLS at 1.16× has 5× the revenue — a useful scale benchmark.</p>
+                </div>
+                <div class="card g-border">
+                    <h3 class="c-head" style="color:var(--gold); font-size:1.15rem; margin-bottom:0.6rem;">P/Book: A Counterintuitive Signal</h3>
+                    <p style="font-size:0.86rem; color:var(--ink-60); line-height:1.6;">Finbud trades at P/Book 5.3× — higher than Akiko's 4.3× — despite earning 3.8% PAT margins vs Akiko's 10.5%. The market prices Finbud's NBFC licence as a balance-sheet asset. Akiko's lower P/Book at far superior margins makes this a better deal on this metric.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="s8" class="slide">
+            <div class="eyebrow fx d1">08 · Key Risks</div>
+            <h1 class="page-title fx d1">What Could Break the Thesis</h1>
+            <p class="page-sub fx d2">Six risk vectors — assessed candidly with severity ratings</p>
+
+            <div class="g2 fx d2">
+                <div class="risk-card">
+                    <h4>Working Capital Cycle <span class="level medium">MEDIUM</span></h4>
+                    <p style="margin-top:0.5rem;">Banks/NBFCs settle commissions in 3–6 months — inherent to the model. WC days improved from 189 (FY25) to 98 (H1 FY26) amid 240%+ YoY revenue growth. FY25 consolidated OCF was −₹26.9 Cr from growth investments. Receivables appear to support revenue expansion and should improve as mix stabilises.</p>
+                </div>
+                <div class="risk-card" style="border-top-color: var(--danger);">
+                    <h4>AkikoPay Execution Risk <span class="level high">HIGH</span></h4>
+                    <p style="margin-top:0.5rem;">KYC integration was pending at Q3 launch; iOS delayed from initial Feb 15 target. Daily wallet deposits ₹1.5–2L is very early stage. Super apps are notoriously hard to monetise at scale. Paytm-like regulatory intervention on wallets is a real tail risk. The 1M user target in 6 months is aspirational.</p>
+                </div>
+                <div class="risk-card">
+                    <h4>DSA Competitive Intensity <span class="level medium">MEDIUM</span></h4>
+                    <p style="margin-top:0.5rem;">India has 40,000+ individual DSAs plus Andromeda (>₹1,500 Cr revenue, unlisted) and digital giants like Paisabazaar (PB Fintech group). Banks regularly shift DSA partner allocations and commission rates. Akiko's 25M database and digital mix are differentiators, but the market has no durable moat — execution must stay consistent.</p>
+                </div>
+                <div class="risk-card">
+                    <h4>Revenue Concentration Risk <span class="level medium">MEDIUM</span></h4>
+                    <p style="margin-top:0.5rem;">100% of revenue flows from bank/NBFC distribution relationships. If a key partner exits the DSA channel — as several lenders have post-RBI scrutiny on unsecured lending — the income impact is direct. Management has explicitly chosen distribution-only (no NBFC); the model's strength and its key dependency are two sides of the same coin.</p>
+                </div>
+                <div class="risk-card">
+                    <h4>UAE / Dubai Geopolitical Risk <span class="level medium">MEDIUM</span></h4>
+                    <p style="margin-top:0.5rem;">The ongoing Iran-US-Israel conflict (started Feb 28, 2026) has disrupted Dubai's financial sector — major banks moved to WFH, drone strikes hit Dubai International Airport, DIFC was evacuated. Akiko's Dubai sub (~₹4 Cr/yr revenue) is a small fraction of group revenues, but a prolonged conflict could delay NRI-facing expansion plans.</p>
+                </div>
+                <div class="risk-card">
+                    <h4>Promoter Transition Note <span class="level medium">MEDIUM</span></h4>
+                    <p style="margin-top:0.5rem;">Five promoters collectively hold 67.29% (increased via open-market purchases per NSE disclosures). Ankur Gaba — Founder &amp; BDH — disclosed in the Q3 FY26 earnings call (Feb 7, 2026) that he will assume the MD role from the next financial year. The transition is planned and publicly disclosed; execution continuity is the key watch-point.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="s9" class="slide">
+            <div class="eyebrow fx d1">09 · Thesis Summary</div>
+            <h1 class="page-title fx d1">Opportunity vs. Risk in One View</h1>
+            <p class="page-sub fx d2">At 13.4× TTM P/E with 175% Q3 revenue growth and 10.5% PAT margins — <strong>what does each side of the ledger say?</strong></p>
+
+            <div class="g2 fx d2 mb1">
+                <div class="card s-border">
+                    <h3 class="c-head" style="color:var(--success); font-size:1.4rem; margin-bottom:0.8rem;">✓ Strengths &amp; Opportunities</h3>
+                    <ul class="pts check">
+                        <li>Revenue 3× in 3 years; 9M FY26 ₹115 Cr — FY26 on track for ~₹170 Cr (Apr–Feb ₹153 Cr filed)</li>
+                        <li>10.5% TTM PAT margin — rare for a DSA; Finbud earns 3.8% at 1.7× the revenue</li>
+                        <li>Monthly NSE disclosures + promoter open-market buying — governance standout in SME universe</li>
+                        <li>Zero credit risk — banks bear all NPAs; pure commission distribution model</li>
+                        <li>25M consent-led database — compounding first-party data moat for AkikoPay</li>
+                        <li>Q3 FY26: ₹50.5 Cr single quarter &gt; entire FY24 (₹32 Cr full year)</li>
+                        <li>At 13.4× TTM P/E and 1.41× P/Sales, cheaply priced for 175% growth velocity</li>
+                    </ul>
+                </div>
+                <div class="card r-border">
+                    <h3 class="c-head" style="color:var(--danger); font-size:1.4rem; margin-bottom:0.8rem;">✗ Risks &amp; Watch-Points</h3>
+                    <ul class="pts cross">
+                        <li>Working capital days 98 (H1 FY26, improved) — but negative operating cash flow in FY25</li>
+                        <li>AkikoPay pre-revenue; 1M user target in 6 months is aspirational, not base case</li>
+                        <li>DSA sector has no durable moat — Andromeda, Paisabazaar, 40K+ DSAs compete</li>
+                        <li>100% revenue from bank/NBFC relationships — pure distribution dependency</li>
+                        <li>UAE/Dubai subsidiary exposed to Iran-Israel-US conflict disruptions</li>
+                        <li>SME listing: low liquidity, wide spreads, limited institutional coverage</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="callout fx d3">
+                <h3 style="font-family:var(--serif); font-weight:700; font-size:1.25rem; color:var(--ink); margin-bottom:0.6rem;">Investment Thesis in One Paragraph</h3>
+                <p>Akiko Global is a high-quality, asset-light fintech DSA with the best PAT margins in its peer group, a governance posture that stands out in the SME universe (monthly revenue filings, promoter open-market buying), and a structural tailwind from the ongoing pivot toward higher-yield loan distribution. At 13.4× TTM P/E — pricing 175% Q3 revenue growth — the market is not being generous. The key question for investors is whether the AkikoPay super app translates its 25M customer database into a sustainable third revenue stream, or whether regulatory/execution headwinds limit it to a distribution tool. Even without AkikoPay succeeding at scale, the core DSA business at current valuation is difficult to justify as expensive given the growth rate and margin profile. AkikoPay, if it works, is a free option at current prices.</p>
+            </div>
+
+            <div class="est-note fx d4">
+                <strong>⚠ Estimates Disclaimer:</strong> All revenue projections, PAT estimates, and forward valuation figures in this presentation are independent analyst estimates only. They are not company guidance, management projections, or forward guidance of any kind. Akiko Global Services Ltd has not issued formal revenue or profit targets for FY26 or beyond. These estimates carry inherent uncertainty and must not be relied upon as a basis for investment decisions.
+            </div>
+        </div>
+
+        <div id="s10" class="slide">
+            <div class="eyebrow fx d1">10 · Disclaimer</div>
+            <h1 class="page-title fx d1">Important Disclosure</h1>
+            <p class="page-sub fx d2">For Informational Purposes Only · Not Investment Advice</p>
+
+            <div class="card fx d2" style="border-top: 3px solid var(--orange);">
+                <h3 class="c-head o" style="font-size:1.5rem; margin-bottom:1rem;">Disclaimer</h3>
+                <p style="color:var(--ink-60); line-height:1.75; font-size:0.93rem; margin-bottom:0.9rem;">This presentation has been prepared for informational and educational purposes only. It does not constitute personalised investment advice or a recommendation to buy, sell, or hold any security.</p>
+                <p style="color:var(--ink-60); line-height:1.75; font-size:0.93rem; margin-bottom:0.9rem;">Geopolitical commentary regarding the Iran-Israel-US conflict and its potential impact on Akiko's Dubai operations is subjective in nature. All financial figures are sourced from publicly available NSE filings, company investor presentations, quarterly transcripts, and stock exchange disclosures.</p>
+                <p style="color:var(--ink-60); line-height:1.75; font-size:0.93rem; margin-bottom:0.9rem;">Peer valuation metrics are based on publicly available market data as of March 2026. Promoter buying data sourced from NSE shareholding pattern disclosures. Readers are advised to conduct independent due diligence and consult a SEBI-registered advisor before making any investment decision.</p>
+                <p style="color:var(--ink-60); line-height:1.75; font-size:0.93rem;">This report is not prepared by a SEBI-registered Research Analyst, Investment Advisor, or Portfolio Manager and does not act as a buy/sell recommendation. This document must not be reproduced or distributed without prior written consent.</p>
+                <hr class="rule">
+                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.8rem;">
+                    <p style="font-size:0.78rem; color:var(--ink-30); letter-spacing:0.5px;">NSE SME: AKIKO · Key numbers as of Mar 27, 2026 · Price ₹200 · Mkt Cap ₹216 Cr · TTM P/E ~13.4× · P/Sales 1.41× · P/Book 4.3× · TTM Rev ₹154 Cr · TTM PAT ₹16.1 Cr</p>
+                    <a href="https://x.com/sachprat07" target="_blank" rel="noopener"
+                       style="display:inline-flex; align-items:center; gap:7px; background:var(--orange-lt); border:1px solid var(--orange-md); border-radius:5px; padding:0.4rem 0.85rem; text-decoration:none; transition:all 0.25s;"
+                       onmouseover="this.style.background='var(--orange-md)'" onmouseout="this.style.background='var(--orange-lt)'">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="color:var(--orange);"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                        <span style="font-size:0.8rem; font-weight:700; color:var(--orange);">@sachprat07</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="g3 fx d3 mt2">
+                <div class="card o-border" style="text-align:center;">
+                    <div class="m-label">Report Coverage</div>
+                    <div class="m-value hl-orange" style="font-size:1.7rem;">AKIKO</div>
+                    <div class="m-note">NSE SME Platform</div>
+                </div>
+                <div class="card warm" style="text-align:center;">
+                    <div class="m-label">Research Series</div>
+                    <div class="m-value hl-gold" style="font-size:1.5rem; font-family:var(--serif); font-weight:700;">SME GEMS</div>
+                    <div class="m-note">Hidden Champions</div>
+                </div>
+                <div class="card" style="text-align:center;">
+                    <div class="m-label">Data Sources</div>
+                    <div style="font-size:0.8rem; color:var(--ink-60); margin-top:0.4rem; line-height:1.6;">NSE Exchange Filings · Q3 FY26 Transcript (Feb 7, 2026) · H1 FY26 PPT · Monthly Revenue Disclosures · IPO Prospectus (Jun 2024) · Peer public filings</div>
+                </div>
+            </div>
+        </div>
+
+        </div></div></div><script>
+// ─── BACKGROUND: Flowing financial network ───────────────────────────────────
+const cv = document.getElementById('bg-canvas');
+const cx = cv.getContext('2d');
+let W, H, nodes=[];
+
+function resize(){
+    W = cv.width = window.innerWidth;
+    H = cv.height = window.innerHeight;
+    initNodes();
+}
+window.addEventListener('resize', resize);
+
+const mouse = {x:undefined, y:undefined, r:100};
+window.addEventListener('mousemove', e=>{mouse.x=e.clientX;mouse.y=e.clientY;});
+window.addEventListener('mouseleave',()=>{mouse.x=undefined;mouse.y=undefined;});
+
+class Node{
+    constructor(){this.reset();}
+    reset(){
+        this.x = Math.random()*W; this.y = Math.random()*H;
+        this.vx=(Math.random()-0.5)*0.3; this.vy=(Math.random()-0.5)*0.3;
+        this.r = Math.random()*1.8+0.4;
+        this.t = Math.random()*Math.PI*2;
+        this.isOrange = Math.random()>0.65;
+    }
+    update(){
+        this.x+=this.vx; this.y+=this.vy;
+        this.t+=0.018;
+        this.alpha = 0.08 + Math.abs(Math.sin(this.t))*0.18;
+        if(this.x<-5||this.x>W+5) this.vx*=-1;
+        if(this.y<-5||this.y>H+5) this.vy*=-1;
+        if(mouse.x!=null){
+            let dx=mouse.x-this.x, dy=mouse.y-this.y;
+            let d=Math.sqrt(dx*dx+dy*dy);
+            if(d<mouse.r){ let f=(mouse.r-d)/mouse.r; this.x-=(dx/d)*f*2; this.y-=(dy/d)*f*2; }
+        }
+    }
+    draw(){
+        cx.beginPath(); cx.arc(this.x,this.y,this.r,0,Math.PI*2);
+        cx.fillStyle = this.isOrange ? `rgba(232,84,10,${this.alpha})` : `rgba(201,134,15,${this.alpha*0.7})`;
+        cx.fill();
+    }
+}
+
+function drawLines(){
+    cx.save();
+    for(let i=0;i<nodes.length;i++){
+        for(let j=i+1;j<nodes.length;j++){
+            let dx=nodes[i].x-nodes[j].x, dy=nodes[i].y-nodes[j].y;
+            let d=Math.sqrt(dx*dx+dy*dy);
+            if(d<110){
+                cx.beginPath(); cx.moveTo(nodes[i].x,nodes[i].y); cx.lineTo(nodes[j].x,nodes[j].y);
+                cx.strokeStyle=`rgba(232,84,10,${0.04*(1-d/110)})`;
+                cx.lineWidth=0.5; cx.stroke();
+            }
+        }
+    }
+    cx.restore();
+}
+
+function initNodes(){ nodes=[]; let n=Math.floor(W*H/16000); for(let i=0;i<n;i++) nodes.push(new Node()); }
+
+function loop(){
+    cx.clearRect(0,0,W,H);
+    drawLines();
+    nodes.forEach(n=>{n.update();n.draw();});
+    requestAnimationFrame(loop);
+}
+resize(); loop();
+
+// ─── NAVIGATION ─────────────────────────────────────────────────────────────
+function toggleSB(){
+    document.getElementById('sb').classList.toggle('open');
+    document.querySelector('.overlay').classList.toggle('on');
+}
+
+function go(id, el){
+    document.getElementById('main-scroll').scrollTo(0,0);
+    document.querySelectorAll('.slide').forEach(s=>s.classList.remove('on'));
+    document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'));
+    const t=document.getElementById(id);
+    void t.offsetWidth;
+    t.classList.add('on');
+    if(el) el.classList.add('active');
+    if(window.innerWidth<=768){
+        document.getElementById('sb').classList.remove('open');
+        document.querySelector('.overlay').classList.remove('on');
+    }
+    if(id==='s4') setTimeout(renderFinCharts,80);
+    if(id==='s5') setTimeout(renderMixCharts,80);
+}
+
+// ─── CHARTS ─────────────────────────────────────────────────────────────────
+const ci = {};
+function destroyChart(k){ if(ci[k]){ ci[k].destroy(); delete ci[k]; } }
+
+const baseOpts = {
+    responsive:true, maintainAspectRatio:false,
+    animation:{duration:1100, easing:'easeOutQuart'},
+    plugins:{
+        legend:{display:false},
+        tooltip:{
+            backgroundColor:'#1a1206', borderColor:'rgba(232,84,10,0.3)', borderWidth:1, padding:10,
+            titleColor:'#b8a88a', bodyColor:'#e8540a',
+            titleFont:{family:'DM Sans',size:12}, bodyFont:{family:'DM Sans',size:16},
+        }
+    },
+    scales:{
+        x:{ grid:{display:false}, ticks:{color:'#b8a88a', font:{family:'DM Sans',size:11}} },
+        y:{ grid:{color:'rgba(245,239,228,0.06)'}, ticks:{color:'#b8a88a', font:{family:'DM Sans',size:11}} }
+    }
+};
+
+function renderFinCharts(){
+    destroyChart('rev'); destroyChart('pat');
+    ci['rev'] = new Chart(document.getElementById('revChart').getContext('2d'),{
+        type:'bar',
+        data:{
+            labels:['FY23','FY24','FY25','9M FY26'],
+            datasets:[{data:[22,32,76,115], backgroundColor:['rgba(232,84,10,0.5)','rgba(232,84,10,0.6)','rgba(232,84,10,0.75)','rgba(232,84,10,0.95)'], borderRadius:4, borderSkipped:false}]
+        },
+        options:{...baseOpts, plugins:{...baseOpts.plugins, tooltip:{...baseOpts.plugins.tooltip, callbacks:{label:c=>'₹'+c.parsed.y+' Cr'}}}}
+    });
+    ci['pat'] = new Chart(document.getElementById('patChart').getContext('2d'),{
+        type:'bar',
+        data:{
+            labels:['FY23','FY24','FY25','9M FY26'],
+            datasets:[{data:[1,3,8,11.9], backgroundColor:['rgba(168,158,232,0.4)','rgba(168,158,232,0.55)','rgba(168,158,232,0.72)','rgba(168,158,232,0.92)'], borderRadius:4, borderSkipped:false}]
+        },
+        options:{...baseOpts, plugins:{...baseOpts.plugins, tooltip:{...baseOpts.plugins.tooltip, callbacks:{label:c=>'₹'+c.parsed.y+' Cr'}}}}
+    });
+}
+
+function renderMixCharts(){
+    destroyChart('mix'); destroyChart('margin');
+    ci['mix'] = new Chart(document.getElementById('mixChart').getContext('2d'),{
+        type:'bar',
+        data:{
+            labels:['FY23','FY24','FY25','9M FY26'],
+            datasets:[
+                {label:'Credit Cards %', data:[85,70,45,30], backgroundColor:'rgba(232,84,10,0.82)', borderRadius:0},
+                {label:'Loans & Other %', data:[15,30,55,70], backgroundColor:'rgba(168,158,232,0.82)', borderRadius:0}
+            ]
+        },
+        options:{
+            ...baseOpts,
+            plugins:{...baseOpts.plugins, legend:{display:true, labels:{color:'#b8a88a', font:{family:'DM Sans',size:11}}}},
+            scales:{
+                x:{...baseOpts.scales.x, stacked:true},
+                y:{...baseOpts.scales.y, stacked:true, ticks:{...baseOpts.scales.y.ticks, callback:v=>v+'%'}}
+            }
+        }
+    });
+    ci['margin'] = new Chart(document.getElementById('marginChart').getContext('2d'),{
+        type:'line',
+        data:{
+            labels:['FY23','FY24','FY25','Q1 FY26','Q2 FY26','Q3 FY26'],
+            datasets:[{
+                data:[6,9,15,13,14,16],
+                borderColor:'#e8540a', backgroundColor:'rgba(232,84,10,0.1)',
+                fill:true, borderWidth:2.5, pointBackgroundColor:'#e8540a',
+                pointBorderColor:'#faf7f2', pointBorderWidth:2,
+                pointRadius:5, tension:0.35
+            }]
+        },
+        options:{
+            ...baseOpts,
+            plugins:{...baseOpts.plugins, tooltip:{...baseOpts.plugins.tooltip, callbacks:{label:c=>c.parsed.y+'%'}}},
+            scales:{...baseOpts.scales, y:{...baseOpts.scales.y, ticks:{...baseOpts.scales.y.ticks, callback:v=>v+'%'}}}
+        }
+    });
+}
+</script>
+
+</body>
+</html>
