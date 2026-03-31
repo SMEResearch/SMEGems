@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ÖSEL Devices — Research Report 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Barlow:wght@300;400;500&family=Literata:ital,opsz,wght@0,7..72,300;0,7..72,400;0,7..72,500;1,7..72,300;1,7..72,400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#111110;--bg2:#171714;--surface:#1e1e1b;--surface2:#252521;--rim:rgba(255,255,255,0.07);--rim2:rgba(255,255,255,0.13);--gold:#d4a847;--gold-dim:rgba(212,168,71,0.5);--gold-glow:0 0 18px rgba(212,168,71,0.25);--ash:#9a9890;--ash-dim:#5c5b56;--cream:#e8e4d8;--white:#f5f2ea;--green:#7ec88a;--red:#d46b6b;--sw:220px;--th:52px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:14px}
+body{background:var(--bg);color:var(--cream);font-family:'Barlow',sans-serif;font-weight:300;overflow:hidden;height:100dvh}
+#shell{display:flex;height:100dvh;overflow:hidden}
+
+/* SIDEBAR */
+#sidebar{width:var(--sw);flex-shrink:0;background:var(--bg2);border-right:1px solid var(--rim);display:flex;flex-direction:column;height:100dvh;overflow:hidden;position:relative;z-index:20;transition:transform .3s ease}
+.sb-brand{padding:18px 16px 14px;border-bottom:1px solid var(--rim)}
+.sb-ticker{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:3px}
+.sb-name{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:21px;color:var(--white);letter-spacing:-.01em;line-height:1}
+.sb-name span{color:var(--gold)}
+.sb-tagline{font-size:9px;color:var(--ash-dim);margin-top:3px;line-height:1.4;font-family:'Barlow Condensed',sans-serif}
+.sb-live{padding:9px 16px;border-bottom:1px solid var(--rim);display:flex;gap:16px}
+.sb-live-lbl{font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--ash-dim)}
+.sb-live-val{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;color:var(--gold);line-height:1.1}
+.sb-nav{flex:1;overflow-y:auto;padding:8px 0;scrollbar-width:none}
+.sb-nav::-webkit-scrollbar{display:none}
+.sb-sec-lbl{font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--ash-dim);padding:8px 16px 3px}
+.sb-item{display:flex;align-items:center;gap:10px;padding:7px 16px;cursor:pointer;border-left:2px solid transparent;transition:all .18s;user-select:none}
+.sb-item:hover{background:rgba(255,255,255,.03);border-left-color:var(--rim2)}
+.sb-item.active{background:rgba(212,168,71,.08);border-left-color:var(--gold)}
+.sb-item-num{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;color:var(--ash-dim);width:18px;flex-shrink:0}
+.sb-item.active .sb-item-num{color:var(--gold)}
+.sb-item-text{font-family:'Barlow Condensed',sans-serif;font-size:12.5px;font-weight:500;color:var(--ash);line-height:1.2}
+.sb-item.active .sb-item-text{color:var(--white)}
+.sb-footer{padding:10px 16px;border-top:1px solid var(--rim);font-size:9px;color:var(--ash-dim);font-family:'Barlow Condensed',sans-serif;line-height:1.5}
+
+/* MAIN */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+#topbar{height:var(--th);border-bottom:1px solid var(--rim);background:var(--bg2);display:flex;align-items:center;padding:0 18px;gap:12px;flex-shrink:0}
+#menu-btn{display:none;background:none;border:none;cursor:pointer;color:var(--ash);padding:4px;flex-shrink:0}
+.tb-bc{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:500;color:var(--ash);display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.tb-bc span{color:var(--gold);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tb-pg{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.tb-pg-info{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--ash-dim);white-space:nowrap}
+.tb-btn{width:27px;height:27px;border:1px solid var(--rim2);background:none;color:var(--ash);border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .15s}
+.tb-btn:hover:not(:disabled){border-color:var(--gold);color:var(--gold)}
+.tb-btn:disabled{opacity:.3;cursor:not-allowed}
+#pbar{height:2px;background:var(--gold);transition:width .3s ease;flex-shrink:0}
+#pages{flex:1;overflow:hidden;position:relative}
+.page{position:absolute;inset:0;overflow-y:auto;padding:24px 28px 36px;opacity:0;transform:translateX(20px);pointer-events:none;transition:opacity .26s ease,transform .26s ease;scrollbar-width:thin;scrollbar-color:var(--rim2) transparent}
+.page.active{opacity:1;transform:translateX(0);pointer-events:all}
+.page.exit-l{opacity:0;transform:translateX(-20px)}
+.page::-webkit-scrollbar{width:3px}
+.page::-webkit-scrollbar-thumb{background:var(--rim2);border-radius:2px}
+
+/* TYPOGRAPHY */
+.pg-ey{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:5px;display:flex;align-items:center;gap:10px}
+.pg-ey::after{content:'';height:1px;width:36px;background:linear-gradient(90deg,var(--gold-dim),transparent)}
+.pg-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:clamp(24px,4vw,36px);line-height:1;color:var(--white);letter-spacing:-.01em;margin-bottom:3px}
+.pg-sub{font-family:'Barlow Condensed',sans-serif;font-weight:400;font-size:14px;color:var(--ash);margin-bottom:16px;letter-spacing:.01em}
+.divider{height:1px;background:var(--rim);margin:14px 0}
+.sec-lbl{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;color:var(--ash-dim);letter-spacing:.12em;text-transform:uppercase;margin-bottom:7px}
+
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--rim);border-radius:5px}
+.cp{padding:13px 14px}
+.kv-lbl{font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ash-dim);margin-bottom:2px}
+.kv-val{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:var(--white);line-height:1}
+.kv-val.g{color:var(--gold)}
+.kv-val.gr{color:var(--green)}
+.kv-sub{font-size:9px;color:var(--ash-dim);margin-top:2px}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.g23{display:grid;grid-template-columns:2fr 1fr;gap:12px}
+@media(max-width:640px){.g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}.g23{grid-template-columns:1fr}}
+@media(max-width:380px){.g2{grid-template-columns:1fr}}
+
+/* HERO STAT */
+.hs{background:var(--surface);border:1px solid var(--rim);border-radius:5px;padding:12px 14px;position:relative;overflow:hidden;transition:border-color .2s}
+.hs::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .4s ease}
+.hs:hover{border-color:var(--gold-dim)}
+.hs:hover::before{transform:scaleX(1)}
+.hs-lbl{font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--ash-dim);margin-bottom:4px}
+.hs-val{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:24px;line-height:1;color:var(--white)}
+.hs-val.g{color:var(--gold);text-shadow:var(--gold-glow)}
+.hs-val.gr{color:var(--green)}
+.hs-note{font-size:9px;color:var(--ash-dim);margin-top:3px;font-family:'Barlow Condensed',sans-serif}
+
+/* TIMELINE */
+.timeline{position:relative}
+.tl-track{position:absolute;left:13px;top:14px;bottom:14px;width:1px;background:linear-gradient(180deg,var(--gold),var(--ash-dim))}
+.tl-item{display:flex;gap:14px;padding:0 0 18px 34px;position:relative}
+.tl-item:last-child{padding-bottom:0}
+.tl-dot{position:absolute;left:8px;top:4px;width:10px;height:10px;border-radius:50%;background:var(--bg2);border:2px solid var(--gold);box-shadow:0 0 7px rgba(212,168,71,.4)}
+.tl-dot.dim{border-color:var(--ash-dim);box-shadow:none}
+.tl-dt{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:600;letter-spacing:.15em;color:var(--gold);margin-bottom:1px;text-transform:uppercase}
+.tl-dt.dim{color:var(--ash-dim)}
+.tl-hd{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;color:var(--white);margin-bottom:1px}
+.tl-bd{font-size:11.5px;color:var(--ash);line-height:1.5}
+
+/* SEGMENT */
+.seg{background:var(--surface);border:1px solid var(--rim);border-radius:5px;padding:14px;transition:border-color .2s}
+.seg:hover{border-color:var(--rim2)}
+.seg-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.seg-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;color:var(--white)}
+.seg-badge{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:600;letter-spacing:.08em;padding:2px 7px;border-radius:3px;background:rgba(212,168,71,.1);color:var(--gold);border:1px solid var(--gold-dim)}
+.seg-pct{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:28px;color:var(--gold);line-height:1;margin-bottom:5px;text-shadow:var(--gold-glow)}
+.seg-bb{height:2px;background:var(--surface2);border-radius:1px;margin-bottom:10px;overflow:hidden}
+.seg-bf{height:100%;border-radius:1px;background:var(--gold);width:0%;transition:width 1.1s cubic-bezier(.4,0,.2,1)}
+.seg-pts{list-style:none}
+.seg-pts li{font-size:11px;color:var(--ash);padding:3px 0 3px 12px;position:relative;border-bottom:1px solid rgba(255,255,255,.03);line-height:1.4}
+.seg-pts li:last-child{border-bottom:none}
+.seg-pts li::before{content:'›';position:absolute;left:1px;color:var(--gold);font-size:13px;line-height:1.2}
+.seg-mar{margin-top:8px;padding:5px 9px;background:rgba(212,168,71,.05);border-left:2px solid var(--gold);font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;color:var(--gold);letter-spacing:.04em}
+
+/* TABLE */
+.tw{overflow-x:auto;border-radius:5px;border:1px solid var(--rim)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead tr{background:var(--surface2);border-bottom:1px solid var(--rim)}
+th{font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ash-dim);padding:9px 11px;text-align:right;white-space:nowrap}
+th:first-child{text-align:left}
+td{padding:8px 11px;text-align:right;border-bottom:1px solid rgba(255,255,255,.03);color:var(--ash);font-family:'Barlow Condensed',sans-serif;font-size:12.5px}
+td:first-child{text-align:left;color:var(--cream);font-family:'Barlow',sans-serif;font-size:11.5px}
+tr:last-child td{border-bottom:none}
+tr.rhi td{background:rgba(212,168,71,.04);color:var(--cream)}
+tr.rhi td:first-child{color:var(--gold);font-weight:500}
+.tg{color:var(--green)!important}.ta{color:var(--gold)!important}.tr{color:var(--red)!important}.td{color:var(--ash-dim)!important;font-style:italic}
+
+/* PROS/RISKS */
+.prc{background:var(--surface);border:1px solid var(--rim);border-radius:5px;padding:12px;border-left-width:3px}
+.prc.pos{border-left-color:var(--green)}.prc.risk{border-left-color:var(--red)}
+.prc-hd{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.prc-ico{font-size:14px}
+.prc-ttl{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--white)}
+.prc-bd{font-size:11px;color:var(--ash);line-height:1.5}
+
+/* INVESTORS */
+.inv{background:var(--surface);border:1px solid var(--rim);border-radius:5px;padding:11px 14px;display:flex;gap:11px;align-items:flex-start;transition:border-color .2s}
+.inv:hover{border-color:var(--gold-dim)}
+.inv-av{width:30px;height:30px;border-radius:4px;background:rgba(212,168,71,.1);border:1px solid var(--gold-dim);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;color:var(--gold);flex-shrink:0}
+.inv-nm{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--white)}
+.inv-st{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--gold);margin:1px 0}
+.inv-nt{font-size:10.5px;color:var(--ash);line-height:1.45}
+
+/* CATALYSTS */
+.cat{display:flex;align-items:flex-start;gap:9px;padding:9px 12px;background:var(--surface);border:1px solid var(--rim);border-radius:4px;font-size:12px;color:var(--cream)}
+.cat-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 5px var(--gold-dim);flex-shrink:0;margin-top:4px;animation:pulse 2.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 5px var(--gold-dim)}50%{opacity:.35;box-shadow:none}}
+
+/* MGMT */
+.mc{background:var(--surface);border:1px solid var(--rim);border-radius:5px;padding:12px}
+.mc-role{font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:3px}
+.mc-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;color:var(--white);margin-bottom:2px}
+.mc-tag{font-size:10px;color:var(--ash-dim);font-style:italic;margin-bottom:5px}
+.mc-bio{font-size:10.5px;color:var(--ash);line-height:1.5}
+
+/* BAR CHART */
+.bc-row{display:flex;align-items:center;gap:9px;margin-bottom:6px}
+.bc-lbl{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:500;color:var(--ash);width:88px;flex-shrink:0;text-align:right}
+.bc-track{flex:1;height:13px;background:var(--surface2);border-radius:2px;overflow:hidden}
+.bc-fill{height:100%;display:flex;align-items:center;padding-left:6px;font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;color:rgba(0,0,0,.65);transition:width 1.2s cubic-bezier(.4,0,.2,1);border-radius:2px}
+
+/* ACQ */
+.ag{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+@media(min-width:550px){.ag{grid-template-columns:repeat(3,1fr)}}
+.ar{padding:9px 11px;background:var(--surface2);border-radius:4px}
+.ak{font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ash-dim);margin-bottom:2px}
+.av{font-size:11.5px;color:var(--cream);line-height:1.35}
+.av.g{color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px}
+
+/* CHIPS */
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.chip{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:500;color:var(--ash);border:1px solid var(--rim);padding:3px 8px;border-radius:3px;transition:all .15s;letter-spacing:.03em}
+.chip:hover{border-color:var(--gold-dim);color:var(--gold)}
+
+/* HIGHLIGHT BOX */
+.hl{border:1px solid var(--rim);border-left:3px solid var(--gold);background:rgba(212,168,71,.04);padding:10px 12px;border-radius:0 4px 4px 0;font-size:11.5px;color:var(--ash);line-height:1.55}
+.hl.warn{border-left-color:var(--red);background:rgba(212,107,107,.05)}
+.hl strong{color:var(--cream);font-weight:500}
+
+/* NOTICE */
+.notice{background:var(--surface);border:1px solid var(--rim);border-radius:5px;padding:16px 18px;font-size:11px;color:var(--ash);line-height:1.7}
+.notice strong{color:var(--cream)}
+
+/* VAL CARD */
+.vc{background:var(--surface);border:1px solid var(--rim);border-radius:5px;padding:12px 14px;text-align:center}
+.vm{font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ash-dim);margin-bottom:5px}
+.vn{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:26px;color:var(--gold);text-shadow:var(--gold-glow);line-height:1}
+.vx{font-size:9px;color:var(--ash-dim);margin-top:3px}
+
+/* LED STRIP */
+.led{display:flex;gap:4px;margin-bottom:14px;flex-wrap:wrap}
+.ld{width:5px;height:5px;border-radius:50%;background:var(--ash-dim);opacity:.35;animation:lb var(--d,3s) ease-in-out infinite}
+.ld.on{background:var(--gold);opacity:1;box-shadow:0 0 5px var(--gold-dim)}
+@keyframes lb{0%,90%,100%{opacity:var(--o,.35)}95%{opacity:.08}}
+
+/* CHART */
+.csvg{width:100%;overflow:visible}
+
+/* MOBILE */
+@media(max-width:768px){
+  #sidebar{position:fixed;left:0;top:0;bottom:0;z-index:200;transform:translateX(-100%);box-shadow:4px 0 24px rgba(0,0,0,.5)}
+  #sidebar.open{transform:translateX(0)}
+  #ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:199}
+  #ov.show{display:block}
+  #menu-btn{display:flex}
+  #main{width:100%}
+  .page{padding:18px 14px 32px}
+}
+</style>
+</head>
+<body>
+<div id="ov" onclick="closeSB()"></div>
+<div id="shell">
+<aside id="sidebar">
+  <div class="sb-brand">
+    <div class="sb-ticker">NSE SME · OSELDEVICE</div>
+    <div class="sb-name"><span>Ö</span>SEL DEVICES</div>
+    <div class="sb-tagline">LED · Hearing Aids · Philips Mobile</div>
+  </div>
+  <div class="sb-live">
+    <div><div class="sb-live-lbl">MCap</div><div class="sb-live-val">₹899 Cr</div></div>
+    <div><div class="sb-live-lbl">CMP</div><div class="sb-live-val">₹508</div></div>
+  </div>
+  <nav class="sb-nav" id="sbnav"></nav>
+  <div class="sb-footer">Mar 2026 · Educational only<br>Not investment advice</div>
+</aside>
+<div id="main">
+  <div id="topbar">
+    <button id="menu-btn" onclick="toggleSB()" aria-label="Menu">
+      <svg width="17" height="13" viewBox="0 0 17 13" fill="none"><rect y="0" width="17" height="2" rx="1" fill="currentColor"/><rect y="5.5" width="17" height="2" rx="1" fill="currentColor"/><rect y="11" width="17" height="2" rx="1" fill="currentColor"/></svg>
+    </button>
+    <div class="tb-bc">ÖSEL DEVICES &nbsp;›&nbsp; <span id="tbtitle">Cover</span></div>
+    <div class="tb-pg">
+      <div class="tb-pg-info" id="pginfo">1 / 12</div>
+      <button class="tb-btn" id="btnp" onclick="go(cur-1)" disabled>‹</button>
+      <button class="tb-btn" id="btnn" onclick="go(cur+1)">›</button>
+    </div>
+  </div>
+  <div id="pbar" style="width:8.33%"></div>
+  <div id="pages">
+
+<div class="page active" data-title="Cover">
+  <div class="led">
+    <div class="ld on" style="--d:1.8s"></div><div class="ld on" style="--d:2.4s"></div><div class="ld" style="--d:1.6s"></div><div class="ld on" style="--d:2.1s"></div><div class="ld" style="--d:3s"></div><div class="ld on" style="--d:1.9s"></div><div class="ld" style="--d:2.7s"></div><div class="ld on" style="--d:2.3s"></div><div class="ld on" style="--d:1.5s"></div><div class="ld" style="--d:2.8s"></div>
+  </div>
+  <div class="pg-ey">⭐ SME Gems · Hidden Champions · March 2026</div>
+  <div class="pg-title">ÖSEL DEVICES LIMITED</div>
+  <div class="pg-sub">From LED Displays &amp; Hearing Aids to India's Exclusive Philips Mobile Partner</div>
+  <div class="g4" style="margin-bottom:18px">
+    <div class="hs"><div class="hs-lbl">Market Cap</div><div class="hs-val g">₹899 Cr</div><div class="hs-note">Updated</div></div>
+    <div class="hs"><div class="hs-lbl">CMP</div><div class="hs-val g">₹508</div><div class="hs-note">NSE SME</div></div>
+    <div class="hs"><div class="hs-lbl">TTM Revenue</div><div class="hs-val">₹246 Cr</div><div class="hs-note">FY25 Full Year</div></div>
+    <div class="hs"><div class="hs-lbl">3Y PAT CAGR</div><div class="hs-val gr">111%</div><div class="hs-note">FY22–FY25</div></div>
+  </div>
+  <div class="g3" style="margin-bottom:16px">
+    <div class="card cp" style="border-top:2px solid var(--gold)">
+      <div style="font-size:18px;margin-bottom:5px">📺</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--white);margin-bottom:2px">LED Display Systems</div>
+      <div style="font-size:10px;color:var(--ash)">Core revenue engine</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:22px;color:var(--gold);margin-top:5px">48.9%</div>
+      <div style="font-size:9px;color:var(--ash-dim)">H1 FY26 Revenue Mix</div>
+    </div>
+    <div class="card cp" style="border-top:2px solid var(--ash-dim)">
+      <div style="font-size:18px;margin-bottom:5px">🎧</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--white);margin-bottom:2px">Hearing Aid Devices</div>
+      <div style="font-size:10px;color:var(--ash)">MD-5 certified · highest margins</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:22px;color:var(--gold);margin-top:5px">35.2%</div>
+      <div style="font-size:9px;color:var(--ash-dim)">H1 FY26 Revenue Mix</div>
+    </div>
+    <div class="card cp" style="border-top:2px solid var(--ash-dim)">
+      <div style="font-size:18px;margin-bottom:5px">📱</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--white);margin-bottom:2px">Mobile Phones &amp; Tablets</div>
+      <div style="font-size:10px;color:var(--ash)">Exclusive Philips India licensee</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:22px;color:var(--gold);margin-top:5px">15.9%</div>
+      <div style="font-size:9px;color:var(--ash-dim)">H1 FY26 Revenue Mix</div>
+    </div>
+  </div>
+  <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--ash-dim);display:flex;align-items:center;gap:7px"><span style="color:var(--gold)">⚠</span>NSE SME: OSELDEVICE · March 2026 · For Educational Purposes Only — Not Investment Advice</div>
+</div>
+
+<div class="page" data-title="Company Snapshot">
+  <div class="pg-ey">02 · Company Snapshot</div>
+  <div class="pg-title">At a Glance</div>
+  <div class="pg-sub">ÖSEL Devices Limited · NSE SME: OSELDEVICE · Founded 2006</div>
+  <div style="font-size:12px;color:var(--ash);line-height:1.6;max-width:660px;margin-bottom:14px">Founded in 2006, Osel Devices is a Greater Noida–based technology manufacturer of LED display systems and hearing aids. Listed on NSE SME in September 2024, it has since added two major growth vectors: exclusive Philips Mobile brand rights for India, and the acquisition of SFL Hearing Solutions. The company now spans three verticals — LED Displays, Hearing Aids, and Mobile Phones.</div>
+  <div class="g4" style="margin-bottom:9px">
+    <div class="card cp"><div class="kv-lbl">Market Cap</div><div class="kv-val g">₹899 Cr</div><div class="kv-sub">Updated</div></div>
+    <div class="card cp"><div class="kv-lbl">CMP</div><div class="kv-val g">₹508</div><div class="kv-sub">NSE SME</div></div>
+    <div class="card cp"><div class="kv-lbl">52W Hi / Lo</div><div class="kv-val" style="font-size:13px">₹835 / ₹197</div><div class="kv-sub">NSE Data</div></div>
+    <div class="card cp"><div class="kv-lbl">Listed</div><div class="kv-val" style="font-size:14px">Sep 2024</div><div class="kv-sub">IPO ₹160</div></div>
+  </div>
+  <div class="g4" style="margin-bottom:9px">
+    <div class="card cp"><div class="kv-lbl">Stock P/E (TTM)</div><div class="kv-val">~33x</div><div class="kv-sub">MCap/PAT ~₹27Cr</div></div>
+    <div class="card cp"><div class="kv-lbl">Book Value/Share</div><div class="kv-val">₹100</div><div class="kv-sub">Per Share</div></div>
+    <div class="card cp"><div class="kv-lbl">ROE</div><div class="kv-val gr">30.1%</div><div class="kv-sub">FY25</div></div>
+    <div class="card cp"><div class="kv-lbl">ROCE</div><div class="kv-val gr">31.1%</div><div class="kv-sub">FY25</div></div>
+  </div>
+  <div class="sec-lbl" style="margin-top:4px">H1 FY26 Highlights</div>
+  <div class="g4">
+    <div class="card cp"><div class="kv-lbl">Revenue</div><div class="kv-val gr">₹147 Cr</div><div class="kv-sub">+68% YoY</div></div>
+    <div class="card cp"><div class="kv-lbl">EBITDA</div><div class="kv-val">₹25 Cr</div><div class="kv-sub">Margin 17%</div></div>
+    <div class="card cp"><div class="kv-lbl">PAT</div><div class="kv-val gr">₹15 Cr</div><div class="kv-sub">+89% YoY</div></div>
+    <div class="card cp"><div class="kv-lbl">EPS (H1)</div><div class="kv-val">₹9.27</div><div class="kv-sub">vs ₹4.97 prior</div></div>
+  </div>
+  <div class="divider"></div>
+  <div class="g2" style="gap:8px">
+    <div class="card cp"><div class="kv-lbl">3Y Rev CAGR</div><div class="kv-val">42%</div><div class="kv-sub">FY22–FY25</div></div>
+    <div class="card cp"><div class="kv-lbl">3Y PAT CAGR</div><div class="kv-val gr">111%</div><div class="kv-sub">FY22–FY25</div></div>
+  </div>
+</div>
+
+<div class="page" data-title="Story & Management">
+  <div class="pg-ey">03 · History &amp; Management</div>
+  <div class="pg-title">The Osel Story — 2006 to 2026</div>
+  <div class="g23" style="margin-bottom:14px">
+    <div class="timeline">
+      <div class="tl-track"></div>
+      <div class="tl-item"><div class="tl-dot dim"></div><div><div class="tl-dt dim">2006</div><div class="tl-hd">Founded — LED Display Manufacturer</div><div class="tl-bd">Incorporated as Innovative Infratech Solutions in Greater Noida. Core: LED display design and installation.</div></div></div>
+      <div class="tl-item"><div class="tl-dot dim"></div><div><div class="tl-dt dim">2020</div><div class="tl-hd">Hearing Aids Vertical</div><div class="tl-bd">Diversified into hearing aids. Secured the rare MD-5 medical device certification.</div></div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div><div class="tl-dt">Sep 2024</div><div class="tl-hd">NSE SME IPO — ₹160</div><div class="tl-bd">Listed at ₹198.5 vs. issue price ₹160. Earkart MoU signed on day one.</div></div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div><div class="tl-dt">Jul 2025</div><div class="tl-hd">Preferential Issue — ₹55 Cr @ ₹340</div><div class="tl-bd">₹55 Cr raised at ₹340/share. Mukul Agrawal enters at 7.56%.</div></div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div><div class="tl-dt">Aug 2025</div><div class="tl-hd">Philips Mobile — Exclusive India License</div><div class="tl-bd">Exclusive brand license via TPV. Feature phones launched with Zenotel as national distributor.</div></div></div>
+      <div class="tl-item"><div class="tl-dot"></div><div><div class="tl-dt">Mar 2026</div><div class="tl-hd">SFL Acquisition — ₹30 Cr</div><div class="tl-bd">Osel Healthcare acquires 90.69% of SFL Hearing Solutions — India's largest multi-brand hearing clinic chain.</div></div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:7px">
+      <div class="card cp"><div class="kv-lbl">IPO Price</div><div class="kv-val" style="font-size:15px">₹160</div></div>
+      <div class="card cp"><div class="kv-lbl">Current CMP</div><div class="kv-val g" style="font-size:15px">₹508</div></div>
+      <div class="card cp"><div class="kv-lbl">Return from IPO</div><div class="kv-val gr" style="font-size:15px">+218%</div></div>
+      <div class="hl" style="font-size:11px"><strong>"Exponential" growth</strong> commentary in Jan 2026 — unusually bold for conservative management. Signals real FY27 conviction.</div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="sec-lbl">Key Management</div>
+  <div class="g2">
+    <div class="mc"><div class="mc-role">Promoter &amp; MD</div><div class="mc-name">Ravi Shanker Mishra</div><div class="mc-bio">Founder-visionary; drove 3-vertical platform strategy. "Exponential" growth commentary in Jan 2026 signals real confidence in FY27 delivery.</div></div>
+    <div class="mc"><div class="mc-role">Whole-Time Director</div><div class="mc-name">Mukesh Kumar Sinha</div><div class="mc-bio">Day-to-day operations &amp; investor relations. Manages working capital discipline across project-based business cycles.</div></div>
+    <div class="mc"><div class="mc-role">New CEO (Mobile)</div><div class="mc-name">—</div><div class="mc-tag">Ex-CEO, Vodafone North India</div><div class="mc-bio">Last-mile telecom distribution DNA; Jio &amp; Airtel relationships critical to Philips phone scale-up.</div></div>
+    <div class="mc"><div class="mc-role">LED &amp; Defence Consultant</div><div class="mc-name">—</div><div class="mc-tag">Ex-Doordarshan Executive</div><div class="mc-bio">Strong broadcast sector connects; overseeing defence LED supply. ₹50 Cr Army tender bid submitted.</div></div>
+  </div>
+</div>
+
+<div class="page" data-title="Business Segments">
+  <div class="pg-ey">04 · Business Segments</div>
+  <div class="pg-title">Three Verticals — One Platform</div>
+  <div class="pg-sub">MGMT Target Mix FY26: Medical ~20% · LED ~30% · Philips Mobile ~30% · OEM LED ~20%</div>
+  <div class="g3">
+    <div class="seg">
+      <div class="seg-hd"><div class="seg-name">📺 LED Display Systems</div><div class="seg-badge">Core</div></div>
+      <div class="seg-pct">48.9%</div>
+      <div class="seg-bb"><div class="seg-bf" data-w="48.9"></div></div>
+      <ul class="seg-pts">
+        <li>End-to-end: design to installation</li><li>Indoor, outdoor, video walls, fine-pitch LED</li><li>Clients: DRDO, NBCC, IndusInd, PVR, Levi's</li><li>OEM manufacturing for MNC brands</li><li>99% YoY segment growth H1 FY26</li><li>JNPT free zone — Middle East &amp; US exports</li><li>₹50 Cr Army tender bid submitted</li>
+      </ul>
+      <div class="seg-mar">Gross Margins: ~15–20%</div>
+    </div>
+    <div class="seg">
+      <div class="seg-hd"><div class="seg-name">🎧 Hearing Aid Devices</div><div class="seg-badge">OEM</div></div>
+      <div class="seg-pct">35.2%</div>
+      <div class="seg-bb"><div class="seg-bf" data-w="35.2"></div></div>
+      <ul class="seg-pts">
+        <li>4,00,000 units p.a. production capacity</li><li>MD-5 certified — rare regulatory moat</li><li>BTE, ITE, CIC, IIC, RIC, ITC range</li><li>Govt tenders (ADIP scheme) — core B2B</li><li>Earkart retail + audiologist network</li><li>SFL acquisition — full-stack hearing vertical</li><li>Export plans: US, EU, Germany</li>
+      </ul>
+      <div class="seg-mar">Gross Margins: ~30–35% (Highest)</div>
+    </div>
+    <div class="seg">
+      <div class="seg-hd"><div class="seg-name">📱 Mobile Phones &amp; Tablets</div><div class="seg-badge">New Engine</div></div>
+      <div class="seg-pct">15.9%</div>
+      <div class="seg-bb"><div class="seg-bf" data-w="15.9"></div></div>
+      <ul class="seg-pts">
+        <li>Exclusive Philips brand license (via TPV)</li><li>Phase 1: Feature phones — 90Mn unit market</li><li>Phase 2: Smartphones — ₹4L Cr market</li><li>1L pilot → 3L order → targeting 5L+ units</li><li>120+ distributors, 650+ service centres</li><li>Ex-Vodafone CEO — Jio &amp; Airtel channel</li><li>Smartphone announcement imminent</li>
+      </ul>
+      <div class="seg-mar">Target EBITDA: 15–20%</div>
+    </div>
+  </div>
+</div>
+
+<div class="page" data-title="LED Display Systems">
+  <div class="pg-ey">05 · LED Display Systems</div>
+  <div class="pg-title">Core Revenue Engine — Now Going Global</div>
+  <div class="g23" style="margin-bottom:14px">
+    <div>
+      <div class="sec-lbl">India LED Display Market</div>
+      <div class="g2" style="margin-bottom:10px;gap:8px">
+        <div class="card cp"><div class="kv-lbl">2024 Market Size</div><div class="kv-val" style="font-size:15px">$0.81 Bn</div></div>
+        <div class="card cp"><div class="kv-lbl">2033 Forecast (IMARC)</div><div class="kv-val" style="font-size:15px">$1.30 Bn</div><div class="kv-sub">+60% growth runway</div></div>
+      </div>
+      <div class="sec-lbl">OSEL's LED Strategy</div>
+      <div style="display:flex;flex-direction:column;gap:5px">
+        <div class="hl"><strong>Bank Tie-Ups</strong> — Bulk LED installations across branch networks nationwide. One client, multi-location rollout.</div>
+        <div class="hl"><strong>JNPT Facility</strong> — 5 acres at JNPT free zone. Middle East &amp; US exports once tariffs stabilise.</div>
+        <div class="hl"><strong>International OEM</strong> — Manufacturing for global LED brands. OEM revenue stream at scale.</div>
+        <div class="hl"><strong>Defence Contracts</strong> — Supplied border surveillance screens. ₹50 Cr Army tender bid; new Defence hire onboard.</div>
+      </div>
+    </div>
+    <div>
+      <div class="sec-lbl">Key Demand Drivers</div>
+      <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px">
+        <div style="padding:6px 9px;background:var(--surface);border:1px solid var(--rim);border-radius:4px;font-size:11px;color:var(--ash)">→ Retail &amp; hospitality digital signage</div>
+        <div style="padding:6px 9px;background:var(--surface);border:1px solid var(--rim);border-radius:4px;font-size:11px;color:var(--ash)">→ DOOH advertising boom</div>
+        <div style="padding:6px 9px;background:var(--surface);border:1px solid var(--rim);border-radius:4px;font-size:11px;color:var(--ash)">→ Command &amp; control centres (Govt + Defence)</div>
+        <div style="padding:6px 9px;background:var(--surface);border:1px solid var(--rim);border-radius:4px;font-size:11px;color:var(--ash)">→ Banking nationwide digital rollouts</div>
+      </div>
+    </div>
+  </div>
+  <div class="sec-lbl">Key Institutional Clients</div>
+  <div class="chips">
+    <span class="chip">DRDO</span><span class="chip">NBCC</span><span class="chip">IndusInd Bank</span><span class="chip">PVR Cinemas</span><span class="chip">Levi's</span><span class="chip">Adidas</span><span class="chip">Rado</span><span class="chip">Sharda University</span><span class="chip">Lulu Mall</span><span class="chip">India TV</span><span class="chip">Centre for Sight</span><span class="chip">Worldmark</span>
+  </div>
+</div>
+
+<div class="page" data-title="Hearing Aid Vertical">
+  <div class="pg-ey">06 · Hearing Aid Vertical</div>
+  <div class="pg-title">Regulatory Moat · Highest Margins · Entering Retail</div>
+  <div class="g23" style="margin-bottom:12px">
+    <div>
+      <div class="sec-lbl">India Hearing Aid Market</div>
+      <div class="g2" style="margin-bottom:8px;gap:7px">
+        <div class="card cp"><div class="kv-lbl">2024 Market</div><div class="kv-val" style="font-size:15px">$235 Mn</div></div>
+        <div class="card cp"><div class="kv-lbl">2033E Market</div><div class="kv-val" style="font-size:15px">$376 Mn</div></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px">
+        <div class="hl"><strong>India Reality:</strong> 1.3 Bn people · ~7% affected · &lt;0.5% treated — massive gap</div>
+        <div class="hl"><strong>Market Size:</strong> Only 700K hearing aids sold vs. 91 Mn in need annually</div>
+        <div class="hl"><strong>Global:</strong> 488 Mn affected worldwide; &lt;10% adoption — chronic underserved</div>
+      </div>
+      <div class="sec-lbl">Earkart — Key Distribution Partner</div>
+      <div style="font-size:11px;color:var(--ash);line-height:1.55;padding:9px 11px;background:var(--surface);border:1px solid var(--rim);border-radius:4px">On listing day (Sep 2024), Osel signed an MoU appointing <strong style="color:var(--cream)">Earkart Pvt. Ltd.</strong> as exclusive retail hearing aid distributor across India for 2 years — instantly converting from pure B2B to B2C retail overnight.</div>
+    </div>
+    <div>
+      <div class="sec-lbl">OSEL's Position &amp; Strategy</div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <div class="hl"><strong>MD-5 Certified</strong> — One of India's rarest medical device licences</div>
+        <div class="hl"><strong>4L Units/yr</strong> — 4,00,000 hearing aids p.a. capacity</div>
+        <div class="hl"><strong>Tiered Portfolio</strong> — Basic ₹10K–30K · Mid ₹30K–1L · Premium ₹1L–4L</div>
+        <div class="hl"><strong>Tech Partner</strong> — Frye Electronics USA — clinical-grade calibration</div>
+        <div class="hl"><strong>Audiologist Net</strong> — Building nationwide clinical ecosystem</div>
+        <div class="hl"><strong>Export Plans</strong> — Targeting US, EU, Germany markets</div>
+        <div class="hl"><strong>Govt Push</strong> — ADIP scheme subsidises devices — OSEL key beneficiary</div>
+      </div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="sec-lbl">Global Competition — "The Big 5"</div>
+  <div class="g2" style="gap:6px">
+    <div class="card cp" style="font-size:11px;color:var(--ash)"><strong style="color:var(--cream)">Sonova/Phonak</strong> — Swiss · Largest globally · Premium</div>
+    <div class="card cp" style="font-size:11px;color:var(--ash)"><strong style="color:var(--cream)">Starkey Labs</strong> — US · AI hearing aids · ENT connect</div>
+    <div class="card cp" style="font-size:11px;color:var(--ash)"><strong style="color:var(--cream)">Siemens/Signia</strong> — German · Wide range · Audiologist fav.</div>
+    <div class="card cp" style="font-size:11px;color:var(--ash)"><strong style="color:var(--cream)">Amplifon</strong> — Italian · Retail chain · Pan-India stores</div>
+  </div>
+  <div style="margin-top:6px;font-size:10px;color:var(--ash-dim);font-style:italic">OSEL competes on price + govt channel; retail brand gap remains.</div>
+</div>
+
+<div class="page" data-title="Philips Mobile Partnership">
+  <div class="pg-ey">07 · Mobile Phones &amp; Tablets</div>
+  <div class="pg-title">India's Exclusive Philips Mobile Partner</div>
+  <div class="pg-sub">Market Entry, Competitive Edge &amp; Philips Partnership</div>
+  <div class="g23" style="margin-bottom:12px">
+    <div>
+      <div class="sec-lbl">The Philips Partnership</div>
+      <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px">
+        <div class="hl">→ <strong>Exclusive Sales &amp; Promotion Rights</strong> via TPV — Philips' official brand licensee</div>
+        <div class="hl">→ <strong>OSEL owns</strong> manufacturing, marketing &amp; distribution end-to-end (full P&amp;L)</div>
+        <div class="hl">→ <strong>Zenotel India</strong>: national distributor · 700+ distributors · 1L+ retailers targeted</div>
+        <div class="hl">→ <strong>Ex-Vodafone CEO hired</strong> — last-mile telecom channel reach &amp; Jio/Airtel connects</div>
+      </div>
+      <div class="g2" style="gap:7px">
+        <div class="seg" style="border-top:2px solid var(--gold)">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px">Phase 1 — NOW LIVE</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--white);margin-bottom:7px">Feature Phones</div>
+          <ul class="seg-pts"><li>Market: ₹10,000 Cr/yr · 90 Mn units</li><li>Pilot 1L → Order 3L → Target 5L+</li><li>120+ distributors · 650+ service centres</li><li>15–20% EBITDA target</li></ul>
+        </div>
+        <div class="seg" style="border-top:2px solid var(--ash-dim);opacity:.8">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;color:var(--ash-dim);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px">Phase 2 — UPCOMING</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--white);margin-bottom:7px">Smartphones</div>
+          <ul class="seg-pts"><li>Market: ₹4,00,000 Cr · 170 Mn units</li><li>Announcement imminent</li><li>Philips brand locks users before migration</li></ul>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="sec-lbl">OSEL's Competitive Edge</div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <div class="hl"><strong>Brand Heritage</strong> — 150+ yrs of global trust vs. Chinese no-names</div>
+        <div class="hl"><strong>Distribution Speed</strong> — 120 distributors + 650 service centres in 4 months</div>
+        <div class="hl"><strong>Telecom Channel</strong> — Ex-Vodafone CEO; Jio &amp; Airtel preinstall network</div>
+        <div class="hl"><strong>Full P&amp;L Control</strong> — Manufacturer + marketer + distributor</div>
+        <div class="hl"><strong>Smartphone Ladder</strong> — Feature phone DNA retains users for Phase 2</div>
+        <div class="hl"><strong>FY27 Conviction</strong> — "Exponential growth" — unusually bold for conservative mgmt</div>
+      </div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="sec-lbl">Feature Phone Market — Key Players</div>
+  <div class="bc-row"><div class="bc-lbl">JioPhone</div><div class="bc-track"><div class="bc-fill" style="width:0%;background:#2255cc" data-target="30">~30%</div></div></div>
+  <div class="bc-row"><div class="bc-lbl">Samsung</div><div class="bc-track"><div class="bc-fill" style="width:0%;background:#555" data-target="18">~18%</div></div></div>
+  <div class="bc-row"><div class="bc-lbl">Nokia (HMD)</div><div class="bc-track"><div class="bc-fill" style="width:0%;background:#336699" data-target="15">~15%</div></div></div>
+  <div class="bc-row"><div class="bc-lbl">itel / Tecno</div><div class="bc-track"><div class="bc-fill" style="width:0%;background:#664422" data-target="12">~12%</div></div></div>
+  <div class="bc-row"><div class="bc-lbl">Lava / Karbonn</div><div class="bc-track"><div class="bc-fill" style="width:0%;background:#553322" data-target="8">~8%</div></div></div>
+  <div class="bc-row"><div class="bc-lbl">Philips (OSEL)</div><div class="bc-track"><div class="bc-fill" style="width:0%;background:var(--gold)" data-target="4">Entry</div></div></div>
+</div>
+
+<div class="page" data-title="SFL Acquisition">
+  <div class="pg-ey">08 · Osel Healthcare — Subsidiary &amp; Acquisition</div>
+  <div class="pg-title">Acquiring SFL Hearing Solutions</div>
+  <div class="pg-sub">Deepening the Healthcare Vertical — NSE Filing, 24 Mar 2026</div>
+  <div class="ag" style="margin-bottom:14px">
+    <div class="ar"><div class="ak">Acquirer</div><div class="av">Osel Healthcare Pvt. Ltd.<br><span style="font-size:10px;color:var(--ash-dim)">(100% subsidiary of Osel Devices)</span></div></div>
+    <div class="ar"><div class="ak">Target</div><div class="av">SFL Hearing Solutions Pvt. Ltd.</div></div>
+    <div class="ar"><div class="ak">Stake Acquired</div><div class="av g">90.69%</div></div>
+    <div class="ar"><div class="ak">Consideration</div><div class="av g">₹30 Crore</div></div>
+    <div class="ar"><div class="ak">Seller</div><div class="av">U &amp; N Enterprises Pvt. Ltd.</div></div>
+    <div class="ar"><div class="ak">Related Party?</div><div class="av" style="color:var(--green)">No — Arm's Length</div></div>
+    <div class="ar"><div class="ak">Nature</div><div class="av">Share Purchase Agreement (SPA)</div></div>
+    <div class="ar"><div class="ak">Parent Impact</div><div class="av">No change in management or control of Osel Devices Ltd.</div></div>
+    <div class="ar"><div class="ak">Rights Obtained</div><div class="av">Board nomination, affirmative voting, preemption, anti-dilution protection</div></div>
+  </div>
+  <div class="sec-lbl">Strategic Rationale</div>
+  <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px">
+    <div class="hl">SFL operates in hearing solutions — directly complementary to Osel's manufacturing &amp; Earkart's retail distribution</div>
+    <div class="hl">At <strong>₹30 Cr</strong>, affordable scale-up in the highest-margin segment (hearing aid gross margins 30–35%)</div>
+    <div class="hl">SFL's network + Earkart + audiologist programme = <strong>full-stack hearing vertical</strong></div>
+    <div class="hl">India hearing aid treatment rate <strong>&lt;0.5%</strong> of affected population — massive runway ahead</div>
+  </div>
+  <div class="g2" style="gap:8px;margin-bottom:12px">
+    <div class="card cp"><div class="kv-lbl">FY26 Impact</div><div style="font-size:11px;color:var(--ash);margin-top:3px;line-height:1.5">Negligible. SPA signed 24 Mar 2026; closing expected Q1 FY27.</div></div>
+    <div class="card cp" style="border-color:var(--gold-dim)"><div class="kv-lbl">FY27 Contribution (Est.)</div><div class="kv-val g" style="font-size:15px;margin-top:3px">₹22–25 Cr</div><div style="font-size:10px;color:var(--ash);margin-top:2px">Topline · ~₹5–6 Cr incremental PAT</div></div>
+  </div>
+  <div class="sec-lbl">Post-Acquisition Structure</div>
+  <div style="background:var(--surface2);border:1px solid var(--rim);border-radius:4px;padding:11px 13px;font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--ash);line-height:1.9">
+    ÖSEL DEVICES LIMITED <span style="color:var(--ash-dim)">(Listed · OSELDEVICE)</span><br>
+    &nbsp;&nbsp;&nbsp;└── Osel Healthcare Pvt. Ltd. <span style="color:var(--ash-dim)">(100% subsidiary)</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span style="color:var(--gold)">SFL Hearing Solutions (90.69%)</span> <span style="color:var(--ash-dim)">— FY27 onwards</span>
+  </div>
+</div>
+
+<div class="page" data-title="Financial Performance">
+  <div class="pg-ey">09 · Financial Performance</div>
+  <div class="pg-title">FY21–FY25 Audited · H1 FY26 Unaudited</div>
+  <div class="card cp" style="margin-bottom:12px">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--ash-dim);margin-bottom:8px">Revenue (₹ Cr) · FY21–H1 FY26</div>
+    <svg viewBox="0 0 480 72" class="csvg" style="height:72px">
+      <rect x="8" y="58" width="38" height="11" rx="1" fill="var(--gold)" opacity=".55"/><text x="27" y="53" text-anchor="middle" fill="var(--ash)" font-family="Barlow Condensed" font-size="8.5">57</text><text x="27" y="70" text-anchor="middle" fill="var(--ash-dim)" font-family="Barlow Condensed" font-size="7">FY21</text>
+      <rect x="88" y="52" width="38" height="17" rx="1" fill="var(--gold)" opacity=".6"/><text x="107" y="47" text-anchor="middle" fill="var(--ash)" font-family="Barlow Condensed" font-size="8.5">65</text><text x="107" y="70" text-anchor="middle" fill="var(--ash-dim)" font-family="Barlow Condensed" font-size="7">FY22</text>
+      <rect x="168" y="41" width="38" height="28" rx="1" fill="var(--gold)" opacity=".65"/><text x="187" y="37" text-anchor="middle" fill="var(--ash)" font-family="Barlow Condensed" font-size="8.5">82</text><text x="187" y="70" text-anchor="middle" fill="var(--ash-dim)" font-family="Barlow Condensed" font-size="7">FY23</text>
+      <rect x="248" y="24" width="38" height="45" rx="1" fill="var(--gold)" opacity=".72"/><text x="267" y="19" text-anchor="middle" fill="var(--ash)" font-family="Barlow Condensed" font-size="8.5">132</text><text x="267" y="70" text-anchor="middle" fill="var(--ash-dim)" font-family="Barlow Condensed" font-size="7">FY24</text>
+      <rect x="328" y="8" width="38" height="61" rx="1" fill="var(--gold)" opacity=".82"/><text x="347" y="5" text-anchor="middle" fill="var(--gold)" font-family="Barlow Condensed" font-size="8.5" font-weight="bold">186</text><text x="347" y="70" text-anchor="middle" fill="var(--ash-dim)" font-family="Barlow Condensed" font-size="7">FY25</text>
+      <rect x="408" y="15" width="38" height="54" rx="1" fill="var(--gold)" opacity="1"/><text x="427" y="11" text-anchor="middle" fill="var(--gold)" font-family="Barlow Condensed" font-size="8.5" font-weight="bold">147*</text><text x="427" y="70" text-anchor="middle" fill="var(--ash-dim)" font-family="Barlow Condensed" font-size="7">H1 FY26</text>
+    </svg>
+    <div style="font-size:8.5px;color:var(--ash-dim);margin-top:3px">* H1 FY26 only — annualised run-rate ~₹300 Cr</div>
+  </div>
+  <div class="tw" style="margin-bottom:9px">
+    <table>
+      <thead><tr><th>Period</th><th>Revenue (₹ Cr)</th><th>EBITDA (₹ Cr)</th><th>OPM%</th><th>PAT (₹ Cr)</th><th>EPS (₹)</th></tr></thead>
+      <tbody>
+        <tr><td>FY21</td><td>57</td><td>3</td><td class="td">5%</td><td>1</td><td class="td">—</td></tr>
+        <tr><td>FY22</td><td>65</td><td>5</td><td class="td">8%</td><td>2</td><td class="td">—</td></tr>
+        <tr><td>FY23</td><td>82</td><td>8</td><td class="td">10%</td><td>5</td><td class="td">—</td></tr>
+        <tr><td>FY24</td><td>132</td><td>18</td><td>14%</td><td>13</td><td class="td">—</td></tr>
+        <tr><td>FY25</td><td>186</td><td>33</td><td class="ta">18%</td><td>20</td><td class="td">—</td></tr>
+        <tr><td>H1 FY25</td><td>87</td><td>13</td><td>15%</td><td>8</td><td>4.97</td></tr>
+        <tr><td>H2 FY25</td><td>99</td><td>20</td><td class="tg">20%</td><td>12</td><td>7.46</td></tr>
+        <tr class="rhi"><td>H1 FY26</td><td class="tg">147 (+68% YoY)</td><td class="tg">25</td><td>17%</td><td class="tg">15 (+89% YoY)</td><td class="tg">9.27</td></tr>
+        <tr><td>FY26E (Full Year)*</td><td class="ta">~300 Cr</td><td class="ta">~52 Cr</td><td class="ta">~17%</td><td class="ta">~35 Cr</td><td class="td">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--ash-dim);margin-bottom:8px">* FY26E based on H1 FY26 run-rate + management guidance. Not a formal forecast. Conduct your own analysis.</div>
+  <div class="hl warn"><strong>⚠ Working Capital Watch:</strong> Receivable days 73→128 (FY24→FY25). Working capital days 38→163. Government project cycles extend to 120+ days. Cash conversion cycle widening is the key operational watch point.</div>
+</div>
+
+<div class="page" data-title="Stock & Valuation">
+  <div class="pg-ey">10 · Stock Performance · Valuation · Key Investors</div>
+  <div class="pg-title">Where ÖSEL Trades</div>
+  <div class="pg-sub">At ₹508 CMP / ₹899 Cr MCap — Institutional-Like Conviction</div>
+  <div class="card cp" style="margin-bottom:12px">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--ash-dim);margin-bottom:8px">NSE SME Price Journey — Sep 2024 to Mar 2026 (Indicative)</div>
+    <svg viewBox="0 0 660 110" class="csvg" style="height:110px">
+      <defs><linearGradient id="pg2" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#d4a847" stop-opacity=".18"/><stop offset="100%" stop-color="#d4a847" stop-opacity="0"/></linearGradient></defs>
+      <line x1="0" y1="28" x2="660" y2="28" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+      <line x1="0" y1="56" x2="660" y2="56" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+      <line x1="0" y1="84" x2="660" y2="84" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+      <text x="3" y="13" fill="rgba(212,168,71,.55)" font-family="Barlow Condensed" font-size="8">₹835</text>
+      <text x="3" y="41" fill="rgba(255,255,255,.28)" font-family="Barlow Condensed" font-size="8">₹600</text>
+      <text x="3" y="69" fill="rgba(255,255,255,.28)" font-family="Barlow Condensed" font-size="8">₹350</text>
+      <text x="3" y="97" fill="rgba(255,255,255,.28)" font-family="Barlow Condensed" font-size="8">₹160</text>
+      <path d="M45,101 L120,88 L205,68 L290,38 L355,10 L415,23 L460,17 L505,32 L545,36 L590,43 L635,52 L635,108 L45,108 Z" fill="url(#pg2)"/>
+      <polyline points="45,101 120,88 205,68 290,38 355,10 415,23 460,17 505,32 545,36 590,43 635,52" fill="none" stroke="var(--gold)" stroke-width="1.8" stroke-linejoin="round"/>
+      <circle cx="45" cy="101" r="3.5" fill="var(--gold)"/>
+      <circle cx="290" cy="38" r="3.5" fill="var(--ash)"/>
+      <circle cx="355" cy="10" r="3.5" fill="var(--gold)"/>
+      <circle cx="635" cy="52" r="3.5" fill="var(--gold)"/>
+      <text x="36" y="108" fill="var(--ash-dim)" font-family="Barlow Condensed" font-size="7.5">IPO ₹160</text>
+      <text x="270" y="34" fill="var(--ash)" font-family="Barlow Condensed" font-size="7.5">Pref @₹340</text>
+      <text x="338" y="7" fill="var(--gold)" font-family="Barlow Condensed" font-size="7.5">₹835 Peak</text>
+      <text x="610" y="48" fill="var(--gold)" font-family="Barlow Condensed" font-size="8">₹508</text>
+    </svg>
+  </div>
+  <div class="g4" style="margin-bottom:10px">
+    <div class="vc"><div class="vm">TTM P/E</div><div class="vn">~33x</div><div class="vx">MCap ₹899Cr / TTM PAT ~₹27Cr</div></div>
+    <div class="vc"><div class="vm">Fwd P/E FY26E*</div><div class="vn">~25.7x</div><div class="vx">MCap / FY26E PAT ~₹35 Cr</div></div>
+    <div class="vc"><div class="vm">Fwd P/E FY27E†</div><div class="vn" style="color:var(--green)">~15.6x</div><div class="vx">MCap / FY27E PAT ~₹55–60 Cr</div></div>
+    <div class="vc"><div class="vm">MCap / Sales</div><div class="vn">3.65x</div><div class="vx">TTM Revenue ₹246 Cr</div></div>
+  </div>
+  <div style="font-family:'Barlow Condensed',sans-serif;font-size:8.5px;color:var(--ash-dim);margin-bottom:10px;line-height:1.5">* FY26E PAT ~₹35 Cr: H1 run-rate estimate. Not a formal forecast. &nbsp;† FY27E PAT ~₹55–60 Cr: Indicative only. Not investment advice.</div>
+  <div class="sec-lbl">Key Investors</div>
+  <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px">
+    <div class="inv"><div class="inv-av">MA</div><div><div class="inv-nm">Mukul Mahavir Agrawal</div><div class="inv-st">7.56% stake</div><div class="inv-nt">Pref Sep 2025 · 6-month lock-in lapsed Mar 2026 — no supply has hit market. Signals conviction in future delivery.</div></div></div>
+    <div class="inv"><div class="inv-av">HG</div><div><div class="inv-nm">Hemant Gadodia (Invicta)</div><div class="inv-st">1,00,000 warrants</div><div class="inv-nt">Issued via preferential allotment · Conversion pending</div></div></div>
+    <div class="inv"><div class="inv-av">PR</div><div><div class="inv-nm">Promoter Group</div><div class="inv-st">65.21% holding</div><div class="inv-nt">Steady post-pref holding — aligned with long-term value creation. Down from 71.53% pre-pref.</div></div></div>
+  </div>
+  <div class="sec-lbl">Key Re-Rating Catalysts</div>
+  <div style="display:flex;flex-direction:column;gap:5px">
+    <div class="cat"><div class="cat-dot"></div>Smartphone launch announcement (Phase 2)</div>
+    <div class="cat"><div class="cat-dot"></div>SFL integration &amp; hearing aid retail revenue — Q1 FY27 closing</div>
+    <div class="cat"><div class="cat-dot"></div>₹50 Cr Army tender outcome (LED defence supply)</div>
+    <div class="cat"><div class="cat-dot"></div>JNPT free-zone facility operationalisation — Middle East + US exports</div>
+    <div class="cat"><div class="cat-dot"></div>Pref lock-in lapsed — no supply hit yet; Mukul Agrawal holding firm</div>
+  </div>
+</div>
+
+<div class="page" data-title="Investment Considerations">
+  <div class="pg-ey">11 · Investment Considerations</div>
+  <div class="pg-title">Positives &amp; Risks — Eyes Wide Open</div>
+  <div class="g2">
+    <div class="prc pos"><div class="prc-hd"><div class="prc-ico">📈</div><div class="prc-ttl">Multi-Vertical Revenue Mix</div></div><div class="prc-bd">Revenue diversified across LED (49%), Hearing Aids (35%), Mobile (15%). No single segment dominates — reduces revenue concentration risk materially.</div></div>
+    <div class="prc risk"><div class="prc-hd"><div class="prc-ico">⚠️</div><div class="prc-ttl">Working Capital Stress</div></div><div class="prc-bd">Receivable days 73→128 (FY24→FY25). Working capital days 38→163. Government project cycles extend to 120+ days. Cash conversion cycle widening is the key watch point.</div></div>
+    <div class="prc pos"><div class="prc-hd"><div class="prc-ico">🔑</div><div class="prc-ttl">Philips Brand + Distribution Moat</div></div><div class="prc-bd">Exclusive Philips license via TPV gives OSEL 150+ years of brand equity. 120 distributors + 650 service centres built in just 4 months — rare execution pace.</div></div>
+    <div class="prc risk"><div class="prc-hd"><div class="prc-ico">📱</div><div class="prc-ttl">Mobile Execution Risk</div></div><div class="prc-bd">Feature phone market dominated by JioPhone, Samsung &amp; Chinese brands. Consumer pull vs. retailer push unproven at volume. Phase 2 (smartphones) timeline uncertain.</div></div>
+    <div class="prc pos"><div class="prc-hd"><div class="prc-ico">🏆</div><div class="prc-ttl">Institutional Validation at ₹340</div></div><div class="prc-bd">Mukul Agrawal entered via pref at ₹340; 6-month lock-in lapsed Mar 2026 — no supply has hit market. Both Mukul Agrawal and promoters holding firm.</div></div>
+    <div class="prc risk"><div class="prc-hd"><div class="prc-ico">🌍</div><div class="prc-ttl">Geopolitical &amp; Supply Chain</div></div><div class="prc-bd">LED drivers, hearing aid chips and phone components largely imported from China/Taiwan. INR depreciation directly hits margins. Regional tensions add supply uncertainty.</div></div>
+    <div class="prc pos"><div class="prc-hd"><div class="prc-ico">💰</div><div class="prc-ttl">Profitable &amp; High ROE</div></div><div class="prc-bd">3Y PAT CAGR 111%; ROE 30%, ROCE 31%. Rare combination for an SME at this stage. EBITDA margins expanding 5% (FY21) → 18% (TTM) as operating leverage kicks in.</div></div>
+    <div class="prc risk"><div class="prc-hd"><div class="prc-ico">📉</div><div class="prc-ttl">Promoter Dilution Watch</div></div><div class="prc-bd">Promoter holding fell 71.53%→65.21% post-pref. Further dilution without matching revenue growth could signal concern. Monitor quarterly shareholding pattern closely.</div></div>
+    <div class="prc pos"><div class="prc-hd"><div class="prc-ico">🔗</div><div class="prc-ttl">Adjacent Segment Synergy</div></div><div class="prc-bd">LED → Hearing Aid → Mobile share electronics manufacturing DNA, B2G/B2B distribution, and regulatory know-how — each new vertical entry is cheaper and lower-risk.</div></div>
+    <div class="prc risk"><div class="prc-hd"><div class="prc-ico">🎧</div><div class="prc-ttl">Hearing Aid Retail Competition</div></div><div class="prc-bd">Global Big 5 (Sonova, Starkey, Siemens, Amplifon, Oticon) dominate retail via audiologist relationships. OSEL's retail brand equity is an early-stage test.</div></div>
+    <div class="prc pos"><div class="prc-hd"><div class="prc-ico">🚀</div><div class="prc-ttl">Defence + Export Optionality</div></div><div class="prc-bd">₹50 Cr Army tender pending; JNPT free-zone facility targeting Middle East + US exports. New defence &amp; broadcast hires deepen pipeline. Not priced in yet.</div></div>
+    <div class="prc risk"><div class="prc-hd"><div class="prc-ico">📊</div><div class="prc-ttl">SME Platform Liquidity</div></div><div class="prc-bd">Thin volumes, wide bid-ask spreads. Stock already fell 40% from ₹835 peak. Institutional exits or news-driven corrections can be sharp and swift. Position sizing matters.</div></div>
+  </div>
+</div>
+
+<div class="page" data-title="Disclaimer">
+  <div class="pg-ey">12 · Important Notice</div>
+  <div class="pg-title">Please Read Carefully</div>
+  <div class="led" style="margin-top:12px">
+    <div class="ld on" style="--d:2s"></div><div class="ld" style="--d:1.5s"></div><div class="ld on" style="--d:2.5s"></div><div class="ld on" style="--d:1.8s"></div><div class="ld" style="--d:3.2s"></div>
+  </div>
+  <div class="notice" style="margin-bottom:12px">
+    <p style="margin-bottom:9px">This presentation is prepared for <strong>educational and informational purposes only</strong>. It does not constitute investment advice, a buy/sell recommendation, a solicitation, or a research report as defined under SEBI (Research Analysts) Regulations, 2014.</p>
+    <p style="margin-bottom:9px">Investing in SME-listed securities involves significant risks including <strong>limited liquidity, higher volatility, lower regulatory disclosures, and concentration risk</strong>. Past performance is not indicative of future returns.</p>
+    <p>All data, figures, and estimates herein are sourced from publicly available information (NSE filings, Screener, company presentations, concall transcripts). Forward-looking estimates are indicative only. Readers must conduct independent due diligence and consult a SEBI-registered investment advisor before making any investment decision.</p>
+  </div>
+  <div class="g4" style="margin-bottom:12px">
+    <div class="card cp"><div class="kv-lbl">Report Date</div><div class="kv-val" style="font-size:15px">March 2026</div></div>
+    <div class="card cp"><div class="kv-lbl">Exchange</div><div class="kv-val" style="font-size:15px">NSE SME</div><div class="kv-sub">OSELDEVICE</div></div>
+    <div class="card cp"><div class="kv-lbl">Market Cap (Updated)</div><div class="kv-val g" style="font-size:15px">₹899 Cr</div></div>
+    <div class="card cp"><div class="kv-lbl">CMP (Updated)</div><div class="kv-val g" style="font-size:15px">₹508</div></div>
+  </div>
+  <div style="background:var(--surface2);border:1px solid var(--rim);border-radius:5px;padding:16px;text-align:center">
+    <div style="text-align:center; margin-top:24px;">
+    <a href="https://x.com/sachprat07" target="_blank" style="color:var(--ash); text-decoration:none; font-family:'Barlow Condensed',sans-serif; font-size:18px; font-weight:500; display:inline-flex; align-items:center; gap:6px; letter-spacing:0.05em; transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">
+      <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 14px; height: 14px; fill: currentColor;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+      @sachprat07
+    </a>
+  </div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--ash-dim);letter-spacing:.14em;text-transform:uppercase">NSE SME · OSELDEVICE · Founded 2006 · Greater Noida</div>
+    <div class="led" style="justify-content:center;margin:10px 0 0">
+      <div class="ld on" style="--d:1.4s"></div><div class="ld" style="--d:2s"></div><div class="ld on" style="--d:1.7s"></div><div class="ld" style="--d:2.3s"></div><div class="ld on" style="--d:1.9s"></div>
+    </div>
+  </div>
+</div>
+
+  </div></div></div><script>
+const TITLES=["Cover","Company Snapshot","Story & Management","Business Segments","LED Display Systems","Hearing Aid Vertical","Philips Mobile Partnership","SFL Acquisition","Financial Performance","Stock & Valuation","Investment Considerations","Disclaimer"];
+const TOT=TITLES.length;
+let cur=0;
+const pgs=document.querySelectorAll('.page');
+const sbnav=document.getElementById('sbnav');
+
+TITLES.forEach((t,i)=>{
+  const d=document.createElement('div');
+  d.className='sb-item'+(i===0?' active':'');
+  d.innerHTML=`<span class="sb-item-num">${String(i+1).padStart(2,'0')}</span><span class="sb-item-text">${t}</span>`;
+  d.onclick=()=>{go(i);closeSB()};
+  sbnav.appendChild(d);
+});
+
+function go(idx){
+  if(idx<0||idx>=TOT)return;
+  pgs[cur].classList.remove('active');
+  pgs[cur].classList.add('exit-l');
+  setTimeout(()=>pgs[cur].classList.remove('exit-l'),280);
+  document.querySelectorAll('.sb-item')[cur].classList.remove('active');
+  cur=idx;
+  document.querySelectorAll('.sb-item')[cur].classList.add('active');
+  document.querySelectorAll('.sb-item')[cur].scrollIntoView({block:'nearest',behavior:'smooth'});
+  pgs[cur].classList.add('active');
+  pgs[cur].scrollTop=0;
+  document.getElementById('tbtitle').textContent=TITLES[cur];
+  document.getElementById('pginfo').textContent=`${cur+1} / ${TOT}`;
+  document.getElementById('btnp').disabled=cur===0;
+  document.getElementById('btnn').disabled=cur===TOT-1;
+  document.getElementById('pbar').style.width=((cur+1)/TOT*100)+'%';
+  setTimeout(()=>animPage(pgs[cur]),120);
+}
+
+function animPage(pg){
+  pg.querySelectorAll('.seg-bf[data-w]').forEach(el=>el.style.width=parseFloat(el.dataset.w)+'%');
+  pg.querySelectorAll('.bc-fill[data-target]').forEach(el=>el.style.width=(parseFloat(el.dataset.target)/32*100)+'%');
+}
+
+function toggleSB(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('ov').classList.toggle('show')}
+function closeSB(){document.getElementById('sidebar').classList.remove('open');document.getElementById('ov').classList.remove('show')}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')go(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(cur-1);
+});
+
+// Fixed touch sensitivity logic
+let tx = 0, ty = 0;
+document.getElementById('pages').addEventListener('touchstart', e => {
+  if (e.touches.length === 1) { // Only track single touches to prevent pinch-to-zoom interference
+    tx = e.touches[0].clientX;
+    ty = e.touches[0].clientY;
+  }
+}, {passive: true});
+
+document.getElementById('pages').addEventListener('touchend', e => {
+  if (tx !== 0 && e.changedTouches.length === 1) {
+    const dx = tx - e.changedTouches[0].clientX;
+    const dy = ty - e.changedTouches[0].clientY;
+    
+    // Require a minimum swipe distance of 80px AND ensure horizontal movement is greater than vertical
+    if (Math.abs(dx) > 80 && Math.abs(dx) > Math.abs(dy)) {
+      go(dx > 0 ? cur + 1 : cur - 1);
+    }
+  }
+  tx = 0; ty = 0; // reset
+}, {passive: true});
+
+animPage(pgs[0]);
+</script>
+</body>
+</html>
