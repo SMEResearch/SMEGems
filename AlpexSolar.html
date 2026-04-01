@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alpex Solar — Investor Research 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Manrope:wght@300;400;500;600&family=Outfit:ital,wght@0,400;0,600;0,700;0,800;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sun:#F4A300;--amber:#E07B00;--sun-dim:rgba(244,163,0,0.3);
+  --deep:#0D1117;--panel:#131a25;--card:#192030;--card2:#1f2840;
+  --border:#263040;--border2:#364560;
+  --text:#E8EEF8;--body:#B8C5DA;--muted:#6E82A8;--dim:#3d4f6a;
+  --green:#2EC87A;--green1:#C2FF89;--red:#F05353;--blue:#4E9EFF;--purple:#A78BFA;--orange:#F4884A;
+  --sw:240px;--th:54px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:15px}
+body{background:var(--deep);color:var(--text);font-family:'Manrope',sans-serif;font-weight:400;overflow:hidden;height:100dvh}
+#shell{display:flex;height:100dvh;overflow:hidden;position:relative}
+
+/* BG CANVAS */
+#bg-canvas{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.3}
+
+/* SIDEBAR */
+#sidebar{width:var(--sw);flex-shrink:0;background:rgba(13,17,23,.97);backdrop-filter:blur(12px);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100dvh;overflow:hidden;z-index:20;transition:transform .3s ease;position:relative}
+.sb-brand{padding:20px 18px 15px;border-bottom:1px solid var(--border)}
+.sb-ticker{font-family:'Fira Code',monospace;font-size:12px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--sun);margin-bottom:5px}
+.sb-name{font-family:'Outfit',sans-serif;font-size:24px;font-weight:800;color:#fff;line-height:1.05}
+.sb-name em{color:var(--sun);font-style:italic}
+.sb-badge{font-family:'Fira Code',monospace;font-size:12px;color:var(--muted);margin-top:6px;line-height:1.6;letter-spacing:.02em}
+.sb-badge strong{color:var(--sun)}
+.sb-live{padding:11px 18px;border-bottom:1px solid var(--border);display:flex;gap:20px}
+.sb-kv-lbl{font-family:'Fira Code',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.sb-kv-val{font-family:'Outfit',sans-serif;font-size:20px;font-weight:700;color:var(--sun);line-height:1.1}
+.sb-nav{flex:1;overflow-y:auto;padding:8px 0;scrollbar-width:none}
+.sb-nav::-webkit-scrollbar{display:none}
+.sb-item{display:flex;align-items:center;gap:11px;padding:9px 18px;cursor:pointer;border-left:2px solid transparent;transition:all .15s;user-select:none}
+.sb-item:hover{background:rgba(255,255,255,.03);border-left-color:var(--border2)}
+.sb-item.active{background:rgba(244,163,0,.08);border-left-color:var(--sun)}
+.sb-num{font-family:'Fira Code',monospace;font-size:12px;font-weight:500;color:var(--dim);width:20px;flex-shrink:0}
+.sb-item.active .sb-num{color:var(--sun)}
+.sb-txt{font-family:'Manrope',sans-serif;font-size:13px;font-weight:500;color:var(--muted);line-height:1.25}
+.sb-item.active .sb-txt{color:var(--text)}
+.sb-foot{padding:12px 18px;border-top:1px solid var(--border);font-family:'Fira Code',monospace;font-size:11px;color:var(--dim);line-height:1.7}
+
+/* MAIN */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;position:relative;z-index:1}
+#topbar{height:var(--th);border-bottom:1px solid var(--border);background:rgba(13,17,23,.92);backdrop-filter:blur(8px);display:flex;align-items:center;padding:0 22px;gap:14px;flex-shrink:0}
+#menu-btn{display:none;background:none;border:none;cursor:pointer;color:var(--muted);padding:5px;flex-shrink:0}
+.tb-bc{font-family:'Fira Code',monospace;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.tb-bc span{color:var(--sun);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tb-pg{display:flex;align-items:center;gap:9px;flex-shrink:0}
+.tb-info{font-family:'Fira Code',monospace;font-size:13px;color:var(--dim);white-space:nowrap}
+.tb-btn{width:30px;height:30px;border:1px solid var(--border2);background:none;color:var(--muted);border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .15s}
+.tb-btn:hover:not(:disabled){border-color:var(--sun);color:var(--sun)}
+.tb-btn:disabled{opacity:.3;cursor:not-allowed}
+#pbar{height:2px;background:linear-gradient(90deg,var(--amber),var(--sun));transition:width .3s ease;flex-shrink:0}
+#pages{flex:1;overflow:hidden;position:relative}
+.page{position:absolute;inset:0;overflow-y:auto;padding:26px 30px 48px;opacity:0;transform:translateX(18px);pointer-events:none;transition:opacity .22s ease,transform .22s ease;scrollbar-width:thin;scrollbar-color:var(--border2) transparent}
+.page.active{opacity:1;transform:translateX(0);pointer-events:all}
+.page.exit-l{opacity:0;transform:translateX(-18px)}
+.page::-webkit-scrollbar{width:3px}
+.page::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* TYPOGRAPHY */
+.pg-eye{font-family:'Fira Code',monospace;font-size:12px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--sun);margin-bottom:8px;display:flex;align-items:center;gap:12px}
+.pg-eye::after{content:'';height:1px;width:44px;background:linear-gradient(90deg,var(--sun-dim),transparent)}
+.pg-h1{font-family:'Outfit',sans-serif;font-size:clamp(26px,3.8vw,42px);font-weight:800;line-height:1.08;color:#fff;margin-bottom:6px}
+.pg-h1 em{color:var(--sun);font-style:italic}
+.pg-sub{font-family:'Manrope',sans-serif;font-size:13.5px;font-weight:400;color:var(--body);margin-bottom:20px;line-height:1.65}
+.sec-h{font-family:'Fira Code',monospace;font-size:13px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:20px 0 10px;display:flex;align-items:center;gap:12px}
+.sec-h::after{content:'';height:1px;flex:1;background:linear-gradient(90deg,var(--border2),transparent)}
+.divider{height:1px;background:var(--border);margin:16px 0}
+
+/* KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin-bottom:22px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px 18px;position:relative;overflow:hidden;transition:border-color .2s,transform .2s}
+.kpi:hover{border-color:var(--border2);transform:translateY(-1px)}
+.kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--sun);opacity:.5}
+.kpi.g::after{background:var(--green)}.kpi.b::after{background:var(--blue)}.kpi.p::after{background:var(--purple)}
+.kpi-lbl{font-family:'Fira Code',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:500}
+.kpi-val{font-family:'Outfit',sans-serif;font-size:24px;font-weight:700;color:#fff;line-height:1}
+.kpi-val.sun{color:var(--sun)}.kpi-val.grn{color:var(--green)}.kpi-val.blu{color:var(--blue)}
+.kpi-note{font-family:'Manrope',sans-serif;font-size:11px;color:var(--muted);margin-top:5px}
+
+/* CONTENT CARDS */
+.ccard{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin-bottom:14px;transition:border-color .2s}
+.ccard:hover{border-color:var(--border2)}
+.ccard-h{font-family:'Outfit',sans-serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.ccard p{font-family:'Manrope',sans-serif;font-size:13.5px;line-height:1.75;color:var(--body);margin-bottom:10px}
+.ccard p:last-child{margin-bottom:0}
+
+/* SECTION CARDS (page 10) */
+.sect-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:15px 17px;margin-bottom:10px;transition:border-color .2s}
+.sect-card:hover{border-color:var(--border2)}
+.sect-title{font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:5px}
+.sect-body{font-family:'Manrope',sans-serif;font-size:13px;line-height:1.7;color:var(--body)}
+
+/* HIGHLIGHTS */
+.hl{border:1px solid var(--border);border-left:3px solid var(--sun);background:rgba(244,163,0,.04);padding:12px 15px;border-radius:0 6px 6px 0;font-family:'Manrope',sans-serif;font-size:13.5px;color:var(--body);line-height:1.72;margin-bottom:10px}
+.hl.warn{border-left-color:var(--red);background:rgba(240,83,83,.05)}
+.hl.info{border-left-color:var(--blue);background:rgba(78,158,255,.04)}
+.hl.grn{border-left-color:var(--green);background:rgba(46,200,122,.04)}
+.hl.ora{border-left-color:var(--orange);background:rgba(244,136,74,.04)}
+.hl strong{color:#fff;font-weight:600}
+
+/* TABLE */
+.tw{overflow-x:auto;border-radius:8px;border:1px solid var(--border);margin-bottom:16px}
+table{width:100%;border-collapse:collapse}
+thead tr{background:var(--card2);border-bottom:1px solid var(--border)}
+th{font-family:'Fira Code',monospace;font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:11px 13px;text-align:right;white-space:nowrap}
+th:first-child{text-align:left}
+td{padding:10px 13px;text-align:right;border-bottom:1px solid rgba(38,48,64,.6);color:var(--body);font-family:'Fira Code',monospace;font-size:13px}
+td:first-child{text-align:left;color:var(--text);font-family:'Manrope',sans-serif;font-size:13.5px;font-weight:500}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+tr.hi td{background:rgba(244,163,0,.05)}.tr.hi td:first-child{color:var(--sun)}
+.tg{color:var(--green)!important}.ta{color:var(--sun)!important}.tr-c{color:var(--red)!important}.td-c{color:var(--dim)!important;font-style:italic}
+
+/* TAGS */
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tag{font-family:'Fira Code',monospace;font-size:12px;font-weight:500;padding:4px 10px;border-radius:4px;letter-spacing:.4px}
+.tag.bull{background:rgba(46,200,122,.12);color:var(--green);border:1px solid rgba(46,200,122,.28)}
+.tag.bear{background:rgba(240,83,83,.12);color:var(--red);border:1px solid rgba(240,83,83,.28)}
+.tag.sun{background:rgba(244,163,0,.12);color:var(--sun);border:1px solid rgba(244,163,0,.28)}
+.tag.neu{background:rgba(139,155,190,.09);color:var(--muted);border:1px solid rgba(139,155,190,.22)}
+.tag.blu{background:rgba(78,158,255,.1);color:var(--blue);border:1px solid rgba(78,158,255,.24)}
+
+/* BAR CHART */
+.bar-row{display:flex;align-items:center;gap:12px;margin-bottom:9px}
+.bar-lbl{font-family:'Manrope',sans-serif;font-size:12.5px;font-weight:500;color:var(--body);width:135px;flex-shrink:0;text-align:right}
+.bar-track{flex:1;background:rgba(255,255,255,.05);border-radius:4px;height:16px;overflow:visible;}
+.bar-fill{height:100%;display:flex;align-items:center;padding-left:8px;font-family:'Fira Code',monospace;font-size:12px;font-weight:600;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.8);transition:width 1.1s cubic-bezier(.4,0,.2,1);border-radius:4px;width:0%;white-space:nowrap;overflow:visible;}
+
+/* VAL CARDS */
+.vcards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.vcard{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:15px;text-align:center;transition:border-color .2s}
+.vcard:hover{border-color:var(--border2)}
+.vcard-lbl{font-family:'Fira Code',monospace;font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.vcard-val{font-family:'Outfit',sans-serif;font-size:28px;font-weight:700;color:var(--sun);line-height:1}
+.vcard-note{font-family:'Fira Code',monospace;font-size:12px;color:var(--dim);margin-top:5px}
+
+/* CANVAS */
+.chart-wrap{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:16px}
+canvas.chart{display:block;width:100%!important}
+
+/* SCENARIOS */
+.scenarios{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px;margin-bottom:18px}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;border-top-width:2px;transition:border-color .2s}
+.sc.bull{border-top-color:var(--green)}.sc.base{border-top-color:var(--sun)}.sc.bear{border-top-color:var(--red)}
+.sc-h{font-family:'Outfit',sans-serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:6px}
+.sc-p{font-family:'Outfit',sans-serif;font-size:26px;font-weight:700;line-height:1;margin-bottom:9px}
+.sc-body{font-family:'Manrope',sans-serif;font-size:13px;line-height:1.68;color:var(--body)}
+
+/* MGMT */
+.mgmt-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.mgmt{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;transition:border-color .2s}
+.mgmt:hover{border-color:var(--border2)}
+.mgmt-role{font-family:'Fira Code',monospace;font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--sun);margin-bottom:5px}
+.mgmt-name{font-family:'Outfit',sans-serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:4px}
+.mgmt-tag{font-family:'Fira Code',monospace;font-size:12px;color:var(--dim);margin-bottom:7px}
+.mgmt-bio{font-family:'Manrope',sans-serif;font-size:13px;line-height:1.7;color:var(--body)}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px}
+
+/* NOTICE */
+.notice{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px 22px;font-family:'Manrope',sans-serif;font-size:13.5px;color:var(--body);line-height:1.76}
+.notice strong{color:#fff;font-weight:600}
+
+/* RESPONSIVE */
+@media(max-width:1000px){.vcards{grid-template-columns:1fr 1fr}.scenarios{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.g2{grid-template-columns:1fr}.g3{grid-template-columns:1fr}.mgmt-grid{grid-template-columns:1fr}.vcards{grid-template-columns:1fr 1fr}.kpi-row{grid-template-columns:1fr 1fr}.scenarios{grid-template-columns:1fr}.page{padding:18px 16px 40px}.pg-h1{font-size:clamp(22px,6vw,32px)}}
+@media(max-width:768px){
+  #sidebar{position:fixed;left:0;top:0;bottom:0;z-index:200;transform:translateX(-100%);box-shadow:8px 0 32px rgba(0,0,0,.7)}
+  #sidebar.open{transform:translateX(0)}
+  #ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:199}
+  #ov.show{display:block}
+  #menu-btn{display:flex}
+}
+@media(prefers-reduced-motion:reduce){#bg-canvas{display:none}.page{transition:none}.bar-fill{transition:none}}
+</style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+<div id="ov" onclick="closeSB()"></div>
+<div id="shell">
+
+<aside id="sidebar">
+  <div class="sb-brand">
+    <div class="sb-name"><em>Alpex</em> Solar Ltd.</div>
+  </div>
+  <div class="sb-live">
+    <div><div class="sb-kv-lbl">MCap</div><div class="sb-kv-val">₹2,143Cr</div></div>
+    <div><div class="sb-kv-lbl">CMP</div><div class="sb-kv-val">₹839</div></div>
+  </div>
+  <nav class="sb-nav" id="sbnav"></nav>
+  <div class="sb-foot">Apr 2026 · Educational only<br>Not investment advice</div>
+</aside>
+
+<div id="main">
+  <div id="topbar">
+    <button id="menu-btn" onclick="toggleSB()" aria-label="Open navigation">
+      <svg width="18" height="13" viewBox="0 0 18 13" fill="none"><rect width="18" height="2" rx="1" fill="currentColor"/><rect y="5.5" width="18" height="2" rx="1" fill="currentColor"/><rect y="11" width="18" height="2" rx="1" fill="currentColor"/></svg>
+    </button>
+    <div class="tb-bc">ALPEX SOLAR &nbsp;/&nbsp; <span id="tbtitle">Cover</span></div>
+    <div class="tb-pg">
+      <div class="tb-info" id="pginfo">1 / 12</div>
+      <button class="tb-btn" id="btnp" onclick="go(cur-1)" disabled>‹</button>
+      <button class="tb-btn" id="btnn" onclick="go(cur+1)">›</button>
+    </div>
+  </div>
+  <div id="pbar" style="width:8.33%"></div>
+  <div id="pages">
+
+<div class="page active">
+  <div class="pg-eye">01 · SME Gems — Hidden Champions of the SME Platform</div>
+  <div class="pg-h1"><em>Alpex Solar</em> Limited</div>
+  <div class="pg-sub">One of North India's leading PV module maker · On the cusp of becoming a vertically integrated solar powerhouse · The 2.2 GW cell factory changes the earnings profile entirely</div>
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-lbl">Market Cap</div><div class="kpi-val sun">~₹2,143Cr</div><div class="kpi-note">CMP ₹839 · Apr 2026</div></div>
+    <div class="kpi g"><div class="kpi-lbl">TTM Revenue</div><div class="kpi-val grn">₹1,879Cr</div><div class="kpi-note">+228% YoY</div></div>
+    <div class="kpi g"><div class="kpi-lbl">TTM PAT</div><div class="kpi-val grn">₹185Cr</div><div class="kpi-note">+227% YoY</div></div>
+    <div class="kpi b"><div class="kpi-lbl">ROCE / ROE</div><div class="kpi-val blu">50% / 48%</div><div class="kpi-note">FY25 full year</div></div>
+    <div class="kpi"><div class="kpi-lbl">Trailing P/E</div><div class="kpi-val sun">~11.4x</div><div class="kpi-note">vs peers 20–43x</div></div>
+    <div class="kpi p"><div class="kpi-lbl">Order Book</div><div class="kpi-val" style="color:var(--purple)">₹1,900Cr</div><div class="kpi-note">Dec 2025</div></div>
+  </div>
+  <div class="g3" style="margin-bottom:18px">
+    <div class="ccard" style="margin-bottom:0;border-top:2px solid var(--sun)"><div class="ccard-h">☀ PV Modules</div><p>Core revenue engine. 2.4 GW installed, scaling to 3.6 GW by FY27. Clients: NTPC, SECI, Tata Power, HAL, Coal India. ~83% of revenue mix.</p></div>
+    <div class="ccard" style="margin-bottom:0;border-top:2px solid var(--green)"><div class="ccard-h">🏭 TOPCon Cell Factory</div><p>2.2 GW G12R facility under construction at Kosi Kotwan. Phase 1 (1.4 GW) targeted end-Q1 FY27. This single project transforms the margin profile.</p></div>
+    <div class="ccard" style="margin-bottom:0;border-top:2px solid var(--border2)"><div class="ccard-h">⚡ EPC + Pumps + IPP</div><p>115 MW EPC target + 100 MW IPP. 24,000+ solar pump installations. KUSUM tailwind potentially doubling. ₹1,900 Cr order book provides near-term visibility.</p></div>
+  </div>
+  <div class="hl"><strong>CRISIL BBB+/Stable (Feb 2026)</strong> · 52-week range ₹555–₹1,450 · At ~11.4x trailing P/E, Alpex is trading at a discount to Waaree, Premier, Vikram, Emmvee etc. The gap reflects SME illiquidity and pending cell capacity. Execution of the cell factory bridges this gap.</div>
+  <div style="font-family:'Fira Code',monospace;font-size:11px;color:var(--dim);margin-top:10px">NSE SME: ALPEXSOLAR · April 2026 · Educational purposes only — not investment advice · See §12 for full disclaimer</div>
+</div>
+
+<div class="page">
+  <div class="pg-eye">02 · Company Snapshot</div>
+  <div class="pg-h1">At a <em>Glance</em></div>
+  <div class="pg-sub">NSE Emerge: ALPEXSOLAR · Founded 1993 · Solar manufacturing since 2007 · Listed Feb 2024</div>
+  <p style="font-family:'Manrope',sans-serif;font-size:13.5px;color:var(--body);line-height:1.78;margin-bottom:20px">Founded by first-generation technocrats Ashwani, Monica, and Vipin Sehgal — all engineers — Alpex entered photovoltaic manufacturing in 2007. Listed on NSE Emerge in February 2024, revenues have since grown more than 5×. MD Ashwani Sehgal is General Secretary of the Indian Solar Manufacturers Association (ISMA), whose membership includes Adani, Tata, and Reliance — at times giving Alpex benefits of policy at the regulatory table.</p>
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-lbl">CMP</div><div class="kpi-val sun">₹839</div><div class="kpi-note">April 01, 2026</div></div>
+    <div class="kpi"><div class="kpi-lbl">52W Hi / Lo</div><div class="kpi-val" style="font-size:18px">₹1,450 / ₹555</div></div>
+    <div class="kpi"><div class="kpi-lbl">Trailing P/E</div><div class="kpi-val">~11.4x</div><div class="kpi-note">TTM EPS ~₹73.6</div></div>
+    <div class="kpi"><div class="kpi-lbl">Book Value/Sh</div><div class="kpi-val">~₹185</div><div class="kpi-note">Sep 2025</div></div>
+    <div class="kpi g"><div class="kpi-lbl">ROCE</div><div class="kpi-val grn">50.5%</div><div class="kpi-note">FY25</div></div>
+    <div class="kpi g"><div class="kpi-lbl">ROE</div><div class="kpi-val grn">47.7%</div><div class="kpi-note">FY25</div></div>
+  </div>
+  <div class="sec-h">Marquee Clients</div>
+  <div class="tags"><span class="tag sun">NTPC</span><span class="tag sun">SECI</span><span class="tag sun">Tata Power</span><span class="tag sun">HAL</span><span class="tag sun">Power Grid</span><span class="tag neu">Coal India (EPC)</span><span class="tag neu">BVG India</span><span class="tag neu">Jakson</span><span class="tag neu">HAREDA / PEDA</span><span class="tag neu">Solarworld</span></div>
+  <div class="sec-h">Credit &amp; Manufacturing</div>
+  <div class="hl"><strong>CRISIL BBB+/Stable</strong> (reaffirmed Feb 2026). Bank limits from HDFC, Axis, Kotak, Bandhan, IndusInd, EXIM Bank, Bajaj Finance, Tata Capital — total ~₹560 Cr. Preferential/Warrant proceeds: ₹260.17 Cr raised in Sep 2025 to aggressively fund cell and module expansion. 7 manufacturing units across Greater Noida, Kosi Kotwan (Mathura, UP), and Narmadapuram (MP) — 1 million sq ft total.</div>
+</div>
+
+<div class="page">
+  <div class="pg-eye">03 · Financial Performance</div>
+  <div class="pg-h1">Power-Packed <em>Numbers</em></div>
+  <div class="pg-sub">Q3 FY26 was a record quarter on every metric · 9M FY26 revenue 3.43× the same period last year</div>
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-lbl">Q3 FY26 Revenue</div><div class="kpi-val sun">₹648 Cr</div><div class="kpi-note">+245% YoY · Record</div></div>
+    <div class="kpi"><div class="kpi-lbl">Q3 EBITDA</div><div class="kpi-val">₹91 Cr</div><div class="kpi-note">14% margin</div></div>
+    <div class="kpi g"><div class="kpi-lbl">Q3 PAT</div><div class="kpi-val grn">₹54 Cr</div><div class="kpi-note">8.37% margin</div></div>
+    <div class="kpi g"><div class="kpi-lbl">9M FY26 PAT</div><div class="kpi-val grn">₹148 Cr</div><div class="kpi-note">+208% YoY</div></div>
+  </div>
+  <div class="sec-h">Annual P&amp;L Trend (₹ Crores)</div>
+  <div class="tw"><table><thead><tr><th>Year</th><th>Revenue</th><th>EBITDA</th><th>OPM%</th><th>PAT</th><th>EPS (₹)</th><th>ROCE</th></tr></thead><tbody>
+    <tr><td>FY23</td><td>196</td><td>13</td><td class="td-c">6%</td><td>4</td><td>1.9</td><td>14%</td></tr>
+    <tr><td>FY24</td><td>414</td><td>37</td><td>9%</td><td>29</td><td>11.9</td><td>26%</td></tr>
+    <tr><td>FY25</td><td class="tg">783</td><td class="tg">126</td><td class="tg">16%</td><td class="tg">83</td><td class="tg">34.1</td><td class="tg">50%</td></tr>
+    <tr class="hi"><td>TTM (9M ann.)</td><td>~2,068</td><td>~313</td><td>~15%</td><td>~197</td><td>~80</td><td>—</td></tr>
+  </tbody></table></div>
+  <div class="sec-h">Quarterly Revenue &amp; PAT (₹ Cr)</div>
+  <div class="chart-wrap"><canvas id="qrevChart" class="chart" height="140"></canvas></div>
+  <div class="kpi-row">
+    <div class="kpi g"><div class="kpi-lbl">5Y Revenue CAGR</div><div class="kpi-val grn">51%</div></div>
+    <div class="kpi g"><div class="kpi-lbl">5Y PAT CAGR</div><div class="kpi-val grn">94%</div></div>
+    <div class="kpi g"><div class="kpi-lbl">3Y Revenue CAGR</div><div class="kpi-val grn">68%</div></div>
+    <div class="kpi"><div class="kpi-lbl">Cash Conversion</div><div class="kpi-val">53 days</div><div class="kpi-note">FY25</div></div>
+  </div>
+</div>
+
+<div class="page">
+  <div class="pg-eye">04 · Capacity &amp; Integration Roadmap</div>
+  <div class="pg-h1">Becoming a Full <em>Value-Chain</em> Player</div>
+  <div class="pg-sub">7 manufacturing units · 1 million sq ft · FY27E: 3.6 GW modules + 2.2 GW cells + 12,000 MT aluminium frames</div>
+  <div class="sec-h">Module Build-Out</div>
+  <div class="bar-row"><div class="bar-lbl">FY18 — 450 MW</div><div class="bar-track"><div class="bar-fill" style="background:#3d4f6a" data-w="12.5">450 MW</div></div></div>
+  <div class="bar-row"><div class="bar-lbl">FY25 — 1.2 GW</div><div class="bar-track"><div class="bar-fill" style="background:var(--sun)" data-w="33.3">1.2 GW</div></div></div>
+  <div class="bar-row"><div class="bar-lbl">FY26E — 2.4 GW</div><div class="bar-track"><div class="bar-fill" style="background:var(--sun)" data-w="66.6">2.4 GW</div></div></div>
+  <div class="bar-row"><div class="bar-lbl">FY27E — 3.6 GW</div><div class="bar-track"><div class="bar-fill" style="background:var(--green)" data-w="100">3.6 GW Target</div></div></div>
+  <div class="divider"></div>
+  <div class="g2">
+    <div>
+      <div class="sec-h" style="margin-top:0">2.2 GW G12R TOPCon Cell Facility</div>
+      <div class="hl grn"><strong>Phase 1 — 1.4 GW:</strong> Targeted end-Q1 FY27. Engineers trained in Taiwan and China. Commissioned by international teams with 100 GW+ experience. Fully AGV-automated at Kosi Kotwan, Mathura (UP).</div>
+      <div class="hl grn"><strong>Phase 2 — 800 MW:</strong> Within 6 months of Phase 1. Full 2.2 GW captive consumption initially.</div>
+      <div class="hl"><strong>G12R — straight to the latest format:</strong> Peers adopted M10/M12 and are now transitioning. Alpex starts on G12R directly — zero format-transition cost, industry-lowest capex-per-GW, highest-demand cell size. Average efficiency 25.5%. Management expects 90–95% utilization within 45 days of first production.</div>
+      <div class="hl ora"><strong>Silver &amp; copper roadmap:</strong> Post-commissioning, silver becomes ~25% of cell cost. G12R reduces silver intensity vs. older lines. A group-level silver-paste JV with US/Taiwan technology is in progress; copper metallization is the longer-term cost lever.</div>
+    </div>
+    <div>
+      <div class="sec-h" style="margin-top:0">Cell Factory Numbers</div>
+      <div class="kpi-row" style="grid-template-columns:1fr;gap:8px;margin-bottom:12px">
+        <div class="kpi"><div class="kpi-lbl">Total Cell Capex</div><div class="kpi-val sun">₹825 Cr</div></div>
+        <div class="kpi"><div class="kpi-lbl">FY27 Utilization Est.</div><div class="kpi-val">~1 GW</div><div class="kpi-note">Management estimate</div></div>
+        <div class="kpi"><div class="kpi-lbl">Cell Revenue (full ramp)</div><div class="kpi-val sun">~₹2,000 Cr</div><div class="kpi-note">At 35–36% EBITDA</div></div>
+        <div class="kpi"><div class="kpi-lbl">Ramp to 90% util.</div><div class="kpi-val">45 days</div><div class="kpi-note">Post first production</div></div>
+      </div>
+      <div class="sec-h">Adjacent Verticals</div>
+      <div class="hl"><strong>Aluminium frames:</strong> 6,000 MT/yr → 12,000 MT/yr. India's first solar company to integrate frames — saves ₹8–10/frame.</div>
+      <div class="hl"><strong>Solar pumps:</strong> 24,000+ installations. KUSUM allocation potentially doubling to 60 GW.</div>
+      <div class="hl"><strong>EPC + IPP:</strong> ₹350 Cr Coal India EPC + ₹210 Cr SECI module supply in hand. 115 MW EPC target + 100 MW IPP portfolio.</div>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+  <div class="pg-eye">05 · Competitive Differentiation</div>
+  <div class="pg-h1">Alpex vs the <em>Solar Peer Set</em></div>
+  <div class="pg-sub">Mainboard peers Waaree, Premier, Emmvee, Vikram Solar, Websol Energy vs. Alpex — where the real divergence lies</div>
+  <div class="hl ora"><strong>The structural challenge for pure-play module makers:</strong> India's cumulative module manufacturing capacity surpassed 210 GW while annual installations remain ~45–55 GW — a roughly 4× oversupply ratio. Pure module assembly faces structural price compression. Only vertically integrated players, with domestic cell manufacturing qualifying for DCR premiums, maintain sustainable pricing power as the market matures.</div>
+  <div class="sec-h">Peer Comparison Table</div>
+  <div class="tw"><table>
+    <thead><tr><th>Company</th><th>MCap (₹Cr)</th><th>Modules</th><th>Cells</th><th>EBITDA%</th><th>PAT%</th><th>P/E</th><th>Listing</th></tr></thead>
+    <tbody>
+      <tr class="hi"><td>Alpex Solar</td><td class="ta">~2,143</td><td>2.4→3.6 GW</td><td>2.2 GW (WIP)</td><td class="tg">~15%</td><td class="tg">~10%</td><td class="tg">~11x</td><td>NSE Emerge</td></tr>
+      <tr><td>Waaree Energies</td><td>~88,000</td><td>22.8+ GW+</td><td>5.4 GW+</td><td class="ta">~24%</td><td>~15%</td><td class="ta">~20x</td><td>Main</td></tr>
+      <tr><td>Premier Energies</td><td>~40,000</td><td>5.1 GW+</td><td>3.2 GW+</td><td class="ta">~28%</td><td>~17%</td><td class="ta">~31x</td><td>Main</td></tr>
+      <tr><td>Emmvee Photovoltaic</td><td>~15,000</td><td>7.8 GW+</td><td>2.94 GW+</td><td class="ta">~31%</td><td>~16%</td><td class="ta">~29x</td><td>Main</td></tr>
+      <tr><td>Vikram Solar</td><td>~6,600</td><td>4.5 GW+</td><td>—</td><td>~14%</td><td>~4%</td><td class="ta">~15x</td><td>Main</td></tr>
+      <tr><td>Websol Energy</td><td>~3,200</td><td>550 MW</td><td>600 MW</td><td class="ta">~44%</td><td>~27%</td><td class="ta">~28x</td><td>Main</td></tr>
+    </tbody>
+  </table></div>
+  <div class="g2">
+    <div>
+      <div class="hl"><strong>Valuation gap:</strong> Alpex at ~11.4x vs. peers at 20–30x. The discount reflects SME illiquidity and pending (not yet operational) cell capacity. If the cell factory executes, this gap closes toward peers.</div>
+      <div class="hl"><strong>North India geography edge:</strong> Waaree, Premier, and Emmvee are concentrated in Karnataka/Telangana/Gujarat. Vikram Solar is based in West Bengal/UP but module-only. Alpex's UP+MP footprint gives a clear logistics advantage in UP, Haryana, Punjab, and Rajasthan — states with the most aggressive KUSUM and rooftop solar programs.</div>
+    </div>
+    <div>
+      <div class="hl"><strong>Aluminium frame — unique:</strong> No mainboard peer (including Waaree, Premier, Emmvee, Vikram, or Websol) has integrated aluminium frame manufacturing at Alpex's scale. This is a direct cost advantage and supply-chain differentiator. Websol has cell integration but no frames.</div>
+      <div class="hl"><strong>G12R — first mover:</strong> Emmvee runs 16-busbar cells; Waaree is transitioning; Premier scaling G12R. Alpex starts late but on G12R directly — no format-transition write-off, lowest capex-per-GW, most in-demand cell size for utility-scale tenders across India and globally.</div>
+    </div>
+  </div>
+  <div class="sec-h">P/E Comparison</div>
+  <div class="bar-row"><div class="bar-lbl">Alpex Solar</div><div class="bar-track"><div class="bar-fill" style="background:var(--green)" data-w="23">~11.4x</div></div></div>
+<div class="bar-row"><div class="bar-lbl">Websol</div><div class="bar-track"><div class="bar-fill" style="background:var(--green)" data-w="23">~13x</div></div></div>
+<div class="bar-row"><div class="bar-lbl">Vikram Solar</div><div class="bar-track"><div class="bar-fill" style="background:var(--green1)" data-w="30">~15x</div></div></div>
+  <div class="bar-row"><div class="bar-lbl">Waaree Energies</div><div class="bar-track"><div class="bar-fill" style="background:var(--sun)" data-w="46">~25x</div></div></div>
+  <div class="bar-row"><div class="bar-lbl">Premier</div><div class="bar-track"><div class="bar-fill" style="background:var(--sun)" data-w="65">~30x</div></div></div>
+  <div class="bar-row"><div class="bar-lbl">Emmvee</div><div class="bar-track"><div class="bar-fill" style="background:var(--sun)" data-w="65">~30x</div></div></div>
+<div style="font-family:'Fira Code',monospace;font-size:11px;color:var(--dim)">Vikram Solar trades at a 40–50% valuation discount to peers (Waaree, Premier, Emmvee) mainly because of its massive ₹10,000 cr capex over the next 30 months — especially the unproven cell, BESS integration, which markets see as high execution risk until FY27 proof arrives.  Sequential margin softness, heavy ALMM/policy dependence, and lingering US export tariff overhang add to the caution, even with a solid 10.58 GW order book and improving financial discipline.</div>
+</div>
+
+<div class="page">
+  <div class="pg-eye">06 · Industry Context &amp; Structural Trends</div>
+  <div class="pg-h1">India's Solar Industry — <em>Where It's Heading</em></div>
+  <div class="pg-sub">The structural forces reshaping who wins and who gets squeezed in Indian solar manufacturing</div>
+  <div class="hl warn"><strong>The numbers that matter:</strong> India added 119 GW of module capacity in calendar 2025 alone. Cumulative module capacity reached ~210 GW by end-2025. Domestic cell capacity: just ~27 GW. Annual solar installations: ~45–55 GW. The module-to-demand ratio is roughly 4×. Structural oversupply in modules is not a future risk — it is a present reality. Only integrated or diversified players can maintain pricing power.</div>
+  <div class="g2" style="margin-bottom:14px">
+    <div>
+      <div class="hl"><strong>Power demand growing at 5.8% CAGR to FY30:</strong> driven by data centres, EV charging, and infrastructure capex. India needs 190–200 GW of new RE capacity by FY30. Solar accounts for the lion's share of the generation investment pipeline.</div>
+      <div class="hl"><strong>Near-zero peak power deficit:</strong> FY25's rapid RE additions compressed exchange prices to ₹3–4/kWh. Marginal energy surpluses are projected by FY27E. Policy is pivoting to storage-backed, hybrid, and dispatchable tenders — a structural shift that favours integrated players over pure module makers.</div>
+      <div class="hl info"><strong>Cells remain the real bottleneck:</strong> 210 GW of module capacity, only ~27 GW of domestic cells. This scarcity is why ALMM List II (effective June 2026) mandating domestic cells in government projects is so transformative. Fewer than 10 companies currently hold this certification. Alpex will soon be one of them.</div>
+    </div>
+    <div>
+      <div class="hl ora"><strong>Vertical and horizontal integration is now table stakes:</strong> Pure module assembly faces structural oversupply, price compression, and lumpy tender cycles. Players integrating into cells (vertically) and EPC, BESS, inverters, and transformers (horizontally) create multiple profit pools. Waaree, Premier, and Emmvee are all executing this playbook at mainboard scale. Alpex is executing it at SME scale.</div>
+      <div class="hl"><strong>US market headwinds — but Alpex is insulated:</strong> Policy changes in the US are reducing the market for Indian module exports. Alpex derives ~98% of revenue from India, giving it zero direct US export exposure. Near-term insulation; long-term, this limits the export premium that larger peers can command.</div>
+      <div class="hl grn"><strong>Storage is the next frontier:</strong> India's auctioned storage capacity surged 6.8× YoY in 2025. Solar manufacturers offering bundled module + BESS + EPC solutions command premium pricing and stickier customer relationships — the direction the entire sector is heading.</div>
+    </div>
+  </div>
+  <div class="sec-h">India Manufacturing Capacity vs. Demand (End 2025)</div>
+  <div class="bar-row"><div class="bar-lbl">Module capacity</div><div class="bar-track"><div class="bar-fill" style="background:var(--red)" data-w="100">~210 GW cumulative</div></div></div>
+  <div class="bar-row"><div class="bar-lbl">Annual installations</div><div class="bar-track"><div class="bar-fill" style="background:var(--green)" data-w="26">~55 GW demand</div></div></div>
+  <div class="bar-row"><div class="bar-lbl">Cell capacity</div><div class="bar-track"><div class="bar-fill" style="background:var(--blue)" data-w="13">~27 GW — the bottleneck</div></div></div>
+</div>
+
+<div class="page">
+  <div class="pg-eye">07 · Govt Policy &amp; DCR Tailwinds</div>
+  <div class="pg-h1">India's <em>Anti-China</em> Solar Push</div>
+  <div class="pg-sub">ALMM · DCR · BCD · KUSUM · PLI — a policy stack designed to reward domestic cell and module makers</div>
+  <div class="hl ora"><strong>ALMM List II — effective June 2026:</strong> All solar modules in government-backed projects must source cells from ALMM-listed domestic manufacturers. Fewer than 10 companies currently hold this certification. Alpex's 2.2 GW cell facility, once commissioned, joins this exclusive group — every GW of government project tendering becomes captive demand for cell-integrated players.</div>
+  <div class="g2" style="margin-bottom:14px">
+    <div>
+      <div class="hl"><strong>DCR pricing premium:</strong> Modules with domestic cells command ₹22–24/Wp vs. ₹14–18/Wp for non-DCR modules — a 30–50% differential. Currently Alpex buys cells externally. Post-cell-factory, entire module output can qualify for DCR pricing — a fundamental shift in blended realization.</div>
+      <div class="hl"><strong>BCD structure (Feb 2025 update):</strong> BCD on imported solar modules was nominally reduced to 20% from 40%, but the Agricultural and Infrastructure Development Cess of 20% on modules and 7.5% on cells was simultaneously introduced — keeping effective duty unchanged. The headline cut was cosmetic; protection remains fully intact.</div>
+      <div class="hl info"><strong>China's export price effect:</strong> China removed VAT rebates on solar module exports in late 2024, raising Chinese export prices 3–5% globally. This contributed to non-DCR module prices firming in India in early 2026. Management guided blended realization moving from ₹17.5/Wp toward ₹18.5–19/Wp.</div>
+    </div>
+    <div>
+      <div class="hl grn"><strong>KUSUM — potential 2×:</strong> The PM-KUSUM programme's initial 30 GW allocation is expected to double to 60 GW. Alpex, with 24,000+ pump installations and deep UP and Rajasthan relationships, is among the best-positioned beneficiaries.</div>
+      <div class="hl"><strong>Budget 2026:</strong> BCD exempted on sodium antimonate used in solar glass manufacturing — directly lowering input costs for domestic module makers including Alpex.</div>
+      <div class="hl"><strong>India–US Trade Deal (Feb 2026):</strong> Tariff reductions on Indian solar module exports to the US. Once Alpex has in-house cells (~80% domestic BOM), US export eligibility opens. CEO Aditya Sehgal is actively developing US and EU relationships.</div>
+      <div class="hl"><strong>PLI position:</strong> Alpex is not a PLI Tranche I or II awardee. However, ALMM List II certification — once the cell line is live — provides an equivalent market-access benefit in the government project segment, which accounts for the majority of Indian solar capacity additions.</div>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+  <div class="pg-eye">08 · Stock &amp; Valuation</div>
+  <div class="pg-h1">One Year <em>Price Story</em></div>
+  <div class="pg-sub">Apr 2025 → Apr 2026 · All-time high ₹1,356 (Sep 10, 2025) · 52-week low ₹555 · CMP ₹839</div>
+  <div class="chart-wrap">
+    <canvas id="priceChart" class="chart" height="180"></canvas>
+    <div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:12px">
+      <div style="display:flex;align-items:center;gap:6px;font-family:'Fira Code',monospace;font-size:11px;color:var(--muted)"><div style="width:8px;height:8px;border-radius:50%;background:var(--sun)"></div>Valuation report ₹995 FV (Aug 6)</div>
+      <div style="display:flex;align-items:center;gap:6px;font-family:'Fira Code',monospace;font-size:11px;color:var(--muted)"><div style="width:8px;height:8px;border-radius:50%;background:var(--red)"></div>Sector sell-off + pledge (Dec 8)</div>
+      <div style="display:flex;align-items:center;gap:6px;font-family:'Fira Code',monospace;font-size:11px;color:var(--muted)"><div style="width:8px;height:8px;border-radius:50%;background:var(--green)"></div>Q3 FY26 concall (Feb 10)</div>
+    </div>
+  </div>
+  <div class="sec-h">P/E Framework — Trailing to Forward</div>
+  <div class="vcards">
+    <div class="vcard"><div class="vcard-lbl">Trailing P/E (TTM)</div><div class="vcard-val" style="color:var(--green)">~11.4x</div><div class="vcard-note">EPS ₹73.6 · CMP ₹839</div></div>
+    <div class="vcard"><div class="vcard-lbl">FY26E P/E</div><div class="vcard-val">~10.1x</div><div class="vcard-note">EPS est. ₹80–85</div></div>
+    <div class="vcard"><div class="vcard-lbl">FY27E (2× guide)</div><div class="vcard-val" style="color:var(--blue)">~5.2x</div><div class="vcard-note">EPS est. ₹150–170</div></div>
+    <div class="vcard"><div class="vcard-lbl">FY28E (cell ramp)</div><div class="vcard-val">~3–4x</div><div class="vcard-note">High-teens PAT guide</div></div>
+  </div>
+  <div class="sec-h">Certified Valuation & Preferential Issue (Sep 2025)</div>
+  <div class="tw"><table>
+    <thead><tr><th>Approach</th><th>Method</th><th>Weight</th><th>Value/Share (₹)</th></tr></thead>
+    <tbody>
+      <tr><td>Asset</td><td>Net Asset Value (book)</td><td>10%</td><td class="td-c">₹104</td></tr>
+      <tr><td>Income</td><td>DCF — WACC 16.15%, growth 5%</td><td>50%</td><td class="ta">₹1,000</td></tr>
+      <tr><td>Market</td><td>90/10 Trading-Day VWAP</td><td>40%</td><td class="tg">₹1,211</td></tr>
+      <tr class="hi"><td colspan="3"><strong>Blended Certified Fair Value — 30 Jun 2025</strong></td><td><strong>₹995.07</strong></td></tr>
+    </tbody>
+  </table></div>
+  <div class="hl"><strong>Preferential Allotment & Promoter Conviction:</strong> In Sep 2025, Alpex successfully raised ₹260.17 Cr via a preferential allotment of shares and warrants at a price of <strong>₹1,212 per share</strong>. Notably, promoters Ashwani, Vipin, Aditya, and Udaya Sehgal subscribed to 3,50,000 warrants at this ₹1,212 price—demonstrating massive conviction. <br><strong> CMP ₹839</strong> represents a ~15.6% discount to the Aug 2025 certified fair value of ₹995.07, and a massive ~30% discount to the ₹1,212 price at which promoters and institutions recently infused ₹260 Cr</div>
+</div>
+
+<div class="page">
+  <div class="pg-eye">09 · Management &amp; Concall</div>
+  <div class="pg-h1">The Team Behind <em>the Numbers</em></div>
+  <div class="pg-sub">Q3 FY26 earnings call — February 10, 2026 · Record quarter · 2× revenue guidance maintained for FY27 and FY28</div>
+  <div class="mgmt-grid">
+    <div class="mgmt"><div class="mgmt-role">Founder &amp; Managing Director</div><div class="mgmt-name">Ashwani Sehgal</div><div class="mgmt-tag">Mech. Engineering, Punjab University · General Secretary, ISMA</div><div class="mgmt-bio">14-year ISMA President — the body that lobbied for ALMM, ALCM, and ALWM policies, with membership including Adani, Tata, and Reliance. Conservative communicator: when he says "2×," he has delivered it three years running. His regulatory influence gives Alpex disproportionate policy voice at every MNRE table.</div></div>
+    <div class="mgmt"><div class="mgmt-role">CEO</div><div class="mgmt-name">Aditya Sehgal</div><div class="mgmt-tag">BSc Electrical Engineering, UC Berkeley</div><div class="mgmt-bio">Driving US and EU export strategy. Post-cell-factory, ~80% of module bill of materials will be produced in-house — giving Alpex a structural cost advantage in global exports. Key to unlocking the international revenue story that currently does not feature in any financial model.</div></div>
+    <div class="mgmt"><div class="mgmt-role">Director — Cell Facility</div><div class="mgmt-name">Vipin Sehgal</div><div class="mgmt-tag">Co-Founder · Technical lead for cell project</div><div class="mgmt-bio">Overseeing the 2.2 GW G12R TOPCon facility. Drove the decision to adopt G12R directly — bypassing M12 entirely — for zero format-transition cost. Also leads the group silver-paste JV (US/Taiwan technology), with copper metallization as the next step.</div></div>
+    <div class="mgmt"><div class="mgmt-role">CFO / VP Finance</div><div class="mgmt-name">Udaya Sehgal / L.K. Dhamija</div><div class="mgmt-tag">Finance leadership · 8+ banking relationships</div><div class="mgmt-bio">Managing banking facilities across 8+ lenders. Bank credit limits lagged explosive revenue growth, necessitating a ₹125 Cr NCD at 13–14% coupon. Refinancing at lower rates post-capex completion is a near-term financial catalyst that should meaningfully improve net margins.</div></div>
+  </div>
+  <div class="sec-h">Key Guidance from Q3 FY26 Earnings Call</div>
+  <div class="hl grn"><strong>Revenue guidance FY27: ~₹3,000 Cr</strong> — "more than enough orders in hand." 2× growth is the standing guidance for FY27 and FY28.</div>
+  <div class="hl"><strong>EBITDA margin path:</strong> Current 14–16% (modules + EPC) will expand rapidly once the cell line contributes at 35–36% EBITDA margins. High-teens PAT margins targeted for FY28.</div>
+  <div class="hl"><strong>Blended realization:</strong> Moving from ₹17.5/Wp toward ₹18.5–19/Wp. DCR module mix improving; non-DCR prices firming on the back of Chinese export cost increases.</div>
+  <div class="hl"><strong>Export optionality:</strong> US and EU markets being actively developed. ~80% domestic BOM once cells are live — a structural cost advantage vs. peers using imported cells.</div>
+  <div class="hl"><strong>Main board migration:</strong> FY28 target to NSE and BSE main boards — the liquidity catalyst that triggers institutional discovery and a potential multiple re-rating.</div>
+</div>
+
+<div class="page">
+  <div class="pg-eye">10 · BESS &amp; Future Verticals</div>
+  <div class="pg-h1">Beyond Modules <em>&amp; Cells</em></div>
+  <div class="pg-sub">Where Alpex stands today, what it is exploring, and how it compares with mainboard peers that are already building horizontally</div>
+  <div class="hl info"><strong>The sector direction:</strong> India's auctioned storage capacity surged 6.8× YoY in 2025. Standalone solar tenders are contracting; storage-backed and hybrid tenders are surging. Battery energy storage, inverters, and transformers are the fastest-growing adjacent verticals in Indian renewable energy. Mainboard peers — Waaree (20 GWh BESS, 4 GW inverters, 20,000 MVA transformers, green hydrogen) and Premier (12 GWh BESS, KSolare inverters, Transcon transformers) — have already committed significant capital to this horizontal pivot. Alpex is currently focused on its cell capex — but what comes next matters enormously for the long-term thesis.</div>
+  <div class="g2" style="margin-bottom:14px">
+    <div>
+      <div class="sec-h" style="margin-top:0">Alpex Has Today</div>
+      <div class="sect-card"><div class="sect-title">☀ PV Modules — 2.4 GW → 3.6 GW</div><div class="sect-body">Core. TOPCon and bifacial range. ₹1,879 Cr TTM revenue. Clients across NTPC, SECI, Tata Power, HAL. Funded the entire cell capex programme.</div></div>
+      <div class="sect-card"><div class="sect-title">🏭 TOPCon Cells — 2.2 GW (under construction)</div><div class="sect-body">The margin catalyst. G12R format. 25.5% efficiency. ~₹1,000 Cr FY27 revenue at 35–36% EBITDA expected — this transforms the earnings profile entirely.</div></div>
+      <div class="sect-card"><div class="sect-title">🔩 Aluminium Frames — 6,000 → 12,000 MT/yr</div><div class="sect-body">Already operational. India's first solar company to integrate frames. Direct cost saving of ₹8–10 per frame vs. external sourcing.</div></div>
+      <div class="sect-card"><div class="sect-title">💧 Solar Pumps — 24,000+ Installations</div><div class="sect-body">B2G and KUSUM-focused. High stickiness once installed. KUSUM allocation potentially doubling to 60 GW is a multi-year tailwind.</div></div>
+      <div class="sect-card"><div class="sect-title">⚡ EPC + IPP — ₹1,900 Cr Order Book</div><div class="sect-body">Coal India ₹350 Cr EPC + SECI ₹210 Cr modules + KUSUM tenders. 115 MW EPC target and 100 MW IPP portfolio in execution.</div></div>
+    </div>
+    <div>
+      <div class="sec-h" style="margin-top:0">Alpex Is Watching Next</div>
+      <div class="sect-card" style="border-left:2px solid var(--blue)"><div class="sect-title" style="color:var(--blue)">🔋 BESS — Not Yet Committed</div><div class="sect-body">Alpex has not announced a BESS play. Waaree is building 20 GWh; Premier 12 GWh. India's battery storage market is the fastest-growing adjacent vertical. Any BESS announcement from Alpex would be a significant re-rating signal and is the most important future development to monitor.</div></div>
+      <div class="sect-card" style="border-left:2px solid var(--blue)"><div class="sect-title" style="color:var(--blue)">⚙ Inverters / Transformers — Not Yet</div><div class="sect-body">Premier acquired KSolare (500,000 inverters/year) and Transcon (2.5→16.75 GVA). Waaree expanded to 4 GW inverters and 20,000 MVA transformers. Alpex is keeping capital focused on the cell factory — these horizontal moves are likely post-FY27 once cell capex peaks and cash flows strengthen.</div></div>
+      <div class="sect-card" style="border-left:2px solid var(--blue)"><div class="sect-title" style="color:var(--blue)">🌿 Green Hydrogen — Long-Dated Optionality</div><div class="sect-body">Alpex GH2 Private Limited was acquired as a subsidiary in May 2024. Management has stated no major commitment until PLI-style government support is available. This is optionality, not near-term earnings.</div></div>
+      <div class="sect-card" style="border-left:2px solid var(--red)"><div class="sect-title" style="color:var(--red)">⚠ The Honest Gap vs. Peers</div><div class="sect-body">Alpex is 1–2 years behind mainboard peers on BESS, inverters, and transformers. This is partly a function of scale (₹2,143 Cr MCap vs. ₹88,000 Cr for Waaree) but is also a risk. As tenders increasingly require bundled storage and energy solutions, Alpex may need to accelerate this pivot faster than its current roadmap suggests.</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+  <div class="pg-eye">11 · Risks &amp; Red Flags</div>
+  <div class="pg-h1">What Could <em>Go Wrong</em></div>
+  <div class="pg-sub">Honest assessment — the bear case risks deserve equal weight alongside the bull story</div>
+  <div class="hl warn"><strong>Preferential Lock-in Opening:</strong> Shares and warrants allotted in the September 2025 preferential issue (at ₹1,212) will have standard lock-ins expiring progressively. While the current CMP (₹839) is significantly below the allotment price, minimizing immediate profit-booking risk, the unlocking of ~21.46 lakh shares increases the free float and may cause structural liquidity adjustments.</div>
+  <div class="hl warn"><strong>Promoter Pledge — ⚠ Yellow Flag, Watch Closely:</strong> ~6.48% of outstanding shares pledged by promoters as of December 2025, up from near-zero earlier in the year. Context: ₹125 Cr NCDs raised at 13–14% coupon because bank credit limits lagged explosive revenue growth. At ~6.5% pledge on 65.9% promoter holding, roughly 10% of promoter-held shares are encumbered. The stock already fell materially from peak. Further sharp decline risks margin calls and distressed selling. Pledge reduction as cell capex completes is the key green signal.</div>
+  <div class="g2" style="gap:12px">
+    <div>
+      <div class="hl warn"><strong>Cell Commissioning Delay:</strong> Phase 1 (1.4 GW) shifted from Q4 FY26 to end-Q1 FY27 already. Any further delay postpones the entire earnings re-rating thesis. Solar cell manufacturing at scale is technically complex. This is the single most important monitorable for the investment thesis.</div>
+      <div class="hl warn"><strong>Module Overcapacity:</strong> India's ~210 GW module capacity is roughly 4× annual demand. Module-only players face structural margin squeeze. Alpex's DCR insulation via its cell factory is the defence — but if ALMM List II is delayed or rolled back, this protection disappears. Module surplus conditions are possible at utilization rates above 50% by FY27–28E even under base-case demand assumptions.</div>
+      <div class="hl warn"><strong>Chinese Competition (Non-DCR):</strong> Chinese modules continue to aggressively price the private rooftop and C&amp;I segments. China's VAT rebate removal only partially offset their structural cost advantage. Alpex competes in this segment with roughly half its revenue mix today.</div>
+    </div>
+    <div>
+      <div class="hl warn"><strong>High-Cost Debt:</strong> Borrowings grew from ₹49 Cr (FY24) to ₹174 Cr (Sep 2025). NCDs at 13–14% are expensive. Q3 FY26 interest cost was ₹6 Cr, up from ₹2 Cr in the same quarter last year. Refinancing at lower rates post-capex is the fix but continues to pressure near-term PAT margins.</div>
+      <div class="hl warn"><strong>Silver Cost Risk (Post Cell Factory):</strong> Currently no direct silver exposure — Alpex buys cells externally. Once the cell factory is live, silver becomes ~25% of cell cost industry-wide. G12R technology reduces silver intensity; the group silver-paste JV mitigates further. Still a new and volatile cost input that does not exist in today's P&amp;L.</div>
+      <div class="hl warn"><strong>SME Illiquidity:</strong> Daily volumes range 12,000–6L+ shares. The December 8, 2025 sector sell-off saw Alpex drop from ₹1,030 to ₹819 in one session on 628,000 shares. Any forced selling creates outsized price moves. Main board migration (FY28 target) is the structural fix.</div>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+  <div class="pg-eye">12 · Scenarios · Monitorables · Disclaimer</div>
+  <div class="pg-h1">Bull · Base · Bear <em>&amp; Key Signals</em></div>
+  <div class="pg-sub">Three paths forward — probability is yours to assign. Read the disclaimer before acting on anything here.</div>
+  <div class="scenarios">
+    <div class="sc bull"><div class="sc-h">🐂 Bull Case</div><div class="sc-p" style="color:var(--green)">₹2,400–2,700</div><div class="sc-body">Cell commissions Q1 FY27 on schedule, ramps to ~1 GW within 45 days. FY27 revenue ₹3,000–3,500 Cr. EBITDA margins expand to 22–25%. EPS reaches ₹150–180. Market re-rates to 15× P/E. Main board listing triggers institutional discovery. Promoter pledge fully eliminated.</div><div class="tags" style="margin-top:10px"><span class="tag bull">EPS ₹160+</span><span class="tag bull">15× P/E</span><span class="tag bull">On schedule</span></div></div>
+    <div class="sc base"><div class="sc-h">📊 Base Case</div><div class="sc-p" style="color:var(--sun)">₹1,200–1,550</div><div class="sc-body">Cell line delayed 3–4 months into H1 FY27. Partial ramp in FY27. Revenue ₹2,200–2,500 Cr. Margins reach 17–18%. EPS ~₹100–120. Market re-rates modestly to 12× as execution becomes clearer. 60–100% upside from current CMP. Pledge reduces gradually.</div><div class="tags" style="margin-top:10px"><span class="tag sun">EPS ₹110</span><span class="tag sun">12× P/E</span><span class="tag sun">Partial ramp</span></div></div>
+    <div class="sc bear"><div class="sc-h">🐻 Bear Case</div><div class="sc-p" style="color:var(--red)">₹550–700</div><div class="sc-body">Cell line delayed 6+ months. Module prices under pressure from overcapacity. Pledge creates a sustained overhang. High NCD costs compress margins. EPS stays ~₹70–80. P/E compresses to 8–9×. Stock range-bound or below current CMP. No dividend expected.</div><div class="tags" style="margin-top:10px"><span class="tag bear">EPS ₹75</span><span class="tag bear">8–9× P/E</span><span class="tag bear">Delay risk</span></div></div>
+  </div>
+  <div class="sec-h">Key Monitorables</div>
+  <div class="tw" style="margin-bottom:16px"><table>
+    <thead><tr><th>What to Watch</th><th style="text-align:left">Signal</th><th>Cadence</th></tr></thead>
+    <tbody>
+      <tr><td>Cell commissioning</td><td style="text-align:left;color:var(--body)">Trial production start; Phase 1 official declaration</td><td class="tg">Monthly</td></tr>
+      <tr><td>Promoter pledge %</td><td style="text-align:left;color:var(--body)">Reduction = positive; any increase = caution flag</td><td>Quarterly</td></tr>
+      <tr><td>Blended realization (₹/Wp)</td><td style="text-align:left;color:var(--body)">₹17.5 → ₹18.5–19 = on track with guidance</td><td>Concall</td></tr>
+      <tr><td>EBITDA margin %</td><td style="text-align:left;color:var(--body)">Hold 14–16% pre-cell; expand meaningfully post-cell</td><td>Quarterly</td></tr>
+      <tr><td>Lock-in Expiry</td><td style="text-align:left;color:var(--body)">21.46L shares/warrants unlock timeline &amp; market absorption</td><td>Quarterly</td></tr>
+      <tr><td>ALMM List 2 implementation</td><td style="text-align:left;color:var(--body)">Effective June 2026 — any delay or rollback = key risk</td><td>Regulatory</td></tr>
+      <tr><td>BESS / horizontal announcement</td><td style="text-align:left;color:var(--body)">Any acquisition or JV signals strategic pivot</td><td>As announced</td></tr>
+      <tr><td>Main board filing</td><td style="text-align:left;color:var(--body)">NSE / BSE main = liquidity + institutional re-rate</td><td>FY28</td></tr>
+    </tbody>
+  </table></div>
+  <div class="notice" style="margin-bottom:14px">
+    <p style="margin-bottom:9px">This presentation is prepared for <strong>educational and informational purposes only</strong>. It does not constitute investment advice, a buy/sell recommendation, or a research report as defined under SEBI (Research Analysts) Regulations, 2014.</p>
+    <p style="margin-bottom:9px">Investing in SME-listed securities involves significant risks including <strong>limited liquidity, higher volatility, lower regulatory disclosures, and concentration risk</strong>. The stock fell materially from its 52-week high. Past performance is not indicative of future returns.</p>
+    <p>All data is sourced from publicly available information including NSE filings, company concall transcripts, investor presentations, credit rating rationales, and publicly available industry reports. All forward-looking estimates are indicative only. Always conduct independent due diligence and consult a SEBI-registered investment advisor before making any investment decision.</p>
+  </div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:26px;text-align:center">
+    <div style="font-family:'Fira Code',monospace;font-size:11px;color:var(--dim);letter-spacing:.18em;text-transform:uppercase;margin-bottom:16px">Prepared by</div>
+    <a href="https://x.com/sachprat07" target="_blank" style="color:var(--muted);text-decoration:none;font-family:'Outfit',sans-serif;font-size:24px;font-weight:700;display:inline-flex;align-items:center;gap:9px;transition:color .2s" onmouseover="this.style.color='var(--sun)'" onmouseout="this.style.color='var(--muted)'">
+      <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      @sachprat07
+    </a>
+    <div style="margin-top:14px;font-family:'Fira Code',monospace;font-size:11px;color:var(--dim);letter-spacing:.14em;text-transform:uppercase">NSE Emerge · ALPEXSOLAR · CIN: L51909DL1993PLC171352 · Greater Noida, India</div>
+  </div>
+</div>
+
+  </div></div></div></div>
+
+<script>
+const TITLES=["Cover","Company Snapshot","Financial Performance","Capacity & Integration","Peer Comparison","Industry Context","Govt Policy & DCR","Price & Valuation","Management & Concall","BESS & Future Verticals","Risks & Red Flags","Scenarios & Disclaimer"];
+const TOT=TITLES.length;let cur=0;
+const pgs=document.querySelectorAll('.page');
+const sbnav=document.getElementById('sbnav');
+TITLES.forEach((t,i)=>{
+  const d=document.createElement('div');
+  d.className='sb-item'+(i===0?' active':'');
+  d.innerHTML=`<span class="sb-num">${String(i+1).padStart(2,'0')}</span><span class="sb-txt">${t}</span>`;
+  d.onclick=()=>{window.go(i);closeSB()};
+  sbnav.appendChild(d);
+});
+function go(idx){
+  if(idx<0||idx>=TOT)return;
+  pgs[cur].classList.remove('active');pgs[cur].classList.add('exit-l');
+  setTimeout(()=>pgs[cur].classList.remove('exit-l'),240);
+  document.querySelectorAll('.sb-item')[cur].classList.remove('active');
+  cur=idx;
+  const items=document.querySelectorAll('.sb-item');
+  items[cur].classList.add('active');
+  items[cur].scrollIntoView({block:'nearest',behavior:'smooth'});
+  pgs[cur].classList.add('active');pgs[cur].scrollTop=0;
+  document.getElementById('tbtitle').textContent=TITLES[cur];
+  document.getElementById('pginfo').textContent=`${cur+1} / ${TOT}`;
+  document.getElementById('btnp').disabled=cur===0;
+  document.getElementById('btnn').disabled=cur===TOT-1;
+  document.getElementById('pbar').style.width=((cur+1)/TOT*100)+'%';
+  setTimeout(()=>{animPage(pgs[cur]);drawAll();},120);
+}
+window.go=go;
+function animPage(pg){pg.querySelectorAll('.bar-fill[data-w]').forEach(el=>el.style.width=parseFloat(el.dataset.w)+'%');}
+function toggleSB(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('ov').classList.toggle('show')}
+function closeSB(){document.getElementById('sidebar').classList.remove('open');document.getElementById('ov').classList.remove('show')}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown')go(cur+1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(cur-1);});
+let tx=0,ty=0;
+document.getElementById('pages').addEventListener('touchstart',e=>{if(e.touches.length===1){tx=e.touches[0].clientX;ty=e.touches[0].clientY;}},{passive:true});
+document.getElementById('pages').addEventListener('touchend',e=>{if(tx!==0&&e.changedTouches.length===1){const dx=tx-e.changedTouches[0].clientX,dy=ty-e.changedTouches[0].clientY;if(Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy))go(dx>0?cur+1:cur-1);}tx=0;ty=0;},{passive:true});
+
+/* ── INTERACTIVE BACKGROUND ── */
+(function(){
+  const cv=document.getElementById('bg-canvas');
+  if(!cv)return;
+  const ctx=cv.getContext('2d');
+  let W,H,pts=[],rays=[];
+  let mx=-1000,my=-1000;
+  window.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  function resize(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight;init();}
+  function init(){
+    pts=[];
+    const n=Math.min(50,Math.floor(W*H/20000));
+    for(let i=0;i<n;i++)pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.22,vy:(Math.random()-.5)*.22,r:Math.random()*1.6+.3,pulse:Math.random()*Math.PI*2,ps:Math.random()*.018+.007});
+    rays=[];
+    for(let i=0;i<4;i++)rays.push({x:Math.random()*W,y:Math.random()*H,angle:Math.random()*Math.PI*2,spd:.0004+Math.random()*.0003,len:55+Math.random()*110,a:.03+Math.random()*.05});
+  }
+  let raf;
+  function tick(){
+    ctx.clearRect(0,0,W,H);
+    /* hex grid */
+    const s=58,h=s*Math.sqrt(3)/2;
+    ctx.strokeStyle='rgba(38,48,64,.3)';ctx.lineWidth=.4;
+    for(let r=-1;r<H/h+2;r++){for(let c=-1;c<W/(s*1.5)+2;c++){
+      const cx=c*s*1.5,cy=r*h+(c%2?h/2:0);
+      ctx.beginPath();
+      for(let i=0;i<6;i++){const a=Math.PI/3*i-Math.PI/6;ctx.lineTo(cx+s*.44*Math.cos(a),cy+s*.44*Math.sin(a));}
+      ctx.closePath();ctx.stroke();
+    }}
+    /* sun rays */
+    rays.forEach(r=>{
+      r.angle+=r.spd;
+      ctx.save();ctx.translate(r.x,r.y);ctx.rotate(r.angle);
+      const g=ctx.createLinearGradient(-r.len/2,0,r.len/2,0);
+      g.addColorStop(0,'rgba(244,163,0,0)');g.addColorStop(.5,`rgba(244,163,0,${r.a})`);g.addColorStop(1,'rgba(244,163,0,0)');
+      ctx.strokeStyle=g;ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(-r.len/2,0);ctx.lineTo(r.len/2,0);ctx.stroke();
+      ctx.restore();
+    });
+    /* particles */
+    pts.forEach(p=>{
+      p.pulse+=p.ps;const amp=Math.sin(p.pulse)*.3+.7;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r*amp,0,Math.PI*2);
+      ctx.fillStyle=`rgba(244,163,0,${.18*amp})`;ctx.fill();
+      
+      const dx=p.x-mx, dy=p.y-my, dist=Math.hypot(dx,dy);
+      if(dist<150){ p.x+=dx/dist*2; p.y+=dy/dist*2; }
+      else { p.x+=p.vx; p.y+=p.vy; }
+      
+      if(p.x<-10)p.x=W+10;if(p.x>W+10)p.x=-10;
+      if(p.y<-10)p.y=H+10;if(p.y>H+10)p.y=-10;
+    });
+    /* connections */
+    for(let i=0;i<pts.length;i++){for(let j=i+1;j<pts.length;j++){
+      const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.hypot(dx,dy);
+      if(d<85){ctx.beginPath();ctx.strokeStyle=`rgba(244,163,0,${.035*(1-d/85)})`;ctx.lineWidth=.5;ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.stroke();}
+    }}
+    raf=requestAnimationFrame(tick);
+  }
+  window.addEventListener('resize',()=>{cancelAnimationFrame(raf);resize();tick();});
+  resize();tick();
+})();
+
+/* ── CHARTS ── */
+const PD=[{d:"01 Apr",c:594},{d:"15 Apr",c:720},{d:"25 Apr",c:790},{d:"13 May",c:813},{d:"23 May",c:894},{d:"30 May",c:919},{d:"10 Jun",c:995},{d:"25 Jun",c:1058},{d:"30 Jun",c:1131},{d:"08 Jul",c:1091},{d:"23 Jul",c:1210},{d:"29 Jul",c:1257},{d:"06 Aug",c:1192},{d:"12 Aug",c:1338},{d:"20 Aug",c:1352},{d:"10 Sep",c:1356},{d:"30 Sep",c:1158},{d:"09 Oct",c:1100},{d:"03 Nov",c:1285},{d:"21 Nov",c:1185},{d:"08 Dec",c:819},{d:"31 Dec",c:821},{d:"12 Jan",c:719},{d:"02 Feb",c:694},{d:"10 Feb",c:923},{d:"27 Feb",c:770},{d:"09 Mar",c:704},{d:"01 Apr",c:839}];
+const ANNS=[{idx:7,col:"#F4A300"},{idx:20,col:"#F05353"},{idx:24,col:"#2EC87A"}];
+const dpr=()=>window.devicePixelRatio||1;
+function drawLine(id,data,anns){
+  const cv=document.getElementById(id);if(!cv)return;
+  const d=dpr(),W=cv.offsetWidth,H=cv.offsetHeight||180;
+  cv.width=W*d;cv.height=H*d;
+  const ctx=cv.getContext('2d');ctx.scale(d,d);
+  const pad={t:16,r:16,b:32,l:54},cw=W-pad.l-pad.r,ch=H-pad.t-pad.b;
+  const vals=data.map(x=>x.c),mn=Math.min(...vals)*.97,mx=Math.max(...vals)*1.02;
+  ctx.clearRect(0,0,W,H);
+  for(let i=0;i<=4;i++){
+    const y=pad.t+ch*(1-i/4);
+    ctx.strokeStyle='rgba(38,48,64,.55)';ctx.lineWidth=.5;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cw,y);ctx.stroke();
+    ctx.fillStyle='#6E82A8';ctx.font='9px Fira Code,monospace';ctx.textAlign='right';
+    ctx.fillText('₹'+Math.round(mn+(mx-mn)*(i/4)),pad.l-4,y+3);
+  }
+  ctx.beginPath();data.forEach((x,i)=>{const px=pad.l+(i/(data.length-1))*cw,py=pad.t+ch*(1-(x.c-mn)/(mx-mn));i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);});
+  ctx.lineTo(pad.l+cw,pad.t+ch);ctx.lineTo(pad.l,pad.t+ch);ctx.closePath();
+  const g=ctx.createLinearGradient(0,pad.t,0,pad.t+ch);g.addColorStop(0,'rgba(244,163,0,.18)');g.addColorStop(1,'rgba(244,163,0,.01)');ctx.fillStyle=g;ctx.fill();
+  ctx.beginPath();ctx.strokeStyle='#F4A300';ctx.lineWidth=2.2;data.forEach((x,i)=>{const px=pad.l+(i/(data.length-1))*cw,py=pad.t+ch*(1-(x.c-mn)/(mx-mn));i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);});ctx.stroke();
+  anns.forEach(a=>{const px=pad.l+(a.idx/(data.length-1))*cw,py=pad.t+ch*(1-(data[a.idx].c-mn)/(mx-mn));ctx.beginPath();ctx.strokeStyle=a.col;ctx.lineWidth=1;ctx.setLineDash([2,3]);ctx.moveTo(px,pad.t);ctx.lineTo(px,pad.t+ch);ctx.stroke();ctx.setLineDash([]);ctx.beginPath();ctx.fillStyle=a.col;ctx.arc(px,py,4.5,0,Math.PI*2);ctx.fill();});
+  const step=Math.ceil(data.length/7);ctx.fillStyle='#6E82A8';ctx.font='9px Fira Code,monospace';ctx.textAlign='center';
+  data.forEach((x,i)=>{if(i%step===0)ctx.fillText(x.d,pad.l+(i/(data.length-1))*cw,H-pad.b+14);});
+}
+function drawBars(id){
+  const cv=document.getElementById(id);if(!cv)return;
+  const d=dpr(),lbls=['Dec23','Mar24','Jun24','Sep24','Dec24','Mar25','Jun25','Sep25','Dec25'];
+  const rev=[79,121,77,188,188,327,380,523,648],pat=[5,6,1,24,23,35,42,53,54];
+  const W=cv.offsetWidth,H=cv.offsetHeight||140;
+  cv.width=W*d;cv.height=H*d;const ctx=cv.getContext('2d');ctx.scale(d,d);
+  const pad={t:14,r:78,b:26,l:44},cw=W-pad.l-pad.r,ch=H-pad.t-pad.b;
+  const n=lbls.length,mx=Math.max(...rev)*1.12,bw=Math.min(cw/(n*2.5),22);
+  ctx.clearRect(0,0,W,H);
+  for(let i=0;i<=4;i++){const y=pad.t+ch*(1-i/4);ctx.strokeStyle='rgba(38,48,64,.5)';ctx.lineWidth=.5;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cw,y);ctx.stroke();ctx.fillStyle='#6E82A8';ctx.font='9px Fira Code,monospace';ctx.textAlign='right';ctx.fillText(Math.round(mx*i/4),pad.l-3,y+3);}
+  lbls.forEach((l,i)=>{
+    const gx=pad.l+i*(cw/n)+cw/(n*2);
+    const rh=(rev[i]/mx)*ch;ctx.fillStyle='rgba(244,163,0,.85)';ctx.fillRect(gx-bw-1,pad.t+ch-rh,bw,rh);
+    const ph=(pat[i]/mx)*ch;ctx.fillStyle='rgba(46,200,122,.9)';ctx.fillRect(gx+1,pad.t+ch-ph,bw,ph);
+    ctx.fillStyle='#6E82A8';ctx.font='9px Fira Code,monospace';ctx.textAlign='center';ctx.fillText(l,gx,H-pad.b+11);
+  });
+  ctx.fillStyle='rgba(244,163,0,.85)';ctx.fillRect(W-74,pad.t,10,10);ctx.fillStyle='#E8EEF8';ctx.font='10px Manrope,sans-serif';ctx.textAlign='left';ctx.fillText('Revenue',W-60,pad.t+9);
+  ctx.fillStyle='rgba(46,200,122,.9)';ctx.fillRect(W-74,pad.t+16,10,10);ctx.fillStyle='#E8EEF8';ctx.fillText('PAT',W-60,pad.t+25);
+}
+function drawAll(){drawLine('priceChart',PD,ANNS);drawBars('qrevChart');}
+setTimeout(()=>{animPage(pgs[0]);drawAll();},160);
+window.addEventListener('resize',drawAll);
+</script>
+</body>
+</html>
