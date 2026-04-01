@@ -566,8 +566,23 @@ function closeSB(){document.getElementById('sidebar').classList.remove('open');d
 document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown')go(cur+1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(cur-1);});
 let tx=0,ty=0;
 document.getElementById('pages').addEventListener('touchstart',e=>{if(e.touches.length===1){tx=e.touches[0].clientX;ty=e.touches[0].clientY;}},{passive:true});
-document.getElementById('pages').addEventListener('touchend',e=>{if(tx!==0&&e.changedTouches.length===1){const dx=tx-e.changedTouches[0].clientX,dy=ty-e.changedTouches[0].clientY;if(Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy))go(dx>0?cur+1:cur-1);}tx=0;ty=0;},{passive:true});
-
+document.getElementById('pages').addEventListener('touchend', e => {
+  if (tx !== 0 && e.changedTouches.length === 1) {
+    const dx = tx - e.changedTouches[0].clientX;
+    const dy = ty - e.changedTouches[0].clientY;
+    
+    // 1. Increased threshold from 70 to 100 for more deliberate swipes
+    // 2. Added a check (Math.abs(dx) > Math.abs(dy) * 2) 
+    //    This ensures it only triggers if the horizontal movement is 
+    //    at least twice as large as the vertical movement.
+    if (Math.abs(dx) > 100 && Math.abs(dx) > Math.abs(dy) * 2) {
+      go(dx > 0 ? cur + 1 : cur - 1);
+    }
+  }
+  tx = 0;
+  ty = 0;
+}, { passive: true });
+  
 /* ── INTERACTIVE BACKGROUND ── */
 (function(){
   const cv=document.getElementById('bg-canvas');
