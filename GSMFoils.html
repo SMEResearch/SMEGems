@@ -274,8 +274,8 @@
             <div class="grid-4 stagger s2 mb-1">
                 <div class="card primary-border tilt-card">
                     <div class="metric-label">Market Cap</div>
-                    <div class="metric-value highlight-primary">~₹236 Cr</div>
-                    <div class="metric-label" style="color:var(--text-muted); font-weight: 600;">CMP: ₹167</div>
+                    <div class="metric-value highlight-primary">~₹251 Cr</div>
+                    <div class="metric-label" style="color:var(--text-muted); font-weight: 600;">CMP: ₹178</div>
                 </div>
                 <div class="card secondary-border tilt-card">
                     <div class="metric-label">Trailing P/E</div>
@@ -425,9 +425,9 @@
 
             <div class="grid-3 stagger s2">
                 <div class="card text-center tilt-card">
-                    <div class="metric-value highlight-primary">80%+</div>
-                    <div class="metric-label">YoY Revenue Growth</div>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">Consistently scaling top-line as new capacity comes online.</p>
+                    <div class="metric-value highlight-primary">70.69% [cite: 20]</div>
+                    <div class="metric-label">YoY Growth (Mar '26) [cite: 20]</div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">March '26 sales at ₹29.04 Cr [cite: 18, 20], bringing FY26 total to ₹258.76 Cr[cite: 20].</p>
                 </div>
                 <div class="card text-center tilt-card">
                     <div class="metric-value highlight-secondary">23.9%</div>
@@ -464,8 +464,8 @@
                         <div class="table-responsive">
                             <table class="table-custom" style="margin-top: 0; min-width: auto;">
                                 <tbody>
-                                    <tr><td>Current Price</td><td style="font-size: 1.1rem; font-weight: bold; color: var(--text-main);">₹167</td></tr>
-                                    <tr><td>Market Cap</td><td class="highlight-primary" style="font-size: 1.1rem; font-weight: bold;">₹236 Cr</td></tr>
+                                    <tr><td>Current Price</td><td style="font-size: 1.1rem; font-weight: bold; color: var(--text-main);">₹178</td></tr>
+                                    <tr><td>Market Cap</td><td class="highlight-primary" style="font-size: 1.1rem; font-weight: bold;">₹251 Cr</td></tr>
                                     <tr><td>Trailing P/E</td><td class="highlight-secondary" style="font-size: 1.1rem; font-weight: bold;">~16-17x</td></tr>
                                 </tbody>
                             </table>
@@ -474,8 +474,8 @@
 
                     <div class="valuation-callout">
                         <p>
-                            At the current market cap of <strong>₹236 Cr</strong> and a CMP of <strong>₹167</strong>, GSM Foils trades at a severely compressed implied trailing P/E of just <span class="highlight-primary">~13-14x</span>.<br><br>
-                            This recent price correction is <strong class="highlight-yellow">heavily decoupled</strong> from the company's robust 80%+ YoY growth fundamentals. The de-rating appears driven almost entirely by the severe liquidity drain in the SME platform and the broader Indian market correction.<br><br>
+                            At the current market cap of <strong>₹251 Cr</strong> and a CMP of <strong>₹178</strong>, GSM Foils trades at a severely compressed implied trailing P/E of just <span class="highlight-primary">~14-15x</span>.<br><br>
+                            This recent price correction is <strong class="highlight-yellow">heavily decoupled</strong> from the company's robust sales performance, recently showcasing a 70.69% YoY sales growth for March 2026[cite: 20]. The de-rating appears driven almost entirely by the severe liquidity drain in the SME platform and the broader Indian market correction.<br><br>
                             This <strong class="highlight-yellow">structural mispricing presents a glaring valuation</strong> disconnect—relative to its newly doubled capacity, high-margin product expansion, and impending export ramp-up.
                         </p>
                     </div>
@@ -525,12 +525,12 @@
                 <div class="card tilt-card" style="border-top: 3px solid var(--accent-primary);">
                     <h3 class="heading-font mb-1" style="color: var(--accent-primary); font-size: 1.3rem;">Strengths & Upside</h3>
                     <ul class="custom-list success-list">
-                        <li>Consistent 80%+ YoY revenue growth.</li>
+                        <li>Consistent ~70%+ YoY revenue growth.</li>
                         <li>Capacity successfully doubled to 2,00,000 MT in FY26.</li>
                         <li>Strategic new facility inside the Ahmedabad pharma cluster.</li>
                         <li>LME-linked pricing protects the core conversion spread.</li>
                         <li>Alu-Alu and Lamitubes driving margin expansion.</li>
-                        <li>Current valuation highly compressed (~16-17x P/E) due to macro SME correction.</li>
+                        <li>Current valuation highly compressed (~14-15x P/E) due to macro SME correction.</li>
                     </ul>
                 </div>
                 <div class="card danger-border tilt-card">
@@ -748,14 +748,14 @@
         const chartCtx = document.getElementById('priceChart').getContext('2d');
         if (priceChartInstance) priceChartInstance.destroy();
 
-        // Representative Price Data bounded to 167
+        // Representative Price Data bounded to 178
         priceChartInstance = new Chart(chartCtx, {
             type: 'line',
             data: {
                 labels: ['May 25', 'Jul 25', 'Sep 25', 'Oct 25', 'Nov 25', 'Jan 26', 'Feb 26', 'Mar 26'],
                 datasets: [{
                     label: 'GSMFOILS Price (₹)',
-                    data: [155.00, 210.00, 245.00, 211.00, 220.00, 195.00, 185.00, 167.15],
+                    data: [155.00, 210.00, 245.00, 211.00, 220.00, 195.00, 185.00, 178.00],
                     borderColor: '#34d399', // Mint Green
                     backgroundColor: 'rgba(52, 211, 153, 0.1)',
                     borderWidth: 3,
