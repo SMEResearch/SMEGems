@@ -812,39 +812,43 @@ const SECTIONS = [
     `
   },
   {
+{
     id:'competition', num:'07', title:'Competition & Peers',
     render: () => `
-      <div class="sec-h">The Execution Moat</div>
-      <div class="pg-sub">Very few qualified EPC players in underground cabling and GIS substations · Often only 3–5 bidders in transmission, 6–7 in distribution</div>
-      <div class="hl"><strong>The fundamental moat:</strong> Specialized underground cabling (especially at EHV levels) and GIS substation construction require unique technical skills, specialized equipment, and pre-qualified execution track records. New entrants cannot bid without proven reference projects. RPSL's 50+ years of Gujarat-focused execution has created a technical qualification portfolio that is extremely difficult to replicate quickly. When benchmarked against mainboard giants like Techno Electric or KEC International, RPSL's margin profile (12% EBITDA, 54% ROCE) closely mirrors the highly specialized, asset-light Techno Electric rather than volume-driven players like KEC. This indicates that if RPSL maintains its 40%+ growth trajectory and migrates to the mainboard, the valuation gap between its current ~13x P/E and the mainboard average of 40x+ presents a massive re-rating runway.</div>
-      <div class="sec-h">Peer Comparison</div>
+      <div class="sec-h">The Execution Moat & Peer Analysis</div>
+      <div class="pg-sub">Very few qualified EPC players exist in EHV underground cabling and GIS substations.</div>
+      <div class="hl"><strong>The fundamental moat:</strong> Specialized underground cabling and GIS substation construction require unique technical skills, specialized equipment, and pre-qualified execution track records. RPSL's 50+ years of Gujarat-focused execution has created a technical qualification portfolio that is extremely difficult to replicate. When benchmarked against mainboard giants like Techno Electric or KEC International, RPSL's margin profile and return ratios are vastly superior to volume-driven players like KEC, and its operational efficiency mirrors the highly specialized Techno Electric. Despite this, RPSL trades at SME-discounted multiples closer to Transrail.</div>
+      
+      <div class="sec-h">Peer Comparison (Updated Mar 2026)</div>
       <div class="tw"><table>
         <thead><tr><th>Company</th><th>MCap (₹Cr)</th><th>P/E</th><th>D/E</th><th>EBITDA%</th><th>ROE</th><th>ROCE</th></tr></thead>
         <tbody>
-          <tr class="hi"><td>Rajesh Power Services</td><td class="te">~1,568</td><td class="tg">~13x</td><td class="tg">0.22</td><td>12%</td><td class="tg">50.8%</td><td class="tg">54.7%</td></tr>
-          <tr><td>Kay Cee Energy &amp; Infra</td><td>~420</td><td>25x</td><td>0.89</td><td class="tv">15%</td><td>32.1%</td><td>29.3%</td></tr>
-          <tr><td>Viviana Power Tech</td><td>~739</td><td>38x</td><td>0.84</td><td class="tv">18%</td><td>46.6%</td><td>42.5%</td></tr>
-          <tr><td>Advait Energy Transitions</td><td>~2,009</td><td>65x</td><td>0.26</td><td>15%</td><td>22.4%</td><td>27.6%</td></tr>
-          <tr style="border-top:1px solid var(--border)"><td colspan="7" style="text-align:center;color:var(--muted);font-size:10px;padding:8px;background:rgba(0,0,0,0.2)">MAINBOARD PEERS (FOR RE-RATING CONTEXT)</td></tr>
-          <tr><td>Techno Electric & Eng.</td><td>~16,500</td><td>~42x</td><td>0.05</td><td class="tg">18%</td><td>24.0%</td><td>28.5%</td></tr>
-          <tr><td>KEC International</td><td>~24,000</td><td>~45x</td><td>1.30</td><td class="tr-c">7%</td><td>14.0%</td><td>18.0%</td></tr>
+          <tr style="border-bottom:1px solid var(--border2)"><td colspan="7" style="text-align:center;color:var(--muted);font-size:10px;padding:8px;background:rgba(255,255,255,0.02);letter-spacing:1px;">SME PEERS</td></tr>
+          <tr class="hi"><td>Rajesh Power Services</td><td class="te">~1,568</td><td class="tg">~13.3x</td><td class="tg">0.22</td><td>12.0%</td><td class="tg">50.8%</td><td class="tg">54.7%</td></tr>
+          <tr><td>Advait Energy Transitions</td><td>~1,844</td><td>37.4x</td><td>0.27</td><td class="tv">16.0%</td><td>17.1%</td><td>27.7%</td></tr>
+          <tr><td>Viviana Power Tech</td><td>~633</td><td>22.1x</td><td>0.93</td><td class="tv">15.0%</td><td>37.5%</td><td>42.9%</td></tr>
+          <tr><td>Power & Inst. (Guj)</td><td>~217</td><td>15.8x</td><td>0.21</td><td>10.0%</td><td>15.4%</td><td>19.9%</td></tr>
+          <tr style="border-top:1px solid var(--border2); border-bottom:1px solid var(--border2)"><td colspan="7" style="text-align:center;color:var(--muted);font-size:10px;padding:8px;background:rgba(255,255,255,0.02);letter-spacing:1px;">MAINBOARD PEERS (FOR RE-RATING CONTEXT)</td></tr>
+          <tr><td>Techno Electric & Eng.</td><td>~11,458</td><td>23.2x</td><td>0.02</td><td class="tg">18.1%</td><td>12.1%</td><td>16.5%</td></tr>
+          <tr><td>KEC International</td><td>~14,095</td><td>18.7x</td><td>0.94</td><td class="tr-c">7.0%</td><td>12.0%</td><td>18.0%</td></tr>
+          <tr><td>Transrail Lighting</td><td>~6,484</td><td>15.0x</td><td>0.39</td><td>12.1%</td><td>20.1%</td><td>35.2%</td></tr>
         </tbody>
       </table></div>
-      <div class="g2">
+      
+      <div class="g2" style="margin-bottom: 24px;">
         <div>
-          <div class="hl ok"><strong>Highest ROE &amp; ROCE in peer set:</strong> At 50.8% ROE and 54.7% ROCE, RPSL significantly outperforms SME peers on return metrics. Despite this, it trades at the lowest P/E (~13x vs. 25–65x for peers). The discount reflects BSE SME illiquidity and the recent listing.</div>
-          <div class="hl ok"><strong>Cleanest balance sheet:</strong> Net D/E ~0.26x vs. Kay Cee (0.89x) and Viviana (0.84x). Asset-light model with modest capex on equipment and testing tools. Banking limits recently raised to ₹450 Cr (₹110 Cr fund-based + rest non-fund). No near-term equity dilution planned.</div>
+          <div class="hl ok"><strong>Mainboard Multiples Context:</strong> KEC International and Transrail Lighting trade at subdued multiples (~15x to 18x) largely due to their debt-heavy balance sheets (D/E 0.94x and 0.39x) and volume-driven, lower-margin profiles. Techno Electric commands a premium (~23x+) due to its specialized EPC niches and virtually debt-free status. RPSL combines the best of both worlds: the clean balance sheet (D/E 0.22x) and high ROCE (54.7%) of a specialized player, yet it is currently available at the discounted multiple (~13.3x) of the debt-heavy peers. A mainboard migration serves as a massive re-rating catalyst.</div>
         </div>
         <div>
-          <div class="hl"><strong>Client selection as competitive edge:</strong> RPSL deliberately focuses on high-rated government utilities (AA/AAA DISCOMs), ADB/World Bank-funded projects, and established private industrial clients. This "good paymaster" strategy reduces payment delays and working capital stress vs. peers who chase any available order.</div>
-          <div class="hl"><strong>Price escalation clauses:</strong> All contracts include back-to-back price escalation linked to MEAI (Market for Essential Articles Index) or commodity indices. This means raw material cost spikes (copper, aluminum, cables) are automatically passed through — margin protection at the bid stage, unlike fixed-price construction peers.</div>
+          <div class="hl warn"><strong>Exclusion of Kay Cee Energy:</strong> Kay Cee Energy & Infra has been deliberately removed from our peer set. The stock has faced severe corporate governance (CG) red flags, including August 2025 allegations of securing ₹500 Cr+ government tenders using fake/forged qualification certificates, alongside historical bribery murmurs. While the company denied the allegations, the market has heavily penalized the stock, causing it to trade at artificially distorted lows. We exclude it to maintain a clean fundamental comparison focused purely on operational merit.</div>
         </div>
       </div>
-      <div class="sec-h">P/E Comparison (SME Peers)</div>
-      <div class="bar-row"><div class="bar-lbl">Rajesh Power</div><div class="bar-track"><div class="bar-fill" style="background:var(--green)" data-w="20"></div></div><div class="bar-val">~13x</div></div>
-      <div class="bar-row"><div class="bar-lbl">Kay Cee Energy</div><div class="bar-track"><div class="bar-fill" style="background:var(--elec)" data-w="38"></div></div><div class="bar-val">25x</div></div>
-      <div class="bar-row"><div class="bar-lbl">Viviana Power</div><div class="bar-track"><div class="bar-fill" style="background:var(--elec)" data-w="58"></div></div><div class="bar-val">38x</div></div>
-      <div class="bar-row"><div class="bar-lbl">Advait Energy</div><div class="bar-track"><div class="bar-fill" style="background:var(--dim)" data-w="100"></div></div><div class="bar-val">65x</div></div>
+      
+      <div class="sec-h">P/E Comparison</div>
+      <div class="bar-row"><div class="bar-lbl">Rajesh Power</div><div class="bar-track"><div class="bar-fill" style="background:var(--green)" data-w="35"></div></div><div class="bar-val">~13.3x</div></div>
+      <div class="bar-row"><div class="bar-lbl">Transrail</div><div class="bar-track"><div class="bar-fill" style="background:var(--elec)" data-w="40"></div></div><div class="bar-val">~15.0x</div></div>
+      <div class="bar-row"><div class="bar-lbl">Techno Electric</div><div class="bar-track"><div class="bar-fill" style="background:var(--elec)" data-w="62"></div></div><div class="bar-val">~23.2x</div></div>
+      <div class="bar-row"><div class="bar-lbl">Advait Energy</div><div class="bar-track"><div class="bar-fill" style="background:var(--dim)" data-w="100"></div></div><div class="bar-val">~37.4x</div></div>
     `
   },
   {
