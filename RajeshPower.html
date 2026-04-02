@@ -102,7 +102,7 @@ html, body {
 .tb-right{display:flex;align-items:center;gap:12px;flex-shrink:0;background:rgba(16, 185, 129, 0.1);padding:6px 16px;border-radius:4px;border:1px solid rgba(16, 185, 129, 0.3)}
 .live-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(0.85)}}
-.live-label{font-family:var(--font-mono);font-size:11px;color:var(--green);font-weight:700;letter-spacing:1px;}
+.live-label{font-family:var(--font-mono);font-size:11px;color:var(--green);font-weight:700;letter-spacing:1px;display:none;}
 
 /* ── SCROLLABLE CONTENT ── */
 #content-scroll-area {
@@ -322,16 +322,8 @@ html, body {
 .hl.volt{border-left-color:var(--volt); background:rgba(250, 204, 21, 0.05);}
 .hl.sub{border-left-color:var(--dim); background:rgba(255,255,255,0.02)}
 
-/* ── DATA TABLES (WITH SCROLL FIXES) ── */
-.tw{
-  overflow-x:auto;
-  -webkit-overflow-scrolling: touch; /* Mobile native scroll feel */
-  width: 100%;
-  border-radius:6px;
-  border:1px solid var(--border);
-  margin-bottom:24px;
-  background:#0b1120;
-}
+/* ── DATA TABLES ── */
+.tw{overflow-x:auto;border-radius:6px;border:1px solid var(--border);margin-bottom:24px;background:#0b1120;}
 table{width:100%;border-collapse:collapse}
 thead tr{background:#0f172a;border-bottom:1px solid var(--border2)}
 th{font-family:var(--font-mono);font-weight:600;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--body);padding:16px 20px;text-align:right;white-space:nowrap;}
@@ -349,7 +341,7 @@ tr:hover td{background:rgba(255,255,255,0.02)}
 .tag.v{color:var(--volt); border-color: rgba(250, 204, 21, 0.3);}
 .tag.g{color:var(--green); border-color: rgba(16, 185, 129, 0.3);}
 
-/* ── BAR CHART (Text Outside fix) ── */
+/* ── BAR CHART FIX (Flex display for no clipping) ── */
 .bar-row{display:flex;align-items:center;gap:16px;margin-bottom:16px}
 .bar-lbl{font-family:var(--font-sans);font-size:14px;font-weight:500;color:var(--text);width:140px;flex-shrink:0;text-align:right;}
 .bar-track{flex:1;background:#0f172a;border-radius:4px;height:20px;overflow:hidden; position: relative;}
@@ -374,31 +366,15 @@ tr:hover td{background:rgba(255,255,255,0.02)}
 .mgmt-tag{font-family:var(--font-mono);font-weight:500;font-size:11px;color:var(--body);background:rgba(255,255,255,0.05);padding:4px 8px;border-radius:4px;display:inline-block;margin-bottom:14px;border:1px solid var(--border)}
 .mgmt-bio{font-family:var(--font-sans);font-size:14px;line-height:1.7;color:var(--body)}
 
-/* ── CANVAS FRAME (WITH SCROLL FIXES) ── */
-.chart-wrap{
-  background:#0b1120;
-  border:1px solid var(--border);
-  border-radius:6px;
-  padding:24px;
-  margin-bottom:24px;
-  position:relative; 
-  width:100%; 
-  display:block;
-  overflow-x:auto; 
-  -webkit-overflow-scrolling: touch; /* Mobile native scroll feel */
-}
-/* Removed width: 100% restriction from canvas so it can expand and scroll on mobile */
-canvas.chart{display:block;}
+/* ── CANVAS FRAME (CHART WRAPPER) ── */
+.chart-wrap{background:#0b1120;border:1px solid var(--border);border-radius:6px;padding:24px;margin-bottom:24px;position:relative; width:100%; display:block;}
+canvas.chart{display:block;width:100%!important; height:100%!important;}
 
 .notice{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-left:3px solid var(--live);border-radius:6px;padding:24px;font-family:var(--font-sans);font-size:14.5px;color:var(--body);line-height:1.76;}
 
-/* Grid minimum width fixes to prevent page blowout on mobile */
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:24px; min-width: 0;}
-.g2 > div { min-width: 0; }
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px; min-width: 0;}
-.g3 > div { min-width: 0; }
-.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px; min-width: 0;}
-.g4 > div { min-width: 0; }
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
 
 .cover{background:rgba(15, 23, 42, 0.4);border:1px solid var(--border2);border-radius:8px;padding:48px;margin-bottom:36px;}
 
@@ -409,6 +385,7 @@ canvas.chart{display:block;}
 }
 @media(max-width:768px){
   #topbar { padding: 0 16px; }
+  .live-label { display: block; }
   .tb-bc { display: none; } 
   
   #content-scroll-area { padding: 24px 20px 40px; }
@@ -725,9 +702,7 @@ const SECTIONS = [
         </div>
         <div>
           <div class="sec-h" style="margin-top:0">Revenue Growth (₹ Cr)</div>
-          <div class="chart-wrap">
-             <canvas id="revChart" class="chart" height="180"></canvas>
-          </div>
+          <div class="chart-wrap"><canvas id="revChart" class="chart" height="180"></canvas></div>
         </div>
       </div>
 
@@ -752,9 +727,9 @@ const SECTIONS = [
       <div class="sec-h">Robust Revenue Visibility</div>
       <div class="pg-sub">₹4,023 Cr unexecuted order book (Mar 2026) = ~3.75× FY25 revenue · 18–24 month execution cycle provides massive revenue visibility</div>
       <div class="g3" style="margin-bottom:20px">
-        <div class="volt-meter v"><div class="vm-lbl">Order Book (Mar 2026)</div><div class="vm-val">₹4,023Cr</div><div class="vm-sub">~3.75× FY25 Rev</div></div>
-        <div class="volt-meter e"><div class="vm-lbl">Bid Pipeline</div><div class="vm-val">~₹3,000Cr</div><div class="vm-sub">Results mid-Apr 2026</div></div>
-        <div class="volt-meter g"><div class="vm-lbl">Win Rate</div><div class="vm-val">50–60%</div><div class="vm-sub">₹1,500–1,800 Cr wins</div></div>
+        <div class="volt-meter v"><div class="vm-lbl">Order Book (Mar 2026)</div><div class="vm-val">₹4,023Cr</div><div class="vm-sub">~3.75× FY25 Revenue</div></div>
+        <div class="volt-meter e"><div class="vm-lbl">Bid Pipeline</div><div class="vm-val">~₹3,000Cr</div><div class="vm-sub">Results expected mid-Apr 2026</div></div>
+        <div class="volt-meter g"><div class="vm-lbl">Win Rate (historical)</div><div class="vm-val">50–60%</div><div class="vm-sub">₹1,500–1,800 Cr potential wins</div></div>
       </div>
       <div class="hl ok"><strong>Order Book Growth:</strong> The unexecuted order book stood at ~₹4,023 Cr as of recent Mar 2026 updates, significantly up from ₹3,628 Cr in May 2025. Long-term aspiration: ₹9,000–10,000 Cr order book by FY29–30. Execution period 18–24 months provides incredible medium-term clarity.</div>
       
@@ -931,8 +906,7 @@ const SECTIONS = [
     render: () => `
       <div class="sec-h">Stock Price & Valuation</div>
       <div class="pg-sub">IPO at ₹335 (Dec 2024) → Peak ₹1,639 → CMP ₹871 (Mar 2026) · All-time high -47% · P/E ~13x vs. peers 25–65x</div>
-      <div class="chart-wrap">
-        <canvas id="priceChart" class="chart" height="220"></canvas>
+      <div class="chart-wrap"><canvas id="priceChart" class="chart" height="220"></canvas>
         <div style="display:flex;gap:20px;flex-wrap:wrap;margin-top:16px;justify-content:center">
           <div style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--text);text-transform:uppercase"><div style="width:10px;height:10px;background:var(--volt);border-radius:2px"></div>Peak ₹1,639</div>
           <div style="display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--text);text-transform:uppercase"><div style="width:10px;height:10px;background:var(--live);border-radius:2px"></div>FII/DII exit</div>
@@ -1024,7 +998,7 @@ const SECTIONS = [
       </div>
       <div style="background:var(--card2);border:1px solid var(--border);border-radius:4px;padding:36px;text-align:center;box-shadow:inset 0 0 20px rgba(0,0,0,0.8)">
         <div style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--elec);letter-spacing:.25em;text-transform:uppercase;margin-bottom:20px;text-shadow:var(--elec-glow)">Prepared by</div>
-        <a href="https://x.com/sachprat07" target="_blank" style="color:var(--text);text-decoration:none;font-family:var(--font-serif);font-size:32px;font-weight:700;display:inline-flex;align-items:center;gap:14px;transition:all .3s ease" onmouseover="this.style.color='var(--volt)'; this.style.textShadow='0 0 15px rgba(250,204,21,0.5)'; this.style.transform='scale(1.05)'" onmouseout="this.style.color='var(--text)'; this.style.textShadow='none'; this.style.transform='scale(1)'">
+        <a href="https://x.com/sachprat07" target="_blank" style="color:var(--text);text-decoration:none;font-family:var(--font-serif);font-size:32px;font-weight:700;display:inline-flex;align-items:center;gap:14px;transition:all .3s ease" onmouseover="this.style.color='var(--volt)'; this.style.textShadow='0 0 15px rgba(255,204,0,0.5)'; this.style.transform='scale(1.05)'" onmouseout="this.style.color='var(--text)'; this.style.textShadow='none'; this.style.transform='scale(1)'">
           <svg viewBox="0 0 24 24" style="width:26px;height:26px;fill:currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
           @sachprat07
         </a>
@@ -1108,12 +1082,13 @@ function loadSection(index) {
   // Reset scroll
   contentScrollArea.scrollTop = 0;
 
-  // Initialize charts and layout triggers
-  initCharts(s.id);
-  
-  setTimeout(() => {
-    animateBars(activeSectionContainer);
-  }, 50);
+  // Render Charts safely after DOM updates
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      animateBars(activeSectionContainer);
+      drawCharts(s.id);
+    }, 50);
+  });
 }
 
 function animateBars(container) {
@@ -1126,44 +1101,21 @@ function animateBars(container) {
 loadSection(0);
 
 // ─────────────────────────────────────────
-// RESIZEOBSERVER CHART LOGIC (FIX FOR 0-WIDTH BUG)
+// CHARTS
 // ─────────────────────────────────────────
 const dpr = () => window.devicePixelRatio || 1;
-let currentChartObserver = null;
 
-function initCharts(id) {
-  // Clear any existing observer to prevent memory leaks
-  if(currentChartObserver) { 
-      currentChartObserver.disconnect(); 
-      currentChartObserver = null; 
-  }
+function drawRevChart() {
+  const cv = document.getElementById('revChart');
+  if (!cv) return;
   
-  if (id === 'financials') {
-    const cv = document.getElementById('revChart');
-    if (cv && cv.parentElement) {
-      // Draw immediately once
-      drawRevChart(cv);
-      // Then listen for resizes
-      currentChartObserver = new ResizeObserver(() => drawRevChart(cv));
-      currentChartObserver.observe(cv.parentElement);
-    }
-  }
-  if (id === 'price') {
-    const cv = document.getElementById('priceChart');
-    if (cv && cv.parentElement) {
-      // Draw immediately once
-      drawPriceChart(cv);
-      // Then listen for resizes
-      currentChartObserver = new ResizeObserver(() => drawPriceChart(cv));
-      currentChartObserver.observe(cv.parentElement);
-    }
-  }
-}
-
-function drawRevChart(cv) {
-  let W = Math.max(cv.parentElement.offsetWidth - 48, 500); // 500px minimum to trigger mobile swipe
+  let W = cv.parentElement.offsetWidth - 48; // padding
   let H = 180;
-  if (cv.parentElement.offsetWidth <= 0) return; // Prevent drawing if DOM isn't ready
+  
+  if (W <= 0) {
+    requestAnimationFrame(drawRevChart);
+    return;
+  }
   
   const d = dpr();
   cv.width = W * d; cv.height = H * d;
@@ -1219,10 +1171,17 @@ const PD = [
   {d:'11 Mar',c:863},{d:'25 Mar',c:826},{d:'01 Apr',c:823}
 ];
 
-function drawPriceChart(cv) {
-  let W = Math.max(cv.parentElement.offsetWidth - 48, 600); // 600px minimum to trigger mobile swipe
+function drawPriceChart() {
+  const cv = document.getElementById('priceChart');
+  if (!cv) return;
+  
+  let W = cv.parentElement.offsetWidth - 48; // padding
   let H = 220;
-  if (cv.parentElement.offsetWidth <= 0) return;
+  
+  if (W <= 0) {
+    requestAnimationFrame(drawPriceChart);
+    return;
+  }
   
   const d = dpr();
   cv.width = W * d; cv.height = H * d;
@@ -1251,32 +1210,20 @@ function drawPriceChart(cv) {
   PD.forEach((p, i) => { const x = pad.l+(i/(PD.length-1))*cw, y = pad.t+ch*(1-(p.c-mn)/(mx-mn)); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
   ctx.stroke();
   
-  const PA = [{idx:6,col:'#facc15'},{idx:11,col:'#f43f5e'},{idx:18,col:'#10b981'}];
-  
-  PA.forEach(a => {
-    const x = pad.l+(a.idx/(PD.length-1))*cw, y = pad.t+ch*(1-(PD[a.idx].c-mn)/(mx-mn));
-    ctx.beginPath(); ctx.strokeStyle = a.col; ctx.lineWidth = 1; ctx.setLineDash([4,4]);
-    ctx.moveTo(x, pad.t); ctx.lineTo(x, pad.t+ch); ctx.stroke(); ctx.setLineDash([]);
-    ctx.beginPath(); ctx.fillStyle = '#000'; ctx.strokeStyle = a.col; ctx.lineWidth = 2;
-    ctx.arc(x, y, 4, 0, Math.PI*2); ctx.fill(); ctx.stroke();
-  });
-  
   const step = W < 500 ? Math.ceil(PD.length/4) : Math.ceil(PD.length/7);
   ctx.fillStyle = '#94a3b8'; ctx.font = '700 11px "Fira Code",monospace'; ctx.textAlign = 'center';
   PD.forEach((p, i) => { if(i%step===0) ctx.fillText(p.d, pad.l+(i/(PD.length-1))*cw, H-pad.b+20); });
 }
 
-// Fallback manual trigger for window resize just in case
+function drawCharts(id) {
+  if (id === 'financials') drawRevChart();
+  if (id === 'price') drawPriceChart();
+}
+
 window.addEventListener('resize', () => {
   const activeSection = document.getElementById('active-section').innerHTML;
-  if(activeSection.includes('revChart')) {
-      const cv = document.getElementById('revChart');
-      if(cv) drawRevChart(cv);
-  }
-  if(activeSection.includes('priceChart')) {
-      const cv = document.getElementById('priceChart');
-      if(cv) drawPriceChart(cv);
-  }
+  if(activeSection.includes('revChart')) drawRevChart();
+  if(activeSection.includes('priceChart')) drawPriceChart();
 });
 </script>
 </body>
