@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rajesh Power Services — Investor Research 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1122,8 +1122,10 @@ function drawRevChart() {
     return;
   }
   
-  const d = dpr();
+const d = dpr();
   cv.width = W * d; cv.height = H * d;
+  cv.style.width = W + 'px';    // FIX: Forces CSS width to match device width
+  cv.style.height = H + 'px';   // FIX: Forces CSS height to match device height
   const ctx = cv.getContext('2d'); ctx.scale(d, d);
   
   const lbls = ['FY22','FY23','FY24','FY25','H1FY26'];
@@ -1188,8 +1190,10 @@ function drawPriceChart() {
     return;
   }
   
-  const d = dpr();
+const d = dpr();
   cv.width = W * d; cv.height = H * d;
+  cv.style.width = W + 'px';    // FIX: Forces CSS width to match device width
+  cv.style.height = H + 'px';   // FIX: Forces CSS height to match device height
   const ctx = cv.getContext('2d'); ctx.scale(d, d);
   const pad = {t:20,r:20,b:36,l:40}, cw = W - pad.l - pad.r, ch = H - pad.t - pad.b;
   const vals = PD.map(x => x.c), mn = Math.min(...vals) * .95, mx = Math.max(...vals) * 1.05;
