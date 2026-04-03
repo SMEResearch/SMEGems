@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Viviana Power Tech — Hidden Champions 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#08090f;--panel:#0b111a;--card:#101725;--card2:#151f33;--border:#1e293b;--border2:#334155;
+  --accent:#3b82f6;         /* primary: electric blue */
+  --accent-d:rgba(59,130,246,.09);
+  --gold:#f59e0b;           /* secondary: warm amber/gold */
+  --gold-d:rgba(245,158,11,.08);
+  --teal:#10b981;           /* tertiary: emerald */
+  --green:#22c55e;          /* quaternary: green */
+  --red:#ef4444;--blue:#3b82f6;
+  --text:#f8fafc;--body:#94a3b8;--muted:#64748b;--dim:#1e293b;
+  --sans:'Inter',sans-serif;--mono:'IBM Plex Mono',monospace;
+  --r:6px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100dvh;width:100vw;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased;font-size:16px}
+
+/* ── BG ── */
+#bgc{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.25}
+
+/* ── PROGRESS ── */
+#prog{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--gold));z-index:1000;width:0%;transition:width .1s}
+
+/* ── SHELL ── */
+#shell{position:relative;z-index:1;display:flex;flex-direction:column;height:100dvh;width:100vw}
+
+/* ── TOPBAR ── */
+#tb{flex-shrink:0;height:54px;background:rgba(8,9,15,.97);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;padding:0 20px;z-index:90}
+#mbtn{background:var(--card);border:1px solid var(--border2);border-radius:var(--r);cursor:pointer;color:var(--text);padding:7px 14px;display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.04em;transition:all .2s;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+#mbtn:hover{border-color:var(--accent);color:var(--accent)}
+.tb-t{font-family:var(--mono);font-size:11px;color:var(--body);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:.05em}
+.tb-t span{color:var(--accent)}
+.xbtn{display:flex;align-items:center;gap:5px;flex-shrink:0;background:var(--card);border:1px solid var(--border2);border-radius:var(--r);padding:6px 12px;text-decoration:none;font-family:var(--mono);font-size:11px;color:var(--body);transition:all .2s;letter-spacing:.03em}
+.xbtn:hover{border-color:var(--accent);color:var(--accent)}
+.xbtn svg{width:12px;height:12px;fill:currentColor;flex-shrink:0}
+.badge{display:flex;align-items:center;gap:6px;flex-shrink:0;background:rgba(59,130,246,.1);padding:5px 12px;border-radius:var(--r);border:1px solid rgba(59,130,246,.25)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.blbl{font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:.1em}
+
+/* ── SCROLL AREA ── */
+#sa{flex:1;overflow-y:auto;overflow-x:hidden;scroll-behavior:smooth;padding:28px clamp(14px,3.5vw,52px);scrollbar-width:thin;scrollbar-color:var(--border2) transparent;-webkit-overflow-scrolling:touch}
+#sa::-webkit-scrollbar{width:4px}
+#sa::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+#pg{max-width:1040px;margin:0 auto;width:100%;animation:fu .28s cubic-bezier(.16,1,.3,1)}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── PILL TABS NAV ── */
+#bn{flex-shrink:0;background:var(--panel);border-top:1px solid var(--border);padding:8px 14px;z-index:90;display:flex;align-items:center;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+#bn::-webkit-scrollbar{display:none}
+#bn-p,#bn-n{flex-shrink:0;background:var(--card);border:1px solid var(--border2);color:var(--body);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
+#bn-p:hover:not(:disabled),#bn-n:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+#bn-p:disabled,#bn-n:disabled{opacity:.2;cursor:not-allowed}
+#bn-tabs{flex:1;display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;align-items:center}
+#bn-tabs::-webkit-scrollbar{display:none}
+.nt{flex-shrink:0;padding:6px 14px;border-radius:20px;font-family:var(--mono);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .2s;-webkit-tap-highlight-color:transparent;white-space:nowrap}
+.nt:hover{border-color:var(--border2);color:var(--body)}
+.nt.act{border-color:var(--accent);color:var(--accent);background:rgba(59,130,246,.1)}
+
+/* ── TOC ── */
+#toc{position:fixed;inset:0;background:rgba(8,9,15,.97);backdrop-filter:blur(12px);z-index:9999;display:none;flex-direction:column;padding:28px clamp(14px,3.5vw,52px);overflow-y:auto}
+#toc.open{display:flex}
+.toc-h{max-width:860px;margin:0 auto 20px;width:100%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:16px}
+.toc-h h2{font-size:20px;font-weight:700;color:var(--text)}.toc-h h2 em{color:var(--accent);font-style:normal}
+#tcl{background:none;border:1px solid var(--border2);color:var(--muted);cursor:pointer;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .2s}
+#tcl:hover{color:var(--red);border-color:var(--red)}
+.tg{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;max-width:860px;margin:0 auto;width:100%}
+.ti{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--dim);padding:14px 16px;border-radius:var(--r);cursor:pointer;transition:all .2s}
+.ti:hover,.ti.act{border-left-color:var(--accent);border-color:rgba(59,130,246,.3)}
+.ti-n{font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:4px}
+.ti:hover .ti-n,.ti.act .ti-n{color:var(--accent)}
+.ti-t{font-size:14px;font-weight:600;color:var(--text)}
+
+/* ── TYPOGRAPHY ── */
+.ey{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.ey::after{content:'';height:1px;width:28px;background:var(--accent)}
+
+h1.ph{font-family:var(--sans);font-size:clamp(22px,3.2vw,36px);font-weight:700;line-height:1.2;color:var(--text);margin-bottom:10px;letter-spacing:-.3px}
+h1.ph em{color:var(--accent);font-style:normal}
+
+.sub{font-size:15px;color:var(--body);margin-bottom:22px;line-height:1.75}
+.sh{font-size:15px;font-weight:700;color:var(--text);margin:22px 0 14px;display:flex;align-items:center;gap:10px}
+.sh::after{content:'';height:1px;flex:1;background:var(--border2)}
+
+/* ── KPI BAND ── */
+.kband{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:0}
+@media(max-width:580px){.kband{grid-template-columns:repeat(3,1fr)}}
+.kb{padding:13px 11px;background:rgba(16,23,37,.7);border:1px solid var(--border);border-radius:var(--r)}
+.kb-l{font-family:var(--mono);font-size:9px;letter-spacing:.05em;color:var(--muted);text-transform:uppercase;margin-bottom:5px}
+.kb-v{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--text)}
+.kb-n{font-size:9.5px;margin-top:4px;color:var(--body)}
+
+/* ── KPI CARDS ── */
+.krow{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:11px;margin-bottom:22px}
+.kc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;position:relative;overflow:hidden;transition:border .2s}
+.kc:hover{border-color:var(--border2)}
+.kc::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;background:var(--dim);transition:background .25s}
+.kc:hover::before,.kc.v::before{background:var(--accent)}
+.kc.a::before{background:var(--gold)}.kc.r::before{background:var(--red)}.kc.b::before{background:var(--teal)}
+.kl{font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--body);margin-bottom:8px}
+.kv{font-family:var(--mono);font-size:23px;font-weight:700;color:var(--text);line-height:1}
+.kv.v{color:var(--accent)}.kv.a{color:var(--gold)}.kv.r{color:var(--red)}.kv.b{color:var(--teal)}
+.kn{font-size:12px;color:var(--body);margin-top:7px}
+
+/* ── VOLT METERS ── */
+.vmg{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:18px}
+.vm{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px 14px;text-align:center}
+.vml{font-family:var(--mono);font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
+.vmv{font-family:var(--mono);font-size:26px;font-weight:700;color:var(--text);line-height:1}
+.vm.v .vmv{color:var(--accent)}.vm.a .vmv{color:var(--gold)}.vm.r .vmv{color:var(--red)}.vm.b .vmv{color:var(--teal)}
+.vms{font-family:var(--mono);font-size:10px;color:var(--body);margin-top:8px}
+
+/* ── CONTENT CARDS ── */
+.cc{background:rgba(16,23,37,.5);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:12px;transition:border .2s}
+.cc:hover{border-color:var(--border2)}
+.cc-h{font-size:15px;font-weight:600;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.cc-b{font-size:14px;line-height:1.75;color:var(--body)}
+
+/* ── HIGHLIGHTS ── */
+.hl{border:1px solid var(--border);border-left:4px solid var(--accent);background:rgba(59,130,246,.04);padding:14px 18px;border-radius:0 var(--r) var(--r) 0;font-size:14px;color:var(--text);line-height:1.75;margin-bottom:12px}
+.hl.w{border-left-color:var(--red);background:rgba(239,68,68,.04)}
+.hl.a{border-left-color:var(--gold);background:rgba(245,158,11,.04)}
+.hl.b{border-left-color:var(--teal);background:rgba(16,185,129,.04)}
+.hl.s{border-left-color:var(--dim);background:rgba(255,255,255,.015)}
+
+/* ── TABLES — THE INFALLIBLE HARD-CODED WIDTH APPROACH ── */
+.tw {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  margin-bottom: 20px;
+  background: var(--card);
+}
+table {
+  width: 100%;
+  min-width: 760px; /* Triggers scroll on mobile to prevent illegible text */
+  border-collapse: collapse;
+  table-layout: fixed; /* BROWSER MUST OBEY INLINE PERCENTAGES */
+}
+th, td {
+  padding: 14px 12px;
+  text-align: left;
+  vertical-align: top;
+  line-height: 1.5;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+th {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--body);
+  background: #0f1623;
+  border-bottom: 2px solid var(--border2);
+}
+td {
+  font-family: var(--sans);
+  font-size: 13.5px;
+  color: var(--body);
+  border-bottom: 1px solid var(--border);
+}
+td:first-child { color: var(--text); font-weight: 500; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(59,130,246,.03); }
+th.r, td.r { text-align: right; }
+.tg{color:var(--accent)!important}.ta{color:var(--gold)!important}.tr{color:var(--red)!important}.tb{color:var(--teal)!important}.tm{color:var(--muted)!important;font-style:italic}
+
+/* ── TAGS ── */
+.tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.tag{font-family:var(--mono);font-size:10px;padding:4px 10px;border-radius:20px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--border);background:var(--card);color:var(--body)}
+.tag.v{color:var(--accent);border-color:rgba(59,130,246,.3)}.tag.a{color:var(--gold);border-color:rgba(245,158,11,.3)}.tag.r{color:var(--red);border-color:rgba(239,68,68,.3)}.tag.b{color:var(--teal);border-color:rgba(16,185,129,.3)}
+
+/* ── BARS ── */
+.br{display:flex;align-items:center;gap:12px;margin-bottom:11px}
+.brl{font-size:13px;font-weight:500;color:var(--text);width:120px;flex-shrink:0;text-align:right}
+.brt{flex:1;background:var(--card2);border-radius:3px;height:15px;overflow:hidden;position:relative}
+.brf{height:100%;transition:width 1.4s cubic-bezier(.22,1,.36,1);width:0%;position:absolute;top:0;left:0}
+.brv{width:90px;flex-shrink:0;font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--body);padding-left:8px}
+
+/* ── SCENARIOS ── */
+.scg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px}
+@media(max-width:560px){.scg{grid-template-columns:1fr}}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;border-top:3px solid var(--dim)}
+.sc.bull{border-top-color:var(--green)}.sc.base{border-top-color:var(--gold)}.sc.bear{border-top-color:var(--red)}
+.sc-h{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
+.sc-pat{font-family:var(--mono);font-size:13px;font-weight:600;margin-bottom:4px;color:var(--body)}
+.sc-tgt{font-family:var(--mono);font-size:24px;font-weight:700;line-height:1;margin-bottom:12px;letter-spacing:-0.5px;}
+.sc.bull .sc-tgt{color:var(--green)}.sc.base .sc-tgt{color:var(--gold)}.sc.bear .sc-tgt{color:var(--red)}
+.sc-b{font-size:13px;line-height:1.72;color:var(--body)}
+
+/* ── GRID 2 ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;min-width:0}
+.g2>*{min-width:0}
+@media(max-width:560px){.g2{grid-template-columns:1fr}}
+
+/* ── TIMELINE ── */
+.tl{position:relative;padding-left:22px}
+.tl::before{content:'';position:absolute;left:5px;top:6px;bottom:6px;width:2px;background:var(--border2)}
+.tli{position:relative;margin-bottom:18px}
+.tli::before{content:'';position:absolute;left:-20px;top:5px;width:8px;height:8px;border-radius:50%;background:var(--accent);border:2px solid var(--bg)}
+.tli.a::before{background:var(--gold)}.tli.r::before{background:var(--red)}.tli.b::before{background:var(--teal)}
+.tl-d{font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:2px;text-transform:uppercase;letter-spacing:.06em}
+.tl-t{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px}
+.tl-b{font-size:13.5px;color:var(--body);line-height:1.65}
+
+/* ── CHART WRAP ── */
+.cw{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:20px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+canvas.ch{display:block}
+
+/* ── NOTICE ── */
+.notice{background:rgba(255,255,255,.015);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:var(--r);padding:20px;font-size:14px;color:var(--body);line-height:1.75}
+.notice strong{color:var(--text)}
+
+/* ── Q3 BADGE ── */
+.q3badge{display:inline-flex;align-items:center;gap:7px;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);border-radius:var(--r);padding:6px 14px;font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.05em;margin-bottom:16px}
+</style>
+</head>
+<body>
+<canvas id="bgc"></canvas>
+<div id="prog"></div>
+
+<div id="toc">
+  <div class="toc-h">
+    <h2>VIVIANA <em>POWER TECH</em> — SECTIONS</h2>
+    <button id="tcl">✕</button>
+  </div>
+  <div class="tg" id="tgrid"></div>
+</div>
+
+<div id="shell">
+  <div id="tb">
+    <button id="mbtn">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      INDEX
+    </button>
+    <div class="tb-t">Hidden Champions · <span>VIVIANA</span></div>
+    <div class="badge"><div class="dot"></div><span class="blbl">2026</span></div>
+  </div>
+
+  <div id="sa"><div id="pg"></div></div>
+
+  <div id="bn">
+    <button id="bn-p" disabled>
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <div id="bn-tabs"></div>
+    <button id="bn-n">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+// ── BG ─────────────────────────────────────────
+const bgC=document.getElementById('bgc'),bgX=bgC.getContext('2d');
+let bw,bh,nd=[];
+function bgR(){bw=bgC.width=innerWidth;bh=bgC.height=innerHeight;nd=Array.from({length:45},()=>({x:Math.random()*bw,y:Math.random()*bh,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.3+.4}))}
+function bgD(){bgX.clearRect(0,0,bw,bh);nd.forEach((n,i)=>{n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>bw)n.vx*=-1;if(n.y<0||n.y>bh)n.vy*=-1;bgX.beginPath();bgX.arc(n.x,n.y,n.r,0,Math.PI*2);bgX.fillStyle='rgba(59,130,246,.4)';bgX.fill();nd.slice(i+1).forEach(m=>{const d=Math.hypot(n.x-m.x,n.y-m.y);if(d<110){bgX.beginPath();bgX.moveTo(n.x,n.y);bgX.lineTo(m.x,m.y);bgX.strokeStyle=`rgba(59,130,246,${.1*(1-d/110)})`;bgX.lineWidth=.4;bgX.stroke()}})});requestAnimationFrame(bgD)}
+addEventListener('resize',bgR);bgR();bgD();
+
+const SA=document.getElementById('sa');
+SA.addEventListener('scroll',()=>{const h=SA.scrollHeight-SA.clientHeight;document.getElementById('prog').style.width=(h>0?SA.scrollTop/h*100:0)+'%'});
+
+const SECS=[
+  {id:'cover',l:'01·Cover'},{id:'business',l:'02·Business'},
+  {id:'segments',l:'03·Segments'},{id:'financials',l:'04·Financials'},
+  {id:'orderbook',l:'05·Orders'},{id:'bess',l:'06·BESS'},
+  {id:'capital',l:'07·Capital'},{id:'price',l:'08·Price'},
+  {id:'mainboard',l:'09·Mainboard'},{id:'peers',l:'10·Peers'},
+  {id:'risks',l:'11·Risks'},{id:'scenarios',l:'12·Scenarios'},
+  {id:'disclaimer',l:'13·Disclaimer'},
+];
+const FULL={
+  cover:'01 · Cover & Snapshot',business:'02 · Business Overview',
+  segments:'03 · Business Segments',financials:'04 · Financials',
+  orderbook:'05 · Order Book',bess:'06 · BESS',
+  capital:'07 · Capital History',price:'08 · Price & Events',
+  mainboard:'09 · Mainboard Migration',peers:'10 · Peer Comparison',
+  risks:'11 · Risks',scenarios:'12 · Scenarios',
+  disclaimer:'13 · Disclaimer'
+};
+let ci=0;
+
+function buildTabs(){
+  const c=document.getElementById('bn-tabs');c.innerHTML='';
+  SECS.forEach((s,i)=>{const b=document.createElement('button');b.className='nt'+(i===ci?' act':'');b.textContent=s.l;b.onclick=()=>{ci=i;render()};c.appendChild(b)});
+  const act=c.querySelector('.act');if(act)act.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});
+}
+function openTOC(){
+  const g=document.getElementById('tgrid');g.innerHTML='';
+  SECS.forEach((s,i)=>{const e=document.createElement('div');e.className='ti'+(i===ci?' act':'');e.innerHTML=`<div class="ti-n">${s.id.toUpperCase()}</div><div class="ti-t">${FULL[s.id]}</div>`;e.onclick=()=>{ci=i;render();closeTOC()};g.appendChild(e)});
+  document.getElementById('toc').classList.add('open');
+}
+function closeTOC(){document.getElementById('toc').classList.remove('open')}
+document.getElementById('mbtn').onclick=openTOC;
+document.getElementById('tcl').onclick=closeTOC;
+document.getElementById('bn-p').onclick=()=>{if(ci>0){ci--;render()}};
+document.getElementById('bn-n').onclick=()=>{if(ci<SECS.length-1){ci++;render()}};
+
+function dpr(){return devicePixelRatio||1}
+
+function render(){
+  SA.scrollTop=0;
+  document.getElementById('bn-p').disabled=ci===0;
+  document.getElementById('bn-n').disabled=ci===SECS.length-1;
+  document.querySelector('.tb-t').innerHTML=`Hidden Champions · <span>${FULL[SECS[ci].id]}</span>`;
+  document.getElementById('pg').innerHTML=getHTML(SECS[ci].id);
+  buildTabs();
+  document.querySelectorAll('.brf').forEach(b=>{const w=b.dataset.w;setTimeout(()=>{b.style.width=w},60)});
+  setTimeout(()=>drawCharts(SECS[ci].id),80);
+}
+
+function getHTML(id){
+  const m={cover:sCover,business:sBusiness,segments:sSegments,financials:sFinancials,
+    orderbook:sOrderbook,bess:sBESS,capital:sCapital,price:sPrice,
+    mainboard:sMainboard,peers:sPeers,risks:sRisks,scenarios:sScenarios,
+    disclaimer:sDisclaimer};
+  return m[id]?m[id]():'<p>Not found</p>';
+}
+
+// ══════════════════════════════════════════════════════
+// 01 COVER
+// ══════════════════════════════════════════════════════
+function sCover(){return`
+<div class="ey">HIDDEN CHAMPIONS OF THE SME PLATFORM</div>
+<h1 class="ph">VIVIANA POWER TECH LTD<br><em>Building Tomorrow's Power Grid, Today</em></h1>
+<p class="sub">Vadodara-based power infrastructure EPC company scaling rapidly across T&D, BESS, transformer manufacturing and real estate. Promoter team with 41 years GETCO + Adani experience. CARE BBB- Stable rated.</p>
+
+<div class="kband">
+  <div class="kb"><div class="kb-l">Mkt Cap</div><div class="kb-v">~₹680Cr</div><div class="kb-n">Apr 2026</div></div>
+  <div class="kb"><div class="kb-l">P/E TTM</div><div class="kb-v" style="color:var(--accent)">~24x</div><div class="kb-n">Bonus-adjusted</div></div>
+  <div class="kb"><div class="kb-l">ROCE</div><div class="kb-v" style="color:var(--accent)">42.9%</div><div class="kb-n">FY25</div></div>
+  <div class="kb"><div class="kb-l">ROE</div><div class="kb-v" style="color:var(--accent)">46.5%</div><div class="kb-n">FY25</div></div>
+  <div class="kb"><div class="kb-l">9M FY26 Rev</div><div class="kb-v" style="color:var(--gold)">₹183Cr</div><div class="kb-n">+117% YoY</div></div>
+  <div class="kb"><div class="kb-l">Order Book</div><div class="kb-v" style="color:var(--gold)">₹1,274Cr</div><div class="kb-n">T&D + BESS</div></div>
+</div>
+
+<div class="sh" style="margin-top:22px">THE BULL THESIS</div>
+<div class="g2">
+  <div>
+    <div class="hl">⚡ <strong>Vertical integration story:</strong> EPC contractor evolving into multi-vertical power infra platform — T&D EPC + Transformer Mfg + BESS IPP + Real Estate, each reinforcing the others.</div>
+    <div class="hl a">🏗 <strong>Strong order book:</strong> ₹765Cr T&D + ₹509Cr BESS = ₹1,274Cr consolidated. 35% bid-to-win. PV clauses protect margins. CARE BBB- rated.</div>
+    <div class="hl b">📈 <strong>Revenue hockey stick:</strong> FY22 ₹33Cr → FY25 ₹219Cr → 9M FY26 ₹183Cr (+117% YoY) → FY26E ₹560Cr → FY27P ₹900Cr.</div>
+  </div>
+  <div>
+    <div class="hl">🔋 <strong>BESS first-mover:</strong> ₹509Cr secured orders → ₹40Cr/yr annuity for 12 years. Credential for ₹1,000Cr+ ministry tenders. Asset recycling strategy planned.</div>
+    <div class="hl a">🏭 <strong>Aarsh Transformers (75%):</strong> 7,000 → 20,000 units/yr by FY27. Temporary loss drag, transformative long-term. First DISCOM 3,000+ unit order underway.</div>
+    <div class="hl b">🎯 <strong>Promoter pedigree:</strong> CMD Nikesh Choksi: 41 yrs power sector (GETCO 21 yrs + Adani Transmission 8 yrs). Deep state utility relationship network.</div>
+  </div>
+</div>
+<div class="tags">
+  <span class="tag v">Hidden Champion SME Platform</span><span class="tag v">Power T&D EPC</span>
+  <span class="tag a">BESS IPP</span><span class="tag a">Transformer Mfg</span>
+  <span class="tag b">Gujarat + Punjab</span><span class="tag">RDSS / REVAMP</span><span class="tag">CARE BBB-</span>
+</div>`}
+
+// ══════════════════════════════════════════════════════
+// 02 BUSINESS
+// ══════════════════════════════════════════════════════
+function sBusiness(){return`
+<div class="ey">COMPANY OVERVIEW</div>
+<h1 class="ph">Business <em>Overview</em></h1>
+<p class="sub">Incorporated Dec 2014, Vadodara. Listed NSE Emerge Sep 2022. CIN: L31501GJ2014PLC081671. 10+ yrs, 70+ completed projects, 450+ workforce. CARE BBB- Stable rated (Sep 2025).</p>
+
+<div class="sh">CORPORATE STRUCTURE</div>
+<div class="g2">
+  <div class="cc"><div class="cc-h">📍 Parent Entity</div><div class="cc-b"><strong style="color:var(--accent)">Viviana Power Tech Ltd</strong> — Core EPC for T&D up to 400KV. Substations, transmission lines, RDSS/REVAMP distribution upgrades, underground cabling, testing &amp; commissioning. Key clients: GUVNL, PGVCL, DGVCL, PSTCL, Adani Green, Suzlon Global.</div></div>
+  <div class="cc"><div class="cc-h">🏢 Subsidiaries</div><div class="cc-b"><strong style="color:var(--gold)">Aarsh Transformers (75%)</strong> — Sep 2024. Distribution transformer manufacturer 25–500kVA.<br><br><strong style="color:var(--teal)">Viviana Life Spaces (90%)</strong> — Mar 2025. Real estate / civil construction ("Viviana Westin").<br><br><strong style="color:var(--body)">Viviana Engineering (100%)</strong> — Operational capacity enhancement.</div></div>
+</div>
+
+<div class="sh">MILESTONE TIMELINE</div>
+<div class="tl">
+  <div class="tli"><div class="tl-d">Dec 2014</div><div class="tl-t">Incorporated, Gujarat</div><div class="tl-b">Founded by Nikesh Choksi (GETCO 21 yrs, Adani 8 yrs) and Richi Choksi (L&T). First 66kV project 2016. First switchyard 2017.</div></div>
+  <div class="tli"><div class="tl-d">2017–2020</div><div class="tl-t">220kV &amp; ±500kV HVDC Projects</div><div class="tl-b">220kV from Suzlon (2017), Adani Green (2020). ±500kV HVDC executed. EHV credentials established for premium T&D work.</div></div>
+  <div class="tli a"><div class="tl-d">Sep 2022</div><div class="tl-t">NSE EMERGE IPO — ₹8.8Cr at ₹55/share</div><div class="tl-b">16 lakh shares, 26.8% post-issue. Objects: WC ₹7Cr, GCP ₹1.15Cr, expenses ₹0.65Cr. Listed 16-Sep-2022 at premium.</div></div>
+  <div class="tli"><div class="tl-d">FY23–FY24</div><div class="tl-t">RDSS Orders — Gujarat Scale-Up</div><div class="tl-b">₹93.94Cr RDSS from DGVCL. Revenue ₹36Cr → ₹66Cr. CARE BBB- rating assigned. Order book credibility established with DISCOMs.</div></div>
+  <div class="tli a"><div class="tl-d">Sep 2024</div><div class="tl-t">Pref Allotment #1 + Aarsh Acquired</div><div class="tl-b">3,06,500 shares @₹625 to 56 external investors — ₹19.16Cr. Trading approved 14-Feb-2025. Lock-in expired 31-Aug-2025. Aarsh 75% acquired.</div></div>
+  <div class="tli"><div class="tl-d">FY25</div><div class="tl-t">Revenue ₹219Cr — 3× Inflection</div><div class="tl-b">TOI grew 234% YoY. PBILDT 14.7%, PAT 9.04% (CARE verified). Gearing 1.42x. Viviana Life Spaces acquired Mar 2025.</div></div>
+  <div class="tli b"><div class="tl-d">Jul–Nov 2025</div><div class="tl-t">Warrant Conversion + Bonus 3:5</div><div class="tl-b">51,500 warrants → equity (promoters only, lock-in till 31-May-2027). Bonus 3:5 allotted 20-Nov-2025 (record date 19-Nov).</div></div>
+  <div class="tli"><div class="tl-d">H1–9M FY26</div><div class="tl-t">₹509Cr BESS Orders, 9M Rev ₹183Cr (+117%)</div><div class="tl-b">BESS: RVUNL 100MW + GUVNL 65MW. 9M EBITDA ₹31.18Cr (+125%). PAT ₹17.99Cr (+120%). 38 projects executing simultaneously.</div></div>
+  <div class="tli v"><div class="tl-d">Mar 2026</div><div class="tl-t">Mainboard Approved + NCD ₹25Cr + PGVCL ₹50.6Cr</div><div class="tl-b">Shareholders approved NSE+BSE mainboard (05-Mar). NCD 12% 24-month (13-Mar). PGVCL ₹50.6Cr turnkey order (30-Mar). MOA expanded for energy generation activities.</div></div>
+</div>`}
+
+// ══════════════════════════════════════════════════════
+// 03 SEGMENTS
+// ══════════════════════════════════════════════════════
+function sSegments(){return`
+<div class="ey">BUSINESS SEGMENTS</div>
+<h1 class="ph">Four <em>Verticals</em></h1>
+<p class="sub">Each vertical is strategically designed to reinforce the others — operationally, financially, and from a credentialing standpoint for larger contracts.</p>
+
+<div class="krow">
+  <div class="kc v"><div class="kl">T&D EPC</div><div class="kv v">₹765Cr</div><div class="kn">Unexecuted T&D OB (9M FY26)</div></div>
+  <div class="kc a"><div class="kl">BESS Orders</div><div class="kv a">₹509Cr</div><div class="kn">BOO annuity model</div></div>
+  <div class="kc b"><div class="kl">Transformers</div><div class="kv b">FY27: ₹70–80Cr</div><div class="kn">Aarsh subsidiary guidance</div></div>
+  <div class="kc"><div class="kl">Real Estate</div><div class="kv">FY27: ₹10–15Cr</div><div class="kn">Viviana Westin project</div></div>
+</div>
+
+<div class="sh">SEGMENT DEEP DIVE</div>
+<div class="cc"><div class="cc-h">⚡ Vertical 1 — Power T&D EPC (~82% of FY27 revenue)</div><div class="cc-b">Turnkey supply, erection, testing &amp; commissioning of ±500kV HVDC, 400/220/132/66/33kV transmission lines, substations, and distribution networks up to 33kV. RDSS/REVAMP distribution upgrades form a significant chunk. PV clauses protect margins from commodity price fluctuation — all major contracts structured this way. Bid-to-win ~35%. Key clients: GUVNL, PGVCL, DGVCL, PSTCL (Punjab), Adani Green, Suzlon. CARE notes 74% geographic concentration in Gujarat — depth of DISCOM relationships is both a strength and a concentration risk. New state entries: Punjab (Aug 2025), Rajasthan (via BESS).</div></div>
+<div class="cc"><div class="cc-h">🔋 Vertical 2 — BESS Battery Energy Storage (BOO / IPP model)</div><div class="cc-b">Two projects under India's VGF-backed tendering: 100MW/200MWh Rajasthan (RVUNL, ₹302.5Cr) + 65MW/130MWh Gujarat (GUVNL, ₹208.7Cr). BOO model: build, own, operate for 12 years. ~₹40Cr/yr annuity post-COD. Total capex ~₹300Cr (75–80% debt, ~₹59Cr VGF subsidy). Management's stated primary purpose: credential building for Ministry of Power mega-tenders (₹1,000Cr+) requiring proven BESS track record. Asset recycling (sell after ~2 yrs, redeploy) also being evaluated.</div></div>
+<div class="g2">
+  <div class="cc"><div class="cc-h">🏭 Vertical 3 — Aarsh Transformers (75%)</div><div class="cc-b">Distribution transformers 25–500kVA. Scaling: 7,000 units/yr → FY26: 10,000 → FY27: 20,000. Currently loss-making (~₹3–4Cr/yr — type testing, R&D, establishment per CARE). Profitability targeted FY28. <strong>Integration rationale:</strong> Manufacturing own transformers reduces procurement costs for EPC projects, improving long-term margins. First major DISCOM order: 3,000+ units to Gujarat utilities. 4–5 yr zero-overcapacity window per management.</div></div>
+  <div class="cc"><div class="cc-h">🏠 Vertical 4 — Real Estate (Viviana Life Spaces, 90%)</div><div class="cc-b">Acquired Mar 2025. "Viviana Westin" project already generating revenue (confirmed by CARE). FY27 guidance: ₹10–15Cr. <strong>Strategic purpose beyond revenue:</strong> Real estate assets provide tangible collateral for hypothecation, enhancing borrowing capacity for EPC working capital and BESS project finance. With ₹300Cr BESS capex ahead, balance sheet quality improvement is critical. Infrastructure groups commonly use real estate holdings specifically to improve lender comfort and unlock better bank credit lines.</div></div>
+</div>
+
+<div class="sh">FY27 REVENUE MIX GUIDANCE</div>
+<div class="br"><div class="brl">T&D EPC</div><div class="brt"><div class="brf" style="background:var(--accent)" data-w="82%"></div></div><div class="brv" style="color:var(--accent)">~₹770Cr</div></div>
+<div class="br"><div class="brl">Transformers</div><div class="brt"><div class="brf" style="background:var(--teal)" data-w="9%"></div></div><div class="brv" style="color:var(--teal)">₹70–80Cr</div></div>
+<div class="br"><div class="brl">Real Estate</div><div class="brt"><div class="brf" style="background:var(--gold)" data-w="2%"></div></div><div class="brv" style="color:var(--gold)">₹10–15Cr</div></div>
+<div class="br"><div class="brl">BESS Annuity</div><div class="brt"><div class="brf" style="background:rgba(59,130,246,.5)" data-w="1%"></div></div><div class="brv" style="color:var(--muted)">~₹5Cr (partial)</div></div>`}
+
+// ══════════════════════════════════════════════════════
+// 04 FINANCIALS — MATCHING SCREENER IMAGE DATA
+// ══════════════════════════════════════════════════════
+function sFinancials(){return`
+<div class="ey">FINANCIAL PERFORMANCE</div>
+<h1 class="ph">Numbers that <em>Speak</em></h1>
+<div class="q3badge">📊 Q3 &amp; 9M FY26 RESULTS UPDATED — Press Release Feb 12, 2026</div>
+
+<div class="krow">
+  <div class="kc v"><div class="kl">9M FY26 Revenue</div><div class="kv v">₹183Cr</div><div class="kn">+117% YoY from ₹84Cr</div></div>
+  <div class="kc v"><div class="kl">9M FY26 EBITDA</div><div class="kv v">₹31.2Cr</div><div class="kn">+125% YoY from ₹13.8Cr</div></div>
+  <div class="kc a"><div class="kl">9M FY26 PAT</div><div class="kv a">₹18.0Cr</div><div class="kn">+120% YoY from ₹8.2Cr</div></div>
+  <div class="kc a"><div class="kl">9M FY26 PBT</div><div class="kv a">₹24.3Cr</div><div class="kn">+123% YoY</div></div>
+  <div class="kc b"><div class="kl">FY25 Revenue</div><div class="kv b">₹219Cr</div><div class="kn">+234% YoY (CARE verified)</div></div>
+  <div class="kc b"><div class="kl">FY25 PAT</div><div class="kv b">₹19.8Cr</div><div class="kn">9.04% PAT margin</div></div>
+</div>
+
+<div class="sh">REVENUE & PAT TREND</div>
+<div class="cw"><canvas class="ch" id="revChart"></canvas></div>
+
+<div class="sh">P&L SUMMARY (₹ CRORE, CONSOLIDATED)</div>
+<div class="tw">
+  <table>
+    <thead>
+      <tr>
+        <th style="width:25%">Metric</th>
+        <th class="r" style="width:15%">FY23</th>
+        <th class="r" style="width:15%">FY24</th>
+        <th class="r" style="width:15%">FY25</th>
+        <th class="r" style="width:15%">H1 FY26</th>
+        <th class="r" style="width:15%">9M FY26</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Revenue</td><td class="r">36</td><td class="r">66</td><td class="r ta">219</td><td class="r tg">90.6</td><td class="r tg">183.0</td></tr>
+      <tr><td>EBITDA</td><td class="r">5</td><td class="r">11.6</td><td class="r ta">32.2</td><td class="r tg">17.7</td><td class="r tg">31.2</td></tr>
+      <tr><td>EBITDA %</td><td class="r tm">15%</td><td class="r tm">17.7%</td><td class="r ta">14.7%</td><td class="r tg">19.5%</td><td class="r ta">17.0%</td></tr>
+      <tr><td>PAT</td><td class="r">3</td><td class="r">6.6</td><td class="r ta">19.8</td><td class="r tg">8.9</td><td class="r tg">18.0</td></tr>
+      <tr><td>PAT %</td><td class="r tm">8%</td><td class="r tm">10%</td><td class="r ta">9.0%</td><td class="r tg">9.8%</td><td class="r tg">9.8%</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="sh">9M FY26 HIGHLIGHTS (PRESS RELEASE, FEB 12, 2026)</div>
+<div class="g2">
+  <div>
+    <div class="hl">✅ <strong>PAT margins intact at 9.8%</strong> — Meeting management's 9–10% guidance. Despite Aarsh subsidiary losses and transformer type testing costs, consolidated PAT margin held firm across 9M FY26.</div>
+    <div class="hl v">📈 <strong>Strong operational leverage:</strong> 117% revenue growth translated to 125% EBITDA growth — demonstrating positive operating leverage as scale increases and overhead absorption improves.</div>
+  </div>
+  <div>
+    <div class="hl a">⚠️ <strong>Strategic transformer testing capex:</strong> Q3 FY26 saw "strategic expenditure towards transformer type testing and capitalisation of design assets." This is the primary driver of Q3 margin compression — one-time strategic cost, not structural margin deterioration.</div>
+    <div class="hl b">🏗 <strong>Order book (as of 9M FY26):</strong> T&D ₹765Cr + BESS ₹509Cr = ₹1,274Cr. Additional pipeline: ₹450Cr. Strong revenue visibility for FY26–FY28.</div>
+  </div>
+</div>
+
+<div class="sh">CARE CREDIT INSIGHTS (SEP 2025) — KEY METRICS</div>
+<div class="tw">
+  <table>
+    <thead>
+      <tr>
+        <th style="width:25%">CARE Metric</th>
+        <th class="r" style="width:15%">FY24</th>
+        <th class="r" style="width:15%">FY25</th>
+        <th style="width:45%">Commentary</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>PBILDT Margin</td><td class="r">17.7%</td><td class="r ta">14.7%</td><td>Moderation due to Aarsh setup costs</td></tr>
+      <tr><td>PAT Margin</td><td class="r">10.0%</td><td class="r tg">9.0%</td><td>Comfortable, -95bps decline</td></tr>
+      <tr><td>Interest Coverage</td><td class="r">4.23x</td><td class="r tg">8.49x</td><td>Strong; near doubled YoY</td></tr>
+      <tr><td>Overall Gearing</td><td class="r">0.68x</td><td class="r ta">1.42x</td><td>Moderately leveraged; rising with BESS</td></tr>
+      <tr><td>Receivable Days</td><td class="r">164 days</td><td class="r tg">148 days</td><td>Improving but still elongated</td></tr>
+      <tr><td>Operating Cycle</td><td class="r">165 days</td><td class="r tg">75 days</td><td>Major improvement at scale</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="vmg">
+  <div class="vm v"><div class="vml">FY26E Rev</div><div class="vmv">₹560Cr</div><div class="vms">Q4 ~₹340–350Cr needed</div></div>
+  <div class="vm a"><div class="vml">FY27P Rev</div><div class="vmv">₹900Cr</div><div class="vms">+61% guided</div></div>
+  <div class="vm b"><div class="vml">FY28P Rev</div><div class="vmv">₹1,300Cr</div><div class="vms">40–50% CAGR target</div></div>
+  <div class="vm"><div class="vml">PAT Margin</div><div class="vmv">9–10%</div><div class="vms">PV clauses maintain</div></div>
+</div>`}
+
+// ══════════════════════════════════════════════════════
+// 05 ORDERBOOK
+// ══════════════════════════════════════════════════════
+function sOrderbook(){return`
+<div class="ey">ORDER FLOW ENGINE</div>
+<h1 class="ph">Order Book <em>&amp; Wins</em></h1>
+<p class="sub">T&D ₹765Cr + BESS ₹509Cr = ₹1,274Cr total order book (9M FY26 press release). Pipeline: ₹450Cr. 38 projects executing simultaneously. Gujarat dominant but diversifying.</p>
+
+<div class="krow">
+  <div class="kc v"><div class="kl">T&D Order Book</div><div class="kv v">₹765Cr</div><div class="kn">As of 9M FY26</div></div>
+  <div class="kc a"><div class="kl">BESS Orders</div><div class="kv a">₹509Cr</div><div class="kn">Updated from ₹511Cr</div></div>
+  <div class="kc b"><div class="kl">Total OB</div><div class="kv b">₹1,274Cr</div><div class="kn">T&D + BESS combined</div></div>
+  <div class="kc"><div class="kl">Pipeline</div><div class="kv">₹450Cr</div><div class="kn">9M FY26 press release</div></div>
+  <div class="kc"><div class="kl">Bid-to-Win</div><div class="kv">~35%</div><div class="kn">Healthy ratio</div></div>
+  <div class="kc"><div class="kl">States Active</div><div class="kv">3+</div><div class="kn">Gujarat, Punjab, Rajasthan</div></div>
+</div>
+
+<div class="sh">ORDER BOOK BREAKDOWN</div>
+<div class="br"><div class="brl">T&D Distribution</div><div class="brt"><div class="brf" style="background:var(--accent)" data-w="60%"></div></div><div class="brv" style="color:var(--accent)">~₹600Cr</div></div>
+<div class="br"><div class="brl">BESS Projects</div><div class="brt"><div class="brf" style="background:var(--gold)" data-w="40%"></div></div><div class="brv" style="color:var(--gold)">₹509Cr</div></div>
+<div class="br"><div class="brl">T&D Transmission</div><div class="brt"><div class="brf" style="background:var(--teal)" data-w="16%"></div></div><div class="brv" style="color:var(--teal)">₹165Cr</div></div>
+
+<div class="sh">RECENT ORDER WINS</div>
+<div class="tw">
+  <table>
+    <thead>
+      <tr>
+        <th style="width:30%">Order / Client</th>
+        <th class="r" style="width:15%">Value</th>
+        <th style="width:35%">Nature</th>
+        <th style="width:20%">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>PGVCL — Cyclone Resilient Network (Bhuj / Bhavnagar / Jamnagar)</td><td class="r tg">₹50.6Cr</td><td>11kV MVCC coastal feeders, Viksit Gujarat</td><td class="tg">LOA 30 Mar 2026</td></tr>
+      <tr><td>RVUNL — 100MW/200MWh BESS Rajasthan</td><td class="r ta">₹302.5Cr</td><td>BOO model + VGF, Bhopalgarh Jodhpur</td><td class="ta">LOA received; executing</td></tr>
+      <tr><td>GUVNL — 65MW/130MWh BESS Gujarat</td><td class="r ta">₹208.7Cr</td><td>PSDF Phase-VII + VGF, Asoj Vadodara</td><td class="ta">L7; agreement awaited</td></tr>
+      <tr><td>PSTCL — Punjab Distribution</td><td class="r tb">Undisclosed</td><td>Distribution network; state entry Aug 2025</td><td class="tb">Under execution</td></tr>
+      <tr><td>Aarsh — Gujarat DISCOM Transformer Supply</td><td class="r tb">3,000+ units</td><td>Distribution transformers 25–500kVA</td><td class="tb">Under execution</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="hl v">📋 <strong>9M FY26 press release guidance:</strong> "Strong tendering activity across multiple regions, reflecting sustained demand in the Power T&D segment." Company maintains ₹450Cr of qualified pipeline. Management target: ₹500–600Cr new T&D orders by Mar 2026 / Q1 FY27. With PGVCL ₹50.6Cr already received Mar 30, progress is visible.</div>`}
+
+// ══════════════════════════════════════════════════════
+// 06 BESS
+// ══════════════════════════════════════════════════════
+function sBESS(){return`
+<div class="ey">GROWTH ENGINE</div>
+<h1 class="ph">BESS — <em>India's Storage Revolution</em></h1>
+<p class="sub">Early mover in India's nascent BESS IPP space. ₹509Cr secured. ₹40Cr/yr annuity for 12 years. Double-digit IRR targeted. Primary purpose: credential-building for larger Ministry of Power tenders.</p>
+
+<div class="vmg">
+  <div class="vm a"><div class="vml">India BESS 2025</div><div class="vmv">$1.54B</div><div class="vms">Market size</div></div>
+  <div class="vm v"><div class="vml">India BESS 2030</div><div class="vmv">$6.67B</div><div class="vms">34% CAGR projected</div></div>
+  <div class="vm a"><div class="vml">Govt Programme</div><div class="vmv">30 GWh</div><div class="vms">National storage target</div></div>
+  <div class="vm v"><div class="vml">VGF Scheme</div><div class="vmv">4,000 MWh</div><div class="vms">Up to 40% govt support</div></div>
+</div>
+
+<div class="g2">
+  <div class="cc"><div class="cc-h" style="color:var(--gold)">🔋 Rajasthan — 100MW/200MWh (RVUNL)</div><div class="cc-b"><strong>Value:</strong> ₹302.46Cr (incl. GST)<br><strong>Location:</strong> 220kV Bhopalgarh, Jodhpur<br><strong>Status:</strong> LOA received, 17 months remaining<br><strong>Model:</strong> BOO + Tariff-Based GCBT + VGF</div></div>
+  <div class="cc"><div class="cc-h" style="color:var(--teal)">🔋 Gujarat — 65MW/130MWh (GUVNL)</div><div class="cc-b"><strong>Value:</strong> ₹208.74Cr (incl. GST)<br><strong>Location:</strong> 400kV Asoj, Vadodara<br><strong>Status:</strong> L7 declared; agreement pending<br><strong>Model:</strong> PSDF Phase-VII + VGF</div></div>
+</div>
+
+<div class="sh">PROJECT ECONOMICS</div>
+<div class="tw">
+  <table>
+    <thead>
+      <tr>
+        <th style="width:40%">Parameter</th>
+        <th style="width:60%">Detail</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Total Capex (both projects)</td><td class="ta">~₹300Cr</td></tr>
+      <tr><td>Debt Funding (75–80%)</td><td>~₹240Cr term loan (project finance)</td></tr>
+      <tr><td>Equity Component (20–25%)</td><td>~₹60–75Cr from Viviana</td></tr>
+      <tr><td>VGF Subsidy</td><td class="tg">~₹59Cr — reduces effective equity</td></tr>
+      <tr><td>Annual Revenue Post-COD</td><td class="tg">~₹40Cr/yr (fixed charges + rent)</td></tr>
+      <tr><td>Contract Duration</td><td>12 years annuity</td></tr>
+      <tr><td>Total Gross Revenue (12 yrs)</td><td class="tg">~₹480Cr</td></tr>
+      <tr><td>IRR Target</td><td class="tg">Double-digit (post Chinese battery price correction)</td></tr>
+      <tr><td>BESS PAT Margin Guided</td><td>8–10%</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="hl a">⚡ <strong>Battery price catalyst:</strong> Management expects Chinese LFP battery prices to soften in Q2–Q3 FY27 — this is the key swing factor for BESS IRR optimisation. ISTS charge waiver until Jun 2028 provides interim cost advantage. Advait Energy also entered GUVNL BESS tendering (L1 for 150MW Feb 2026) — competition is rising in this space, but Viviana already has LOA in hand.</div>`}
+
+// ══════════════════════════════════════════════════════
+// 07 CAPITAL
+// ══════════════════════════════════════════════════════
+function sCapital(){return`
+<div class="ey">CAPITAL STRUCTURE</div>
+<h1 class="ph">IPO, Allotments <em>&amp; Fund Use</em></h1>
+<p class="sub">Two preferential raises, a 3:5 bonus, and an NCD — all within 18 months. Lock-in dates, allottees, and post-unlock behaviour analysed with actual price data.</p>
+
+<div class="sh">CAPITAL EVENTS TIMELINE</div>
+<div class="tl">
+  <div class="tli v"><div class="tl-d">Sep 2022 — SME IPO</div><div class="tl-t">₹8.8Cr at ₹55/share (bonus-adj ₹34.4)</div><div class="tl-b">16 lakh shares, 26.8% post-issue capital. Objects: WC ₹7Cr (79.5%), GCP ₹1.15Cr (13.1%), expenses ₹0.65Cr (7.4%). Listed 16-Sep-2022. Promoter lock-in 3 yrs; public 1 yr.</div></div>
+  <div class="tli a"><div class="tl-d">Sep 2024 — Pref Allotment #1 (56 External Investors)</div><div class="tl-t">3,06,500 shares @₹625 — ₹19.16Cr raised</div><div class="tl-b">EGM approval 12-Jul-2024. Allotment 04-Sep-2024. 56 public investors — Innovest Ventures (64,000 shares), Vibha Gupta (45,000), Gunjan (32,000), Tarun Shah (13,000) + others. Full equity allotment (not warrants). Fund utilisation: WC, marketing/distribution, new product lines — no deviation reported. <strong style="color:var(--gold)">Trading approved 14-Feb-2025. Lock-in expired 31-Aug-2025.</strong></div></div>
+  <div class="tli b"><div class="tl-d">Sep 2024 (Concurrent) — Warrants → Equity Jul 2025 (Promoters)</div><div class="tl-t">51,500 FCW @₹625 — 25% upfront; converted Jul 2025</div><div class="tl-b">Allottees: Nikesh Choksi (35,000 warrants), Priyanka Choksi (14,500), Ravindra Pagedar (2,000). 25% (₹156.25/warrant) paid Sep 2024. 75% paid on exercise Jul 2025. Total received: ₹3.22Cr for 51,500 shares. <strong style="color:var(--teal)">Trading approved 13-Oct-2025. Lock-in till 31-May-2027.</strong></div></div>
+  <div class="tli"><div class="tl-d">Nov 2025 — Bonus Issue 3:5</div><div class="tl-t">3,796,800 bonus shares — record date 19-Nov-2025</div><div class="tl-b">3 free shares per 5 held = ×1.6 adjustment factor. Pre-bonus shares 63.28L → post-bonus ~101.25L. Funded from reserves: ₹100L General Reserve + ₹2,539L Securities Premium + ₹2,798L Retained Earnings. All pre-bonus prices ÷1.6 for fair comparison.</div></div>
+  <div class="tli r"><div class="tl-d">Mar 2026 — NCD ₹25Cr</div><div class="tl-t">12% coupon, 24-month, secured, ACER BBB rated</div><div class="tl-b">25,000 NCDs @₹10,000. Pari passu charge on receivables (1.25x cover). Repayment: month 21 + month 24. Purpose: WC bridge for accelerating T&D + BESS order book execution.</div></div>
+</div>
+
+<div class="sh">LOCK-IN #1 EXPIRY — PRICE BEHAVIOUR (31-AUG-2025)</div>
+<div class="g2">
+  <div class="cc"><div class="cc-h">🔓 No Sell-Off at Unlock</div><div class="cc-b">3,06,500 shares (56 investors) unlocked 31-Aug-2025. Cost basis: ₹390.6 (bonus-adj). Stock was ~₹840–1,040 (adj) at unlock = 2–2.7× notional profit for holders.<br><br><strong>No meaningful sell-off occurred.</strong> Stock continued rallying from ~₹840 (Aug) to peak ₹1,162 (bonus-adj) in October 2025. BESS order news + strong H1 results offset any selling. Bullish signal: holders chose conviction over profit-booking.</div></div>
+  <div class="cc"><div class="cc-h">🔒 Lock-in #2 Until May 2027</div><div class="cc-b">51,500 promoter shares locked until 31-May-2027. Allottees: founding family CMD + CFO + 1 associate. At ₹671 current = ~₹3.46Cr value. Negligible supply threat even post-unlock.<br><br>Total dilution across both preferential rounds: 3,06,500 + 51,500 = 3,58,000 shares = ~3.5% of post-bonus capital. Well-managed dilution relative to ₹22.4Cr total raised.</div></div>
+</div>`}
+
+// ══════════════════════════════════════════════════════
+// 08 PRICE
+// ══════════════════════════════════════════════════════
+function sPrice(){
+  const PD=[
+    {d:'Apr25',c:410},{d:'May25',c:520},{d:'Jun25',c:680},
+    {d:'Jul25',c:700,ev:'pa1',desc:'Pref #1 lock-in approaching'},
+    {d:'Aug25',c:840,ev:'lockin',desc:'Lock-in #1 expires 31-Aug'},
+    {d:'Sep25',c:1040},{d:'Oct25',c:1162,ev:'peak',desc:'52W High ₹1,162 (adj)'},
+    {d:'Nov25',c:930,ev:'bonus',desc:'Bonus 3:5 allotted 20-Nov'},
+    {d:'Dec25',c:850,ev:'q3',desc:'Q3 results — margin focus'},
+    {d:'Jan26',c:710},{d:'Feb26',c:790,ev:'mb',desc:'9M results + mainboard ballot'},
+    {d:'Mar26',c:630,ev:'ncd',desc:'NCD ₹25Cr + PGVCL order'},
+    {d:'Apr26',c:671},
+  ];
+  window._PD=PD;
+  return`
+<div class="ey">PRICE HISTORY</div>
+<h1 class="ph">Stock Journey <em>(Bonus-Adjusted)</em></h1>
+<p class="sub">All prices bonus-adjusted (÷1.6 for pre-Nov 2025). IPO adj: ₹34.4 · Pref allotment adj: ₹390.6 · Peak (Oct 2025): ₹1,162 · Current: ~₹671 · Peak-to-now: −42%</p>
+
+<div class="krow">
+  <div class="kc v"><div class="kl">IPO Price (Adj)</div><div class="kv v">₹34.4</div><div class="kn">₹55 ÷ 1.6 bonus-adj</div></div>
+  <div class="kc v"><div class="kl">52W High (Adj)</div><div class="kv v">₹1,162</div><div class="kn">~₹1,860 pre-bonus ÷ 1.6</div></div>
+  <div class="kc r"><div class="kl">52W Low</div><div class="kv r">₹565</div><div class="kn">Post-bonus period Mar 2026</div></div>
+  <div class="kc a"><div class="kl">Current</div><div class="kv a">~₹671</div><div class="kn">Apr 2026</div></div>
+  <div class="kc b"><div class="kl">IPO → Peak</div><div class="kv b">+3,278%</div><div class="kn">₹34.4 → ₹1,162 adj</div></div>
+  <div class="kc"><div class="kl">Peak → Now</div><div class="kv" style="color:var(--red)">−42%</div><div class="kn">Correction phase</div></div>
+</div>
+
+<div class="sh">PRICE CHART (APR 2025 – APR 2026, BONUS-ADJUSTED)</div>
+<div class="cw"><canvas class="ch" id="priceChart"></canvas></div>
+
+<div class="sh">KEY PHASES & LOCK-IN ANALYSIS</div>
+<div class="tl">
+  <div class="tli a"><div class="tl-d">Apr–Aug 2025</div><div class="tl-t">Re-rating begins: ₹410 → ₹840</div><div class="tl-b">BESS order wins + FY25 confirmed at ₹219Cr triggered re-rating. Pref lock-in #1 expiry (31-Aug) approached with stock 2–2.7× above cost. No sell-off — uptrend continued into October.</div></div>
+  <div class="tli r"><div class="tl-d">Oct 2025 — Peak ₹1,162 (adj)</div><div class="tl-t">~₹700Cr+ mkt cap; peak sector euphoria</div><div class="tl-b">Peak priced in: BESS optionality + mainboard migration + strong H1 FY26 + bonus announcement (Sep 25). All positives front-loaded simultaneously.</div></div>
+  <div class="tli r"><div class="tl-d">Nov 2025 – Mar 2026</div><div class="tl-t">−42% correction — four simultaneous headwinds</div><div class="tl-b"><strong>1.</strong> Broad market correction (FII outflows, global risk-off). <strong>2.</strong> Power T&D + transformer sector PE compression. <strong>3.</strong> SME liquidity crunch — thin books, regulatory tightening. <strong>4.</strong> Q3 FY26 EBITDA at ~17% (9M) lower than 19.5% H1 — transformer testing costs visible.</div></div>
+  <div class="tli v"><div class="tl-d">Feb–Apr 2026</div><div class="tl-t">₹600–710 support; catalysts building</div><div class="tl-b">9M FY26 results confirmed +117% revenue + PAT margins intact. Mainboard ballot passed (Mar). PGVCL order ₹50.6Cr (Mar). NCD ₹25Cr (Mar). At ~₹671 = ~7–8× FY27P EPS. Mainboard listing is the next structural re-rating trigger.</div></div>
+</div>`}
+
+// ══════════════════════════════════════════════════════
+// 09 MAINBOARD
+// ══════════════════════════════════════════════════════
+function sMainboard(){return`
+<div class="ey">CORPORATE ACTION</div>
+<h1 class="ph">Mainboard <em>Migration</em></h1>
+<p class="sub">Shareholders approved NSE + BSE mainboard listing on 05-Mar-2026. The single biggest structural de-risking and re-rating catalyst — opening institutional investor access.</p>
+
+<div class="krow">
+  <div class="kc v"><div class="kl">Shareholder Vote</div><div class="kv v">✓ PASSED</div><div class="kn">05-Mar-2026 postal ballot</div></div>
+  <div class="kc a"><div class="kl">Target Exchanges</div><div class="kv a">NSE + BSE</div><div class="kn">Both mainboards</div></div>
+  <div class="kc b"><div class="kl">Expected Timing</div><div class="kv b">Q1–Q2 FY27</div><div class="kn">Jun–Sep 2026 window</div></div>
+  <div class="kc"><div class="kl">Auth Capital</div><div class="kv">₹15Cr</div><div class="kn">Up from ₹10.5Cr (headroom for future equity)</div></div>
+</div>
+
+<div class="g2">
+  <div>
+    <div class="hl">📈 <strong>Institutional access opens:</strong> FIIs, domestic MFs, insurance, PMS mandates cannot hold SME stocks. Even 2–3% institutional holding = ₹14–20Cr demand at current mkt cap. Discovery cycle takes 6–18 months post-listing.</div>
+    <div class="hl">📊 <strong>PE re-rating potential:</strong> Viviana at ~24x TTM vs mainboard T&D comps at 25–40x. Liquidity discount on SME boards (15–25%) could narrow significantly at mainboard, improving price discovery and tightening bid-ask spreads.</div>
+  </div>
+  <div>
+    <div class="hl a">💧 <strong>Governance readiness:</strong> Two new independent directors regularized (Laxmi N. Mishra + Sagar N. Tailor, 5-yr terms effective Jan 2026). Authorized capital raised to ₹15Cr. MOA expanded for energy generation objects.</div>
+    <div class="hl b">🔍 <strong>MOA expansion (Nov 2025 board):</strong> Board approved expanding MOA to include generation, transmission, distribution of all energy forms (conventional + non-conventional). Enables cleaner BESS asset ownership, solar/hybrid project bidding, and direct participation in energy generation tenders without subsidiary structures.</div>
+  </div>
+</div>`}
+
+// ══════════════════════════════════════════════════════
+// 10 PEERS
+// ══════════════════════════════════════════════════════
+function sPeers(){return`
+<div class="ey">COMPETITIVE BENCHMARKING</div>
+<h1 class="ph">Peer Comparison <em>&amp; Multiples</em></h1>
+<p class="sub">Peers selected for genuine comparability. SME peers: Rajesh Power (Gujarat T&D), Sugs Lloyd (T&D + Solar EPC). Mainboard benchmarks: Advait Energy (closest analogue), Techno Electric, Transrail. All metrics verified Apr 2026.</p>
+
+<div class="sh">PEER TABLE</div>
+<div class="tw">
+  <table>
+    <thead>
+      <tr>
+        <th style="width:20%">Company</th>
+        <th style="width:12%">Platform</th>
+        <th class="r" style="width:12%">Mkt Cap</th>
+        <th class="r" style="width:12%">Rev FY25</th>
+        <th class="r" style="width:10%">PAT %</th>
+        <th class="r" style="width:10%">P/E</th>
+        <th style="width:24%">Key Note</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Viviana Power Tech</strong></td><td><span class="tg">SME → MB</span></td>
+        <td class="r tg">~₹680Cr</td><td class="r">₹219Cr</td>
+        <td class="r tg">9.0%</td><td class="r ta">~24x</td>
+        <td>BESS + transformer + RE; CARE BBB-; Gujarat dominant</td>
+      </tr>
+      <tr>
+        <td>Rajesh Power Services</td><td>BSE SME</td>
+        <td class="r">~₹1,467Cr</td><td class="r">₹1,397Cr</td>
+        <td class="r">8.4%</td><td class="r">~12x</td>
+        <td>Gujarat T&D EPC; 61 debtor days; BESS entry in progress</td>
+      </tr>
+      <tr>
+        <td>Sugs Lloyd Limited</td><td>BSE SME</td>
+        <td class="r">~₹264Cr</td><td class="r">₹246Cr</td>
+        <td class="r">9.3%</td><td class="r">~11x</td>
+        <td>Solar + T&D + smart grid EPC; FPI 50%+ mkt share; ₹418Cr OB</td>
+      </tr>
+      <tr>
+        <td>Advait Energy Transitions</td><td>NSE Main</td>
+        <td class="r">~₹1,800Cr</td><td class="r">₹680Cr</td>
+        <td class="r">7.3%</td><td class="r ta">~38x</td>
+        <td>Gujarat EPC + manufacturing + BESS; closest mainboard comp</td>
+      </tr>
+      <tr>
+        <td>Techno Electric &amp; Engg.</td><td>NSE Main</td>
+        <td class="r">~₹12,000Cr</td><td class="r">₹3,057Cr</td>
+        <td class="r tg">16.2%</td><td class="r">~25x</td>
+        <td>Asset-light T&D + data centres; highest margin mainboard comp</td>
+      </tr>
+      <tr>
+        <td>Transrail Lighting</td><td>NSE Main</td>
+        <td class="r">~₹6,900Cr</td><td class="r">₹5,308Cr</td>
+        <td class="r">6.2%</td><td class="r">~16x</td>
+        <td>Integrated mfg (towers, conductors); global EPC; EBITDA ~12.7%</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="sh">VIVIANA vs. RAJESH — WHY THE PREMIUM?</div>
+<div class="g2">
+  <div class="cc"><div class="cc-h">🔵 Viviana's Premium Drivers</div><div class="cc-b">
+    <strong>1. Superior standalone margins (19–20% EBITDA):</strong> Rajesh and other T&D SME peers run 8–12%. Viviana's PV clause structure + lean procurement = structural advantage. CARE confirms healthy PBILDT margins.<br><br>
+    <strong>2. Faster growth trajectory:</strong> Viviana's 9M FY26 +117% YoY vs Rajesh's more mature scale. Revenue doubling/tripling commands growth premium PE.<br><br>
+    <strong>3. BESS annuity optionality:</strong> Neither Rajesh nor Sugs Lloyd has secured BESS orders at this scale. Viviana's ₹509Cr = ₹480Cr gross annuity over 12 years — embedded value not yet in earnings.<br><br>
+    <strong>4. Mainboard migration imminent:</strong> Rajesh (BSE SME) and Sugs Lloyd (BSE SME) have no near-term mainboard plans. Viviana's NSE+BSE listing approved — structural re-rating catalyst absent for peers.
+  </div></div>
+  <div class="cc"><div class="cc-h">🔶 Advait Energy — The Mainboard Benchmark</div><div class="cc-b">
+    Advait Energy (~₹1,800Cr, NSE Main) is Viviana's best mainboard analogue:<br><br>
+    • Gujarat-headquartered T&D EPC — same geography, same DISCOM clients<br>
+    • Manufacturing vertical (stringing tools, OPGW cables, ERS) — mirrors Aarsh integration<br>
+    • BESS entry: L1 for 150MW/300MWh GUVNL Feb 2026 — directly competing with Viviana in Gujarat storage tenders<br>
+    • Revenue ₹680Cr FY25 = Viviana's FY26E target<br>
+    • P/E ~38x on mainboard<br><br>
+    <strong>Implication:</strong> If Viviana migrates to mainboard and reaches ₹680Cr revenue, Advait's 38x multiple at Viviana's superior 9–10% PAT margin implies ₹2,300–2,500Cr mkt cap vs ~₹680Cr today. Even at 25x PE, that's ₹1,500–1,700Cr (+120–150%).
+  </div></div>
+</div>
+
+<div class="sh">SUGS LLOYD — THE SME PEER CONTEXT</div>
+<div class="cc"><div class="cc-h">🔸 Sugs Lloyd (BSE SME, ~₹264Cr)</div><div class="cc-b">
+  Sugs Lloyd (NSE: SUGSLLOYD, recently listed Sep 2025) is a directly relevant smaller SME peer: T&D + Solar EPC + Smart Grid solutions, serving state DISCOMs under RDSS/IPDS schemes. Revenue ₹246Cr FY25, PAT ~₹23Cr (9.3% margin). Holds 50%+ market share in Fault Passage Indicator (FPI) technology.<br><br>
+  <strong>Contrast with Viviana:</strong> Sugs Lloyd at ~₹264Cr mkt cap (~11x PE) is significantly cheaper despite comparable PAT margins. <strong>Key differences:</strong> Viviana has a multi-year proven execution track record as a listed entity on the SME platform (listed Sep 2022) versus Sugs Lloyd's very recent listing. Furthermore, Viviana boasts superior capital efficiency (ROCE 42.9% vs 21.6%), unique BESS annuity optionality, a transformer manufacturing vertical, and a near-term mainboard migration catalyst — all of which combine to justify Viviana's premium valuation over newer, purely EPC SME entrants.
+</div></div>`}
+
+// ══════════════════════════════════════════════════════
+// 11 RISKS
+// ══════════════════════════════════════════════════════
+function sRisks(){return`
+<div class="ey">RISK ASSESSMENT</div>
+<h1 class="ph">Risks &amp; <em>Watch-outs</em></h1>
+<p class="sub">Candid assessment drawing on CARE's analysis and company filings. CARE rates these as "moderate" constraints — balanced by the company's strengths.</p>
+
+<div class="sh">EXECUTION & FINANCIAL</div>
+<div class="hl w">🔴 <strong>Q4 FY26 back-loading (Critical):</strong> 9M FY26 revenue = ₹183Cr. FY26E guidance = ₹560Cr. Q4 alone needs ~₹377Cr — roughly 2× the entire 9M performance in one quarter. Even if this is achievable given project execution timing, any slippage will severely damage guidance credibility. Q4 results (May 2026) is the single most important data point.</div>
+<div class="hl w">🔴 <strong>Working capital intensity:</strong> CARE notes CF from operations was negative ₹6.1Cr FY25 despite ₹219Cr revenue. WC borrowings ₹27.43Cr + LC acceptances ₹30.59Cr. NCD ₹25Cr added in Mar 2026 at 12% — rising interest cost drag. Receivable days still 148 (improving but elongated).</div>
+<div class="hl a">🟡 <strong>BESS leverage spike:</strong> ~₹300Cr capex will spike D/E well beyond CARE's positive trigger of 0.75x (currently 1.42x). Separate project-finance ring-fencing is critical. Lender comfort and interest coverage maintenance are key watchpoints through FY26–FY27.</div>
+<div class="hl a">🟡 <strong>Aarsh transformer drag:</strong> CARE confirms "nascent stage" losses from type testing and establishment. ~₹3–4Cr/quarter headwind to consolidated margins. Profitability by FY28 — 2 years of drag ahead. Risk of deeper losses if DISCOM type-testing approvals are delayed further.</div>
+
+<div class="sh">MARKET & COMPETITIVE</div>
+<div class="hl w">🔴 <strong>SME liquidity &amp; −42% correction:</strong> From ₹1,162 bonus-adj peak. SME thin order books = single large sellers move price sharply. Not suitable for investors requiring near-term liquidity. Mainboard migration will help structurally but takes time to attract institutional interest.</div>
+<div class="hl a">🟡 <strong>Geographic concentration:</strong> CARE flags 74% standalone order book in Gujarat (as of Aug 2025). Punjab and Rajasthan (via BESS) are positive diversification steps but Gujarat remains dominant. Client concentration in GUVNL, PGVCL, DGVCL also creates DISCOM-specific risk.</div>
+<div class="hl a">🟡 <strong>BESS competition rising:</strong> Advait Energy won L1 for 150MW GUVNL BESS (Feb 2026) — the same tender pool as Viviana. Larger players and incumbents increasingly bidding in BESS space. Viviana's edge is its BOO execution track record once Rajasthan COD is achieved.</div>
+
+<div class="sh">GOVERNANCE & STRUCTURE</div>
+<div class="hl s">🟤 <strong>Family promoter concentration:</strong> CMD, WTD, CFO = Choksi family. 70.3% holding. Key-person dependency. Nikesh Choksi's 41-year sector network is core to deal-flow. Promoter USL of ₹11.17Cr (per CARE) indicates family is also personally funding WC — watch for changes.</div>
+<div class="hl s">🟤 <strong>Expanding subsidiary web:</strong> 4 subsidiaries in 2 years. CARE consolidates Aarsh, Life Spaces, and step-down entity. Related-party transactions require careful monitoring. Viviana Westin real estate project generating revenue per CARE — positive but adds governance complexity for a primarily EPC company.</div>`}
+
+// ══════════════════════════════════════════════════════
+// 12 SCENARIOS
+// ══════════════════════════════════════════════════════
+function sScenarios(){return`
+<div class="ey">FORWARD OUTLOOK</div>
+<h1 class="ph">Scenarios <em>&amp; Outlook</em></h1>
+<p class="sub">Three scenarios for FY27. Key gating event: Q4 FY26 (May 2026). Note: 9M FY26 = ₹183Cr. Q4 needs ~₹377Cr to hit ₹560Cr FY26E — this is the execution test.</p>
+
+<div class="scg">
+  <div class="sc bull">
+    <div class="sc-h">🟢 Bull Case</div>
+    <div class="sc-tgt">₹900Cr Rev</div>
+    <div class="sc-pat">PAT: ~₹90Cr (10%)</div>
+    <div class="sc-b">
+      • Q4 FY26 delivers ₹350Cr+ → guidance credibility confirmed<br>
+      • Mainboard listing complete by Q2 FY27<br>
+      • Aarsh reaches breakeven faster than FY28<br>
+      • BESS partial annuity contribution begins<br>
+      • Battery prices soften Q2–Q3 FY27<br>
+      • Market awards 14–16× FY27 PE (mainboard)
+    </div>
+  </div>
+  <div class="sc base">
+    <div class="sc-h">🟡 Base Case</div>
+    <div class="sc-tgt">₹700–750Cr Rev</div>
+    <div class="sc-pat">PAT: ~₹60–64Cr (8.5%)</div>
+    <div class="sc-b">
+      • Q4 FY26 delivers ~₹280–300Cr (partial miss)<br>
+      • Mainboard listing by Q2 FY27<br>
+      • Aarsh losses moderate; not worsening<br>
+      • BESS capex on schedule; no major delays<br>
+      • GUVNL agreement signed by Q1 FY27<br>
+      • 12–14× FY27 PE (SME-to-mainboard transition)
+    </div>
+  </div>
+  <div class="sc bear">
+    <div class="sc-h">🔴 Bear Case</div>
+    <div class="sc-tgt">₹500–550Cr Rev</div>
+    <div class="sc-pat">PAT: ~₹35–38Cr (7%)</div>
+    <div class="sc-b">
+      • Q4 FY26 heavy miss → guidance cut<br>
+      • Mainboard delayed or sector stays de-rated<br>
+      • Aarsh losses worsen; consolidated margins compress<br>
+      • BESS capex delays; leverage rises with weak cash flow<br>
+      • Working capital strain from elevated receivables<br>
+      • 10–12× FY27 PE
+    </div>
+  </div>
+</div>
+
+<div class="sh">KEY CATALYSTS TO WATCH</div>
+<div class="g2">
+  <div>
+    <div class="hl v">✅ <strong>Q4 FY26 results (May 2026)</strong> — ₹280Cr+ in one quarter validates FY27 guidance. This single print changes the narrative from "execution risk" to "high conviction."</div>
+    <div class="hl v">✅ <strong>Mainboard listing (Q1–Q2 FY27)</strong> — Exchange review → trading on NSE + BSE. Institutional discovery cycle begins. Biggest structural re-rating catalyst.</div>
+    <div class="hl a">⚠️ <strong>GUVNL BESS agreement signing</strong> — Expected "next month" as of Feb 2026. Any delay extends COD timeline and pushes annuity revenue further out to FY28+.</div>
+  </div>
+  <div>
+    <div class="hl v">✅ <strong>CARE rating upgrade</strong> — Positive trigger: TOI above ₹350Cr sustained + gearing below 0.75x. FY26E ₹560Cr crosses revenue threshold. Gearing improvement depends on equity raise/profit retention post-mainboard.</div>
+    <div class="hl a">⚠️ <strong>Battery price correction (China LFP)</strong> — Mgmt flagged Q2–Q3 FY27. Softening prices = better BESS IRR + more aggressive bidding capacity in future BESS tenders.</div>
+    <div class="hl s">📌 <strong>NCD repayment watch (Mar 2028)</strong> — Two equal installments at month 21 + 24. Q4 FY26 cash collections critical. Any covenant breach triggers 2% additional interest + early redemption option for holders.</div>
+  </div>
+</div>
+
+<div class="cc"><div class="cc-h">🎯 Investment Thesis Summary</div><div class="cc-b">Viviana is a textbook SME hidden champion: sub-₹700Cr mkt cap, 43% ROCE, 9–10% PAT margins superior to all mainboard T&D EPC peers, 89% 3-year revenue CAGR, CARE BBB- rated, 9M FY26 confirming +117% revenue growth with PAT margins intact. At ~₹671 = ~7–8× FY27P PAT guidance — pricing in substantial execution risk. The asymmetric case: if management delivers ≥75% of FY27 guidance and mainboard lists by Sep 2026, ₹900–1,200 range over 12–18 months is plausible. <strong>Q4 FY26 result (May 2026) is the critical proof point.</strong></div></div>`}
+
+// ══════════════════════════════════════════════════════
+// 13 DISCLAIMER
+// ══════════════════════════════════════════════════════
+function sDisclaimer(){return`
+<div class="ey">IMPORTANT</div>
+<h1 class="ph">Disclaimer <em>&amp; Disclosures</em></h1>
+<p class="sub" style="color:var(--gold)">Please read carefully before acting on any information in this document.</p>
+
+<div class="notice">
+  <strong>NOT INVESTMENT ADVICE — EDUCATIONAL & RESEARCH PURPOSES ONLY</strong><br><br>
+  This document has been prepared by <strong>@sacprat07</strong> purely for informational and educational purposes. It does not constitute investment advice, solicitation to buy/sell securities, or a SEBI-registered research report. <strong>NOT registered under SEBI (Research Analysts) Regulations, 2014.</strong><br><br>
+  Information compiled from: NSE/BSE filings, Screener.in, CARE Ratings press release (Sep 2025), Q3 &amp; 9M FY26 press release (Feb 12, 2026), company investor presentations, earnings transcripts, RHP (Aug 2022), and other public disclosures. Reasonable efforts made for accuracy — <strong>no warranties on completeness or timeliness.</strong><br><br>
+  <strong>Bonus-adjusted prices use ÷1.6 factor (3:5 bonus, record date 19-Nov-2025).</strong> All guidance and projections are management commentary and may differ materially from actual outcomes.<br><br>
+  The author may or may not hold positions in VIVIANA. Neither the author nor handle @sacprat07 accepts liability for financial loss from reliance on this document.<br><br>
+  <strong>SME-listed securities carry additional risks: illiquidity, wide spreads, limited institutional coverage, regulatory changes. Conduct own due diligence. Consult a SEBI-registered investment advisor before investing.</strong>
+</div>
+
+<div style="display:flex; justify-content:center; align-items:center; gap:8px; margin-top:40px; margin-bottom: 15px;">
+  <a href="https://twitter.com/sacprat07" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:8px; background:var(--card); border:1px solid rgba(59,130,246,.3); border-radius:24px; padding:12px 24px; text-decoration:none; font-family:var(--sans); font-size:14px; font-weight:600; color:var(--text); transition:all .2s;">
+    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.259 5.63 5.905-5.63Zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    <span style="color:var(--accent);">@sacprat07</span>
+  </a>
+</div>
+
+<div style="text-align:center;font-family:var(--mono);font-size:9.5px;color:var(--muted);letter-spacing:.06em;">
+  © 2026 @SACPRAT07 · NOT SEBI REGISTERED · FOR EDUCATIONAL USE ONLY
+</div>`}
+
+// ══════════════════════════════════════════════════════
+// CHARTS
+// ══════════════════════════════════════════════════════
+function drawRevChart(){
+  const cv=document.getElementById('revChart');if(!cv)return;
+  let W=Math.max(cv.parentElement.offsetWidth-36,340),H=188;
+  if(W<=0){requestAnimationFrame(drawRevChart);return}
+  const d=dpr();cv.width=W*d;cv.height=H*d;cv.style.width=W+'px';cv.style.height=H+'px';
+  const ctx=cv.getContext('2d');ctx.scale(d,d);
+  const lbls=['FY22','FY23','FY24','FY25','FY26E','FY27P'],rev=[33,36,66,219,560,900],pat=[3,3,6.6,19.8,56,90];
+  const pad={t:16,r:48,b:26,l:40},cw=W-pad.l-pad.r,ch=H-pad.t-pad.b,n=lbls.length,mx=950;
+  const bw=Math.min(cw/(n*2.8),24);
+  ctx.clearRect(0,0,W,H);
+  for(let i=0;i<=4;i++){
+    const y=pad.t+ch*(1-i/4);
+    ctx.strokeStyle='rgba(59,130,246,.07)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cw,y);ctx.stroke();
+    ctx.fillStyle='#64748b';ctx.font=`500 9.5px 'IBM Plex Mono',monospace`;ctx.textAlign='right';ctx.fillText(Math.round(mx*i/4),pad.l-4,y+3.5);
+  }
+  lbls.forEach((l,i)=>{
+    const gx=pad.l+i*(cw/n)+cw/(n*2),isP=i>=4;
+    const rh=(rev[i]/mx)*ch,ph=(pat[i]/mx)*ch;
+    ctx.fillStyle=isP?'rgba(245,158,11,.15)':'rgba(59,130,246,.15)';ctx.fillRect(gx-bw-1,pad.t+ch-rh,bw,rh);
+    ctx.fillStyle=isP?'#f59e0b':'#3b82f6';ctx.fillRect(gx-bw-1,pad.t+ch-rh,bw,2);
+    ctx.fillStyle='rgba(16,185,129,.15)';ctx.fillRect(gx+2,pad.t+ch-ph,bw,ph);
+    ctx.fillStyle='#10b981';ctx.fillRect(gx+2,pad.t+ch-ph,bw,2);
+    ctx.fillStyle='#94a3b8';ctx.font=`500 9.5px 'IBM Plex Mono',monospace`;ctx.textAlign='center';ctx.fillText(l,gx,H-pad.b+14);
+  });
+  [[W-46,pad.t,'#3b82f6','Revenue'],[W-46,pad.t+17,'#10b981','PAT'],[W-46,pad.t+34,'#f59e0b','Projected']].forEach(([x,y,c,lbl])=>{
+    ctx.fillStyle=c;ctx.fillRect(x,y,9,9);ctx.fillStyle='#f8fafc';ctx.font=`500 10px 'Inter',sans-serif`;ctx.textAlign='right';ctx.fillText(lbl,x-2,y+8);
+  });
+}
+
+function drawPriceChart(){
+  const cv=document.getElementById('priceChart');if(!cv)return;
+  const PD=window._PD||[];if(!PD.length)return;
+  let W=Math.max(cv.parentElement.offsetWidth-36,340),H=225;
+  if(W<=0){requestAnimationFrame(drawPriceChart);return}
+  const d=dpr();cv.width=W*d;cv.height=H*d;cv.style.width=W+'px';cv.style.height=H+'px';
+  const ctx=cv.getContext('2d');ctx.scale(d,d);
+  const pad={t:16,r:16,b:32,l:50},cw=W-pad.l-pad.r,ch=H-pad.t-pad.b;
+  const vals=PD.map(x=>x.c),mn=Math.min(...vals)*.9,mx=Math.max(...vals)*1.06;
+  const ec={pa1:'#f59e0b',lockin:'#10b981',peak:'#3b82f6',bonus:'#3b82f6',q3:'#ef4444',mb:'#3b82f6',ncd:'#f59e0b'};
+
+  function render(hx=null){
+    ctx.clearRect(0,0,W,H);
+    for(let i=0;i<=4;i++){
+      const y=pad.t+ch*(1-i/4);
+      ctx.strokeStyle='rgba(59,130,246,.06)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cw,y);ctx.stroke();
+      ctx.fillStyle='#64748b';ctx.font=`500 9.5px 'IBM Plex Mono',monospace`;ctx.textAlign='right';
+      ctx.fillText('₹'+Math.round(mn+(mx-mn)*(i/4)),pad.l-4,y+3.5);
+    }
+    const pts=PD.map((p,i)=>({x:pad.l+(i/(PD.length-1))*cw,y:pad.t+ch*(1-(p.c-mn)/(mx-mn)),data:p}));
+    ctx.beginPath();pts.forEach((pt,i)=>i===0?ctx.moveTo(pt.x,pt.y):ctx.lineTo(pt.x,pt.y));
+    ctx.lineTo(pad.l+cw,pad.t+ch);ctx.lineTo(pad.l,pad.t+ch);ctx.closePath();
+    const g=ctx.createLinearGradient(0,pad.t,0,pad.t+ch);g.addColorStop(0,'rgba(59,130,246,.15)');g.addColorStop(1,'rgba(59,130,246,0)');ctx.fillStyle=g;ctx.fill();
+    ctx.beginPath();ctx.strokeStyle='#3b82f6';ctx.lineWidth=1.7;ctx.lineJoin='round';pts.forEach((pt,i)=>i===0?ctx.moveTo(pt.x,pt.y):ctx.lineTo(pt.x,pt.y));ctx.stroke();
+    const step=W<480?Math.ceil(PD.length/4):Math.ceil(PD.length/7);
+    ctx.fillStyle='#94a3b8';ctx.font=`500 9.5px 'IBM Plex Mono',monospace`;ctx.textAlign='center';
+    pts.forEach((pt,i)=>{if(i%step===0)ctx.fillText(pt.data.d,pt.x,H-pad.b+16)});
+    pts.forEach(pt=>{
+      if(pt.data.ev){
+        const c=ec[pt.data.ev]||'#3b82f6';
+        ctx.beginPath();ctx.setLineDash([2,4]);ctx.moveTo(pt.x,pt.y+7);ctx.lineTo(pt.x,pad.t+ch);ctx.strokeStyle=c+'60';ctx.lineWidth=1;ctx.stroke();ctx.setLineDash([]);
+        ctx.beginPath();ctx.arc(pt.x,pt.y,4.5,0,Math.PI*2);ctx.fillStyle=c;ctx.fill();
+        ctx.beginPath();ctx.arc(pt.x,pt.y,12,0,Math.PI*2);ctx.fillStyle=c+'20';ctx.fill();
+      }
+    });
+    if(hx!==null&&hx>=pad.l&&hx<=pad.l+cw){
+      let cl=pts[0],md=Math.abs(hx-pts[0].x);pts.forEach(pt=>{const dd=Math.abs(hx-pt.x);if(dd<md){md=dd;cl=pt}});
+      ctx.beginPath();ctx.strokeStyle='#334155';ctx.lineWidth=1;ctx.moveTo(cl.x,pad.t);ctx.lineTo(cl.x,pad.t+ch);ctx.stroke();
+      ctx.beginPath();ctx.arc(cl.x,cl.y,4.5,0,Math.PI*2);ctx.fillStyle='#f8fafc';ctx.fill();
+      const txt=`${cl.data.d}: ₹${cl.data.c}`,et=cl.data.desc||'';
+      ctx.font=`500 9.5px 'IBM Plex Mono',monospace`;
+      const tw=Math.max(ctx.measureText(txt).width,et?ctx.measureText(et).width:0)+14,th=et?34:19;
+      let tx=cl.x-tw/2;if(tx<pad.l)tx=pad.l;if(tx+tw>pad.l+cw)tx=pad.l+cw-tw;
+      let ty=cl.y-th-11;if(ty<pad.t)ty=cl.y+13;
+      ctx.fillStyle='rgba(8,9,15,.96)';ctx.strokeStyle=cl.data.ev?(ec[cl.data.ev]||'#3b82f6'):'#334155';ctx.lineWidth=1;
+      ctx.beginPath();ctx.roundRect(tx,ty,tw,th,3);ctx.fill();ctx.stroke();
+      ctx.fillStyle='#f8fafc';ctx.textAlign='center';ctx.fillText(txt,tx+tw/2,ty+12);
+      if(et){ctx.fillStyle=ec[cl.data.ev]||'#3b82f6';ctx.fillText(et,tx+tw/2,ty+26)}
+    }
+  }
+  render();
+  cv.onmousemove=e=>{const r=cv.getBoundingClientRect();render(e.clientX-r.left)};
+  cv.onmouseleave=()=>render(null);
+  cv.ontouchmove=e=>{e.preventDefault();const r=cv.getBoundingClientRect();render(e.touches[0].clientX-r.left)};
+  cv.ontouchend=()=>render(null);
+}
+
+function drawCharts(id){
+  if(id==='financials')drawRevChart();
+  if(id==='price')drawPriceChart();
+}
+addEventListener('resize',()=>{
+  const h=document.getElementById('pg').innerHTML;
+  if(h.includes('revChart'))drawRevChart();
+  if(h.includes('priceChart'))drawPriceChart();
+});
+
+render();
+</script>
+</body>
+</html>
