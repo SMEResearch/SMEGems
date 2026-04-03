@@ -1334,6 +1334,10 @@ function drawPriceChart() {
   cv.ontouchend = () => renderChart(null);
 }
 
+  function drawCharts(id) {
+  if (id === 'financials') drawRevChart();
+  if (id === 'price') drawPriceChart();
+}
 window.addEventListener('resize', () => {
   const activeSection = document.getElementById('active-section').innerHTML;
   if(activeSection.includes('revChart')) drawRevChart();
