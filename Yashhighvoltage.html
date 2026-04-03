@@ -120,6 +120,16 @@
         .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
         .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
 
+        /* Stats Row */
+        .stats-row {
+            display: flex; justify-content: space-between; background: rgba(18, 19, 24, 0.8);
+            padding: 1.2rem 2rem; border-radius: 6px; border: 1px solid var(--border-color);
+            margin-top: 1.5rem; text-align: center; flex-wrap: wrap; gap: 1rem;
+        }
+        .stat-item h4 { font-size: 1.8rem; color: var(--text-main); font-family: 'Rajdhani', sans-serif; margin-bottom: 0.2rem;}
+        .stat-item h4 span { color: var(--accent-primary); }
+        .stat-item p { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600;}
+
         /* Engineered Cards */
         .card {
             background: var(--bg-panel); 
@@ -149,6 +159,14 @@
         .table-custom td strong { color: var(--text-main); font-weight: 500;}
 
         .chart-box { background: var(--bg-panel); padding: 1.5rem; border-radius: 6px; height: 380px; border: 1px solid var(--border-color); }
+        
+        /* Embedded Images */
+        .embedded-img {
+            width: 100%; height: auto; border-radius: 6px; margin-top: 1.5rem;
+            border: 1px solid var(--border-color); box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            transition: transform 0.3s ease;
+        }
+        .embedded-img:hover { transform: scale(1.02); border-color: var(--accent-primary); }
 
         /* Disclaimer Page */
         .disclaimer-box { text-align: center; max-width: 800px; margin: 0 auto; }
@@ -187,6 +205,7 @@
             .main-container { padding: 1.5rem; padding-top: 6rem; }
             .chart-box { height: 300px; }
             .title { font-size: 2rem; }
+            .stats-row { flex-direction: column; gap: 1.5rem; }
         }
     </style>
 </head>
@@ -252,6 +271,14 @@
                 </div>
             </div>
 
+            <div class="stats-row tilt-card">
+                <div class="stat-item"><h4>45,000<span>+</span></h4><p>Bushings Supplied</p></div>
+                <div class="stat-item"><h4>60<span>+</span></h4><p>Countries Installed</p></div>
+                <div class="stat-item"><h4>140<span>+</span></h4><p>Tested Models</p></div>
+                <div class="stat-item"><h4>1,000<span>+</span></h4><p>Customers</p></div>
+                <div class="stat-item"><h4>6,900<span>+</span></h4><p>Delivered in FY26</p></div>
+            </div>
+
             <div class="card mt-2 tilt-card" style="margin-top: 1.5rem;">
                 <h3 class="heading-font highlight-primary mb-1" style="font-size: 1.8rem; margin-bottom: 0.5rem;">Precision Engineered. Grid-Critical.</h3>
                 <p style="color: var(--text-muted); line-height: 1.6; font-size: 1rem;">
@@ -272,8 +299,8 @@
                             <tr><td style="color: var(--accent-primary); font-weight: bold;">2009-2016</td><td>First export (2009). Swiss collaboration with MGC Moser Glaser (2013). <strong>First MSME to localize RIP/RIS technology in India (2016).</strong></td></tr>
                             <tr><td style="color: var(--accent-primary); font-weight: bold;">2016-2022</td><td>First in world to develop 52kV 6300A Hybrid RIP+OIP for STATCOM. India's first localized RIS (2019). 245kV RIP launched (2020).</td></tr>
                             <tr><td style="color: var(--accent-secondary); font-weight: bold;">2023-2024</td><td>First bulk export to USA. Revenue crosses ₹108 Cr (FY24). First 25,000A high-current bushing order in India. Listed Dec 2024.</td></tr>
-                            <tr><td style="color: var(--accent-secondary); font-weight: bold;">FY25-H1FY26</td><td>Revenue ₹150 Cr (+39% in FY25). H1FY26 hits ₹102 Cr. Established Yash HV USA Inc. and UK/Europe distribution partnerships.</td></tr>
-                            <tr><td style="color: var(--success); font-weight: bold;">Oct 2025+</td><td>Order book >₹300 Cr. Greenfield building ready Dec 2025. Addressable market expands to ₹15,000-16,000 Cr post-550kV.</td></tr>
+                            <tr><td style="color: var(--accent-secondary); font-weight: bold;">FY25-H1FY26</td><td>Revenue ₹150 Cr (+39% in FY25). Established Yash HV USA Inc. and UK/Europe distribution partnerships. <strong>Delivered 6,900+ bushings in FY26.</strong></td></tr>
+                            <tr><td style="color: var(--success); font-weight: bold;">Oct 2025+</td><td>Order book >₹300 Cr. Greenfield building ready Dec 2025. Leadership Award at GEO Excellence Awards. Addressable market expands to ₹15,000-16,000 Cr post-550kV.</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -293,22 +320,30 @@
                     </p>
                 </div>
                 <div class="card tilt-card accent-border">
-                    <h3 class="heading-font highlight-secondary mb-1" style="font-size: 1.6rem; margin-bottom: 0.5rem;">High-Current (70% GM)</h3>
+                    <h3 class="heading-font highlight-secondary mb-1" style="font-size: 1.6rem; margin-bottom: 0.5rem;">High-Current (70% GM) & Tech Giants</h3>
                     <p style="font-size: 0.95rem;">
-                        First Indian manufacturer of 25,000A high-current bushing. Serves data centers, renewables, defense, railways. Near-monopoly position domestically, indirectly supplying Google via OEMs.
+                        Executing a bulk order of <strong>300 IEEE transformer bushings (34.5 kV 10000 A)</strong>, with 70+ units already supplied to a <strong>leading global Internet giant</strong> for its US data centers. First Indian manufacturer of 25,000A high-current bushing.
                     </p>
                 </div>
+                
                 <div class="card tilt-card accent-border">
-                    <h3 class="heading-font highlight-primary mb-1" style="font-size: 1.6rem; margin-bottom: 0.5rem;">550kV Upgrade</h3>
+                    <h3 class="heading-font highlight-primary mb-1" style="font-size: 1.6rem; margin-bottom: 0.5rem;">550kV Upgrade & Product Edge</h3>
                     <p style="font-size: 0.95rem;">
-                        Originally planned to 220kV, the greenfield was upgraded to 550kV. Post-commissioning, this adds ₹3,400-3,500 Cr more to the addressable global market.
+                        Greenfield upgraded to 550kV, adding ₹3,400-3,500 Cr to the addressable global market. Successfully delivered 50+ short tail bushings developed for specific European space constraints.
                     </p>
+                    <img src="unnamed (16).jpg" alt="Product Range" class="embedded-img">
                 </div>
                 <div class="card tilt-card accent-border">
-                    <h3 class="heading-font highlight-secondary mb-1" style="font-size: 1.6rem; margin-bottom: 0.5rem;">Qualification & R&D Moat</h3>
-                    <p style="font-size: 0.95rem;">
-                        Bushing qualification takes 2-3 years. Approved by every Indian utility including nuclear. ILAC-accredited in-house test lab. Zero dependency on imported "Transfer of Technology" (TOT).
+                    <h3 class="heading-font highlight-secondary mb-1" style="font-size: 1.6rem; margin-bottom: 0.5rem;">Qualification & Quality Moat</h3>
+                    <p style="font-size: 0.95rem; margin-bottom: 1rem;">
+                        Bushing qualification takes 2-3 years. Zero dependency on imported "Transfer of Technology" (TOT). Recently strengthened testing capabilities with new RIV/TRT setups, Vaisala dew point meters, and Zund plotters.
                     </p>
+                    <ul class="custom-list">
+                        <li><strong>Global Audits Cleared:</strong> Hitachi, Siemens Energy, Serentica, Kolektor, and UPPTCL.</li>
+                        <li><strong>EHS Certified:</strong> ISO 14001:2015 (Environment) and ISO 45001:2018 (Safety).</li>
+                        <li><strong>ILAC Surveillance:</strong> Successfully completed periodic ILAC assessment for in-house test labs.</li>
+                    </ul>
+                    <img src="unnamed (4).jpg" alt="Customer Audits and ILAC" class="embedded-img">
                 </div>
             </div>
         </div>
@@ -349,12 +384,13 @@
                 <div class="card tilt-card accent-border">
                     <h3 class="heading-font highlight-primary mb-1" style="font-size: 1.6rem; margin-bottom: 0.5rem;">Sukrut Electric Status</h3>
                     <ul class="custom-list">
-                        <li><strong>Stake:</strong> 50% (Yash) + 50% (Quality Power).</li>
+                        <li><strong>Stake:</strong> Joint acquisition — 50% (Yash) + 50% (Quality Power).</li>
                         <li><strong>Products:</strong> Transformer relays, indicators, control panels.</li>
                         <li><strong>Legal:</strong> SPA signed (Jan 2026); shareholder execution pending. NIL revenue FY26.</li>
                         <li><strong>Growth Target:</strong> 2.5-4x revenue in 3-4 years ➔ ₹60-70 Cr potential from existing Pune facility.</li>
                         <li><strong>MGC Bridge:</strong> Swiss supply continues till June 2027 ensuring zero disruption during indigenous transition.</li>
                     </ul>
+                    <img src="unnamed (1).jpg" alt="Key Highlights 2025-26" class="embedded-img">
                 </div>
 
                 <div class="card tilt-card accent-border">
@@ -381,17 +417,24 @@
                     </p>
                 </div>
                 <div class="card tilt-card accent-border">
-                    <h3 class="heading-font highlight-secondary mb-1" style="font-size: 1.5rem;">02. Export Ramp</h3>
+                    <h3 class="heading-font highlight-secondary mb-1" style="font-size: 1.5rem;">02. Export Ramp & Brand</h3>
+                    <p style="font-size: 0.9rem; margin-bottom: 0.8rem;">
+                        Targeting 35-40% export mix. Secured <strong>Runner-Up for Export Excellence</strong> at ASSOCHAM's 12th Global SME Awards 2025-26.
+                    </p>
                     <p style="font-size: 0.9rem;">
-                        Currently 4.5-5% of revenue. Target is 35-40% in 3-5 Years. Yash commands a <strong>30-40% price premium</strong> in export markets vs domestic. Yash HV USA Inc. and Weidmann (Europe) are active.
+                        Key recent global dispatches include 170kV Oil-to-Oil (Europe), 72.5kV Wall-Through (UK), and 34.5kV IEEE (Asia). Aggressive global presence across exhibitions in Berlin, Dubai, and Miami.
                     </p>
                 </div>
                 <div class="card tilt-card accent-border">
                     <h3 class="heading-font highlight-primary mb-1" style="font-size: 1.5rem;">03. High-Current</h3>
                     <p style="font-size: 0.9rem;">
-                        Scaling segment with <strong>70% Gross Margins</strong>. Meeting demand from data centers (Google supply via OEMs), AI, and renewable transformers. Break-even on greenfield at 30-35% utilization.
+                        Scaling segment with <strong>70% Gross Margins</strong>. Meeting demand from data centers, AI, and renewable transformers. Break-even on greenfield at 30-35% utilization.
                     </p>
                 </div>
+            </div>
+            
+            <div class="card tilt-card mt-2" style="margin-top: 1.5rem; padding: 1rem;">
+                <img src="unnamed (17).jpg" alt="Global Installations Map" class="embedded-img" style="margin-top: 0; box-shadow: none; border: none;">
             </div>
         </div>
 
@@ -506,9 +549,9 @@
                         <li>>30% Indian share + 1% global ➔ 8-10x revenue target.</li>
                         <li>H1FY26 Rev +78.6% YoY; EBITDA expanding.</li>
                         <li>₹180 Cr confirmed capex unlocks ₹600-700 Cr potential.</li>
-                        <li>Export price delta of 30-40% confirmed.</li>
+                        <li>Export price delta of 30-40% confirmed. Data center demand surging.</li>
                         <li>MGC supply bridge till June 2027 limits transition risk.</li>
-                        <li>Clean IPO litigation; strong OEM customer validation.</li>
+                        <li>Clean IPO litigation; strong OEM customer validation & audits.</li>
                     </ul>
                 </div>
                 <div class="card tilt-card" style="border-top: 3px solid var(--danger);">
