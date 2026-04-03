@@ -898,7 +898,7 @@ function drawRevChart(){
   const d=dpr();cv.width=W*d;cv.height=H*d;cv.style.width=W+'px';cv.style.height=H+'px';
   const ctx=cv.getContext('2d');ctx.scale(d,d);
   const lbls=['FY22','FY23','FY24','FY25','FY26E','FY27P'],rev=[33,36,66,219,560,900],pat=[3,3,6.6,19.8,56,90];
-  const pad={t:16,r:48,b:26,l:40},cw=W-pad.l-pad.r,ch=H-pad.t-pad.b,n=lbls.length,mx=950;
+  const pad={t:16,r:75,b:26,l:40},cw=W-pad.l-pad.r,ch=H-pad.t-pad.b,n=lbls.length,mx=950;
   const bw=Math.min(cw/(n*2.8),24);
   ctx.clearRect(0,0,W,H);
   for(let i=0;i<=4;i++){
@@ -915,8 +915,8 @@ function drawRevChart(){
     ctx.fillStyle='#10b981';ctx.fillRect(gx+2,pad.t+ch-ph,bw,2);
     ctx.fillStyle='#94a3b8';ctx.font=`500 9.5px 'IBM Plex Mono',monospace`;ctx.textAlign='center';ctx.fillText(l,gx,H-pad.b+14);
   });
-  [[W-46,pad.t,'#3b82f6','Revenue'],[W-46,pad.t+17,'#10b981','PAT'],[W-46,pad.t+34,'#f59e0b','Projected']].forEach(([x,y,c,lbl])=>{
-    ctx.fillStyle=c;ctx.fillRect(x,y,9,9);ctx.fillStyle='#f8fafc';ctx.font=`500 10px 'Inter',sans-serif`;ctx.textAlign='right';ctx.fillText(lbl,x-2,y+8);
+  [[W-16,pad.t,'#3b82f6','Revenue'],[W-16,pad.t+17,'#10b981','PAT'],[W-16,pad.t+34,'#f59e0b','Projected']].forEach(([x,y,c,lbl])=>{
+    ctx.fillStyle=c;ctx.fillRect(x,y,9,9);ctx.fillStyle='#f8fafc';ctx.font=`500 10px 'Inter',sans-serif`;ctx.textAlign='right';ctx.fillText(lbl,x-5,y+8);
   });
 }
 
