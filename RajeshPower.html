@@ -1176,11 +1176,14 @@ const d = dpr();
 }
 
 const PD = [
-  {d:'02 Apr',c:909},{d:'16 Apr',c:956},{d:'09 May',c:1203},{d:'30 May',c:1320},
-  {d:'20 Jun',c:1391},{d:'11 Jul',c:1344},{d:'01 Aug',c:1521},{d:'25 Aug',c:1588},
-  {d:'16 Sep',c:1398},{d:'08 Oct',c:1507},{d:'30 Oct',c:1499},{d:'21 Nov',c:1203},
-  {d:'12 Dec',c:1076},{d:'05 Jan',c:1057},{d:'28 Jan',c:788},{d:'17 Feb',c:985},
-  {d:'11 Mar',c:863},{d:'25 Mar',c:826},{d:'01 Apr',c:823}
+  {d:'02 Apr',c:909}, {d:'16 Apr',c:956}, {d:'09 May',c:1203}, {d:'30 May',c:1320},
+  {d:'20 Jun',c:1391}, {d:'11 Jul',c:1344}, {d:'01 Aug',c:1521}, 
+  {d:'25 Aug',c:1588, ev:'peak', desc:'Peak ₹1,639'},
+  {d:'16 Sep',c:1398}, {d:'08 Oct',c:1507}, {d:'30 Oct',c:1499},
+  {d:'21 Nov',c:1203, ev:'exit', desc:'FII/DII Exit'},
+  {d:'12 Dec',c:1076}, {d:'05 Jan',c:1057}, {d:'28 Jan',c:788},
+  {d:'17 Feb',c:985, ev:'win', desc:'RRVPN Win'},
+  {d:'11 Mar',c:863}, {d:'25 Mar',c:826}, {d:'01 Apr',c:823}
 ];
 
 function drawPriceChart() {
@@ -1195,43 +1198,140 @@ function drawPriceChart() {
     return;
   }
   
-const d = dpr();
+  const d = dpr();
   cv.width = W * d; cv.height = H * d;
-  cv.style.width = W + 'px';    // FIX: Forces CSS width to match device width
-  cv.style.height = H + 'px';   // FIX: Forces CSS height to match device height
+  cv.style.width = W + 'px';    
+  cv.style.height = H + 'px';   
   const ctx = cv.getContext('2d'); ctx.scale(d, d);
+  
   const pad = {t:20,r:20,b:36,l:40}, cw = W - pad.l - pad.r, ch = H - pad.t - pad.b;
   const vals = PD.map(x => x.c), mn = Math.min(...vals) * .95, mx = Math.max(...vals) * 1.05;
-  ctx.clearRect(0, 0, W, H);
-  
-  for (let i = 0; i <= 4; i++) {
-    const y = pad.t + ch * (1 - i/4);
-    ctx.strokeStyle = 'rgba(56, 189, 248, 0.1)'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + cw, y); ctx.stroke();
-    ctx.fillStyle = '#475569'; ctx.font = '700 11px "Fira Code",monospace'; ctx.textAlign = 'right';
-    ctx.fillText('₹' + Math.round(mn + (mx-mn)*(i/4)), pad.l - 8, y + 4);
-  }
-  
-  ctx.beginPath();
-  PD.forEach((p, i) => { const x = pad.l + (i/(PD.length-1))*cw, y = pad.t+ch*(1-(p.c-mn)/(mx-mn)); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
-  ctx.lineTo(pad.l+cw, pad.t+ch); ctx.lineTo(pad.l, pad.t+ch); ctx.closePath();
-  const g = ctx.createLinearGradient(0, pad.t, 0, pad.t+ch);
-  g.addColorStop(0,'rgba(56, 189, 248, 0.2)'); g.addColorStop(1,'rgba(56, 189, 248, 0)');
-  ctx.fillStyle = g; ctx.fill();
-  
-  ctx.beginPath(); ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2;
-  ctx.lineJoin = 'round';
-  PD.forEach((p, i) => { const x = pad.l+(i/(PD.length-1))*cw, y = pad.t+ch*(1-(p.c-mn)/(mx-mn)); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
-  ctx.stroke();
-  
-  const step = W < 500 ? Math.ceil(PD.length/4) : Math.ceil(PD.length/7);
-  ctx.fillStyle = '#94a3b8'; ctx.font = '700 11px "Fira Code",monospace'; ctx.textAlign = 'center';
-  PD.forEach((p, i) => { if(i%step===0) ctx.fillText(p.d, pad.l+(i/(PD.length-1))*cw, H-pad.b+20); });
-}
+  const evColors = { 'peak': '#facc15', 'exit': '#f43f5e', 'win': '#10b981' };
 
-function drawCharts(id) {
-  if (id === 'financials') drawRevChart();
-  if (id === 'price') drawPriceChart();
+  function renderChart(hoverX = null) {
+    ctx.clearRect(0, 0, W, H);
+    
+    // Y-Axis Grid
+    for (let i = 0; i <= 4; i++) {
+      const y = pad.t + ch * (1 - i/4);
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.1)'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + cw, y); ctx.stroke();
+      ctx.fillStyle = '#475569'; ctx.font = '700 11px "Fira Code",monospace'; ctx.textAlign = 'right';
+      ctx.fillText('₹' + Math.round(mn + (mx-mn)*(i/4)), pad.l - 8, y + 4);
+    }
+    
+    // Calculate node coordinates
+    const pts = PD.map((p, i) => ({
+      x: pad.l + (i/(PD.length-1))*cw,
+      y: pad.t + ch * (1 - (p.c-mn)/(mx-mn)),
+      data: p
+    }));
+
+    // Fill Gradient
+    ctx.beginPath();
+    pts.forEach((pt, i) => i === 0 ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y));
+    ctx.lineTo(pad.l+cw, pad.t+ch); ctx.lineTo(pad.l, pad.t+ch); ctx.closePath();
+    const g = ctx.createLinearGradient(0, pad.t, 0, pad.t+ch);
+    g.addColorStop(0,'rgba(56, 189, 248, 0.2)'); g.addColorStop(1,'rgba(56, 189, 248, 0)');
+    ctx.fillStyle = g; ctx.fill();
+    
+    // Main Line
+    ctx.beginPath(); ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2; ctx.lineJoin = 'round';
+    pts.forEach((pt, i) => i === 0 ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y));
+    ctx.stroke();
+    
+    // X-Axis Labels
+    const step = W < 500 ? Math.ceil(PD.length/4) : Math.ceil(PD.length/7);
+    ctx.fillStyle = '#94a3b8'; ctx.font = '700 11px "Fira Code",monospace'; ctx.textAlign = 'center';
+    pts.forEach((pt, i) => { if(i%step===0) ctx.fillText(pt.data.d, pt.x, H-pad.b+20); });
+
+    // Draw Static Event Markers (Dots + Drop Lines)
+    pts.forEach(pt => {
+      if (pt.data.ev) {
+        const color = evColors[pt.data.ev];
+        
+        // Drop line
+        ctx.beginPath(); ctx.setLineDash([3, 4]);
+        ctx.moveTo(pt.x, pt.y + 8); ctx.lineTo(pt.x, pad.t + ch);
+        ctx.strokeStyle = color + '80'; ctx.lineWidth = 1; ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Glowing Dot
+        ctx.beginPath(); ctx.arc(pt.x, pt.y, 4, 0, Math.PI*2);
+        ctx.fillStyle = color; ctx.fill();
+        ctx.beginPath(); ctx.arc(pt.x, pt.y, 12, 0, Math.PI*2);
+        ctx.fillStyle = color + '30'; ctx.fill();
+      }
+    });
+
+    // Hover Interactive Tooltip
+    if (hoverX !== null && hoverX >= pad.l && hoverX <= pad.l + cw) {
+      let closest = pts[0];
+      let minDist = Math.abs(hoverX - pts[0].x);
+      pts.forEach(pt => {
+        let dist = Math.abs(hoverX - pt.x);
+        if (dist < minDist) { minDist = dist; closest = pt; }
+      });
+
+      // Hover Crosshair Line
+      ctx.beginPath(); ctx.strokeStyle = '#475569'; ctx.lineWidth = 1;
+      ctx.moveTo(closest.x, pad.t); ctx.lineTo(closest.x, pad.t + ch); ctx.stroke();
+
+      // Highlight Node
+      ctx.beginPath(); ctx.arc(closest.x, closest.y, 5, 0, Math.PI*2);
+      ctx.fillStyle = '#f8fafc'; ctx.fill();
+
+      // Tooltip Box
+      const txt = `${closest.data.d} : ₹${closest.data.c}`;
+      const evTxt = closest.data.desc || '';
+      ctx.font = '600 11px "Fira Code",monospace';
+      
+      const tw = Math.max(ctx.measureText(txt).width, evTxt ? ctx.measureText(evTxt).width : 0) + 20;
+      const th = evTxt ? 40 : 24;
+      
+      let tx = closest.x - tw/2;
+      if (tx < pad.l) tx = pad.l;
+      if (tx + tw > pad.l + cw) tx = pad.l + cw - tw;
+      
+      let ty = closest.y - th - 12;
+      if (ty < pad.t) ty = closest.y + 15; // Flip below if too high
+
+      // Box styling
+      ctx.fillStyle = 'rgba(11, 17, 32, 0.95)';
+      ctx.strokeStyle = closest.data.ev ? evColors[closest.data.ev] : '#334155';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.roundRect(tx, ty, tw, th, 4); 
+      ctx.fill(); ctx.stroke();
+
+      // Tooltip Text
+      ctx.fillStyle = '#f8fafc'; ctx.textAlign = 'center';
+      ctx.fillText(txt, tx + tw/2, ty + 16);
+      if (evTxt) {
+        ctx.fillStyle = evColors[closest.data.ev];
+        ctx.fillText(evTxt, tx + tw/2, ty + 30);
+      }
+    }
+  }
+
+  // Initial Render
+  renderChart();
+
+  // Mouse Interaction Listeners
+  cv.onmousemove = (e) => {
+    const rect = cv.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    renderChart(x);
+  };
+  cv.onmouseleave = () => renderChart(null);
+  
+  // Touch support for mobile interactivity
+  cv.ontouchmove = (e) => {
+    e.preventDefault(); // prevent scrolling while checking chart
+    const rect = cv.getBoundingClientRect();
+    const x = e.touches[0].clientX - rect.left;
+    renderChart(x);
+  };
+  cv.ontouchend = () => renderChart(null);
 }
 
 window.addEventListener('resize', () => {
