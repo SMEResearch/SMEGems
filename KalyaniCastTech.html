@@ -18,14 +18,15 @@ html,body{height:100dvh;width:100vw;overflow:hidden;background:var(--bg);color:v
 #sidebar{width:54px;flex-shrink:0;background:rgba(9,19,24,.98);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;z-index:999;padding:10px 0; position: relative;}
 #sidebar-logo{font-family:var(--font-head);font-size:11px;font-weight:800;color:var(--teal);writing-mode:vertical-rl;text-orientation:mixed;letter-spacing:2.5px;margin-bottom:14px;cursor:pointer;padding:10px 0}
 
-/* HIDDEN SCROLLBAR FOR SIDEBAR DOTS - WITH VISIBLE TOOLTIPS */
-#sidebar-dots{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;justify-content:center;overflow-y:auto; overflow-x:visible; width: 100%; scrollbar-width: none; -ms-overflow-style: none;}
-#sidebar-dots::-webkit-scrollbar { display: none; }
+/* COMPLETELY REMOVED OVERFLOW CLIPPING SO TOOLTIPS CAN BREAK OUT */
+#sidebar-dots{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;justify-content:center; width: 100%; position:relative; z-index:999;}
 
-.sd{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--dim);background:transparent;cursor:pointer;transition:all 0.3s;position:relative;flex-shrink:0}
-.sd:hover{border-color:var(--teal);transform:scale(1.3)}
+.sd{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--dim);background:transparent;cursor:pointer;transition:all 0.3s;position:relative;flex-shrink:0; z-index:100;}
+.sd:hover{border-color:var(--teal);transform:scale(1.3); z-index:9999;}
 .sd.active{background:var(--teal);border-color:var(--teal);box-shadow:0 0 8px rgba(45,212,168,0.4)}
-.sd-tip{position:absolute;left:18px;top:50%;transform:translateY(-50%);background:var(--card2);border:1px solid var(--border2);color:var(--text);font-family:var(--font-mono);font-size:11px;font-weight:600;padding:6px 12px;border-radius:4px;white-space:nowrap;pointer-events:none;opacity:0;transition:all 0.2s ease;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.5)}
+
+/* TOOLTIP STYLING */
+.sd-tip{position:absolute;left:20px;top:50%;transform:translateY(-50%);background:var(--card2);border:1px solid var(--border2);color:var(--text);font-family:var(--font-mono);font-size:11px;font-weight:600;padding:6px 12px;border-radius:4px;white-space:nowrap;pointer-events:none;opacity:0;transition:all 0.2s ease;z-index:99999;box-shadow:0 4px 12px rgba(0,0,0,0.5)}
 .sd:hover .sd-tip{opacity:1; left:24px;}
 
 #sidebar-nav{display:flex;flex-direction:column;gap:6px;align-items:center;padding:10px 0;border-top:1px solid var(--border)}
@@ -34,7 +35,7 @@ html,body{height:100dvh;width:100vw;overflow:hidden;background:var(--bg);color:v
 .snav:disabled{opacity:0.25;cursor:not-allowed}
 .snav svg{pointer-events:none}
 
-#main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden; position: relative; z-index: 10;}
 #topbar{background:rgba(6,13,18,.95);border-bottom:1px solid var(--border);padding:0 28px;height:48px;display:flex;align-items:center;gap:14px;z-index:90;flex-shrink:0; backdrop-filter: blur(10px);}
 .tb-bc{font-family:var(--font-mono);font-weight:600;font-size:11px;color:var(--body);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0.12em;text-transform:uppercase}
 .tb-bc span{color:var(--teal)}
@@ -779,7 +780,11 @@ function dPC() {
   rn(); v.onmousemove = e => { const r = v.getBoundingClientRect(); rn(e.clientX - r.left) }; v.onmouseleave = () => rn(null);
   v.ontouchmove = e => { e.preventDefault(); const r = v.getBoundingClientRect(); rn(e.touches[0].clientX - r.left) }; v.ontouchend = () => rn(null)
 }
-addEventListener('resize', () => { dRC(); dPC(); });
+window.addEventListener('resize', () => {
+  const as = document.getElementById('active-section').innerHTML;
+  if(as.includes('revChart')) drawRevChart();
+  if(as.includes('priceChart')) drawPriceChart();
+});
 </script>
 </body>
 </html>
