@@ -201,6 +201,24 @@ tr.rhi td:first-child{color:var(--gold);font-weight:500}
 /* CHART */
 .csvg{width:100%;overflow:visible}
 
+/* ... existing CSS ... */
+
+/* NEW UNIFIED TYPOGRAPHY (Paste here!) */
+.inv-nm, .mc-name, .prc-ttl, .seg-name, .tl-hd {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 600;
+  color: var(--white);
+  letter-spacing: 0.01em;
+}
+.inv-nm { font-size: 15px; margin-bottom: 3px; }
+.mc-name { font-size: 16px; margin-bottom: 4px; }
+.prc-ttl { font-size: 15.5px; }
+.seg-name { font-size: 16.5px; }
+.tl-hd { font-size: 16px; margin-bottom: 3px; }
+
+/* MOBILE */
+@media(max-width:768px){
+/* ... rest of code ... */
 /* MOBILE */
 @media(max-width:768px){
   #sidebar{position:fixed;left:0;top:0;bottom:0;z-index:200;transform:translateX(-100%);box-shadow:4px 0 24px rgba(0,0,0,.5)}
