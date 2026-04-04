@@ -314,6 +314,7 @@
     opacity: 0;
     animation: fadeUp 0.6s ease forwards;
   }
+  
   .card:hover {
     border-color: rgba(232,160,32,0.35);
     transform: translateY(-2px);
@@ -462,21 +463,8 @@
   }
   .btn-report:hover { background: var(--gold2); }
 
-  .btn-preview {
-    background: transparent;
-    color: var(--muted);
-    border: 0.5px solid var(--border);
-    padding: 8px 14px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.04em;
-    border-radius: 2px;
-    cursor: pointer;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: border-color 0.2s, color 0.2s;
+.btn-preview {
+    display: none !important; /* This hides the arrow button everywhere instantly */
   }
   .btn-preview:hover { border-color: var(--gold); color: var(--gold); }
 
@@ -620,6 +608,7 @@
           color: black;
       }
   }
+
   /* ── INTERACTIVE CONTROLS ── */
   .controls-bar {
     display: flex;
@@ -692,52 +681,84 @@
   }
 
   /* ── LIST VIEW OVERRIDES ── */
-  .card-grid.list-view { display: flex; flex-direction: column; gap: 8px; }
+  .card-grid.list-view { display: flex; flex-direction: column; gap: 12px; }
+  
   .card-grid.list-view .card {
     flex-direction: row;
     align-items: stretch;
-    animation: none; /* Disable animation when toggling */
+    justify-content: space-between; /* Pushes footer to far right */
+    width: 100%; /* Forces card to take full container width */
+    animation: none; 
     opacity: 1;
   }
+  
   .card-grid.list-view .card-head {
-    flex: 1;
-    min-width: 250px;
+    flex: 0 0 300px; 
     border-bottom: none;
     border-right: 0.5px solid var(--border);
-    padding: 12px 16px;
+    padding: 16px;
+    justify-content: center;
   }
-  .card-grid.list-view .card-num, .card-grid.list-view .card-tagline { display: none; }
-  .card-grid.list-view .card-badge { position: relative; top: 0; right: 0; display: inline-block; margin-bottom: 6px; }
+  
+  .card-grid.list-view .card-num, 
+  .card-grid.list-view .card-tagline { display: none; }
+  
+  .card-grid.list-view .card-badge { 
+    position: relative; 
+    top: 0; right: 0; 
+    display: inline-block; 
+    margin-bottom: 8px; 
+    align-self: flex-start;
+  }
+  
   .card-grid.list-view .card-metrics {
-    flex: 2;
+    flex: 1 1 auto; /* Acts like a spring to fill all middle space */
     display: flex;
     border-bottom: none;
   }
+  
   .card-grid.list-view .metric {
-    flex: 1;
+    flex: 1 1 0; /* Ensures all metric boxes stretch evenly */
     border-bottom: none !important;
     border-right: 0.5px solid var(--border);
     display: flex;
     flex-direction: column;
     justify-content: center;
+    padding: 12px 16px;
   }
-  .card-grid.list-view .metric:last-child { border-right: none; }
+  
   .card-grid.list-view .card-footer {
-    flex: 0.3;
+    flex: 0 0 160px; /* Fixed width for buttons to prevent distortion */
     flex-direction: column;
     justify-content: center;
     border-left: 0.5px solid var(--border);
     margin-top: 0;
-    padding: 8px;
+    padding: 16px;
+    gap: 10px;
   }
 
-  @media (max-width: 900px) {
-    .controls-bar { flex-direction: column; align-items: flex-start; }
+  /* ── RESPONSIVE DESIGN FOR LIST VIEW & CONTROLS ── */
+  @media (max-width: 1100px) {
+    /* Tablet tweaks to prevent text overlapping */
+    .card-grid.list-view .card-head { flex: 0 0 220px; }
+    .card-grid.list-view .card-footer { flex: 0 0 140px; }
+    .card-grid.list-view .metric { padding: 12px 8px; }
+    .metric-val { font-size: 11px; } 
+  }
+
+  @media (max-width: 800px) {
+    /* Mobile styling: Stack controls and force grid layout */
+    .controls-bar { flex-direction: column; align-items: stretch; gap: 12px; }
     .search-wrap input { width: 100%; }
+    .view-toggles { display: none; } /* Hide the toggle on mobile */
+
+    /* If user was in list view and resizes to mobile, force it to stack like a normal card */
     .card-grid.list-view .card { flex-direction: column; }
-    .card-grid.list-view .card-head { border-right: none; border-bottom: 0.5px solid var(--border); }
+    .card-grid.list-view .card-head { flex: auto; border-right: none; border-bottom: 0.5px solid var(--border); }
     .card-grid.list-view .card-metrics { flex-wrap: wrap; }
-    .card-grid.list-view .card-footer { border-left: none; border-top: 0.5px solid var(--border); flex-direction: row; }
+    .card-grid.list-view .metric { flex: 0 0 50%; border-bottom: 0.5px solid var(--border) !important; border-right: 0.5px solid var(--border); }
+    .card-grid.list-view .metric:nth-child(even) { border-right: none; }
+    .card-grid.list-view .card-footer { border-left: none; border-top: 0.5px solid var(--border); flex-direction: row; flex: auto; }
   }
 </style>
 </head>
@@ -776,13 +797,11 @@
     <span class="pill">Fresh Protein</span>
     <span class="pill">Elevators</span>
     <span class="pill">Clean Energy</span>
-    <span class="pill">Fintech DSA</span>
+    <span class="pill">Fintech</span>
     <span class="pill">B2B Jewellery</span>
-    <span class="pill">Fintech API / BC</span>
     <span class="pill">Surveillance</span>
     <span class="pill">Containers & Wagons</span>
   </div>
-
 
 </section>
 
@@ -790,21 +809,28 @@
 
 <section class="reports-section" id="reports">
   <div class="sec-header">
-    <div class="controls-bar">
+    <h2 class="sec-title">Research Reports</h2>
+    <span class="sec-meta">March 2026</span>
+  </div>
+
+  <div class="controls-bar">
     <div class="search-wrap">
       <input type="text" id="searchInput" placeholder="Search companies, sectors, or keywords...">
     </div>
     <div class="sort-wrap">
-      <select id="sortSelect">
+<select id="sortSelect">
         <option value="default">Sort: Default Order</option>
         <option value="name-asc">Sort: Alphabetical (A-Z)</option>
+        <option value="name-desc">Sort: Alphabetical (Z-A)</option>
         <option value="mcap-desc">Sort: Market Cap (High - Low)</option>
+        <option value="mcap-asc">Sort: Market Cap (Low - High)</option>
       </select>
     </div>
     <div class="view-toggles">
       <button id="btnGrid" class="view-btn active" title="Grid View">⊞</button>
       <button id="btnList" class="view-btn" title="Compact List View">☰</button>
     </div>
+  </div>
 
   <div class="card-grid">
 
@@ -1558,9 +1584,8 @@
       <span class="stag live">Elevators / Capital Goods</span>
       <span class="stag live">Clean Energy / Solar / EPC</span>
       <span class="stag live">LED / MedTech</span>
-      <span class="stag live">Fintech DSA</span>
+      <span class="stag live">Fintech</span>
       <span class="stag live">B2B Jewellery</span>
-      <span class="stag live">Fintech API & Orchestration</span>
       <span class="stag live">Security &amp; Surveillance</span>
       <span class="stag coming">Containers, Wagons</span>
       <span class="stag coming">Specialty Chemicals</span>
@@ -1577,16 +1602,6 @@
 </footer>
 
 <script>
-    document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
-    document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && (e.key === 'c' || e.key === 'x' || e.key === 'p' || e.key === 's' || e.key === 'u')) { e.preventDefault(); }
-        if (e.metaKey && (e.key === 'c' || e.key === 'x' || e.key === 'p' || e.key === 's' || e.key === 'u')) { e.preventDefault(); }
-        if (e.key === 'F12') { e.preventDefault(); }
-        if ((e.ctrlKey && e.shiftKey && e.key === 'I') || (e.metaKey && e.altKey && e.key === 'i')) { e.preventDefault(); }
-    });
-    document.addEventListener('dragstart', function(e) { e.preventDefault(); });
-</script>
-<script>
 document.addEventListener('DOMContentLoaded', () => {
     const grid = document.querySelector('.card-grid');
     const cards = Array.from(document.querySelectorAll('.card'));
@@ -1594,46 +1609,61 @@ document.addEventListener('DOMContentLoaded', () => {
     const sortSelect = document.getElementById('sortSelect');
     const btnGrid = document.getElementById('btnGrid');
     const btnList = document.getElementById('btnList');
-    const pills = document.querySelectorAll('.hero-pills .pill');
+    const pillContainer = document.querySelector('.hero-pills');
     
-    let activeFilter = 'All';
+    // FIX 1: Match the exact default text
+    let activeFilter = 'All Sectors'; 
 
     // 1. Store original order to allow "Default Sort"
     cards.forEach((card, index) => {
         card.dataset.index = index;
     });
 
-    // 2. Add an "All" pill to reset filters
-    const allPill = document.createElement('span');
-    allPill.className = 'pill active';
-    allPill.innerText = 'All Sectors';
-    document.querySelector('.hero-pills').prepend(allPill);
+    // 2. Add "All Sectors" pill (prevents duplicates if code re-runs)
+    if (!document.querySelector('.hero-pills .pill.active')) {
+        const allPill = document.createElement('span');
+        allPill.className = 'pill active';
+        allPill.innerText = 'All Sectors';
+        pillContainer.prepend(allPill);
+    }
     const allPills = document.querySelectorAll('.hero-pills .pill');
 
     function updateGrid() {
-        const searchTerm = searchInput.value.toLowerCase();
+        const searchTerm = searchInput.value.toLowerCase().trim();
         const sortValue = sortSelect.value;
+        const filterTerm = activeFilter.toLowerCase().replace('&amp;', '&').trim();
 
         // Step A: Filter logic
         let visibleCards = cards.filter(card => {
-            const cardText = card.innerText.toLowerCase();
+            // FIX 2: Check the ENTIRE text of the card, not just the badge
+            const cardText = card.innerText.toLowerCase().replace(/&amp;/g, '&').replace(/\n/g, ' ');
             const cardBadge = card.querySelector('.card-badge').innerText.toLowerCase();
             
-            const matchesSearch = cardText.includes(searchTerm);
-            // Relaxed filter matching to handle naming variations
-            const matchesFilter = activeFilter === 'All' || cardBadge.includes(activeFilter.toLowerCase()) || activeFilter.toLowerCase().includes(cardBadge);
+            const matchesSearch = searchTerm === '' || cardText.includes(searchTerm);
+            
+            // FIX 3: Robust filtering for "All Sectors", broad text, and badges
+            const matchesFilter = activeFilter === 'All Sectors' || 
+                                  cardText.includes(filterTerm) || 
+                                  cardBadge.includes(filterTerm) || 
+                                  filterTerm.includes(cardBadge);
             
             return matchesSearch && matchesFilter;
         });
 
-        // Step B: Sort logic
+// Step B: Sort logic
         if (sortValue === 'name-asc') {
             visibleCards.sort((a, b) => a.querySelector('.card-name').innerText.localeCompare(b.querySelector('.card-name').innerText));
+        } else if (sortValue === 'name-desc') {
+            visibleCards.sort((a, b) => b.querySelector('.card-name').innerText.localeCompare(a.querySelector('.card-name').innerText));
         } else if (sortValue === 'mcap-desc') {
             visibleCards.sort((a, b) => {
-                // Extracts the first metric (Market Cap) and strips symbols to compare numbers
                 const getMcap = (el) => parseFloat(el.querySelector('.metric-val').innerText.replace(/[^0-9.]/g, '')) || 0;
                 return getMcap(b) - getMcap(a);
+            });
+        } else if (sortValue === 'mcap-asc') {
+            visibleCards.sort((a, b) => {
+                const getMcap = (el) => parseFloat(el.querySelector('.metric-val').innerText.replace(/[^0-9.]/g, '')) || 0;
+                return getMcap(a) - getMcap(b);
             });
         } else {
             visibleCards.sort((a, b) => parseInt(a.dataset.index) - parseInt(b.dataset.index));
@@ -1642,7 +1672,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Step C: Render DOM
         grid.innerHTML = '';
         if (visibleCards.length === 0) {
-            grid.innerHTML = '<p style="color: var(--muted); grid-column: 1/-1; text-align: center; padding: 40px;">No companies match your criteria.</p>';
+            grid.innerHTML = '<p style="color: var(--muted); grid-column: 1/-1; text-align: center; padding: 40px; font-family: \'DM Sans\', sans-serif;">No companies match your criteria.</p>';
         } else {
             visibleCards.forEach(card => grid.appendChild(card));
         }
@@ -1674,6 +1704,9 @@ document.addEventListener('DOMContentLoaded', () => {
         btnList.classList.add('active');
         btnGrid.classList.remove('active');
     });
+
+    // Initial run to ensure correct state on page load
+    updateGrid();
 });
 </script>
 </body>
