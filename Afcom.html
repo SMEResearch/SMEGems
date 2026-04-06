@@ -29,7 +29,7 @@ html, body {
   height: 100%; width: 100%;
 }
 
-.deck { position: relative; height: 100vh; width: 100vw; }
+.deck { position: relative; height: 100vh; height: 100dvh; width: 100vw; }
 .slide {
   position: absolute; inset: 0;
   display: flex; flex-direction: column;
@@ -37,7 +37,7 @@ html, body {
   opacity: 0; visibility: hidden;
   transition: opacity 0.5s ease, transform 0.5s ease;
   transform: translateX(60px);
-  background: linear-gradient(135deg, var(--navy) 0%, var(--deep-blue) 100%);
+  background: transparent; /* <--- CHANGED TO TRANSPARENT */
   overflow-y: auto;
 }
 .slide.active { opacity:1; visibility:visible; transform:translateX(0); }
@@ -47,8 +47,9 @@ html, body {
 .nav {
   position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
   display:flex; align-items:center; gap:8px; z-index:100;
-  background: rgba(10,22,40,0.92); border:1px solid rgba(46,139,192,0.3);
-  border-radius:40px; padding:8px 16px; backdrop-filter:blur(12px);
+  background: rgba(10,22,40,0.75); border:1px solid rgba(46,139,192,0.3);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border-radius:40px; padding:8px 16px;
   max-width:calc(100vw - 32px);
 }
 .nav button {
@@ -139,13 +140,13 @@ table tr:hover td { background:rgba(212,168,67,0.05); }
   transition: width 0.8s ease;
 }
 
-.scroll-content { flex:1; overflow-y:auto; padding-right:8px; }
+.scroll-content { flex:1; overflow-y:auto; padding-right:8px; padding-bottom: 110px !important; }
 .scroll-content::-webkit-scrollbar { width:4px; }
 .scroll-content::-webkit-scrollbar-track { background:transparent; }
 .scroll-content::-webkit-scrollbar-thumb { background:rgba(46,139,192,0.3); border-radius:2px; }
 
 @media (max-width:768px) {
-  .slide { padding:20px 16px 56px; }
+  .slide { padding:20px 16px 100px; }
   h1 { font-size:24px; }
   h2 { font-size:20px; }
   .grid-2, .grid-3 { grid-template-columns:1fr; }
@@ -192,16 +193,32 @@ table tr:hover td { background:rgba(212,168,67,0.05); }
   background: radial-gradient(circle at 30% 70%, rgba(212,168,67,0.06) 0%, transparent 60%);
   pointer-events:none;
 }
+  /* Background Canvas Styling */
+#bg-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.2;
+}
+
+/* Ensure slides sit above the canvas */
+.slide {
+  z-index: 1;
+}
 </style>
 </head>
 <body>
 <div class="deck" id="deck">
+<canvas id="bg-canvas"></canvas>
 
 <!-- SLIDE 1: COVER -->
 <div class="slide active" id="slide-0">
   <div class="bg-pattern"></div>
   <div class="bg-pattern-gold"></div>
-  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 8px;">
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 8px; padding-bottom: 70px;">
     <div class="cover-brand" style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:4px;color:var(--gray);margin-bottom:6px;text-transform:uppercase;">SME Gems · Hidden Champions of the SME Platform</div>
     <div style="width:60px;height:2px;background:linear-gradient(90deg,var(--gold),var(--sky));margin:0 auto 16px;border-radius:1px;"></div>
     <h1 class="cover-title" style="font-size:clamp(32px,8vw,56px);margin-bottom:4px;line-height:1.05;">
@@ -210,16 +227,14 @@ table tr:hover td { background:rgba(212,168,67,0.05); }
     <div class="cover-subtitle" style="font-size:clamp(13px,3.5vw,18px);color:var(--gray);margin-bottom:20px;line-height:1.4;">India's Only Listed Dedicated International Freighter</div>
     <div class="cover-tags" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:24px;">
       <span class="tag tag-blue">BSE: 544224</span>
-      <span class="tag tag-gold">SME → Main Board</span>
+      <span class="tag tag-gold">SME</span>
       <span class="tag tag-green">BBB+ Stable</span>
     </div>
     <div class="cover-stats" style="display:flex;gap:24px;margin-bottom:20px;justify-content:center;">
-      <div><div class="stat-big" style="font-size:clamp(20px,5vw,36px);">₹1,700 Cr</div><div class="stat-label">Market Cap</div></div>
+      <div><div class="stat-big" style="font-size:clamp(20px,5vw,36px);">₹1,950 Cr</div><div class="stat-label">Market Cap</div></div>
       <div><div class="stat-big" style="font-size:clamp(20px,5vw,36px);">₹493 Cr</div><div class="stat-label">Revenue (TTM)</div></div>
       <div><div class="stat-big" style="font-size:clamp(20px,5vw,36px);">₹121 Cr</div><div class="stat-label">PAT (TTM)</div></div>
     </div>
-    <div style="font-size:11px;color:var(--gray);line-height:1.5;">Data as of April 2026 · Sources: BSE, Screener.in, Company Filings<br>
-    <a href="https://x.com/sachprat07" target="_blank" style="color:var(--sky);text-decoration:none;">@sachprat07</a></div>
   </div>
 </div>
 
@@ -312,9 +327,9 @@ table tr:hover td { background:rgba(212,168,67,0.05); }
     <div>
       <div class="card" style="margin-bottom:16px;border-left:3px solid var(--gold);">
         <h3>⚠️ The Aircraft Delay Problem — Investor Perception</h3>
-        <p style="font-size:13px;line-height:1.6;">This is the single biggest credibility overhang on AFCOM. Management has consistently guided for aircraft induction timelines that have slipped. <strong>Case in point:</strong> The Aug 2025 corporate PPT stated the 3rd aircraft would join by "10th Sep 2025" with "3 more before end of this year." Reality? The 3rd aircraft got its DGCA CofR only in March 2026 — a 6-month slip. The 4th and 5th are still pending as of April 2026.</p>
-        <p style="font-size:13px;line-height:1.6;margin-top:8px;">Wide-body B777s were originally targeted for CY25, now pushed to "end CY26." Aircraft procurement involves DGCA approvals, lessor negotiations, maintenance checks, and import clearances — each a potential bottleneck. For a company with only 3 operational aircraft, <strong>every delay directly impacts revenue ramp-up and investor trust.</strong></p>
-        <p style="font-size:13px;line-height:1.6;margin-top:8px;color:var(--gold);">The bull case requires faith that management will deliver. The bear case notes the Aug 2025 PPT promised 5 aircraft by Dec 2025 — only 3 materialized. Investors should calibrate expectations with a 2-3 quarter buffer on all management timelines.</p>
+        <p style="font-size:13px;line-height:1.6;">Big credibility overhang on AFCOM. Management has consistently guided for aircraft induction timelines that have not been met. <strong>Case in point:</strong> As of Aug 2025; the 3rd aircraft was supposed to join by "10th Sep 2025" with "3 more before end of this year." but in reality the 3rd aircraft got its DGCA CofR only in March 2026 — a 6-month slip. The 4th and 5th are still pending as of April 2026.</p>
+        <p style="font-size:13px;line-height:1.6;margin-top:8px;">Wide-body B777s were originally targeted for CY25, now pushed to "end CY26." 
+        <p style="font-size:15px;line-height:1.6;margin-top:8px;color:var(--gold);">Aircraft procurement involves DGCA approvals, lessor negotiations, maintenance checks, and import clearances — each a potential bottleneck and not entirely in control of a company like Afcom. Every delay tends to directly impact revenue ramp-up and investor trust. Investors should calibrate expectations with a 2-3 quarter buffer on all management timelines.</p>
       </div>
       <div class="card">
         <h3>Shareholding (Dec 2025)</h3>
@@ -370,7 +385,7 @@ table tr:hover td { background:rgba(212,168,67,0.05); }
       <div class="card">
         <h3>QIP — Approved but Not Yet Executed</h3>
         <div style="font-size:13px;line-height:1.6;">
-          Board approved a QIP of up to ₹200 Cr at the Sep 2025 AGM with GYR Capital as Book Running Lead Manager. As of April 2026, the QIP has not yet been executed. If done at current prices (~₹750), it would mean ~26.7 lakh new shares — further dilution of ~10-12%.
+          Board approved a QIP of up to ₹200 Cr at the Sep 2025 AGM with GYR Capital as Book Running Lead Manager. As of April 2026, the QIP has not yet been executed. If done at current prices (~₹750), it would mean ~26.7 lakh new shares — further dilution confirmed.
         </div>
         <p style="font-size:12px;color:var(--gold);margin-top:8px;">The QIP overhang remains. Execution timing will depend on market conditions and B777 acquisition schedule. Watch for announcements.</p>
       </div>
@@ -394,8 +409,8 @@ table tr:hover td { background:rgba(212,168,67,0.05); }
   <div class="bg-pattern"></div>
   <div class="slide-number">05 / 14 — Price History</div>
   <h1>Stock Price <span class="accent">Journey</span></h1>
-  <div class="subtitle">From ₹108 IPO to ₹960 peak — a 9x move in 18 months. Currently consolidating around ₹750.</div>
-  <div style="flex:1;display:flex;flex-direction:column;">
+  <div class="subtitle">From ₹108 IPO to ₹1100+ peak — a move of more than 10x in 18 months. Currently consolidating around ₹750.</div>
+ <div class="scroll-content" style="display:flex;flex-direction:column;">
     <canvas id="priceChart" style="flex:1;max-height:55vh;"></canvas>
     <div class="grid-4" style="margin-top:16px;">
       <div class="card" style="padding:12px;text-align:center;">
@@ -403,7 +418,7 @@ table tr:hover td { background:rgba(212,168,67,0.05); }
         <div class="stat-label">IPO Price</div>
       </div>
       <div class="card" style="padding:12px;text-align:center;">
-        <div style="font-family:'Space Mono';font-size:18px;color:var(--green);">₹960</div>
+        <div style="font-family:'Space Mono';font-size:18px;color:var(--green);">₹1233.5</div>
         <div class="stat-label">All-Time High</div>
       </div>
       <div class="card" style="padding:12px;text-align:center;">
@@ -412,7 +427,7 @@ table tr:hover td { background:rgba(212,168,67,0.05); }
       </div>
       <div class="card" style="padding:12px;text-align:center;">
         <div style="font-family:'Space Mono';font-size:18px;color:var(--gold);">+594%</div>
-        <div class="stat-label">Return from IPO</div>
+        <div class="stat-label">Current Return from IPO</div>
       </div>
     </div>
   </div>
@@ -440,21 +455,17 @@ table tr:hover td { background:rgba(212,168,67,0.05); }
       <div class="card">
         <h3>Valuation Snapshot</h3>
         <div style="font-size:13px;line-height:1.8;">
-          <strong>Current PE (TTM):</strong> ~45x<br>
-          <strong>FY26E PE:</strong> ~13x (at ₹750, EPS ~₹64)<br>
-          <strong>FY27E PE:</strong> ~7.5x<br>
-          <strong>EV/EBITDA (TTM):</strong> ~21x<br>
-          <strong>Price/Book:</strong> 7.4x<br>
-          <strong>ROE (avg):</strong> 22%<br>
-          <strong>ROCE (avg):</strong> 25%
+          <strong>Current PE (TTM):</strong> ~17x<br>
+          <strong>EV/EBITDA (TTM):</strong> ~12x<br>
+          <strong>Price/Book:</strong> ~8.4x<br>
+          <strong>ROE (avg):</strong> 29%<br>
+          <strong>ROCE (avg):</strong> 36%
         </div>
-        <p style="font-size:12px;color:var(--gold);margin-top:8px;">TTM PE looks expensive because FY25 earnings were from just 2 aircraft. The forward PE drops dramatically if fleet expansion executes on time.</p>
+        <p style="font-size:12px;color:var(--gold);margin-top:8px;">TTM PE looks to factor in execution risk (Aircraft delays, Middle East Tension). The forward PE drops further if fleet expansion executes on time and results come in better than expected.</p>
       </div>
       <div class="card">
         <h3>What Should AFCOM Trade At?</h3>
-        <p style="font-size:13px;line-height:1.6;">Aviation cargo is a high-barrier, capital-intensive business. Global comps like Atlas Air traded at 8-12x earnings; Blue Dart trades at 35-45x. AFCOM sits between — higher growth than Blue Dart, but higher risk than Atlas.</p>
-        <p style="font-size:13px;line-height:1.6;margin-top:8px;">A 20-25x forward PE seems fair for a company growing revenue 3x+ annually with 20% margins. At 25x FY27E EPS of ₹100, fair value = ₹2,500. At 15x (conservative), ₹1,500. Current price (₹750) prices in significant execution risk.</p>
-        <p style="font-size:12px;color:var(--gray);margin-top:8px;">The notes suggest entry at ₹600-650 provides better margin of safety. At ₹750 with PE ~15 on FY26E, it's "buy-and-monitor, not buy-and-forget."</p>
+        <p style="font-size:13px;line-height:1.6;">Aviation cargo is a high-barrier, capital-intensive business. Global comps: Atlas Air 8-12x, Indian peers: Blue Dart 35-45x. Unlisted pure-plays Quikjet Cargo (domestic scheduled + ACMI) and SpiceXpress (ex-SpiceJet; ~$344 mn valuation); listed Delhivery (e-com multimodal) and Allcargo Logistics (express + forwarding). AFCOM sits between — higher growth than Blue Dart, higher risk than Atlas.</p>
       </div>
       <div class="card">
         <h3>Balance Sheet Highlights</h3>
@@ -477,7 +488,7 @@ table tr:hover td { background:rgba(212,168,67,0.05); }
   <div class="bg-pattern"></div>
   <div class="slide-number">07 / 14 — Fleet & Expansion</div>
   <h1>12x Capacity <span class="accent">Expansion</span></h1>
-  <div class="subtitle">From 44 tonnes (2 aircraft) to 550 tonnes (9 aircraft) — if executed.</div>
+  <div class="subtitle">From 44 tonnes (2 aircraft) to 550 tonnes (9 aircraft) — <strong style="color:var(--gold);"> if executed </strong> </div>
   <div class="scroll-content">
     <div style="margin-bottom:20px;">
       <canvas id="fleetChart" style="height:220px;"></canvas>
@@ -488,7 +499,7 @@ table tr:hover td { background:rgba(212,168,67,0.05); }
           <h3>Wet Lease vs Dry Lease — Why It Matters</h3>
           <p style="font-size:13px;line-height:1.6;"><strong style="color:var(--sky);">Dry Lease (AFCOM's model):</strong> Lessee takes the bare aircraft and provides its own crew, maintenance, insurance. AFCOM's B737s are on 96-month dry leases. This gives AFCOM full operational control and higher margins (no crew cost pass-through), but requires AOP, DGCA compliance, and in-house crew management.</p>
           <p style="font-size:13px;line-height:1.6;margin-top:8px;"><strong style="color:var(--gold);">Wet Lease:</strong> Lessor provides aircraft + crew + maintenance + insurance (ACMI). Used by airlines for temporary capacity. Higher cost per hour, but zero capital commitment. AFCOM uses wet lease sparingly for surge capacity.</p>
-          <p style="font-size:12px;color:var(--gray);margin-top:8px;">AFCOM's dry-lease model is the moat. Getting a dry-lease AOP from DGCA for cargo takes years — not months. This is why IndiGo and SpiceJet haven't simply launched dedicated freighter arms at scale.</p>
+          <p style="font-size:14px;line-height:1.6;margin-top:8px;color:var(--gold);">AFCOM's dry-lease model is the moat. Getting a dry-lease AOP from DGCA for cargo takes years — not months. This is why IndiGo and SpiceJet haven't simply launched dedicated freighter arms at scale.</p>
         </div>
         <div class="card">
           <h3>Nauru JV — Inorganic Growth</h3>
@@ -510,7 +521,7 @@ table tr:hover td { background:rgba(212,168,67,0.05); }
             <strong>Full fleet revenue potential:</strong><br>
             5 × B737 × ₹21 Cr × 12 = <span style="color:var(--gold);">₹1,260 Cr</span><br>
             4 × B777 × ₹100 Cr × 12 = <span style="color:var(--gold);">₹4,800 Cr</span><br>
-            <span style="color:var(--gray);">(Theoretical max — actual will depend on utilization rates, downtime, route profitability)</span>
+            <p style="font-size:14px;line-height:1.6;margin-top:8px;color:var(--gold);">(Theoretical max — actual will depend on utilization rates, downtime, route profitability)</p>
           </div>
         </div>
       </div>
@@ -563,7 +574,7 @@ table tr:hover td { background:rgba(212,168,67,0.05); }
 <div class="slide" id="slide-8">
   <div class="bg-pattern"></div>
   <div class="slide-number">09 / 14 — Competitive Moat</div>
-  <h1>Why Can't <span class="accent">IndiGo</span> Just Enter?</h1>
+  <h1>Why Can't <span class="accent">Incumbents</span> Just Enter?</h1>
   <div class="subtitle">The barriers that protect — and limit — AFCOM's niche.</div>
   <div class="grid-2 scroll-content">
     <div>
@@ -583,7 +594,7 @@ table tr:hover td { background:rgba(212,168,67,0.05); }
         <h3>AFCOM's Margin Advantage</h3>
         <p style="font-size:13px;line-height:1.6;">AFCOM's 20%+ PAT margins are exceptional for aviation. Why?</p>
         <div style="font-size:13px;line-height:1.7;margin-top:8px;">
-          • <strong>No passenger overhead:</strong> No cabin crew, no in-flight service, no passenger terminals, no delay compensation<br>
+          • <strong>Less passenger overhead:</strong> Cabin crew, in-flight service, passenger terminals: Lesser expenses across<br>
           • <strong>24-hour operations:</strong> Cargo can fly red-eye slots when airport charges are cheaper<br>
           • <strong>Premium cargo mix:</strong> DG/hazardous (31%) and odd-dimensional (29%) command 20-40% yield premiums<br>
           • <strong>GSSA guaranteed offtake:</strong> 50% capacity pre-sold, reducing utilization risk<br>
@@ -595,13 +606,13 @@ table tr:hover td { background:rgba(212,168,67,0.05); }
         <table style="font-size:12px;">
           <tr><th>Carrier</th><th>Fleet</th><th>Type</th><th>Focus</th></tr>
           <tr><td style="color:var(--gold);">AFCOM</td><td>3 B737</td><td>Pure Freighter</td><td>International (ASEAN)</td></tr>
-          <tr><td>Blue Dart</td><td>8 (757+737)</td><td>Pure Freighter</td><td>Domestic (DHL)</td></tr>
+          <tr><td>Blue Dart</td><td>8 (757+737)</td><td>Integrated Operations</td><td>Domestic (DHL)</td></tr>
           <tr><td>IndiGo Cargo</td><td>4 A321F</td><td>Dedicated</td><td>Domestic/Intl</td></tr>
           <tr><td>SpiceXpress</td><td>3 B737</td><td>Separated</td><td>Domestic</td></tr>
           <tr><td>Quikjet</td><td>2 B737</td><td>Contract</td><td>Amazon Air India</td></tr>
           <tr><td>Pradhaan Air</td><td>1-2</td><td>Freighter</td><td>New entrant</td></tr>
         </table>
-        <p style="font-size:12px;color:var(--gray);margin-top:8px;">AFCOM is the only listed, dedicated international cargo airline in India. Blue Dart is unlisted (DHL subsidiary). IndiGo Cargo is a division, not standalone. SpiceXpress was separated from SpiceJet amid debt restructuring.</p>
+        <p style="font-size:12px;color:var(--gray);margin-top:8px;">AFCOM is the only listed, dedicated international cargo airline in India. Blue Dart is an integrated player (DHL subsidiary). IndiGo Cargo is a division, not standalone. SpiceXpress was separated from SpiceJet amid debt restructuring.</p>
       </div>
     </div>
   </div>
@@ -661,12 +672,12 @@ table tr:hover td { background:rgba(212,168,67,0.05); }
     <div>
       <h3 style="margin-bottom:12px;">Key Risks</h3>
       <div class="risk-item"><strong>Aircraft concentration:</strong> With only 3 aircraft, one grounded plane = ~33% capacity hit. A single engine failure, bird strike, or maintenance issue can materially impact quarterly revenue. This is the most critical near-term operational risk.</div>
-      <div class="risk-item"><strong>Execution risk on fleet expansion:</strong> 4th/5th B737 and B777 acquisitions have consistently slipped. If the 12x expansion takes 4 years instead of 2, the forward PE re-rates downward and investor patience erodes.</div>
+      <div class="risk-item"><strong>Execution risk on fleet expansion:</strong> 4th/5th B737 and B777 acquisitions have got delayed consistently. If the 12x expansion takes more time than expected, the forward PE re-rates downward and investor patience erodes.</div>
       <div class="risk-item"><strong>Aviation safety & regulatory:</strong> Post the Air India 171 crash (June 2025, 260 deaths), DGCA has intensified safety audits across all carriers. Any safety incident involving a cargo aircraft — even minor — would trigger severe regulatory scrutiny, potential grounding, and media coverage that could tank the stock.</div>
       <div class="risk-item"><strong>ATF cost inflation:</strong> Fuel is 63% of variable costs. If crude stays above $120 due to the Iran conflict and Strait of Hormuz disruption, margin compression is inevitable despite the VAT exemption.</div>
       <div class="risk-item"><strong>Customer concentration:</strong> Top 5 customers historically accounted for 75-99% of revenue. Loss of any major client (Etihad, Emirates) would be devastating.</div>
-      <div class="risk-item"><strong>Dilution overhang:</strong> QIP of up to ₹200 Cr is approved but not executed. Warrants worth ₹75 Cr still pending conversion. Total potential dilution: 15-20%.</div>
-      <div class="risk-item"><strong>SME liquidity:</strong> Despite main board migration, daily trading volumes remain thin (₹5-15 Cr). Large institutional orders can move the price 5-10% in either direction.</div>
+      <div class="risk-item"><strong>Dilution overhang:</strong> QIP of up to ₹200 Cr is approved but not executed. Warrants worth ₹75 Cr still pending conversion. Potential dilution cannot be ruled out.</div>
+      <div class="risk-item"><strong>SME liquidity:</strong> Daily trading volumes remain thin (₹5-15 Cr). Large institutional orders can move the price 5-10% in either direction.</div>
     </div>
     <div>
       <h3 style="margin-bottom:12px;">Mitigants & Safeguards</h3>
@@ -676,7 +687,7 @@ table tr:hover td { background:rgba(212,168,67,0.05); }
       <div class="mitigant"><strong>Fuel pass-through:</strong> Management confirms full ATF cost pass-through to yields. Plus the 5-7% structural cost advantage from Designated Carrier VAT exemption provides a buffer.</div>
       <div class="mitigant"><strong>Net cash balance sheet:</strong> ₹140 Cr cash, negligible debt. Even if expansion delays occur, the company has runway to sustain operations.</div>
       <div class="mitigant"><strong>Diversifying client base:</strong> 330+ interline agreements, IATA ICH membership, and expanding GSSA network are gradually reducing customer concentration. New Nauru alliance adds Pacific cargo flows.</div>
-      <div class="mitigant"><strong>BBB+ credit rating:</strong> Acuité rating enables better borrowing terms for future aircraft financing. BSE main board migration improves institutional visibility.</div>
+      <div class="mitigant"><strong>BBB+ credit rating:</strong> Acuité rating enables better borrowing terms for future aircraft financing. Main board migration in future improves institutional visibility.</div>
     </div>
   </div>
 </div>
@@ -686,59 +697,63 @@ table tr:hover td { background:rgba(212,168,67,0.05); }
   <div class="bg-pattern"></div>
   <div class="slide-number">12 / 14 — Operational Insights</div>
   <h1>Flight <span class="accent">Insights</span></h1>
-  <div class="subtitle">Operational metrics from screener data showing fleet and network growth trajectory.</div>
-  <div class="grid-2 scroll-content">
-    <div class="card">
-      <h3>Yearly Metrics (Mar 2025)</h3>
-      <table>
-        <tr><th>Metric</th><th>Sep '21</th><th>Mar '23</th><th>Mar '24</th><th>Mar '25</th></tr>
-        <tr><td>Fleet Size (Owned/Dry Leased)</td><td>0</td><td>0</td><td>0</td><td>2</td></tr>
-        <tr><td>Dispatch Reliability</td><td>—</td><td>—</td><td>—</td><td>100%</td></tr>
-        <tr><td>Network Utilization (Load Factor)</td><td>—</td><td>—</td><td>—</td><td>84%</td></tr>
-        <tr><td>Partner Airlines (Interline)</td><td>—</td><td>—</td><td>—</td><td>330</td></tr>
-        <tr><td>Payload/Aircraft (B737-800 BCF)</td><td>—</td><td>—</td><td>—</td><td>22 tonnes</td></tr>
-      </table>
-      <p style="font-size:12px;color:var(--gray);margin-top:12px;">Note: Fleet size was zero until FY25 because AFCOM was in the pre-operational phase (AOP received Dec 2024). Revenue before FY25 came primarily from GSSA/agency activities.</p>
-    </div>
-    <div class="card">
-      <h3>Quarterly Metrics (Dec 2025)</h3>
-      <table>
-        <tr><th>Metric</th><th>Mar '25</th><th>Sep '25</th><th>Dec '25</th></tr>
-        <tr><td>Fleet Size</td><td>2</td><td>2</td><td>3</td></tr>
-        <tr><td>Cargo Tonnage Handled</td><td>—</td><td>—</td><td>11,856 t</td></tr>
-        <tr><td>Partner Airlines</td><td>330</td><td>330</td><td>330</td></tr>
-        <tr><td>Payload/Aircraft</td><td>22t</td><td>22t</td><td>22t</td></tr>
-        <tr><td>Total Flights Operated</td><td>—</td><td>—</td><td>888</td></tr>
-      </table>
-      <p style="font-size:12px;color:var(--gray);margin-top:12px;">888 total flights by Dec 2025. Q3 alone had 502 trips (242 pure charters). 11,856 tonnes handled cumulatively, with Q3 volume of 6,143 tonnes showing strong ramp-up.</p>
-    </div>
-  </div>
-  <div class="card" style="margin-top:16px;">
-    <h3>Cost Structure Breakdown (Q3 FY26 — from Corporate PPT)</h3>
-    <div style="display:flex;gap:24px;align-items:center;margin-top:12px;flex-wrap:wrap;">
-      <div style="flex:1;min-width:200px;">
-        <div style="font-size:13px;margin-bottom:6px;">Fixed Costs: <strong>37%</strong></div>
-        <div style="display:flex;gap:4px;height:24px;border-radius:4px;overflow:hidden;">
-          <div style="flex:33;background:var(--sky);" title="Aircraft Rental 33%"></div>
-          <div style="flex:41;background:var(--gold);" title="Maint Reserves 41%"></div>
-          <div style="flex:13;background:rgba(46,139,192,0.5);" title="Crew 13%"></div>
-          <div style="flex:13;background:var(--gray);" title="Insurance 6% + Other 7%"></div>
-        </div>
-        <div style="font-size:10px;color:var(--gray);margin-top:4px;">Aircraft Rental 33% | Maint Reserves 41% | Crew 13% | Ins+Other 13%</div>
+  <div class="subtitle">Operational metrics showing fleet and network growth trajectory.</div>
+  
+  <div class="scroll-content">
+    <div class="grid-2">
+      <div class="card">
+        <h3>Yearly Metrics (Mar 2025)</h3>
+        <table>
+          <tr><th>Metric</th><th>Sep '21</th><th>Mar '23</th><th>Mar '24</th><th>Mar '25</th></tr>
+          <tr><td>Fleet Size (Owned/Dry Leased)</td><td>0</td><td>0</td><td>0</td><td>2</td></tr>
+          <tr><td>Dispatch Reliability</td><td>—</td><td>—</td><td>—</td><td>100%</td></tr>
+          <tr><td>Network Utilization (Load Factor)</td><td>—</td><td>—</td><td>—</td><td>84%</td></tr>
+          <tr><td>Partner Airlines (Interline)</td><td>—</td><td>—</td><td>—</td><td>330</td></tr>
+          <tr><td>Payload/Aircraft (B737-800 BCF)</td><td>—</td><td>—</td><td>—</td><td>22 tonnes</td></tr>
+        </table>
+        <p style="font-size:12px;color:var(--gray);margin-top:12px;">Note: Fleet size was zero until FY25 because AFCOM was in the pre-operational phase (AOP received Dec 2024). Data sourced from annual reports, concalls, investor interactions.</p>
       </div>
-      <div style="flex:1;min-width:200px;">
-        <div style="font-size:13px;margin-bottom:6px;">Variable Costs: <strong>51%</strong></div>
-        <div style="display:flex;gap:4px;height:24px;border-radius:4px;overflow:hidden;">
-          <div style="flex:63;background:var(--red);" title="Fuel 63%"></div>
-          <div style="flex:20;background:rgba(231,76,60,0.5);" title="Trip Support 20%"></div>
-          <div style="flex:10;background:var(--gray);" title="Ground Handling 10%"></div>
-          <div style="flex:7;background:rgba(255,255,255,0.15);" title="Other 7%"></div>
-        </div>
-        <div style="font-size:10px;color:var(--gray);margin-top:4px;">Fuel (ATF) 63% | Trip Support 20% | Ground Handling 10% | Other 7%</div>
+      <div class="card">
+        <h3>Quarterly Metrics (Dec 2025)</h3>
+        <table>
+          <tr><th>Metric</th><th>Mar '25</th><th>Sep '25</th><th>Dec '25</th></tr>
+          <tr><td>Fleet Size</td><td>2</td><td>2</td><td>3</td></tr>
+          <tr><td>Cargo Tonnage Handled</td><td>—</td><td>—</td><td>11,856 t</td></tr>
+          <tr><td>Partner Airlines</td><td>330</td><td>330</td><td>330</td></tr>
+          <tr><td>Payload/Aircraft</td><td>22t</td><td>22t</td><td>22t</td></tr>
+          <tr><td>Total Flights Operated</td><td>—</td><td>—</td><td>888</td></tr>
+        </table>
+        <p style="font-size:12px;color:var(--gray);margin-top:12px;">888 total flights by Dec 2025. Q3 alone had 502 trips (242 pure charters). 11,856 tonnes handled cumulatively, with Q3 volume of 6,143 tonnes showing strong ramp-up.</p>
       </div>
-      <div style="flex:0.5;min-width:120px;">
-        <div style="font-size:13px;margin-bottom:6px;">Other: <strong>12%</strong></div>
-        <div style="font-size:10px;color:var(--gray);">Amort 25% | Finance 12% | Others 52%</div>
+    </div>
+    
+    <div class="card" style="margin-top:16px;">
+      <h3>Cost Structure Breakdown (Q3 FY26)</h3>
+      <div style="display:flex;gap:24px;align-items:center;margin-top:12px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:200px;">
+          <div style="font-size:13px;margin-bottom:6px;">Fixed Costs: <strong>37%</strong></div>
+          <div style="display:flex;gap:4px;height:24px;border-radius:4px;overflow:hidden;">
+            <div style="flex:33;background:var(--sky);" title="Aircraft Rental 33%"></div>
+            <div style="flex:41;background:var(--gold);" title="Maint Reserves 41%"></div>
+            <div style="flex:13;background:rgba(46,139,192,0.5);" title="Crew 13%"></div>
+            <div style="flex:13;background:var(--gray);" title="Insurance 6% + Other 7%"></div>
+          </div>
+          <div style="font-size:10px;color:var(--gray);margin-top:4px;">Aircraft Rental 33% | Maint Reserves 41% | Crew 13% | Ins+Other 13%</div>
+        </div>
+        <div style="flex:1;min-width:200px;">
+          <div style="font-size:13px;margin-bottom:6px;">Variable Costs: <strong>51%</strong></div>
+          <div style="display:flex;gap:4px;height:24px;border-radius:4px;overflow:hidden;">
+            <div style="flex:63;background:var(--red);" title="Fuel 63%"></div>
+            <div style="flex:20;background:rgba(231,76,60,0.5);" title="Trip Support 20%"></div>
+            <div style="flex:10;background:var(--gray);" title="Ground Handling 10%"></div>
+            <div style="flex:7;background:rgba(255,255,255,0.15);" title="Other 7%"></div>
+          </div>
+          <div style="font-size:10px;color:var(--gray);margin-top:4px;">Fuel (ATF) 63% | Trip Support 20% | Ground Handling 10% | Other 7%</div>
+        </div>
+        <div style="flex:0.5;min-width:120px;">
+          <div style="font-size:13px;margin-bottom:6px;">Other: <strong>12%</strong></div>
+          <div style="font-size:10px;color:var(--gray);">Amort 25% | Finance 12% | Others 52%</div>
+        </div>
       </div>
     </div>
   </div>
@@ -749,23 +764,23 @@ table tr:hover td { background:rgba(212,168,67,0.05); }
   <div class="bg-pattern"></div>
   <div class="bg-pattern-gold"></div>
   <div class="slide-number">13 / 14 — Investment Thesis</div>
-  <h1>The <span class="accent">Verdict</span></h1>
+  <h1>The <span class="accent">Scenarios</span></h1>
   <div class="scroll-content">
     <div class="grid-3" style="margin-bottom:20px;">
       <div class="card" style="border-top:3px solid var(--green);">
         <h3 style="color:var(--green);">Bull Case</h3>
-        <p style="font-size:13px;line-height:1.6;">Fleet expansion executes on time. B777 wide-bodies open Japan/Korea/Africa lanes with 5x payload and higher yields. Revenue scales to ₹2,000 Cr by FY28. PAT margins sustain at 20%. Stock re-rates to 25x forward PE. Target: ₹2,500+ by FY28.</p>
-        <p style="font-size:12px;color:var(--green);margin-top:8px;">Probability: 25% — requires near-perfect execution.</p>
+        <p style="font-size:13px;line-height:1.6;">Fleet expansion executes on time. B777 wide-bodies open Japan/Korea/Africa lanes with 5x payload and higher yields. Revenue scales to ₹2,000+ Cr by FY28. PAT margins sustain at 20%.</p>
+        <p style="font-size:12px;color:var(--green);margin-top:8px;">Probability: ~25% — requires near-perfect execution.</p>
       </div>
       <div class="card" style="border-top:3px solid var(--sky);">
         <h3 style="color:var(--sky);">Base Case</h3>
-        <p style="font-size:13px;line-height:1.6;">Fleet reaches 5 B737s + 2 B777s by FY28 (one year delayed). Revenue of ₹1,200-1,500 Cr. PAT margins of 18-20%. Stock trades at 15-20x forward PE. Target: ₹1,500-2,000 by FY28.</p>
-        <p style="font-size:12px;color:var(--sky);margin-top:8px;">Probability: 45% — this is the most likely outcome.</p>
+        <p style="font-size:13px;line-height:1.6;">Fleet reaches 5 B737s + 2 B777s by FY28 (one year delayed). Revenue of ₹1,200-1,500 Cr. PAT margins of 18-20%.</p>
+        <p style="font-size:12px;color:var(--sky);margin-top:8px;">Probability: 60% — History suggests this is the most likely outcome.</p>
       </div>
       <div class="card" style="border-top:3px solid var(--red);">
         <h3 style="color:var(--red);">Bear Case</h3>
-        <p style="font-size:13px;line-height:1.6;">B777 acquisition fails or is delayed 2+ years. Only 5 B737s operate. Revenue plateaus at ₹600-800 Cr. ATF costs compress margins to 12-15%. Market re-rates PE to 10-12x. Target: ₹500-700.</p>
-        <p style="font-size:12px;color:var(--red);margin-top:8px;">Probability: 30% — history of delays makes this non-trivial.</p>
+        <p style="font-size:13px;line-height:1.6;">B777 acquisition fails or is delayed 2+ years. Only 5 B737s operate. Revenue fall back. ATF costs compress margins to 12-15%.</p>
+        <p style="font-size:12px;color:var(--red);margin-top:8px;">Probability: 15% — past delays makes this non-trivial.</p>
       </div>
     </div>
     <div class="grid-2">
@@ -784,9 +799,8 @@ table tr:hover td { background:rgba(212,168,67,0.05); }
       </div>
       <div class="card" style="border:1px solid var(--gold);">
         <h3>Bottom Line</h3>
-        <p style="font-size:14px;line-height:1.7;">AFCOM is a <strong>high-conviction, high-risk</strong> story. The industry tailwinds are real — India's air cargo is set to 3x by 2030, and AFCOM is the only listed pure-play. The moat exists. The margins are excellent. The management has domain expertise.</p>
-        <p style="font-size:14px;line-height:1.7;margin-top:8px;">But the execution risk is equally real. Aircraft delays, ATF volatility, customer concentration, and the shadow of the Air India crash's regulatory aftermath all weigh on the stock. At ₹750 (PE ~15x FY26E), much of the near-term growth is priced in.</p>
-        <p style="font-size:14px;line-height:1.7;margin-top:8px;color:var(--gold);"><strong>This is a buy-and-monitor, not buy-and-forget.</strong> Entry around ₹600-650 provides better margin of safety. Position size appropriately for a small-cap with thin liquidity.</p>
+        <p style="font-size:14px;line-height:1.7;">AFCOM is a <strong>high-conviction</strong> story. The industry tailwinds are real — India's air cargo is set to 3x by 2030, and AFCOM is the only listed pure-play. The moat exists. The margins are excellent. The management has domain expertise.</p>
+        <p style="font-size:14px;line-height:1.7;margin-top:8px;color:var(--gold);"><strong>But the execution risk is equally real. Aircraft delays, ATF volatility, customer concentration, and the shadow of the Air India crash's regulatory aftermath all weigh on the stock.</strong></p>
       </div>
     </div>
   </div>
@@ -796,17 +810,17 @@ table tr:hover td { background:rgba(212,168,67,0.05); }
 <div class="slide" id="slide-13">
   <div class="bg-pattern"></div>
   <div class="bg-pattern-gold"></div>
-  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 16px;">
+  <div class="scroll-content" style="display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 16px; padding-top: 20px;">
     <div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:4px;color:var(--gray);margin-bottom:12px;text-transform:uppercase;">SME Gems · Hidden Champions of the SME Platform</div>
     <div style="width:60px;height:2px;background:linear-gradient(90deg,var(--gold),var(--sky));margin:0 auto 24px;border-radius:1px;"></div>
     <div style="max-width:640px;">
       <h2 style="color:var(--gold);margin-bottom:20px;font-size:22px;">Disclaimer</h2>
       <div style="font-size:12px;line-height:1.8;color:var(--gray);text-align:left;">
-        <p style="margin-bottom:12px;">This presentation is prepared for <strong style="color:var(--white);">educational and informational purposes only</strong>. It does not constitute investment advice, a recommendation, or an offer to buy or sell any securities. The author is not a SEBI-registered investment advisor.</p>
-        <p style="margin-bottom:12px;">All data, analysis, and opinions presented are based on publicly available information including BSE filings, corporate presentations, screener data, news articles, and investor call notes. While every effort has been made to ensure accuracy, the author makes no warranties regarding the completeness or correctness of the information.</p>
-        <p style="margin-bottom:12px;"><strong style="color:var(--white);">The author may or may not hold positions</strong> in the securities discussed. Past performance is not indicative of future results. Stock prices are subject to market risks. Please read all scheme-related documents carefully and consult a qualified financial advisor before making any investment decisions.</p>
-        <p style="margin-bottom:12px;">Forward-looking estimates (FY26E, FY27E, FY28E) are based on management guidance and third-party projections. Actual results may differ materially due to market conditions, execution risks, regulatory changes, and other factors.</p>
-        <p style="color:var(--red);font-size:11px;">Investments in securities market are subject to market risks. Read all related documents carefully before investing.</p>
+        <p style="margin-bottom:17px;">This presentation is prepared for <strong style="color:var(--white);">educational and informational purposes only</strong>. It does not constitute investment advice, a recommendation, or an offer to buy or sell any securities. The author is not a SEBI-registered investment advisor.</p>
+        <p style="margin-bottom:17px;">All data, analysis, and opinions presented are based on publicly available information including BSE filings, corporate presentations, screener data, news articles, and investor call notes. While every effort has been made to ensure accuracy, the author makes no warranties regarding the completeness or correctness of the information.</p>
+        <p style="margin-bottom:17px;"><strong style="color:var(--white);">The author may or may not hold positions</strong> in the securities discussed. Past performance is not indicative of future results. Stock prices are subject to market risks. Please read all scheme-related documents carefully and consult a qualified financial advisor before making any investment decisions.</p>
+        <p style="margin-bottom:17px;">Actual results may differ materially due to market conditions, execution risks, regulatory changes, and other factors.</p>
+        <p style="color:var(--red);font-size:14px;">Investments in securities market are subject to market risks. Read all related documents carefully before investing.</p>
       </div>
       <div style="margin-top:24px;display:flex;align-items:center;justify-content:center;gap:12px;">
         <a href="https://x.com/sachprat07" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:10px 24px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:24px;color:var(--white);text-decoration:none;font-size:14px;font-weight:500;transition:all 0.3s;" onmouseover="this.style.borderColor='var(--sky)';this.style.background='rgba(46,139,192,0.1)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.15)';this.style.background='rgba(255,255,255,0.06)'">
@@ -825,7 +839,7 @@ table tr:hover td { background:rgba(212,168,67,0.05); }
   <button onclick="prevSlide()">◄</button>
   <div class="dots" id="dots"></div>
   <button onclick="nextSlide()">►</button>
-  <div class="page-num" id="pageNum">1 / 13</div>
+  <div class="page-num" id="pageNum">1 / 14</div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -870,13 +884,155 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
 });
 
-// Touch support
+// --- TOUCH SUPPORT (Fixed for Scrolling & Sensitivity) ---
 let touchStartX = 0;
-document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+let touchStartY = 0;
+
+document.addEventListener('touchstart', e => { 
+  touchStartX = e.touches[0].clientX; 
+  touchStartY = e.touches[0].clientY;
+}, { passive: true }); // passive: true ensures smooth native scrolling
+
 document.addEventListener('touchend', e => {
-  const diff = touchStartX - e.changedTouches[0].clientX;
-  if (Math.abs(diff) > 50) { diff > 0 ? nextSlide() : prevSlide(); }
+  const diffX = touchStartX - e.changedTouches[0].clientX;
+  const diffY = touchStartY - e.changedTouches[0].clientY;
+  
+  // Only trigger swipe if horizontal distance > 75px AND horizontal movement > vertical movement
+  if (Math.abs(diffX) > 75 && Math.abs(diffX) > Math.abs(diffY)) { 
+    diffX > 0 ? nextSlide() : prevSlide(); 
+  }
 });
+
+// --- INTERACTIVE BACKGROUND (Air Cargo Network - Reactive) ---
+const bgCanvas = document.getElementById('bg-canvas');
+const bgCtx = bgCanvas.getContext('2d');
+let width, height;
+let nodes = [];
+
+// Track the pointer (mouse or touch)
+let pointer = { x: null, y: null, active: false };
+
+function updatePointer(e, active) {
+    // --- NEW: Create dead zones for content ---
+    // If the user is hovering or touching a card, chart, table, or the nav bar, ignore the movement.
+    if (e.target && e.target.closest && e.target.closest('.card, canvas, .nav, table, .timeline-item')) {
+        pointer.x = null;
+        pointer.y = null;
+        pointer.active = false;
+        return; // Stop right here, don't update the background pointer
+    }
+
+    // Otherwise, track the pointer normally in the empty spaces
+    if (e.touches && e.touches.length > 0) {
+        // Touch events (iOS/iPad/Mobile)
+        pointer.x = e.touches[0].clientX;
+        pointer.y = e.touches[0].clientY;
+    } else if (e.clientX !== undefined) {
+        // Mouse events (Desktop)
+        pointer.x = e.clientX;
+        pointer.y = e.clientY;
+    }
+    
+    if (active !== undefined) pointer.active = active;
+}
+
+// Mouse Event Listeners
+window.addEventListener('mousemove', e => updatePointer(e));
+window.addEventListener('mousedown', e => updatePointer(e, true));
+window.addEventListener('mouseup', e => updatePointer(e, false));
+window.addEventListener('mouseleave', () => { pointer.x = null; pointer.y = null; pointer.active = false; });
+
+// Touch Event Listeners (Passive: true ensures scrolling stays smooth)
+window.addEventListener('touchstart', e => updatePointer(e, true), { passive: true });
+window.addEventListener('touchmove', e => updatePointer(e), { passive: true });
+window.addEventListener('touchend', () => { pointer.x = null; pointer.y = null; pointer.active = false; });
+window.addEventListener('touchcancel', () => { pointer.x = null; pointer.y = null; pointer.active = false; });
+
+function initBg() {
+  width = bgCanvas.width = window.innerWidth;
+  height = bgCanvas.height = window.innerHeight;
+  nodes = [];
+  
+  // Create 50 "aircraft" nodes
+  for(let i = 0; i < 50; i++) { 
+    nodes.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      vx: (Math.random() - 0.5) * 0.5, // Current velocity X
+      vy: (Math.random() - 0.5) * 0.5, // Current velocity Y
+      baseVx: (Math.random() - 0.5) * 0.5, // Natural speed X to return to
+      baseVy: (Math.random() - 0.5) * 0.5  // Natural speed Y to return to
+    });
+  }
+}
+
+function drawBg() {
+  bgCtx.clearRect(0, 0, width, height);
+  bgCtx.fillStyle = '#d4a843'; // Gold nodes
+  bgCtx.lineWidth = 1;
+
+  for(let i = 0; i < nodes.length; i++) {
+    let n = nodes[i];
+    
+    // --- INTERACTIVITY LOGIC ---
+    if (pointer.x !== null && pointer.y !== null) {
+      let dx = pointer.x - n.x;
+      let dy = pointer.y - n.y;
+      let dist = Math.hypot(dx, dy);
+      
+      // 1. Draw a gold line connecting the node to the pointer if it gets close
+      if (dist < 150) {
+          bgCtx.strokeStyle = `rgba(212, 168, 67, ${1 - (dist / 150)})`; // Fades out the further away it gets
+          bgCtx.beginPath();
+          bgCtx.moveTo(n.x, n.y);
+          bgCtx.lineTo(pointer.x, pointer.y);
+          bgCtx.stroke();
+      }
+
+      // 2. Repel nodes away when screen is tapped or mouse is clicked
+      if (pointer.active && dist < 120) {
+          let force = (120 - dist) / 120;
+          n.vx -= (dx / dist) * force * 1.5;
+          n.vy -= (dy / dist) * force * 1.5;
+      }
+    }
+
+    // Apply friction so nodes eventually return to their normal slow speed after being repelled
+    n.vx = n.vx * 0.95 + n.baseVx * 0.05;
+    n.vy = n.vy * 0.95 + n.baseVy * 0.05;
+
+    // Move the node
+    n.x += n.vx;
+    n.y += n.vy;
+
+    // Bounce off the edges of the screen
+    if(n.x < 0 || n.x > width) { n.vx *= -1; n.baseVx *= -1; }
+    if(n.y < 0 || n.y > height) { n.vy *= -1; n.baseVy *= -1; }
+
+    // Draw the aircraft dot
+    bgCtx.beginPath();
+    bgCtx.arc(n.x, n.y, 1.5, 0, Math.PI * 2);
+    bgCtx.fill();
+
+    // Draw normal network routes to other nearby aircraft
+    bgCtx.strokeStyle = 'rgba(46, 139, 192, 0.15)'; // Sky blue
+    for(let j = i + 1; j < nodes.length; j++) {
+      let n2 = nodes[j];
+      let dist = Math.hypot(n.x - n2.x, n.y - n2.y);
+      if(dist < 120) {
+        bgCtx.beginPath();
+        bgCtx.moveTo(n.x, n.y);
+        bgCtx.lineTo(n2.x, n2.y);
+        bgCtx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(drawBg);
+}
+
+window.addEventListener('resize', initBg);
+initBg();
+drawBg();
 
 // CHARTS
 let priceChartInstance = null;
