@@ -44,7 +44,7 @@ body {
   width: 100%; height: 100%;
   z-index: -1;
   pointer-events: auto; 
-  opacity: 0.35; 
+  opacity: 0.10; 
 }
 
 /* AFCOM-STYLE BACKGROUND GRADIENTS */
@@ -267,6 +267,12 @@ canvas { max-width: 100%; }
 .pro-con { display:flex; gap:0.5rem; align-items:flex-start; margin-bottom:0.8rem; }
 .pro-con .icon { font-size:1rem; flex-shrink:0; margin-top:2px; }
 .pro-con .text { font-size:0.85rem; color:var(--text-muted); line-height:1.6; }
+  .pro-con .text strong { 
+  color: var(--text-main); 
+  font-family: 'Outfit', sans-serif; 
+  font-weight: 600; 
+  letter-spacing: 0.5px;
+}
 .pro .icon { color: var(--accent-green); }
 .con .icon { color: var(--accent-danger); }
 p.body-text { font-size: 0.9rem; line-height: 1.75; color: var(--text-muted); margin-bottom: 0; }
@@ -312,7 +318,7 @@ p.body-text { font-size: 0.9rem; line-height: 1.75; color: var(--text-muted); ma
         <div class="nav-link" onclick="goSlide(7)">Peers</div>
         <div class="nav-link" onclick="goSlide(8)">Risks</div>
         <div class="nav-link" onclick="goSlide(9)">Perception</div>
-        <div class="nav-link" onclick="goSlide(10)">Verdict</div>
+        <div class="nav-link" onclick="goSlide(10)">Scenarios</div>
         <div class="nav-link" onclick="goSlide(11)">Disclaimer</div>
       </div>
     </div>
@@ -336,8 +342,8 @@ p.body-text { font-size: 0.9rem; line-height: 1.75; color: var(--text-muted); ma
           <div class="stat-box"><div class="val">₹192 Cr</div><div class="lbl">FY25 Revenue</div></div>
           <div class="stat-box"><div class="val">25.1%</div><div class="lbl">EBITDA Margin</div></div>
           <div class="stat-box"><div class="val">₹500+ Cr</div><div class="lbl">Order Book</div></div>
-          <div class="stat-box"><div class="val">₹~297</div><div class="lbl">CMP (Apr '26)</div></div>
-          <div class="stat-box"><div class="val">~24x</div><div class="lbl">TTM P/E</div></div>
+          <div class="stat-box"><div class="val">₹~313</div><div class="lbl">CMP (Apr '26)</div></div>
+          <div class="stat-box"><div class="val">~26x</div><div class="lbl">TTM P/E</div></div>
         </div>
 
       </div>
@@ -401,7 +407,7 @@ p.body-text { font-size: 0.9rem; line-height: 1.75; color: var(--text-muted); ma
 
       <div class="card mt-2" style="border-left: 3px solid var(--accent-primary);">
         <div class="card-title">⭐ Mr. Sudhanshu Mani — Independent Director & Technology Advisor</div>
-        <p class="body-text" style="font-size:0.8rem">This is the crown jewel appointment. <span class="highlight">Former General Manager of ICF and the chief architect of Train 18 / Vande Bharat Express</span> — India's most iconic modern rail project. 38+ years in Indian Railways. Published author and international advisor. Per the Jan 2026 investor call, he "plays a vital role" in focus and growth — described as "the visionary of Airfloa." His role: identifying untapped high-value segments, guiding technology transitions, and leveraging his global railway network for export opportunities. Not a passive board member — he is shaping strategy on product expansion (platform screen doors, Kavach, high-speed components) and export positioning.</p>
+        <p class="body-text" style="font-size:0.8rem">This is the crown jewel appointment. <span class="highlight">Former General Manager of ICF and the chief architect of Train 18 / Vande Bharat Express</span> — India's most iconic modern rail project. 38+ years in Indian Railways. Published author and international advisor. Per the Jan 2026 investor call, he<span class="highlight"> "plays a vital role" </span>in focus and growth — described as "the visionary of Airfloa." His role: identifying untapped high-value segments, guiding technology transitions, and leveraging his global railway network for export opportunities. Not a passive board member — he is shaping strategy on product expansion (platform screen doors, Kavach, high-speed components) and export positioning.</p>
         <div class="mt-1"><span class="pill pill-green">Active Strategic Role</span></div>
       </div>
 
@@ -512,13 +518,13 @@ p.body-text { font-size: 0.9rem; line-height: 1.75; color: var(--text-muted); ma
             <span class="highlight">Listing Day (18 Sep '25):</span> Listed at ₹266, hit upper circuit at ₹279. 90% premium over IPO price of ₹140.<br><br>
             <span class="highlight">Rally Phase (Sep-Nov '25):</span> 5 consecutive upper circuits post-listing (SME circuit limits). Hit ₹432 peak in late Oct/early Nov. Driven by strong FY25 results, IPO euphoria, and defence narrative.<br><br>
             <span class="highlight">Correction (Nov '25-Mar '26):</span> Fell from ₹432 to ₹246 low — a 43% drawdown. Multiple factors: broader Indian market correction (Nifty down 10%+), SME liquidity drought, FY26 guidance reduction from ₹500 Cr to ₹300 Cr, general distrust of SME stocks amid global uncertainty.<br><br>
-            <span class="highlight">Current (Apr '26):</span> Recovering to ~₹297 range. Still 2x IPO price but 31% below all-time high.
+            <span class="highlight">Current (Apr '26):</span> Recovering to ~₹310 range. Still 2x IPO price but 31% below all-time high.
           </p>
         </div>
         <div class="card">
           <div class="card-title">PE Ratio Context</div>
           <p class="body-text" style="font-size:0.8rem">
-            At current ~₹297, on TTM EPS of ~₹14.2, PE is approximately <span class="highlight">~21x</span>. At IPO (₹140), PE was 13.1x on FY25 PAT. At peak (₹432), PE was ~30x on same earnings.<br><br>
+            At current ~₹313, on TTM EPS of ~₹14.2, PE is approximately <span class="highlight">~26x</span>. At IPO (₹140), PE was 13.1x on FY25 PAT. At peak (₹432), PE was ~30x on same earnings.<br><br>
             <span class="highlight">Context vs Peers:</span> Jupiter Wagons at 42x, Titagarh at 47x. Airfloa's valuation remains significantly cheaper on a PE basis — but the peers are large-caps with deeper order books and established track records.<br><br>
             <span class="highlight">The SME Discount:</span> SME stocks inherently trade at discount to mainboard due to lower liquidity, higher perceived risk, weaker governance oversight, and limited analyst coverage. The circuit limit mechanism creates violent moves both ways.
           </p>
@@ -668,14 +674,14 @@ p.body-text { font-size: 0.9rem; line-height: 1.75; color: var(--text-muted); ma
           <div class="pro-con con"><span class="icon">●</span><span class="text"><strong>Working Capital Trap:</strong> 242 debtor days + negative CFO. Growing revenue without generating cash. If banks tighten credit, execution stalls. H1FY26: ₹142 Cr receivables against ₹91 Cr half-year revenue = 9 months of revenue stuck.</span></div>
           <div class="pro-con con"><span class="icon">●</span><span class="text"><strong>Customer Concentration:</strong> ICF = 53.6% of FY25 revenue. Top 10 clients = 92.5%. Single policy change at ICF could materially impact business.</span></div>
           <div class="pro-con con"><span class="icon">●</span><span class="text"><strong>Dilution Risk:</strong> Management explicitly stated in Jan '26 call: equity raise planned post-September 2026 for capex + working capital. At current scale, ₹500+ Cr revenue needs ₹150-180 Cr working capital — funded by debt + potential equity dilution.</span></div>
-          <div class="pro-con con"><span class="icon">●</span><span class="text"><strong>Employee Attrition:</strong> RHP / Prospectus filings flag FY24 attrition at 81%, FY23 at 54%, FY25 at 40%. Extremely high for a manufacturing company. Questions about work culture and retention.</span></div>
-          <div class="pro-con con"><span class="icon">●</span><span class="text"><strong>Deviation from Core:</strong> Defence pivot requires different competencies (software, electronics, classified clearances) vs railway fabrication. Risk of spreading too thin across railways, drones, lasers, simulators, Kavach, platform doors, vacuum toilets — too many initiatives for a ₹192 Cr revenue company.</span></div>
+          <div class="pro-con con"><span class="icon">●</span><span class="text"><strong>Employee Attrition:</strong> RHP / Prospectus filings flag FY24 attrition at 81%, FY23 at 54%, FY25 at 40%. Unusually high for a manufacturing company. Questions about work culture and retention.</span></div>
+          <div class="pro-con con"><span class="icon">●</span><span class="text"><strong>Deviation from Core:</strong> Defence pivot requires different competencies (software, electronics, classified clearances) vs railway fabrication. <span class="highlight">Risk of spreading</span> too thin across railways, drones, lasers, simulators, Kavach, platform doors, vacuum toilets — too many initiatives for a ₹192 Cr revenue company.</span></div>
         </div>
         <div class="card">
           <div class="card-title" style="color:var(--accent-warn)">⚡ Moderate Risks</div>
           <div class="pro-con con"><span class="icon">●</span><span class="text"><strong>RoC Penalties:</strong> Multiple penalties in Jan 2026 for CSR non-compliance (FY21-22). ₹27L + ₹17L + ₹31L penalties, plus personal penalties on directors. Indicates governance gaps pre-listing. Management says they will appeal — but the pattern is concerning for a newly listed company.</span></div>
           <div class="pro-con con"><span class="icon">●</span><span class="text"><strong>Geopolitical (Israel JV):</strong> Technology transfer dependent on Israel-India relations. Middle East instability could delay programs. Defence procurement timelines are inherently unpredictable.</span></div>
-          <div class="pro-con con"><span class="icon">●</span><span class="text"><strong>SME Liquidity:</strong> Only 1,624 shareholders (Sep '25). Daily volume thin — 42K-157K shares. Circuit limits create artificial price moves. Institutional holding minimal (FII 2.77%, DII 1.23%). Not on NSE — BSE SME only.</span></div>
+          <div class="pro-con con"><span class="icon">●</span><span class="text"><strong>SME Liquidity:</strong> Only 1,624 shareholders (Sep '25). Daily volume thin. Circuit limits / spread create artificial price moves. Institutional holding minimal (FII 2.77%, DII 1.23%).</span></div>
           <div class="pro-con con"><span class="icon">●</span><span class="text"><strong>Commodity Price Risk:</strong> Aluminium, stainless steel, FRP are key inputs. Global commodity supercycle or supply disruptions could squeeze margins. Price variation clauses exist in railways but may not fully cover cost spikes in defence.</span></div>
           <div class="pro-con con"><span class="icon">●</span><span class="text"><strong>Growth Funding Gap:</strong> IPO raised ₹91 Cr (net ₹88.8 Cr). Already deployed ₹76.3 Cr by Dec '25. New Bengaluru land (14 acres) needs ₹20 Cr building + capex. Defence JV needs ₹150 Cr in FY27. Where does the money come from? Debt + future equity = dilution + leverage.</span></div>
         </div>
@@ -695,16 +701,16 @@ p.body-text { font-size: 0.9rem; line-height: 1.75; color: var(--text-muted); ma
           <div class="card-title">The "Small Order" Announcement Syndrome</div>
           <p class="body-text" style="font-size:0.8rem">
             Airfloa has been announcing orders as small as <span class="highlight">₹37.88 Lakhs</span> (from BGC Depot Ajmer, Jan '26) and ₹86.65 Lakhs (MCF, Nov '25). For a company with ₹500 Cr order book and ₹300 Cr revenue target, these micro-announcements create noise without substance.<br><br>
-            <strong>The perception problem:</strong> Sophisticated investors view this as a <strong)>"headline generation"</strong.> strategy — creating an illusion of order flow momentum through volume of announcements rather than quality. Every small railway part order gets a BSE filing. Compare with Jupiter Wagons or Titagarh which announce only material orders.<br><br>
-            <strong>Counter-view:</strong> As an SME with few investors, every order matters for visibility. They're following SEBI LODR requirements. The ₹62.36 Cr Acme order and ₹22.9 Cr BEML order are genuinely material. But the ₹37 Lakh orders dilute the signal.
+            <span class="highlight">The perception problem: Sophisticated investors view this as a "headline generation" </span> strategy — creating an illusion of order flow momentum through volume of announcements rather than quality. Every small railway part order gets a BSE filing. Compare with Jupiter Wagons or Titagarh which announce only material orders.<br><br>
+            <span class="highlight">Counter-view:</span> As an SME with few investors, every order matters for visibility. They're following SEBI LODR requirements. The ₹62.36 Cr Acme order and ₹22.9 Cr BEML order are genuinely material. But the ₹37 Lakh orders dilute the signal.
           </p>
         </div>
         <div class="card">
           <div class="card-title">Frequent Investor Meets & Media Blitz</div>
           <p class="body-text" style="font-size:0.8rem">
-            Since listing in Sep '25, management has conducted investor meets nearly every 2-3 weeks: Dec 26, Jan 8-9, Jan 22, Feb 18, Mar 6, Mar 10, Mar 24 (NDTV Profit). Meeting with family offices, HNIs, and institutional desks.<br><br>
-            <strong>Trust deficit angle:</strong> When a company reduces guidance from aggressive early expectations to a ₹300 Cr reality, and then does bi-weekly investor calls, it can feel like damage control. The JMD appearing on NDTV Profit within months of listing creates an impression of a "managed narrative."<br><br>
-            <strong>Positive angle:</strong> Management is accessible, transparent in Q&A (they discuss debtor days, funding gaps, guidance shortfalls openly in calls). The concall transcripts show genuine back-and-forth with investors pressing on tough questions. For an SME, this level of engagement is actually above average.
+             <span class="highlight">Since listing in Sep '25</span>, management has conducted investor meets nearly every 2-3 weeks: Dec 26, Jan 8-9, Jan 22, Feb 18, Mar 6, Mar 10, Mar 24 (NDTV Profit). Meeting with family offices, HNIs, and institutional desks.<br><br>
+            <span class="highlight">Trust deficit angle:</span> When a company reduces guidance from aggressive early expectations to a ₹300 Cr reality, and then does bi-weekly investor calls, it can feel like damage control. The JMD appearing on NDTV Profit within months of listing creates an impression of a "managed narrative."<br><br>
+            <span class="highlight">Positive angle:</span> Management is accessible, transparent in Q&A (they discuss debtor days, funding gaps, guidance shortfalls openly in calls). The concall transcripts show genuine back-and-forth with investors pressing on tough questions. For an SME, this level of engagement is actually above average.
           </p>
         </div>
       </div>
@@ -720,35 +726,38 @@ p.body-text { font-size: 0.9rem; line-height: 1.75; color: var(--text-muted); ma
       <div class="card mt-2" style="border-left:3px solid var(--accent-warn)">
         <div class="card-title">Price Fall: SME Specific or Company Specific?</div>
         <p class="body-text" style="font-size:0.8rem">
-          The 43% fall from peak (₹432 → ₹246) should be contextualised. <span class="highlight">BSE SME IPO index fell broadly</span> during Nov '25 - Mar '26 as: (a) broader Indian markets corrected post-Nifty 26,000 peak, (b) FII outflows intensified, (c) SEBI tightened SME IPO regulations, (d) several SME IPOs listed poorly creating sector-wide sentiment damage. <span>Many SME IPO stocks from H2 CY25 fell 30-50% from listing highs </span>.Airfloa's fall is partly sector-specific, partly company-specific (guidance cut, working capital concerns).<span> The recovery to ₹297 suggests the market is re-rating the company on FY27 expectations rather than FY26 disappointment.</span>
+          The 43% fall from peak (₹432 → ₹246) should be contextualised. <span class="highlight">BSE SME IPO index fell broadly</span> during Nov '25 - Mar '26 as: (a) broader Indian markets corrected post-Nifty 26,000 peak, (b) FII outflows intensified, (c) SEBI tightened SME IPO regulations, (d) several SME IPOs listed poorly creating sector-wide sentiment damage.  <span class="highlight">Many SME IPO stocks from H2 CY25 fell 30-50% from listing highs </span>.Airfloa's fall is partly sector-specific, partly company-specific (guidance cut, working capital concerns). <span class="highlight">The recovery to ₹313 suggests the market is re-rating the company on FY27 expectations rather than FY26 disappointment.</span>
         </p>
       </div>
     </div>
   </section>
 
-  <section class="slide" id="slide-10">
+<section class="slide" id="slide-10">
     <div class="slide-inner">
-      <div class="section-header">
-        <div class="section-tag">Synthesis</div>
-        <div class="section-title">The Investment Case — Boiled Down</div>
+      <div class="panel">
+        <div class="section-header" style="margin-bottom:0;">
+          <div class="section-tag">Synthesis</div>
+          <div class="section-title">The Investment Case — Boiled Down</div>
+        </div>
       </div>
 
       <div class="grid-2 mb-2">
         <div class="card" style="border-top:3px solid var(--accent-green)">
           <div class="card-title" style="color:var(--accent-green)">Bull Case Arguments</div>
-          <div class="pro-con pro"><span class="icon">▲</span><span class="text">Structural tailwind: India's railway modernisation (Vande Bharat, metros, refurbishment) is a multi-decade story. Airfloa is positioned at the intersection of technology upgrade + indigenisation.</span></div>
-          <div class="pro-con pro"><span class="icon">▲</span><span class="text">AMCA simulator program is genuinely world-class — only Indian player, 120 units over 5-7 years, ₹1,000+ Cr per program. This alone could be worth more than current market cap if executed.</span></div>
-          <div class="pro-con pro"><span class="icon">▲</span><span class="text">Sudhanshu Mani on board is a unique asset no competitor can replicate. His ICF network and global railway contacts are invaluable for a ₹200 Cr company.</span></div>
-          <div class="pro-con pro"><span class="icon">▲</span><span class="text">Valuations are reasonable: ~24x TTM PE vs 42-47x for peers. If FY27 delivers ₹400+ Cr revenue with 26% EBITDA margins, the stock is cheap.</span></div>
-          <div class="pro-con pro"><span class="icon">▲</span><span class="text">New technology products (doors, vacuum toilets, PSDs) each represent ₹100-500 Cr annual market opportunity. Even 1-2 products commercialising changes the trajectory.</span></div>
+          <div class="pro-con pro"><span class="icon">▲</span><span class="text"><strong>Structural tailwind:</strong> India's railway modernisation (Vande Bharat, metros, refurbishment) is a multi-decade story. Airfloa is positioned at the intersection of technology upgrade + indigenisation.</span></div>
+          <div class="pro-con pro"><span class="icon">▲</span><span class="text"><strong>AMCA simulator program:</strong> Genuinely world-class — only Indian player, 120 units over 5-7 years, ₹1,000+ Cr per program. This alone could be worth more than current market cap if executed.</span></div>
+          <div class="pro-con pro"><span class="icon">▲</span><span class="text"><strong>Sudhanshu Mani on board:</strong> A unique asset no competitor can replicate. His ICF network and global railway contacts are invaluable for a ₹200 Cr company.</span></div>
+          <div class="pro-con pro"><span class="icon">▲</span><span class="text"><strong>Valuations are reasonable:</strong> ~24x TTM PE vs 42-47x for peers. If FY27 delivers ₹400+ Cr revenue with 26% EBITDA margins, the stock is cheap.</span></div>
+          <div class="pro-con pro"><span class="icon">▲</span><span class="text"><strong>New technology products:</strong> (Doors, vacuum toilets, PSDs) each represent ₹100-500 Cr annual market opportunity. Even 1-2 products commercialising changes the trajectory.</span></div>
         </div>
+        
         <div class="card" style="border-top:3px solid var(--accent-danger)">
           <div class="card-title" style="color:var(--accent-danger)">Bear Case Arguments</div>
-          <div class="pro-con con"><span class="icon">▼</span><span class="text">Working capital is the Achilles' heel. Growing revenue without generating cash is unsustainable. Negative CFO in FY25 despite ₹48 Cr EBITDA is a serious quality-of-earnings concern.</span></div>
-          <div class="pro-con con"><span class="icon">▼</span><span class="text">Guidance credibility damaged. Moving from aggressive early models to a ₹300 Cr reality within 3 months of listing erodes trust. Future guidance will carry a credibility discount.</span></div>
-          <div class="pro-con con"><span class="icon">▼</span><span class="text">Dilution inevitable. Confirmed equity raise post-Sep 2026. At ₹200-300 Cr MCap, even a ₹50-100 Cr raise is 15-30% dilution. Price will likely correct around the raise.</span></div>
-          <div class="pro-con con"><span class="icon">▼</span><span class="text">Defence pivot is years away from meaningful revenue. Drones are not core competency. The ₹150 Cr FY27 investment in Big Bang JV is massive relative to company size (₹110 Cr net worth).</span></div>
-          <div class="pro-con con"><span class="icon">▼</span><span class="text">SME governance concerns: RoC penalties, 81% employee attrition, family-run board, single exchange listing. Institutional confidence takes time to build.</span></div>
+          <div class="pro-con con"><span class="icon">▼</span><span class="text"><strong>Working capital trap:</strong> Growing revenue without generating cash is unsustainable. Negative CFO in FY25 despite ₹48 Cr EBITDA is a serious quality-of-earnings concern.</span></div>
+          <div class="pro-con con"><span class="icon">▼</span><span class="text"><strong>Guidance credibility damaged:</strong> Moving from aggressive early models to a ₹300 Cr reality within 3 months of listing erodes trust. Future guidance will carry a credibility discount.</span></div>
+          <div class="pro-con con"><span class="icon">▼</span><span class="text"><strong>Dilution inevitable:</strong> Confirmed equity raise post-Sep 2026. At ₹200-300 Cr MCap, even a ₹50-100 Cr raise is 15-30% dilution. Price will likely correct around the raise.</span></div>
+          <div class="pro-con con"><span class="icon">▼</span><span class="text"><strong>Defence pivot timeline:</strong> Years away from meaningful revenue. Drones are not core competency. The ₹150 Cr FY27 investment in Big Bang JV is massive relative to company size (₹110 Cr net worth).</span></div>
+          <div class="pro-con con"><span class="icon">▼</span><span class="text"><strong>SME governance concerns:</strong> RoC penalties, 81% employee attrition, family-run board, single exchange listing. Institutional confidence takes time to build.</span></div>
         </div>
       </div>
 
@@ -757,7 +766,7 @@ p.body-text { font-size: 0.9rem; line-height: 1.75; color: var(--text-muted); ma
         <div class="grid-3" style="margin-top:0.5rem">
           <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.6">
             <span class="pill pill-gold mb-1">Q4 FY26 Results</span><br>
-            Need to see ₹130+ Cr quarterly revenue to hit ₹300 Cr FY26. Debtor days below 200. Positive CFO.
+            Need to see ₹200+ Cr half-yearly revenue to hit ₹300 Cr FY26. Debtor days below 200. Visible movement towards positive CFO.
           </div>
           <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.6">
             <span class="pill pill-blue mb-1">Order Book ₹1,000 Cr</span><br>
@@ -782,14 +791,14 @@ p.body-text { font-size: 0.9rem; line-height: 1.75; color: var(--text-muted); ma
         
         <div class="disclaimer-text" style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.8; text-align: justify; margin-bottom: 2rem;">
           This presentation is prepared for <strong style="color:var(--text-main)">educational and informational purposes only</strong> and does not constitute investment advice, a recommendation, or an offer to buy or sell any securities. The author is not a SEBI-registered insight analyst or investment advisor.<br><br>
-          All information has been sourced from publicly available materials including BSE exchange filings, investor presentations, concall transcripts, auto-generated subtitles of investor interaction videos, and company RHP/DRHP documents. No information has been independently verified. Auto-generated transcripts may contain errors.<br><br>
+          All information has been sourced from publicly available materials including BSE exchange filings, investor presentations, concall transcripts, investor interactions, and company RHP/DRHP documents. Due care for verification has been carried out while mentioning the information. <br><br>
           Past performance is not indicative of future results. Small and medium enterprise (SME) stocks carry significantly higher risk than mainboard securities including but not limited to: lower liquidity, limited analyst coverage, weaker governance oversight, higher promoter influence, circuit limit-induced volatility, and limited public float.<br><br>
-          The views expressed represent independent analysis and opinion as of the date of preparation (April 2026). They are subject to change without notice. The author may or may not hold positions in the securities discussed. Always conduct your own due diligence and consult a qualified financial advisor before making investment decisions.
+          The views expressed represent independent analysis and interpretation as of the date of preparation (April 2026). They are subject to change without notice. The author may or may not hold positions in the securities discussed. Always conduct your own due diligence and consult a qualified financial advisor before making investment decisions.
         </div>
 
         <div class="branding" style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--card-border); padding-top: 1.5rem; text-align: left;">
           <div>
-            <div class="branding-logo">Airfloa Independent Insight</div>
+            <div class="branding-logo">Independent Insights</div>
             <div style="font-family:'Outfit',sans-serif;font-size:0.7rem;color:var(--text-muted);margin-top:2px">SME Gems — Hidden Champions of the SME Platform</div>
           </div>
           <div>
@@ -864,7 +873,7 @@ function handleSwipe() {
   touchstartX = 0; touchstartY = 0;
 }
 
-// --- INTERACTIVE BACKGROUND CANVAS ---
+// --- INTERACTIVE BACKGROUND CANVAS (BULLET TRAINS) ---
 const canvas = document.getElementById('bgCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -886,67 +895,104 @@ window.addEventListener('touchend', () => mouse.clickDown = false);
 window.addEventListener('resize', () => { 
   w = canvas.width = document.documentElement.clientWidth; 
   h = canvas.height = window.innerHeight; 
+  initTrains(); // Re-calculate tracks on resize
 });
 
-const rails = [];
-const drones = [];
+const tracks = [];
+const trains = [];
 
-for(let i=0; i<8; i++) {
-  rails.push({ y: Math.random() * h, speed: 1 + Math.random() * 3, length: 100 + Math.random() * 300, thickness: 1 + Math.random() * 2 });
+function initTrains() {
+    tracks.length = 0;
+    trains.length = 0;
+    const numTracks = 14; // Number of horizontal rail lines
+    for(let i=0; i<numTracks; i++) {
+        tracks.push((h / numTracks) * i + (h / numTracks)/2);
+    }
+    
+    // Spawn 20 bullet trains
+    for(let i=0; i<20; i++) {
+        let speed = (Math.random() * 5 + 3); // Fast baseline speed
+        let direction = Math.random() > 0.5 ? 1 : -1;
+        trains.push({
+            x: Math.random() * w,
+            y: tracks[Math.floor(Math.random() * tracks.length)],
+            speed: speed * direction,
+            length: Math.random() * 250 + 150, // Long glowing trails
+            thickness: Math.random() * 3 + 4,
+            colorType: Math.random() > 0.75 ? 'gold' : 'cyan'
+        });
+    }
 }
-
-for(let i=0; i<25; i++) {
-  drones.push({ x: Math.random() * w, y: Math.random() * h, vx: (Math.random()-0.5)*1.5, vy: (Math.random()-0.5)*1.5, baseSpeed: 1 + Math.random(), angle: Math.random() * Math.PI * 2 });
-}
-
-function drawDrone(ctx, x, y, angle, alpha) {
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.rotate(angle);
-  
-  ctx.fillStyle = `rgba(0, 210, 255, ${alpha * 1.5})`; 
-  ctx.beginPath(); ctx.arc(0, 0, 3, 0, Math.PI*2); ctx.fill(); 
-  
-  /* Changed rotor color to Amber/Gold to match the new theme */
-  ctx.strokeStyle = `rgba(255, 184, 0, ${alpha})`;
-  ctx.lineWidth = 1;
-  const dist = 6;
-  const positions = [[dist,dist], [-dist,dist], [dist,-dist], [-dist,-dist]];
-  positions.forEach(pos => {
-    ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(pos[0], pos[1]); ctx.stroke(); 
-    ctx.beginPath(); ctx.arc(pos[0], pos[1], 2, 0, Math.PI*2); ctx.stroke(); 
-  });
-  ctx.restore();
-}
+initTrains();
 
 function animateBg() {
   ctx.clearRect(0, 0, w, h);
-  const speedMult = mouse.clickDown ? 3 : 1;
+  
+  // Hyper speed when user clicks/touches the screen
+  const speedMult = mouse.clickDown ? 4 : 1;
 
-  ctx.strokeStyle = "rgba(0, 210, 255, 0.2)";
-  rails.forEach(r => {
-    let xOffset = (Date.now() * r.speed * speedMult / 20) % (w + r.length) - r.length;
-    ctx.lineWidth = r.thickness;
-    ctx.beginPath(); ctx.moveTo(xOffset, r.y); ctx.lineTo(xOffset + r.length, r.y); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(xOffset, r.y + 10); ctx.lineTo(xOffset + r.length, r.y + 10); ctx.stroke();
+  // 1. Draw Static Rails
+  ctx.strokeStyle = "rgba(0, 210, 255, 0.15)";
+  tracks.forEach(ty => {
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, ty); ctx.lineTo(w, ty); ctx.stroke();
+    // Second line to create a "track" effect
+    ctx.beginPath(); ctx.moveTo(0, ty + 12); ctx.lineTo(w, ty + 12); ctx.stroke();
   });
 
-  drones.forEach(d => {
-    d.x += d.vx * d.baseSpeed;
-    d.y += d.vy * d.baseSpeed;
-    d.angle += 0.05; 
+  // 2. Draw Bullet Trains
+  trains.forEach(t => {
+    t.x += t.speed * speedMult;
 
-    if (mouse.active) {
-      let dx = mouse.x - d.x; let dy = mouse.y - d.y;
-      let dist = Math.sqrt(dx*dx + dy*dy);
-      if (dist < 300) { d.vx += (dx / dist) * 0.05; d.vy += (dy / dist) * 0.05; }
+    // Wrap around screen seamlessly
+    if (t.speed > 0 && t.x - t.length > w) t.x = -t.length;
+    if (t.speed < 0 && t.x + t.length < 0) t.x = w + t.length;
+
+    ctx.save();
+    ctx.translate(t.x, t.y + 6); // Centered on the track
+    
+    // Interaction: Glow intensifies when mouse/finger is near the track
+    let dist = Math.abs(mouse.y - (t.y + 6));
+    let hoverGlow = (mouse.active && dist < 100) ? 1.2 : 0.7;
+    let opacity = Math.min(hoverGlow * (mouse.clickDown ? 1.5 : 1), 1);
+
+    let headColor = t.colorType === 'gold' ? `rgba(255, 184, 0, ${opacity})` : `rgba(0, 210, 255, ${opacity})`;
+    let tailColor = t.colorType === 'gold' ? `rgba(255, 184, 0, 0)` : `rgba(0, 210, 255, 0)`;
+
+    // Gradient trail fading backwards
+    let grad = ctx.createLinearGradient(
+        t.speed > 0 ? 0 : t.length, 0, 
+        t.speed > 0 ? -t.length : 0, 0
+    );
+    grad.addColorStop(0, headColor);
+    grad.addColorStop(1, tailColor);
+
+    ctx.fillStyle = grad;
+    
+    // Draw Streamlined Train Body
+    ctx.beginPath();
+    let headOffset = t.speed > 0 ? t.thickness * 2 : -t.thickness * 2;
+    
+    if (t.speed > 0) { // Moving Right
+        ctx.moveTo(-t.length, -t.thickness/2);
+        ctx.lineTo(0, -t.thickness/2);
+        ctx.quadraticCurveTo(headOffset, 0, 0, t.thickness/2);
+        ctx.lineTo(-t.length, t.thickness/2);
+    } else { // Moving Left
+        ctx.moveTo(t.length, -t.thickness/2);
+        ctx.lineTo(0, -t.thickness/2);
+        ctx.quadraticCurveTo(headOffset, 0, 0, t.thickness/2);
+        ctx.lineTo(t.length, t.thickness/2);
     }
+    ctx.fill();
 
-    d.vx *= 0.98; d.vy *= 0.98;
-    if(d.x < 0) d.vx += 0.2; if(d.x > w) d.vx -= 0.2;
-    if(d.y < 0) d.vy += 0.2; if(d.y > h) d.vy -= 0.2;
+    // Bright Core Light at the Nose
+    ctx.fillStyle = t.colorType === 'gold' ? `rgba(255, 230, 150, ${opacity + 0.2})` : `rgba(200, 250, 255, ${opacity + 0.2})`;
+    ctx.beginPath();
+    ctx.arc(0, 0, t.thickness/2.5, 0, Math.PI*2);
+    ctx.fill();
 
-    drawDrone(ctx, d.x, d.y, d.angle, 0.4);
+    ctx.restore();
   });
 
   requestAnimationFrame(animateBg);
@@ -1033,7 +1079,8 @@ function initPriceChart() {
     {d:'11-Mar',c:279},{d:'12-Mar',c:274},{d:'13-Mar',c:273},{d:'16-Mar',c:272},
     {d:'17-Mar',c:271},{d:'18-Mar',c:289},{d:'19-Mar',c:284},{d:'20-Mar',c:282},
     {d:'23-Mar',c:269},{d:'24-Mar',c:276},{d:'25-Mar',c:282},{d:'27-Mar',c:269},
-    {d:'30-Mar',c:255},{d:'1-Apr',c:271},{d:'2-Apr',c:275},{d:'6-Apr',c:297}
+    {d:'30-Mar',c:255},{d:'1-Apr',c:271},{d:'2-Apr',c:275},{d:'6-Apr',c:297},
+    {d:'7-Apr',c:313}
   ];
   const ctx = document.getElementById('priceChart').getContext('2d');
   const gradient = ctx.createLinearGradient(0, 0, 0, 300);
