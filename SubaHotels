@@ -1104,12 +1104,12 @@ function drawPriceChart() {
     ctx.fillText('₹'+p, W-5, y+4);
   }
 
-  // IPO line
+// IPO line
   ctx.strokeStyle = '#FFD700'; ctx.lineWidth = 1.5; ctx.setLineDash([4,4]);
   ctx.beginPath(); ctx.moveTo(pad.left, toY(111)); ctx.lineTo(W-pad.right, toY(111)); ctx.stroke();
   ctx.setLineDash([]);
-  ctx.fillStyle = '#FFD700'; ctx.font = '600 11px "Outfit"'; ctx.textAlign = 'left';
-  ctx.fillText('IPO ₹111', pad.left + 15, toY(111)-6);
+  ctx.fillStyle = '#FFD700'; ctx.font = '600 11px "Outfit"'; ctx.textAlign = 'right';
+  ctx.fillText('IPO ₹111', W - pad.right - 5, toY(111)-6);
 
   // Area fill
   const grad = ctx.createLinearGradient(0, pad.top, 0, H-pad.bottom);
