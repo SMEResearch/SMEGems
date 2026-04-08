@@ -154,7 +154,6 @@ body {
 /* ─── CARDS / GRIDS ─── */
 .card-grid {
   display: grid;
-  /* Min 230px allows exactly 4 cards to fit in a row cleanly on standard 1080p desktop */
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   gap: 20px;
   margin-top: 20px;
@@ -419,18 +418,16 @@ body {
 <div class="slide-counter" id="slideCounter">1 / 10</div>
 
 <section class="slide" id="hero" data-slide="1">
-  <div class="sme-badge anim">💎 SME Gems — Hidden Champions of the SME Platform</div>
+  <div class="sme-badge anim">SME Gems — Hidden Champions of the SME Platform</div>
 
-  <div class="slide-label anim">NSE SME: SUBAHOTELS  ·  CMP ₹125  ·  MCap ~₹300 Cr</div>
   <h1 class="slide-title anim">
     <span class="gold">Suba Hotels</span><br>
-    India's 9th Largest Hotel Chain,<br>
+    India's 9th Largest Hotel Chain<br>
     Building Where <span class="teal">Others Won't</span>
   </h1>
   <p class="slide-subtitle anim">
-    A 10-key guest house founded by Mr. Abubaker Mehta → ~125 operational hotels, ~4,800 keys, 72+ destinations across India + UAE (Dubai).
+    A 10-key guest house founded by Mr. Abubaker Mehta → now with ~125 operational hotels, ~4,800 keys, 72+ destinations across India + UAE (Dubai).
     Asset-light. Tier 2 & 3 focused. Exclusive master franchisee of Choice Hotels International in India.
-    Growing at 50%+ revenue CAGR. 3–5 year vision: 7,500–8,000 keys.
   </p>
 
   <div class="metrics-row">
@@ -451,24 +448,20 @@ body {
 
   <div class="card-grid">
     <div class="card anim">
-      <div class="card-icon" style="color:var(--accent-gold);">🏨</div>
       <div class="card-title">Where They Play</div>
-      <div class="card-body">Mid-market hospitality across upscale, upper-midscale, midscale, and economy segments. ~81% in Tier 2 & 3 markets — industrial hubs (Ahmedabad, Surat, Pune, Chakan MIDC), pilgrimage/tourism spots (Ayodhya, Varanasi, Ujjain, Vindhyachal). 2022: Acquired exclusive master franchise for Choice Hotels India (took over existing India portfolio + exclusive rights for Clarion, Quality, Comfort).</div>
+      <div class="card-body">Mid-market hospitality across upscale, upper-midscale, midscale, and economy segments. ~81% in Tier 2 & 3 markets — industrial hubs (Ahmedabad, Surat, Pune, Chakan MIDC), pilgrimage/tourism spots (Ayodhya, Varanasi, Ujjain, Vindhyachal). <div class="sme-badge anim"> 2022: Acquired exclusive master franchise for Choice Hotels India (took over existing India portfolio + exclusive rights for Clarion, Quality, Comfort).</div></div>
     </div>
     <div class="card anim">
-      <div class="card-icon" style="color:var(--accent-teal);">🙏</div>
       <div class="card-title">Revenue & Demand Mix</div>
-      <div class="card-body">Corporate/Business travel: 35–40% (stable base). Leisure/Domestic tourism: 30–35% (seasonal, peak Oct–Mar). MICE: 15–20%. Weddings: 10–15%. Pilgrimage: 5–10%. Blended domestic occupancy: ~73%. Average Room Rate: ₹3,276. Guidance: 10–15% ARR growth + 5–7% occupancy growth next year.</div>
+      <div class="card-body">Corporate/Business travel: 35–40% (stable base). Leisure/Domestic tourism: 30–35% (seasonal, peak Oct–Mar). MICE: 15–20%. Weddings: 10–15%. Pilgrimage: 5–10%. Blended domestic occupancy: ~73%. Average Room Rate: ₹3,276. <div class="sme-badge anim"> Guidance: 10–15% ARR growth + 5–7% occupancy growth next year.</div></div>
     </div>
     <div class="card anim">
-      <div class="card-icon" style="color:var(--accent-blue);">🌍</div>
       <div class="card-title">International — Dubai & GCC</div>
-      <div class="card-body">3 hotels now operational in Dubai (Click Hotels brand), performing well. Currently full due to regional situation; off-season ahead. Dubai impact minimal/neutral on margins. Interest in Saudi Arabia for meaningful scale entry — but not an aggressive push. No major adverse impact from Middle East conflict anticipated long-term.</div>
+      <div class="card-body">3 hotels now operational in Dubai (Click Hotels brand), performing well. Currently full due to regional situation; off-season ahead. Dubai impact minimal/neutral on margins. Interest in Saudi Arabia for meaningful scale entry — but not an aggressive push. <div class="sme-badge anim">No major adverse impact from Middle East conflict anticipated long-term.</div></div>
     </div>
     <div class="card anim">
-      <div class="card-icon" style="color:var(--accent-red);">📊</div>
       <div class="card-title">Booking Channels</div>
-      <div class="card-body">Corporate bookings: 50–60% of revenue (annual contracts renewed every October). OTAs: 22–25% (commission 17–20%, dynamic pricing in high-demand). No commission charged on Suba website bookings. Strengthening direct booking & loyalty to enhance margins. Corporate RFPs via Choice network → premium bookings.</div>
+      <div class="card-body">Corporate bookings: 50–60% of revenue (annual contracts renewed every October). OTAs: 22–25% (commission 17–20%, dynamic pricing in high-demand). No commission charged on Suba website bookings. <div class="sme-badge anim"> Strengthening direct booking & loyalty to enhance margins. Corporate RFPs via Choice network → premium bookings.</div></div>
     </div>
   </div>
 
@@ -482,7 +475,7 @@ body {
   <div class="slide-label anim">03 — Operating Model</div>
   <h2 class="slide-title anim">Multi-Format, <span class="teal">Asset-Light</span> Machine</h2>
   <p class="slide-subtitle anim">
-    Only 5 owned hotels (~227 keys, ~4% of portfolio). >85% of recent expansion is asset-light. One owned project at a time to manage debt capacity. No debt currently — focus on internal accruals + potential fundraise.
+    Only 5 owned hotels (~227 keys, ~4% of portfolio). >85% of recent expansion is asset-light. One owned project at a time to manage debt capacity.
   </p>
 
   <div class="card-grid">
@@ -561,7 +554,7 @@ body {
         <tr>
           <td><strong style="color:var(--accent-teal); font-size:15px;">Midscale</strong></td>
           <td>Quality</td>
-          <td>Click / Click Collection / Click Elite ✨</td>
+          <td>Click / Click Collection / <strong>Click Elite</strong></td>
           <td>Business & leisure traveller</td>
         </tr>
         <tr>
@@ -575,7 +568,7 @@ body {
   </div>
 
   <div class="card anim" style="margin-top:20px; border-left: 4px solid var(--accent-gold);">
-    <div class="card-title" style="color:var(--accent-gold);">✨ New: Click Elite — Launched 7 April 2026</div>
+    <div class="card-title" style="color:var(--accent-gold);"> New: Click Elite — Launched 7 April 2026</div>
     <div class="card-body" style="margin-top:8px;">
       Strategic expansion into the premium segment. First property: Click Hotel Lite Chakan, Pune (industrial & corporate hub). Part of the 7-hotel Founder's Day launch. Positioned for elevated service, contemporary design, premium hospitality.
     </div>
@@ -616,14 +609,13 @@ body {
         <tr><td>EBITDA Margin</td><td class="num">25%</td><td class="num">26%</td><td class="num highlight" style="font-size:16px;">29%</td><td class="num">20%</td><td class="num">+291 bps</td></tr>
         <tr><td>PAT (₹ Cr)</td><td class="num">3</td><td class="num">9</td><td class="num highlight" style="font-size:16px;">15</td><td class="num">5</td><td class="num highlight">+58%</td></tr>
         <tr><td>PAT Margin</td><td class="num">—</td><td class="num">17%</td><td class="num">19%</td><td class="num">12%</td><td class="num">+204 bps</td></tr>
-        <tr><td>EPS (₹)</td><td class="num">12.47</td><td class="num">18.83</td><td class="num">8.69</td><td class="num">3.00</td><td class="num">—</td></tr>
         <tr><td>Borrowings (₹ Cr)</td><td class="num">46</td><td class="num">46</td><td class="num">50</td><td class="num">57</td><td class="num">—</td></tr>
-        <tr><td>Debtor Days</td><td class="num">34</td><td class="num">46</td><td class="num" style="color:var(--accent-red);font-weight:700;font-size:16px;">58</td><td class="num">—</td><td class="num" style="font-size:16px;">⚠</td></tr>
+        <tr><td>Debtor Days</td><td class="num">34</td><td class="num">46</td><td class="num" style="color:var(--accent-red);font-weight:700;font-size:16px;">58</td><td class="num">—</td><td class="num" style="font-size:16px;">—</td></tr>
       </tbody>
     </table>
   </div>
   <div style="font-size:13px; color:var(--text-dim); margin-top:12px; font-style:italic;">
-    EPS reflects dilution post-IPO. H1 margins lower due to monsoon seasonality. No debt currently — focus on internal accruals + potential fundraise.
+    H1 margins lower due to monsoon seasonality. Focus on efficient use of internal accruals + potential fundraise.
   </div>
 </section>
 
@@ -631,7 +623,7 @@ body {
   <div class="slide-label anim">06 — The IPO Story & Price Action</div>
   <h2 class="slide-title anim">Listed at <span class="gold">₹154</span>, Peaked at <span class="teal">₹200</span>,<br>Then <span style="color:var(--accent-red);">₹97.65</span> — The SME Gravity</h2>
   <p class="slide-subtitle anim">
-    IPO price ₹111 → Listed at ₹154 (+39%) → Rallied to ₹200 (+80%) by 23 Oct → Steady drawdown to ₹97.65 all-time low (30 Mar) → Recovering to ₹125. Real NSE data (hover for details).
+    IPO price ₹111 → Listed at ₹154 (+39%) → Rallied to ₹200 (+80%) by 23 Oct → Steady drawdown to ₹97.65 all-time low (30 Mar)
   </p>
 
   <div class="price-chart-container anim">
@@ -657,24 +649,24 @@ body {
   <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));">
     <div class="card anim">
       <div class="card-title" style="color:var(--accent-red);">The SME Tax</div>
-      <div class="card-body">SME stocks carry a structural discount. Limited float (~28% public). Promoter holding dropped 84.7% → 60.9% in one quarter (-23.8%) — partly IPO dilution, but optics spooked investors. Only 1,258 shareholders as of Oct '25.</div>
+      <div class="card-body">SME stocks carry a structural discount than the mainboard peers. Limited float (~28% public). 1,258 shareholders as of Oct '25.</div>
     </div>
     <div class="card anim">
       <div class="card-title" style="color:var(--accent-red);">Liquidity Vacuum</div>
-      <div class="card-body">Many days see 8,400–14,400 shares traded (₹10–20L turnover). On listing: 27.98L shares. The stock gaps 5–10% on a few trades. ₹97.65 low on 30 Mar = just 1.77L shares (₹1.8 Cr turnover).</div>
+      <div class="card-body">Many days see limited number of shares traded; at times just1 ~14,400. The stock gaps 5–10% on a few trades. ₹97.65 low on 30 Mar = 1.77L shares (₹1.8 Cr turnover).</div>
     </div>
     <div class="card anim">
-      <div class="card-title" style="color:var(--accent-red);">Operator-Driven</div>
-      <div class="card-body">Initial run from ₹154 → ₹200 in 16 days (consecutive upper circuits on tiny volume) = likely operator-assisted exuberance. Same mechanics reverse — no natural buyer base when momentum fades.</div>
+      <div class="card-title" style="color:var(--accent-red);">Assisted Exuberance</div>
+      <div class="card-body">Initial run from ₹154 → ₹200 in 16 days (consecutive upper circuits on tiny volume) = reflects engineered market excitement. Same mechanics reverse — no natural buyer base when momentum fades.</div>
     </div>
     <div class="card anim">
       <div class="card-title" style="color:var(--accent-blue);">Broader Sentiment</div>
-      <div class="card-body">SME segment cooled late 2025–early 2026 after SEBI tightened norms. Rising debtor days, interest capitalization flags by screeners hurt perception. Institutional capital access is the real game (FII 3.45%, DII 7.25%).</div>
+      <div class="card-body">SME segment cooled late 2025–early 2026 further alongside broader market drawdown and global tensions. Institutional capital access remains a key monitorable.</div>
     </div>
   </div>
 
   <div class="quote-block anim">
-    The subjective reality: In SME markets, price action and business quality often diverge sharply. The stock going from ₹200 to ₹97.65 doesn't mean the business halved — the business grew 50%+ in this period. But that's the SME game: you get extreme volatility as the price for being early. The initial upper circuits on minuscule volume were operator mechanics, not institutional conviction. When that unwinds, it's brutal. The question is whether fundamentals eventually anchor the price — or the liquidity vacuum keeps it hostage.
+    The subjective reality: In SME markets, price action and business quality often diverge sharply. The stock going from ₹200 to ₹97.65 doesn't mean the business halved — the business grew 50%+ in this period. But that's the SME game: you get extreme volatility as the price for being early. The initial upper circuits on minuscule volume were driven mechanics, not conviction. When that unwinds, it's brutal. The question is whether fundamentals eventually anchor the price — or the liquidity vacuum keeps it hostage.
   </div>
 </section>
 
@@ -687,22 +679,18 @@ body {
 
   <div class="card-grid">
     <div class="card anim">
-      <div class="card-icon" style="color:var(--accent-gold);">🔑</div>
       <div class="card-title">Choice Franchise</div>
       <div class="card-body">Exclusive India franchise for Comfort, Quality, Clarion. 500+ rooms/year commitment. Global distribution (7,400 hotels), loyalty (68M members). A moat few can replicate.</div>
     </div>
     <div class="card anim">
-      <div class="card-icon" style="color:var(--accent-teal); background: rgba(0, 229, 255, 0.1);">📍</div>
       <div class="card-title">Location-Led Strategy</div>
       <div class="card-body">Hotels near airports, SEZs, highways, pilgrimage nodes, industrial clusters. Cluster strategy = operating leverage + brand recall + shared infrastructure. Faster breakeven in Tier 2/3.</div>
     </div>
     <div class="card anim">
-      <div class="card-icon" style="color:var(--accent-blue); background: rgba(77, 172, 255, 0.1);">🧬</div>
       <div class="card-title">Dual Brand Setup</div>
       <div class="card-body">Only Indian hotel company with domestic + international brands across all segments. Right brand for each micro-market without dilution. Improves deal conversion.</div>
     </div>
     <div class="card anim">
-      <div class="card-icon" style="color:var(--accent-red); background: rgba(255, 77, 77, 0.1);">🤝</div>
       <div class="card-title">Owner Flywheel</div>
       <div class="card-body">Growing proportion of signings from repeat owners. Lowers acquisition cost, shortens stabilization. Reduces execution risk. Self-reinforcing trust loop.</div>
     </div>
@@ -714,9 +702,9 @@ body {
       <tbody>
         <tr><td><strong style="color:var(--accent-gold); font-size:15px;">Suba Hotels</strong></td><td>Mid-market, multi-seg</td><td class="highlight" style="font-size:15px;">Deep (81%)</td><td>~96% asset-light</td><td class="highlight">Yes (Choice)</td></tr>
         <tr><td>OYO</td><td>Budget/Economy</td><td>Wide, shallow</td><td>Aggregator</td><td>No</td></tr>
-        <tr><td>Lemon Tree</td><td>Midscale/Economy</td><td>Moderate</td><td>Mixed (heavy owned)</td><td>No</td></tr>
-        <tr><td>IHCL (Taj)</td><td>Luxury/Premium</td><td>Limited</td><td>Heavy asset</td><td>Own brands</td></tr>
-        <tr><td>ITC Hotels</td><td>Luxury</td><td>Limited</td><td>Heavy asset</td><td>No</td></tr>
+        <tr><td>Lemon Tree</td><td>Midscale/Economy</td><td>Moderate</td><td>Mixed (heavy owned)</td><td>Scaling</td></tr>
+        <tr><td>IHCL (Taj)</td><td>Luxury/Premium</td><td>Limited</td><td>Heavy asset</td><td>Own + other brands</td></tr>
+        <tr><td>ITC Hotels</td><td>Luxury</td><td>Limited</td><td>Heavy asset</td><td>Scaling</td></tr>
       </tbody>
     </table>
   </div>
@@ -755,8 +743,8 @@ body {
   <div class="card anim" style="margin-top:24px; border-left: 4px solid var(--accent-gold);">
     <div class="card-title">Management Acumen — The Honest Read</div>
     <div class="card-body" style="margin-top:10px;">
-      <strong style="color:var(--accent-teal); font-size:15px;">Strengths:</strong> Clear strategy articulation. Capital discipline (1 owned project at a time). Asset-light maintained at 50%+ growth. IPO proceeds deployed as stated. Hired institutional talent. 7 hotels in 1 day = execution proof. Limited margin dilution from expansion. No debt. Selective signing (micro-market analysis, no cancellations).<br><br>
-      <strong style="color:var(--accent-red); font-size:15px;">Watch:</strong> Family-run concentration risk. Promoter -23.8% optics. Rising debtors (34→58 days). Lost ~6 hotels in 12 months. Cash from ops dropped ₹11→₹4 Cr. "Potential fundraise" hinted = dilution risk. Interest capitalization. Governance track record under construction.
+      <strong style="color:var(--accent-teal); font-size:15px;">Strengths:</strong> Clear strategy articulation. Capital discipline (1 owned project at a time). Asset-light maintained at 50%+ growth. IPO proceeds deployed as stated. Hired institutional talent. 7 hotels in 1 day = execution proof. Limited margin dilution from expansion. Selective signing (micro-market analysis, no cancellations).<br><br>
+      <strong style="color:var(--accent-red); font-size:15px;">Watch:</strong> Family-run concentration risk. Rising debtors (34→58 days). Lost ~6 hotels in 12 months. Cash from ops dropped ₹11→₹4 Cr. "Potential fundraise" hinted = dilution risk. Interest capitalization. Governance track record under construction.
     </div>
   </div>
 </section>
@@ -768,7 +756,7 @@ body {
   <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
     <div class="card anim" style="border-top: 4px solid var(--accent-red);">
       <div class="card-title" style="color:var(--accent-red);">SME Liquidity Risk</div>
-      <div class="card-body">1,258 shareholders. Many days: 8K–14K shares (₹10-20L). Stock hit ₹97.65 on 1.77L vol. Exit at scale = impossible. Mainboard migration = catalyst but no timeline. Market maker is NNM Securities.</div>
+      <div class="card-body">1,258 shareholders. Many days: 8K–14K shares (₹10-20L). Stock hit ₹97.65 on 1.77L vol. Exit at scale = less likely. Mainboard migration remains a future catalyst.</div>
     </div>
     <div class="card anim" style="border-top: 4px solid var(--accent-red);">
       <div class="card-title" style="color:var(--accent-red);">Franchise Concentration</div>
@@ -780,7 +768,7 @@ body {
     </div>
     <div class="card anim" style="border-top: 4px solid var(--accent-red);">
       <div class="card-title" style="color:var(--accent-red);">Working Capital Pressure</div>
-      <div class="card-body">Debtor days: 34→46→58. Cash from ops: ₹10→₹11→₹4 Cr. Partly growth-driven, but trajectory needs reversal. "No debt currently" but borrowings at ₹57 Cr on balance sheet (Sep '25).</div>
+      <div class="card-body">Debtor days: 34→46→58. Cash from ops: ₹10→₹11→₹4 Cr. Partly growth-driven, but trajectory needs reversal. "No major debt currently" but borrowings (term / vehicle / related party) at ₹57 Cr on balance sheet (Sep '25).</div>
     </div>
     <div class="card anim" style="border-top: 4px solid var(--accent-red);">
       <div class="card-title" style="color:var(--accent-red);">Cyclical + Seasonal</div>
@@ -810,7 +798,7 @@ body {
   <div class="card anim" style="margin-bottom:32px; border-left: 4px solid var(--accent-teal);">
     <div class="card-title" style="color:var(--accent-teal);">Pipeline Breakdown (~1,599 keys in 16–18 months)</div>
     <div class="card-body" style="margin-top:10px;">
-      Revenue share dominant: ~665 keys. Management/Franchise: ~702 keys. Lease: ~124 keys. Owned: ~100 keys (e.g. Ujjain). ~31 hotels in pre-opening phase (~1,600 keys). ~94% expected operational within 12 months. Pipeline does not include additional opportunities in development.
+      Revenue share dominant: ~665 keys. Management/Franchise: ~702 keys. Lease: ~124 keys. Owned: ~100 keys (e.g. Ujjain). ~31 hotels in pre-opening phase (~1,600 keys). ~94% expected operational within 12 months. <Strong>Pipeline does not include additional opportunities in development.</Strong>
     </div>
   </div>
 
@@ -837,7 +825,7 @@ body {
   <div class="slide-label anim">11 — Peer Analysis</div>
   <h2 class="slide-title anim">How Does <span class="gold">Suba</span> Stack Up?</h2>
   <p class="slide-subtitle anim">
-    Comparing across SME peers (GCH) and listed mid-tier hotel players (Royal Orchid, Sayaji, Samhi). Each operates with a different model — asset-heavy vs asset-light, managed vs owned — which makes margin and return comparisons nuanced.
+    Comparing across SME peers and listed mid-tier hotel players. Each operates with a different model — asset-heavy vs asset-light, managed vs owned — which makes margin and return comparisons nuanced.
   </p>
 
   <div style="overflow-x:auto;">
@@ -846,7 +834,7 @@ body {
         <tr>
           <th>Metric</th>
           <th class="num" style="color:var(--accent-gold);font-weight:700; font-size:14px;">Suba Hotels</th>
-          <th class="num">GCH (Grand Continent)</th>
+          <th class="num">Grand Continent Hotels</th>
           <th class="num">Royal Orchid</th>
           <th class="num">Sayaji Hotels</th>
           <th class="num">Samhi Hotels</th>
@@ -872,12 +860,15 @@ body {
         <tr><td>52W Range (₹)</td><td class="num">97.65–200</td><td class="num">76.5–255</td><td class="num">311–594</td><td class="num">250–315</td><td class="num">120–255</td></tr>
       </tbody>
     </table>
+    <div style="font-size:12px; color:var(--text-dim); margin-top:12px; font-style:italic;">
+      * Market Cap and Current Market Price (CMP) as of early April 2026. Financial metrics reflect latest available trailing data (H1/Q3 FY26) or closest full-year equivalents.
+    </div>
   </div>
 
   <div class="card-grid" style="margin-top:32px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
     <div class="card anim" style="border-top: 4px solid var(--accent-gold);">
       <div class="card-title" style="color:var(--accent-gold);">GCH — The Closest SME Peer</div>
-      <div class="card-body">Also SME-listed, mid-market, asset-light(ish). But GCH is lease-heavy (not franchise-heavy like Suba), has only ~16 properties vs Suba's 125+, and margins have cratered to ~9% in H1 FY26 from 34% a year ago. Similar "margin issue" flagged — but the underlying model differs. GCH trades at 35x PE vs Suba's 17.6x despite weaker TTM metrics. GCH IPO also saw a massive run-up (to ₹255) then crash to ₹76.5 — same SME dynamics.</div>
+      <div class="card-body">Also SME-listed, mid-market, asset-light(ish). But GCH is lease-heavy (not franchise-heavy like Suba), has less properties vs Suba's 125+, and margins have cratered to ~9% in H1 FY26 from 34% a year ago. Similar "margin issue" flagged — but the underlying model differs. GCH trades at 35x PE vs Suba's 17.6x despite weaker TTM metrics. GCH IPO also saw a massive run-up (to ₹255) then crash to ₹76.5 — same SME dynamics.</div>
     </div>
     <div class="card anim" style="border-top: 4px solid var(--accent-teal);">
       <div class="card-title" style="color:var(--accent-teal);">Royal Orchid — The Closest Scale Peer</div>
@@ -894,7 +885,7 @@ body {
   </div>
 
   <div class="quote-block anim">
-    Key takeaway: Suba trades at the lowest PE (17.6x) among peers, has the highest ROE (37.9%) and ROCE (24.2%), and the fastest revenue growth (+52%). The trade-off is SME liquidity risk and governance track record. If Suba migrates to mainboard and maintains execution, the valuation gap to Royal Orchid/Samhi could narrow materially.
+    Key takeaway: Suba trades at the lowest PE (17.6x) among peers, has the highest ROE (37.9%) and ROCE (24.2%), and the fastest revenue growth (+52%). The trade-off is SME liquidity risk and governance track record.
   </div>
 </section>
 
@@ -909,17 +900,15 @@ body {
       
       <strong>No offer or solicitation:</strong> Nothing in this document constitutes an offer to sell, or a solicitation of an offer to buy, any securities. Any such offer would only be made pursuant to a formal offering memorandum or prospectus.<br><br>
       
-      <strong>Accuracy of information:</strong> While every effort has been made to ensure the accuracy of the data presented, the author makes no representations or warranties — express or implied — as to the accuracy, completeness, reliability, or timeliness of the information. Data has been sourced from Screener.in, NSE filings, company disclosures, conference call transcripts, and public press releases. These sources may contain errors, omissions, or outdated information.<br><br>
+      <strong>Accuracy of information:</strong> While every effort has been made to ensure the accuracy of the data presented, the author makes no representations or warranties — express or implied — as to the accuracy, completeness, reliability, or timeliness of the information. Data has been sourced from Screener.in, NSE filings, company disclosures, conference calls, and public press releases. These sources may contain errors, omissions, or outdated information.<br><br>
       
       <strong>Forward-looking statements:</strong> This presentation may contain forward-looking statements about the company's plans, projections, targets, and expectations. These statements are based on management's current beliefs and are subject to significant risks and uncertainties. Actual results may differ materially from those projected. Such statements include but are not limited to revenue growth guidance, pipeline targets, ARR/occupancy projections, and the 3–5 year vision of 7,500–8,000 keys.<br><br>
 
       <strong>SME-specific risks:</strong> SUBAHOTELS is listed on the NSE SME platform. SME stocks are inherently more volatile, less liquid, and carry higher risk than mainboard-listed securities. The trading volumes are extremely thin (often under ₹20 lakh daily turnover), and price discovery may not reflect true fundamental value. Investors should be aware that entry and exit at desired prices may not always be possible.<br><br>
 
-      <strong>No conflict disclosure:</strong> The author (sachprat07) may or may not hold positions in the securities discussed. This presentation does not disclose the author's personal holdings. The author is not a SEBI-registered research analyst (RA), investment adviser (IA), or portfolio manager. The author has received no compensation from any company mentioned in this presentation.<br><br>
+      <strong>No conflict disclosure:</strong> The author may or may not hold positions in the securities discussed. This presentation does not disclose the author's personal holdings. The author is not a SEBI-registered research analyst (RA), investment adviser (IA), or portfolio manager.<br><br>
 
-      <strong>Peer comparisons:</strong> Comparisons with Grand Continent Hotels (GCHOTELS), Royal Orchid Hotels (ROHLTD), Sayaji Hotels (SAYAJIHOTL), and Samhi Hotels (SAMHI) are for illustrative purposes only. Each company has a different business model, capital structure, risk profile, and operating environment. Metrics may not be directly comparable. Data reflects the most recent publicly available information at the time of preparation (April 2026).<br><br>
-
-      <strong>Tax and regulatory:</strong> This presentation does not provide any tax, legal, or regulatory advice. Investors should consult qualified professionals for advice specific to their individual circumstances. Securities laws and tax regulations vary by jurisdiction.<br><br>
+      <strong>Peer comparisons:</strong> Comparisons with Grand Continent Hotels (GCHOTELS), Royal Orchid Hotels (ROHLTD), Sayaji Hotels (SAYAJIHOTL), and Samhi Hotels (SAMHI) are for illustrative purposes only. Each company has a different business model, capital structure, risk profile, and operating environment. Metrics may not be directly comparable. Data reflects the most recent full year publicly available information at the time of preparation (April 2026).<br><br>
 
       <strong>Do your own research (DYOR):</strong> Investors are strongly encouraged to conduct their own independent research, verify all data points, read the company's DRHP/RHP, annual reports, and regulatory filings before making any investment decisions. Past performance is not indicative of future results. The value of investments can go down as well as up, and investors may lose their entire capital.
     </div>
@@ -927,7 +916,7 @@ body {
 
   <div style="margin-top:32px; padding:24px; border:1px solid var(--border); border-radius:10px; background:var(--bg-card); box-shadow:var(--shadow-glow);">
     <div style="font-size:14px; color:var(--text-secondary); line-height:1.8;">
-      <strong style="color:var(--text-primary);">Data Sources:</strong> Screener.in (financial metrics), NSE India (price data, filings), Company disclosures under SEBI LODR Regulation 30, Conference call transcript dated 27 January 2026, Press releases, DRHP/RHP available at subahotels.com, JLL India Hospitality Industry Overview Report.<br><br>
+      <strong style="color:var(--text-primary);">Data Sources:</strong> Screener.in (financial metrics), NSE India (price data, filings), Company disclosures, Conference calls, Press releases, DRHP/RHP, JLL India Hospitality Industry Overview Report.<br><br>
       <strong style="color:var(--text-primary);">Last Updated:</strong> 8 April 2026 · <strong style="color:var(--text-primary);">Prepared by:</strong> <a href="https://x.com/sachprat07" target="_blank" style="color:var(--accent-gold);text-decoration:none;font-weight:600;">@sachprat07</a><br><br>
       <em>All views expressed are personal opinions and do not represent the views of any organization, employer, or institution. This is not SEBI-registered research.</em>
     </div>
@@ -1077,22 +1066,31 @@ function drawPriceChart() {
   const ctx = canvas.getContext('2d');
   const dpr = window.devicePixelRatio || 1;
   const W = container.clientWidth - 48;
-  const H = 260; // Adjusted height
+  const H = 280; 
   canvas.style.width = W + 'px';
   canvas.style.height = H + 'px';
   canvas.width = W * dpr;
   canvas.height = H * dpr;
   ctx.scale(dpr, dpr);
 
-  const pad = {top:30, right:45, bottom:35, left:10};
+  const isMobile = W < 500;
+
+  const pad = {
+      top: isMobile ? 55 : 75, 
+      right: isMobile ? 35 : 50, 
+      bottom: isMobile ? 55 : 65, 
+      left: 15
+  }; 
+  
   const cW = W - pad.left - pad.right;
   const cH = H - pad.top - pad.bottom;
   const n = priceData.length;
 
   const allLows = priceData.map(d => d.low);
   const allHighs = priceData.map(d => d.high);
-  const minP = Math.min(...allLows) - 5;
-  const maxP = Math.max(...allHighs) + 5;
+  
+  const minP = Math.min(...allLows) - 20;
+  const maxP = Math.max(...allHighs) + 50; 
 
   const toX = i => pad.left + (i / (n - 1)) * cW;
   const toY = p => pad.top + (1 - (p - minP) / (maxP - minP)) * cH;
@@ -1111,7 +1109,7 @@ function drawPriceChart() {
   ctx.beginPath(); ctx.moveTo(pad.left, toY(111)); ctx.lineTo(W-pad.right, toY(111)); ctx.stroke();
   ctx.setLineDash([]);
   ctx.fillStyle = '#FFD700'; ctx.font = '600 11px "Outfit"'; ctx.textAlign = 'left';
-  ctx.fillText('IPO ₹111', pad.left+4, toY(111)-6);
+  ctx.fillText('IPO ₹111', pad.left + 15, toY(111)-6);
 
   // Area fill
   const grad = ctx.createLinearGradient(0, pad.top, 0, H-pad.bottom);
@@ -1140,68 +1138,115 @@ function drawPriceChart() {
     ctx.fillRect(toX(i)-1.5, H-pad.bottom-bh, 3, bh);
   }
 
-  // Markers
+  // Callouts & Markers - Clean Vertical Architecture
   const peakIdx = priceData.findIndex(d => d.high >= 200);
   const lowIdx = priceData.findIndex(d => d.low <= 97.65);
-  [{idx:0,label:'Listed\n₹162',c:'#00E5FF'},{idx:peakIdx,label:'Peak ₹200',c:'#FFD700'},{idx:lowIdx,label:'Low ₹97.65',c:'#FF4D4D'},{idx:n-1,label:'₹125',c:'#F8FAFC'}].forEach(m => {
-    if(m.idx<0) return;
-    const px=toX(m.idx), py=toY(priceData[m.idx].close);
-    ctx.beginPath(); ctx.arc(px,py,5,0,Math.PI*2);
-    ctx.fillStyle=m.c; ctx.fill();
-    ctx.strokeStyle='#0f2c4b'; ctx.lineWidth=2.5; ctx.stroke();
-    ctx.fillStyle=m.c; ctx.font='600 11px "Outfit"'; ctx.textAlign='center';
-    m.label.split('\n').forEach((l,i,a) => ctx.fillText(l, px, py-10-(a.length-1-i)*14));
+  
+  const mDyTop = isMobile ? -40 : -55;
+  const mDyBot = isMobile ? 35 : 45;
+
+  const markers = [
+    {idx: 0, label: 'Listed\n₹154.20', c: '#00E5FF', pos: 'bottom', dy: mDyBot},
+    {idx: peakIdx, label: 'Peak\n₹200.00', c: '#FFD700', pos: 'top', dy: mDyTop},
+    {idx: lowIdx, label: 'Low\n₹97.65', c: '#FF4D4D', pos: 'bottom', dy: mDyBot},
+    {idx: n-1, label: 'CMP\n₹124.60', c: '#F8FAFC', pos: 'top', dy: mDyTop}
+  ];
+
+  markers.forEach(m => {
+    if(m.idx < 0) return;
+    const px = toX(m.idx), py = toY(priceData[m.idx].close);
+    
+    let tx = px;
+    let align = 'center';
+    
+    // Check boundaries dynamically to set alignment
+    if (m.idx === 0) { align = 'left'; } 
+    else if (m.idx === n - 1) { align = 'right'; }
+    
+    let ty = py + m.dy; 
+
+    // Draw Connecting Vertical Line
+    ctx.beginPath();
+    ctx.moveTo(px, py + (m.pos === 'top' ? -7 : 7)); 
+    ctx.lineTo(px, ty + (m.pos === 'top' ? 26 : -14)); 
+    
+    ctx.strokeStyle = m.c;
+    ctx.lineWidth = 1.2;
+    ctx.globalAlpha = 0.6;
+    ctx.stroke();
+    ctx.globalAlpha = 1.0;
+
+    // Draw Dot
+    ctx.beginPath(); ctx.arc(px, py, 4.5, 0, Math.PI*2);
+    ctx.fillStyle = m.c; ctx.fill();
+    ctx.strokeStyle = '#0f2c4b'; ctx.lineWidth = 2; ctx.stroke();
+    
+    // Draw Text
+    ctx.fillStyle = m.c; ctx.font = '600 11px "Outfit"'; ctx.textAlign = align;
+    m.label.split('\n').forEach((l, i) => {
+        ctx.fillText(l, tx, ty + (i * 14));
+    });
   });
 
-  // X dates
-  ctx.fillStyle='#94A3B8'; ctx.font='10px "Outfit"'; ctx.textAlign='center';
-  const step = Math.floor(n/7);
-  for(let i=0;i<n;i+=step) ctx.fillText(priceData[i].date, toX(i), H-8);
+  // Responsive X Dates - dynamically maps to 3 evenly spaced dates on mobile, 6 on desktop
+  ctx.fillStyle='#94A3B8'; ctx.font='10px "Outfit"';
+  const numDates = isMobile ? 3 : 6;
+  const stepDate = Math.floor((n - 1) / (numDates - 1));
+  
+  for(let i=0; i<numDates; i++) {
+     let idx = (i === numDates - 1) ? n - 1 : i * stepDate;
+     let x = toX(idx);
+     
+     ctx.textAlign = (i === 0) ? 'left' : (i === numDates - 1) ? 'right' : 'center';
+     ctx.fillText(priceData[idx].date, x, H - (isMobile ? 12 : 8));
+  }
 
-  // Tooltip
+  // Tooltip Logic
   const tooltip = document.getElementById('chartTooltip');
-  canvas.onmousemove = e => {
+  
+  const updateTooltip = (e, clientX, clientY) => {
     const rect = canvas.getBoundingClientRect();
-    const mx = (e.clientX-rect.left)*(W/rect.width);
+    const mx = (clientX - rect.left) * (W / rect.width);
     let ci=0, md=Infinity;
-    for(let i=0;i<n;i++){const d=Math.abs(toX(i)-mx);if(d<md){md=d;ci=i;}}
-    if(md>25){tooltip.style.display='none';return;}
-    const d=priceData[ci];
-    tooltip.querySelector('.tt-date').textContent=d.date;
-    tooltip.querySelector('.tt-close').textContent='₹'+d.close.toFixed(2);
-    tooltip.querySelector('.tt-close').style.color=d.close>=111?'#00E5FF':'#FF4D4D';
-    tooltip.querySelector('.tt-high').textContent='₹'+d.high.toFixed(2);
-    tooltip.querySelector('.tt-low').textContent='₹'+d.low.toFixed(2);
-    tooltip.querySelector('.tt-vol').textContent=(d.vol/1000).toFixed(0)+'K';
-    tooltip.style.display='block';
-    let tx=e.clientX-container.getBoundingClientRect().left+20;
-    let ty=e.clientY-container.getBoundingClientRect().top-40;
-    if(tx+200>W) tx-=220; if(ty<10) ty=10;
-    tooltip.style.left=tx+'px'; tooltip.style.top=ty+'px';
+    
+    for(let i=0; i<n; i++){
+        const d = Math.abs(toX(i) - mx);
+        if(d < md) { md = d; ci = i; }
+    }
+    
+    if(md > 35) { tooltip.style.display = 'none'; return; }
+    
+    const d = priceData[ci];
+    tooltip.querySelector('.tt-date').textContent = d.date;
+    tooltip.querySelector('.tt-close').textContent = '₹' + d.close.toFixed(2);
+    tooltip.querySelector('.tt-close').style.color = d.close >= 111 ? '#00E5FF' : '#FF4D4D';
+    tooltip.querySelector('.tt-high').textContent = '₹' + d.high.toFixed(2);
+    tooltip.querySelector('.tt-low').textContent = '₹' + d.low.toFixed(2);
+    tooltip.querySelector('.tt-vol').textContent = (d.vol / 1000).toFixed(0) + 'K';
+    
+    tooltip.style.display = 'block';
+    
+    let tx = clientX - container.getBoundingClientRect().left + 16;
+    let ty = clientY - container.getBoundingClientRect().top - 40;
+    
+    if (tx + 180 > container.clientWidth) {
+        tx = clientX - container.getBoundingClientRect().left - 196;
+    }
+    
+    if (ty < 10) ty = 10;
+    
+    tooltip.style.left = tx + 'px'; 
+    tooltip.style.top = ty + 'px';
   };
-  canvas.onmouseleave = () => tooltip.style.display='none';
 
-  // Touch support
+  canvas.onmousemove = e => updateTooltip(e, e.clientX, e.clientY);
+  canvas.onmouseleave = () => tooltip.style.display = 'none';
+
   canvas.ontouchmove = e => {
     e.preventDefault();
-    const touch = e.touches[0];
-    const rect = canvas.getBoundingClientRect();
-    const mx = (touch.clientX-rect.left)*(W/rect.width);
-    let ci=0, md=Infinity;
-    for(let i=0;i<n;i++){const d=Math.abs(toX(i)-mx);if(d<md){md=d;ci=i;}}
-    if(md>35) return;
-    const d=priceData[ci];
-    tooltip.querySelector('.tt-date').textContent=d.date;
-    tooltip.querySelector('.tt-close').textContent='₹'+d.close.toFixed(2);
-    tooltip.querySelector('.tt-close').style.color=d.close>=111?'#00E5FF':'#FF4D4D';
-    tooltip.querySelector('.tt-high').textContent='₹'+d.high.toFixed(2);
-    tooltip.querySelector('.tt-low').textContent='₹'+d.low.toFixed(2);
-    tooltip.querySelector('.tt-vol').textContent=(d.vol/1000).toFixed(0)+'K';
-    tooltip.style.display='block';
-    tooltip.style.left=(touch.clientX-container.getBoundingClientRect().left+16)+'px';
-    tooltip.style.top='10px';
+    updateTooltip(e, e.touches[0].clientX, e.touches[0].clientY);
   };
-  canvas.ontouchend = () => tooltip.style.display='none';
+  canvas.ontouchend = () => tooltip.style.display = 'none';
 }
 
 // ═══ OBSERVERS ═══
@@ -1221,6 +1266,7 @@ document.querySelectorAll('.anim,.card,.metric-box,.tl-item').forEach(el => obse
 const slides = document.querySelectorAll('.slide');
 const counter = document.getElementById('slideCounter');
 const navLinks = document.querySelectorAll('.nav-link');
+
 const slideObs = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if(e.isIntersecting){
@@ -1229,15 +1275,9 @@ const slideObs = new IntersectionObserver(entries => {
       document.querySelector(`.nav-link[href="#${e.target.id}"]`)?.classList.add('active');
     }
   });
-}, {threshold:0.3});
+}, { rootMargin: "-30% 0px -30% 0px", threshold: 0 }); 
 slides.forEach(s => slideObs.observe(s));
 
-let lastScroll=0;
-window.addEventListener('scroll',()=>{
-  const c=window.scrollY;
-  document.getElementById('nav').classList.toggle('hidden',c>lastScroll&&c>100);
-  lastScroll=c;
-},{passive:true});
 navLinks.forEach(l=>l.addEventListener('click',()=>document.getElementById('navLinks').classList.remove('open')));
 
 drawPriceChart();
