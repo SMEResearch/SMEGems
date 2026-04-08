@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suba Hotels – Deep Dive</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  /* Vibrant Luxury Hotel Theme */
+  --bg-gradient: linear-gradient(135deg, #061121 0%, #0f2c4b 50%, #071b36 100%);
+  
+  /* Bright, Vibrant Accents */
+  --accent-gold: #FFD700;       /* Brilliant Gold */
+  --accent-gold-light: #FFE866; 
+  --accent-teal: #00E5FF;       /* Vibrant Aqua/Cyan */
+  --accent-red: #FF4D4D;        /* Bright Coral Red */
+  --accent-blue: #4DACFF;       /* Vibrant Sky Blue */
+  
+  /* High Contrast Text */
+  --text-heading: #FFFFFF;
+  --text-primary: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-dim: #94A3B8;
+  
+  /* Glassmorphism Cards */
+  --bg-card: rgba(15, 23, 42, 0.65);
+  --bg-card-hover: rgba(30, 41, 59, 0.85);
+  --border: rgba(255, 215, 0, 0.25); 
+  --border-bright: rgba(255, 215, 0, 0.6);
+  --glass-nav: rgba(6, 17, 33, 0.85);
+  
+  --shadow-glow: 0 8px 24px rgba(0, 229, 255, 0.08);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  font-size: 15px; /* Scaled back base font */
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── VIBRANT AMBIENT LIGHTING (BACKGROUND) ─── */
+.ambient-glow-1 {
+  position: fixed; top: -10%; left: -10%; width: 50vw; height: 50vw;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 60%);
+  pointer-events: none; z-index: -1; filter: blur(40px);
+}
+.ambient-glow-2 {
+  position: fixed; bottom: -20%; right: -10%; width: 60vw; height: 60vw;
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.06) 0%, transparent 60%);
+  pointer-events: none; z-index: -1; filter: blur(50px);
+}
+
+/* ─── NAV ─── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: var(--glass-nav);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+  transition: transform .3s;
+}
+.nav.hidden { transform: translateY(-100%); }
+.nav-brand {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px;
+  color: var(--accent-gold);
+  letter-spacing: 1px;
+  flex-shrink: 0;
+}
+.nav-links { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; align-items: center; }
+.nav-links::-webkit-scrollbar { display: none; }
+.nav-link {
+  padding: 8px 12px; border-radius: 6px;
+  font-size: 13px; font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all .2s;
+  cursor: pointer;
+}
+.nav-link:hover, .nav-link.active { 
+  color: var(--bg-card); 
+  background: var(--accent-gold); 
+  font-weight: 600;
+}
+
+.hamburger {
+  display: none; flex-direction: column; gap: 5px; cursor: pointer;
+  padding: 8px;
+}
+.hamburger span { width: 24px; height: 2px; background: var(--accent-gold); transition: .3s; }
+
+/* ─── SLIDES ─── */
+.slide {
+  min-height: 100vh;
+  padding: 100px 24px 60px;
+  display: flex; flex-direction: column; justify-content: center;
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.slide-label {
+  font-size: 14px; font-weight: 600;
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 16px;
+  opacity: 0; transform: translateY(20px);
+  transition: all .6s ease;
+}
+.slide-label.visible { opacity: 1; transform: none; }
+.slide-label::before {
+  content: ''; display: inline-block; width: 24px; height: 2px;
+  background: var(--accent-gold); vertical-align: middle; margin-right: 12px;
+}
+
+.slide-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(32px, 5vw, 56px);
+  line-height: 1.1;
+  margin-bottom: 20px;
+  color: var(--text-heading);
+  opacity: 0; transform: translateY(30px);
+  transition: all .7s ease .1s;
+}
+.slide-title.visible { opacity: 1; transform: none; }
+.slide-title .gold { color: var(--accent-gold); }
+.slide-title .teal { color: var(--accent-teal); }
+
+.slide-subtitle {
+  font-size: clamp(16px, 2vw, 18px); 
+  color: var(--text-secondary);
+  line-height: 1.7; max-width: 800px;
+  margin-bottom: 40px;
+  font-weight: 400;
+  opacity: 0; transform: translateY(20px);
+  transition: all .6s ease .2s;
+}
+.slide-subtitle.visible { opacity: 1; transform: none; }
+
+/* ─── CARDS / GRIDS ─── */
+.card-grid {
+  display: grid;
+  /* Min 230px allows exactly 4 cards to fit in a row cleanly on standard 1080p desktop */
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+.card {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px;
+  box-shadow: var(--shadow-glow);
+  transition: all .4s cubic-bezier(0.25, 1, 0.5, 1);
+  opacity: 0; transform: translateY(25px);
+}
+.card.visible { opacity: 1; transform: none; }
+.card:hover { 
+  background: var(--bg-card-hover); 
+  border-color: var(--border-bright); 
+  transform: translateY(-4px) !important; 
+}
+.card-icon {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  margin-bottom: 16px;
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid var(--border);
+}
+.card-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 20px; 
+  margin-bottom: 10px;
+  color: var(--accent-gold-light);
+}
+.card-body { font-size: 14px; color: var(--text-secondary); line-height: 1.6; font-weight: 400; }
+
+/* ─── METRIC BOXES ─── */
+.metrics-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+  margin: 32px 0;
+}
+.metric-box {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px 16px;
+  text-align: center;
+  opacity: 0; transform: scale(0.95);
+  transition: all .5s;
+}
+.metric-box.visible { opacity: 1; transform: none; }
+.metric-value {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(28px, 4vw, 42px);
+  color: var(--accent-gold);
+  line-height: 1;
+}
+.metric-value.teal { color: var(--accent-teal); }
+.metric-value.blue { color: var(--accent-blue); }
+.metric-label {
+  font-size: 12px; color: var(--text-primary);
+  margin-top: 10px; text-transform: uppercase;
+  letter-spacing: 1px; font-weight: 600;
+}
+
+/* ─── TIMELINE ─── */
+.timeline { position: relative; margin: 32px 0; padding-left: 32px; }
+.timeline::before {
+  content: ''; position: absolute; left: 8px; top: 0; bottom: 0;
+  width: 2px; background: linear-gradient(to bottom, var(--accent-gold), transparent);
+}
+.tl-item {
+  position: relative; margin-bottom: 28px;
+  opacity: 0; transform: translateX(-20px);
+  transition: all .5s;
+}
+.tl-item.visible { opacity: 1; transform: none; }
+.tl-item::before {
+  content: ''; position: absolute; left: -30px; top: 6px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--accent-gold);
+  border: 3px solid #061121;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+.tl-date {
+  font-size: 13px; color: var(--accent-gold);
+  margin-bottom: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+}
+.tl-text { font-size: 15px; color: var(--text-secondary); line-height: 1.6; font-weight: 400; }
+
+/* ─── PRICE CHART ─── */
+.price-chart-container {
+  background: var(--bg-card); backdrop-filter: blur(16px); border: 1px solid var(--border);
+  border-radius: 10px; padding: 24px; margin: 28px 0;
+  position: relative; overflow: hidden;
+  box-shadow: var(--shadow-glow);
+}
+
+/* ─── QUOTE ─── */
+.quote-block {
+  position: relative;
+  padding: 28px 32px;
+  background: linear-gradient(90deg, rgba(255,215,0,0.1), transparent);
+  border-left: 4px solid var(--accent-gold);
+  border-radius: 0 10px 10px 0;
+  margin: 32px 0;
+  font-style: italic;
+  color: var(--text-primary);
+  font-size: clamp(16px, 2vw, 18px);
+  line-height: 1.7;
+  font-family: 'DM Serif Display', serif;
+}
+.quote-attr { 
+  font-style: normal; color: var(--accent-gold); 
+  font-size: 13px; margin-top: 16px; 
+  font-family: 'Outfit', sans-serif; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1px;
+}
+
+/* ─── TABLE ─── */
+.data-table {
+  width: 100%; border-collapse: collapse;
+  margin: 24px 0; font-size: 14px;
+}
+.data-table th {
+  text-align: left; padding: 14px;
+  font-size: 13px; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--accent-gold);
+  border-bottom: 1px solid var(--border-bright);
+  font-weight: 600;
+}
+.data-table td {
+  padding: 14px;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+  color: var(--text-secondary);
+}
+.data-table tr:hover td { background: rgba(255, 215, 0, 0.08); color: var(--text-primary); }
+.data-table .num { font-variant-numeric: tabular-nums; font-weight: 500; text-align: right; }
+.data-table .highlight { color: var(--accent-teal); font-weight: 700; }
+
+/* ─── PROGRESS BAR ─── */
+.progress-item { margin: 16px 0; }
+.progress-label { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; font-weight: 500; color: var(--text-primary); }
+.progress-label span:last-child { color: var(--accent-gold); font-weight: 700; }
+.progress-track {
+  height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%; border-radius: 3px;
+  background: linear-gradient(90deg, var(--accent-gold), var(--accent-teal));
+  width: 0; transition: width 1.5s cubic-bezier(0.23, 1, 0.32, 1);
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+}
+
+/* ─── SME GEMS BADGE ─── */
+.sme-badge {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: rgba(255, 215, 0, 0.15);
+  border: 1px solid var(--accent-gold);
+  padding: 10px 20px; border-radius: 6px;
+  font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--accent-gold-light);
+  margin: 10px 0 24px;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.15);
+}
+
+/* ─── TOOLTIP ─── */
+.chart-tooltip {
+  position: absolute;
+  background: var(--glass-nav);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-bright);
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--text-primary);
+  pointer-events: none;
+  z-index: 10;
+  display: none;
+  min-width: 180px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+.chart-tooltip .tt-date { font-size: 14px; font-weight: 700; text-transform: uppercase; color: var(--accent-gold); margin-bottom: 8px; border-bottom: 1px solid var(--border); padding-bottom: 6px;}
+.chart-tooltip .tt-row { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 4px;}
+.chart-tooltip .tt-label { color: var(--text-dim); }
+.chart-tooltip .tt-val { font-weight: 600; }
+
+/* ─── FOOTER ─── */
+.footer-bar {
+  text-align: center; padding: 48px 24px;
+  border-top: 1px solid rgba(255, 215, 0, 0.2);
+  font-size: 14px; color: var(--text-dim); font-weight: 400;
+  background: rgba(6, 17, 33, 0.95);
+}
+.footer-bar a {
+  color: var(--accent-gold); text-decoration: none;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+}
+
+/* ─── SLIDE COUNTER ─── */
+.slide-counter {
+  position: fixed; bottom: 20px; right: 20px;
+  background: var(--glass-nav); backdrop-filter: blur(12px); border: 1px solid var(--border-bright);
+  border-radius: 6px; padding: 8px 16px;
+  font-weight: 600; font-size: 13px; color: var(--accent-gold);
+  z-index: 90;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  .slide { padding: 90px 20px 50px; }
+  .nav-brand { font-size: 18px; }
+  .nav-links { display: none; }
+  .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 64px; left: 0; right: 0; background: #061121; padding: 16px; border-bottom: 1px solid var(--border); z-index: 200; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+  .nav-link { font-size: 15px; width: 100%; text-align: center; padding: 12px; }
+  .hamburger { display: flex; }
+  .card-grid { grid-template-columns: 1fr; }
+  .metrics-row { grid-template-columns: repeat(2, 1fr); }
+  .data-table { font-size: 12px; }
+  .data-table th, .data-table td { padding: 10px 8px; }
+}
+@media (max-width: 480px) {
+  .metrics-row { grid-template-columns: 1fr 1fr; }
+  .metric-value { font-size: 28px; }
+  .price-chart-container { padding: 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="ambient-glow-1"></div>
+<div class="ambient-glow-2"></div>
+
+<nav class="nav" id="nav">
+  <div class="nav-brand">SUBA HOTELS</div>
+  <div class="nav-links" id="navLinks">
+    <a class="nav-link" href="#hero">Overview</a>
+    <a class="nav-link" href="#business">Business</a>
+    <a class="nav-link" href="#model">Model</a>
+    <a class="nav-link" href="#brands">Brands</a>
+    <a class="nav-link" href="#financials">Financials</a>
+    <a class="nav-link" href="#ipo">IPO Journey</a>
+    <a class="nav-link" href="#moat">Moat</a>
+    <a class="nav-link" href="#management">Team</a>
+    <a class="nav-link" href="#risks">Risks</a>
+    <a class="nav-link" href="#outlook">Outlook</a>
+    <a class="nav-link" href="#peers">Peers</a>
+    <a class="nav-link" href="#disclaimer">Disclaimer</a>
+  </div>
+  <div class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<div class="slide-counter" id="slideCounter">1 / 10</div>
+
+<section class="slide" id="hero" data-slide="1">
+  <div class="sme-badge anim">💎 SME Gems — Hidden Champions of the SME Platform</div>
+
+  <div class="slide-label anim">NSE SME: SUBAHOTELS  ·  CMP ₹125  ·  MCap ~₹300 Cr</div>
+  <h1 class="slide-title anim">
+    <span class="gold">Suba Hotels</span><br>
+    India's 9th Largest Hotel Chain,<br>
+    Building Where <span class="teal">Others Won't</span>
+  </h1>
+  <p class="slide-subtitle anim">
+    A 10-key guest house founded by Mr. Abubaker Mehta → ~125 operational hotels, ~4,800 keys, 72+ destinations across India + UAE (Dubai).
+    Asset-light. Tier 2 & 3 focused. Exclusive master franchisee of Choice Hotels International in India.
+    Growing at 50%+ revenue CAGR. 3–5 year vision: 7,500–8,000 keys.
+  </p>
+
+  <div class="metrics-row">
+    <div class="metric-box anim"><div class="metric-value">~125</div><div class="metric-label">Operational Hotels</div></div>
+    <div class="metric-box anim"><div class="metric-value">~4,800</div><div class="metric-label">Keys</div></div>
+    <div class="metric-box anim"><div class="metric-value">72+</div><div class="metric-label">Destinations</div></div>
+    <div class="metric-box anim"><div class="metric-value teal">81%</div><div class="metric-label">Tier 2 & 3</div></div>
+    <div class="metric-box anim"><div class="metric-value blue">7</div><div class="metric-label">Brands</div></div>
+  </div>
+</section>
+
+<section class="slide" id="business" data-slide="2">
+  <div class="slide-label anim">02 — Business Profile</div>
+  <h2 class="slide-title anim">The <span class="gold">Mid-Market</span> Hospitality Platform</h2>
+  <p class="slide-subtitle anim">
+    Rather than chasing luxury in metros, Suba chose to build hotels in business corridors, industrial towns, pilgrimage routes, and emerging urban centres — where branded supply is thin but demand is structurally resilient.
+  </p>
+
+  <div class="card-grid">
+    <div class="card anim">
+      <div class="card-icon" style="color:var(--accent-gold);">🏨</div>
+      <div class="card-title">Where They Play</div>
+      <div class="card-body">Mid-market hospitality across upscale, upper-midscale, midscale, and economy segments. ~81% in Tier 2 & 3 markets — industrial hubs (Ahmedabad, Surat, Pune, Chakan MIDC), pilgrimage/tourism spots (Ayodhya, Varanasi, Ujjain, Vindhyachal). 2022: Acquired exclusive master franchise for Choice Hotels India (took over existing India portfolio + exclusive rights for Clarion, Quality, Comfort).</div>
+    </div>
+    <div class="card anim">
+      <div class="card-icon" style="color:var(--accent-teal);">🙏</div>
+      <div class="card-title">Revenue & Demand Mix</div>
+      <div class="card-body">Corporate/Business travel: 35–40% (stable base). Leisure/Domestic tourism: 30–35% (seasonal, peak Oct–Mar). MICE: 15–20%. Weddings: 10–15%. Pilgrimage: 5–10%. Blended domestic occupancy: ~73%. Average Room Rate: ₹3,276. Guidance: 10–15% ARR growth + 5–7% occupancy growth next year.</div>
+    </div>
+    <div class="card anim">
+      <div class="card-icon" style="color:var(--accent-blue);">🌍</div>
+      <div class="card-title">International — Dubai & GCC</div>
+      <div class="card-body">3 hotels now operational in Dubai (Click Hotels brand), performing well. Currently full due to regional situation; off-season ahead. Dubai impact minimal/neutral on margins. Interest in Saudi Arabia for meaningful scale entry — but not an aggressive push. No major adverse impact from Middle East conflict anticipated long-term.</div>
+    </div>
+    <div class="card anim">
+      <div class="card-icon" style="color:var(--accent-red);">📊</div>
+      <div class="card-title">Booking Channels</div>
+      <div class="card-body">Corporate bookings: 50–60% of revenue (annual contracts renewed every October). OTAs: 22–25% (commission 17–20%, dynamic pricing in high-demand). No commission charged on Suba website bookings. Strengthening direct booking & loyalty to enhance margins. Corporate RFPs via Choice network → premium bookings.</div>
+    </div>
+  </div>
+
+  <div class="quote-block anim">
+    "What matters more to us is where that growth comes from, how capital efficient it is — or does it simply add scale? We've been very clear about that distinction."
+    <div class="quote-attr">— Mubeen Mehta, CEO, Jan 2026 Concall</div>
+  </div>
+</section>
+
+<section class="slide" id="model" data-slide="3">
+  <div class="slide-label anim">03 — Operating Model</div>
+  <h2 class="slide-title anim">Multi-Format, <span class="teal">Asset-Light</span> Machine</h2>
+  <p class="slide-subtitle anim">
+    Only 5 owned hotels (~227 keys, ~4% of portfolio). >85% of recent expansion is asset-light. One owned project at a time to manage debt capacity. No debt currently — focus on internal accruals + potential fundraise.
+  </p>
+
+  <div class="card-grid">
+    <div class="card anim">
+      <div class="card-title" style="color:var(--accent-gold);">Franchise (Choice Brands)</div>
+      <div class="card-body" style="margin-top:8px;">
+        52 hotels, ~2,638 keys (~58% of portfolio). Revenue = royalty income only. Minimum 500 Choice brand rooms/year commitment. Quarterly quality audits + mystery shoppers (test with ₹50-100 in pockets for laundry integrity checks). Train-the-Trainer model. 15-year contracts, 7–10 year lock-in.
+      </div>
+    </div>
+    <div class="card anim">
+      <div class="card-title" style="color:var(--accent-teal);">Managed Hotels</div>
+      <div class="card-body" style="margin-top:8px;">
+        21 hotels, ~884 keys. Full operational control. 30-member pan-India sales team with cluster heads per zone. GDS connectivity and aggressive RFP pursuits via Choice Hotels network → premium corporate bookings. National contracts with major conglomerates.
+      </div>
+    </div>
+    <div class="card anim">
+      <div class="card-title" style="color:var(--accent-blue);">Lease & Revenue Share</div>
+      <div class="card-body" style="margin-top:8px;">
+        19 hotels, ~768 keys. Revenue share deals: 30–35% share on stabilized hotels. Selective last-mile funding (secured, repaid in 3–4 years). New hotels aim for profitability within 4–6 months. Stabilized EBITDA margins ~30% (6–8 months).
+      </div>
+    </div>
+    <div class="card anim">
+      <div class="card-title" style="color:var(--accent-red);">Owned Hotels</div>
+      <div class="card-body" style="margin-top:8px;">
+        5 hotels, ~227 keys (~4%). Capex ₹30–35 lakh/key; construction ~16–18 months. Only one owned project at a time (e.g. Ujjain). IPO proceeds deployed as stated: renovation (Mirzapur done, Ahmedabad underway), last-mile funding.
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:32px;">
+    <div class="progress-item anim">
+      <div class="progress-label"><span>Franchise & Management (~70% of keys)</span><span>~3,522 keys</span></div>
+      <div class="progress-track"><div class="progress-fill" data-width="70"></div></div>
+    </div>
+    <div class="progress-item anim">
+      <div class="progress-label"><span>Lease & Revenue Share</span><span>~768 keys</span></div>
+      <div class="progress-track"><div class="progress-fill" data-width="16" style="background: linear-gradient(90deg, var(--accent-blue), #87a5be);"></div></div>
+    </div>
+    <div class="progress-item anim">
+      <div class="progress-label"><span>Owned</span><span>~227 keys</span></div>
+      <div class="progress-track"><div class="progress-fill" data-width="5" style="background: linear-gradient(90deg, var(--accent-red), #cc7a7a);"></div></div>
+    </div>
+    <div class="progress-item anim">
+      <div class="progress-label"><span>North 49% | West 24% | South 16% | East 2% | Central 4% | Intl 3%</span><span></span></div>
+      <div class="progress-track"><div class="progress-fill" data-width="100" style="background:linear-gradient(90deg, var(--accent-gold) 49%, var(--accent-teal) 49%, var(--accent-teal) 73%, var(--accent-blue) 73%, var(--accent-blue) 89%, var(--accent-red) 89%, var(--accent-red) 91%, #8e6c88 91%, #8e6c88 95%, #b58252 95%);"></div></div>
+    </div>
+  </div>
+
+  <div class="card anim" style="margin-top:24px; border-left: 4px solid var(--accent-teal);">
+    <div class="card-title" style="color:var(--accent-teal);">Operational Economics</div>
+    <div class="card-body" style="margin-top:8px;">
+      Operational cost ~55% of revenue. Target overall margins ~30%. New hotels: profitability in 4–6 months, stabilized EBITDA ~30% in 6–8 months. H1 vs H2 seasonality: H2 (Oct–Mar) contributes ~60–65%, but becoming less skewed. Selective signing based on micro-market analysis — no cancellations (only delays). Lost ~6 hotels in 12 months (non-payment, lease expiry, owner decisions).
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="brands" data-slide="4">
+  <div class="slide-label anim">04 — Brand Architecture</div>
+  <h2 class="slide-title anim">Domestic + International <span class="gold">in Every Segment</span></h2>
+  <p class="slide-subtitle anim">
+    The only Indian hotel company operating across all three segments — upscale, midscale, and economy — with both a domestic and an international brand in each. 7 brands total. This prevents dilution and internal cannibalization.
+  </p>
+
+  <div style="overflow-x:auto;">
+    <table class="data-table anim">
+      <thead>
+        <tr><th>Segment</th><th>International (Choice)</th><th>Domestic (Suba)</th><th>Positioning</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:var(--accent-gold); font-size:15px;">Upscale</strong></td>
+          <td>Clarion</td>
+          <td>Suba</td>
+          <td>Premium business & leisure</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--accent-teal); font-size:15px;">Midscale</strong></td>
+          <td>Quality</td>
+          <td>Click / Click Collection / Click Elite ✨</td>
+          <td>Business & leisure traveller</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--accent-blue); font-size:15px;">Economy</strong></td>
+          <td>Comfort</td>
+          <td>GenX / R&B</td>
+          <td>Value-driven demand</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card anim" style="margin-top:20px; border-left: 4px solid var(--accent-gold);">
+    <div class="card-title" style="color:var(--accent-gold);">✨ New: Click Elite — Launched 7 April 2026</div>
+    <div class="card-body" style="margin-top:8px;">
+      Strategic expansion into the premium segment. First property: Click Hotel Lite Chakan, Pune (industrial & corporate hub). Part of the 7-hotel Founder's Day launch. Positioned for elevated service, contemporary design, premium hospitality.
+    </div>
+  </div>
+
+  <div class="card anim" style="margin-top:16px; border-left: 4px solid var(--accent-teal);">
+    <div class="card-title" style="color:var(--accent-teal);">Choice Privileges — Rollout Planned ~June 2026</div>
+    <div class="card-body" style="margin-top:8px;">
+      Integrated across both Suba + Choice brands. 68M+ members worldwide, 7,400+ hotels, 630,000+ rooms globally. Earn/burn flexibility — points convertible to airline partners (Singapore Airlines). This plugs Suba into one of the world's largest hotel loyalty ecosystems. A structural competitive moat.
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="financials" data-slide="5">
+  <div class="slide-label anim">05 — Financial Snapshot</div>
+  <h2 class="slide-title anim">Growing Fast, <span class="teal">Profitably</span></h2>
+  <p class="slide-subtitle anim">
+    Revenue up 52% YoY in FY25. EBITDA margins expanding from 26% to 29%. PAT up 69%. Growth outlook: 35–50% revenue/PBT growth in FY26, similar trajectory next year (16–17% from same-store + new hotels).
+  </p>
+
+  <div class="metrics-row">
+    <div class="metric-box anim"><div class="metric-value">29%</div><div class="metric-label">EBITDA Margin FY25</div></div>
+    <div class="metric-box anim"><div class="metric-value teal">38%</div><div class="metric-label">ROE FY25</div></div>
+    <div class="metric-box anim"><div class="metric-value blue">24%</div><div class="metric-label">ROCE FY25</div></div>
+    <div class="metric-box anim"><div class="metric-value">17.6x</div><div class="metric-label">PE Ratio</div></div>
+    <div class="metric-box anim"><div class="metric-value teal">73%</div><div class="metric-label">Occupancy</div></div>
+    <div class="metric-box anim"><div class="metric-value">₹3,276</div><div class="metric-label">Avg Room Rate</div></div>
+  </div>
+
+  <div style="overflow-x:auto;">
+    <table class="data-table anim">
+      <thead>
+        <tr><th>Metric</th><th class="num">FY23</th><th class="num">FY24</th><th class="num">FY25</th><th class="num">H1 FY26</th><th class="num">YoY</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Revenue (₹ Cr)</td><td class="num">35</td><td class="num">52</td><td class="num">79</td><td class="num">44</td><td class="num highlight">+49%</td></tr>
+        <tr><td>EBITDA (₹ Cr)</td><td class="num">9</td><td class="num">14</td><td class="num">23</td><td class="num">9</td><td class="num highlight">+54%</td></tr>
+        <tr><td>EBITDA Margin</td><td class="num">25%</td><td class="num">26%</td><td class="num highlight" style="font-size:16px;">29%</td><td class="num">20%</td><td class="num">+291 bps</td></tr>
+        <tr><td>PAT (₹ Cr)</td><td class="num">3</td><td class="num">9</td><td class="num highlight" style="font-size:16px;">15</td><td class="num">5</td><td class="num highlight">+58%</td></tr>
+        <tr><td>PAT Margin</td><td class="num">—</td><td class="num">17%</td><td class="num">19%</td><td class="num">12%</td><td class="num">+204 bps</td></tr>
+        <tr><td>EPS (₹)</td><td class="num">12.47</td><td class="num">18.83</td><td class="num">8.69</td><td class="num">3.00</td><td class="num">—</td></tr>
+        <tr><td>Borrowings (₹ Cr)</td><td class="num">46</td><td class="num">46</td><td class="num">50</td><td class="num">57</td><td class="num">—</td></tr>
+        <tr><td>Debtor Days</td><td class="num">34</td><td class="num">46</td><td class="num" style="color:var(--accent-red);font-weight:700;font-size:16px;">58</td><td class="num">—</td><td class="num" style="font-size:16px;">⚠</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="font-size:13px; color:var(--text-dim); margin-top:12px; font-style:italic;">
+    EPS reflects dilution post-IPO. H1 margins lower due to monsoon seasonality. No debt currently — focus on internal accruals + potential fundraise.
+  </div>
+</section>
+
+<section class="slide" id="ipo" data-slide="6">
+  <div class="slide-label anim">06 — The IPO Story & Price Action</div>
+  <h2 class="slide-title anim">Listed at <span class="gold">₹154</span>, Peaked at <span class="teal">₹200</span>,<br>Then <span style="color:var(--accent-red);">₹97.65</span> — The SME Gravity</h2>
+  <p class="slide-subtitle anim">
+    IPO price ₹111 → Listed at ₹154 (+39%) → Rallied to ₹200 (+80%) by 23 Oct → Steady drawdown to ₹97.65 all-time low (30 Mar) → Recovering to ₹125. Real NSE data (hover for details).
+  </p>
+
+  <div class="price-chart-container anim">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
+      <div><span style="color:var(--text-dim);font-size:11px;letter-spacing:1px;text-transform:uppercase;">IPO Price</span><br><span style="font-family:'DM Serif Display';font-size:22px;color:var(--accent-gold);">₹111</span></div>
+      <div><span style="color:var(--text-dim);font-size:11px;letter-spacing:1px;text-transform:uppercase;">Listing (7 Oct)</span><br><span style="font-family:'DM Serif Display';font-size:22px;color:var(--accent-teal);">₹154.20</span></div>
+      <div><span style="color:var(--text-dim);font-size:11px;letter-spacing:1px;text-transform:uppercase;">52W High</span><br><span style="font-family:'DM Serif Display';font-size:22px;color:var(--accent-teal);">₹200.00</span></div>
+      <div><span style="color:var(--text-dim);font-size:11px;letter-spacing:1px;text-transform:uppercase;">All-Time Low</span><br><span style="font-family:'DM Serif Display';font-size:22px;color:var(--accent-red);">₹97.65</span></div>
+      <div><span style="color:var(--text-dim);font-size:11px;letter-spacing:1px;text-transform:uppercase;">CMP (7 Apr)</span><br><span style="font-family:'DM Serif Display';font-size:22px;color:var(--text-primary);">₹124.60</span></div>
+    </div>
+    <canvas id="priceCanvas"></canvas>
+    <div class="chart-tooltip" id="chartTooltip">
+      <div class="tt-date"></div>
+      <div class="tt-row"><span class="tt-label">Close</span><span class="tt-val tt-close"></span></div>
+      <div class="tt-row"><span class="tt-label">High</span><span class="tt-val tt-high"></span></div>
+      <div class="tt-row"><span class="tt-label">Low</span><span class="tt-val tt-low"></span></div>
+      <div class="tt-row"><span class="tt-label">Volume</span><span class="tt-val tt-vol"></span></div>
+    </div>
+  </div>
+
+  <h3 style="font-family:'DM Serif Display', serif;font-size:26px;margin:36px 0 20px;color:var(--accent-gold);">Why the Drawdown?</h3>
+
+  <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));">
+    <div class="card anim">
+      <div class="card-title" style="color:var(--accent-red);">The SME Tax</div>
+      <div class="card-body">SME stocks carry a structural discount. Limited float (~28% public). Promoter holding dropped 84.7% → 60.9% in one quarter (-23.8%) — partly IPO dilution, but optics spooked investors. Only 1,258 shareholders as of Oct '25.</div>
+    </div>
+    <div class="card anim">
+      <div class="card-title" style="color:var(--accent-red);">Liquidity Vacuum</div>
+      <div class="card-body">Many days see 8,400–14,400 shares traded (₹10–20L turnover). On listing: 27.98L shares. The stock gaps 5–10% on a few trades. ₹97.65 low on 30 Mar = just 1.77L shares (₹1.8 Cr turnover).</div>
+    </div>
+    <div class="card anim">
+      <div class="card-title" style="color:var(--accent-red);">Operator-Driven</div>
+      <div class="card-body">Initial run from ₹154 → ₹200 in 16 days (consecutive upper circuits on tiny volume) = likely operator-assisted exuberance. Same mechanics reverse — no natural buyer base when momentum fades.</div>
+    </div>
+    <div class="card anim">
+      <div class="card-title" style="color:var(--accent-blue);">Broader Sentiment</div>
+      <div class="card-body">SME segment cooled late 2025–early 2026 after SEBI tightened norms. Rising debtor days, interest capitalization flags by screeners hurt perception. Institutional capital access is the real game (FII 3.45%, DII 7.25%).</div>
+    </div>
+  </div>
+
+  <div class="quote-block anim">
+    The subjective reality: In SME markets, price action and business quality often diverge sharply. The stock going from ₹200 to ₹97.65 doesn't mean the business halved — the business grew 50%+ in this period. But that's the SME game: you get extreme volatility as the price for being early. The initial upper circuits on minuscule volume were operator mechanics, not institutional conviction. When that unwinds, it's brutal. The question is whether fundamentals eventually anchor the price — or the liquidity vacuum keeps it hostage.
+  </div>
+</section>
+
+<section class="slide" id="moat" data-slide="7">
+  <div class="slide-label anim">07 — Moat & Differentiation</div>
+  <h2 class="slide-title anim">Too Many Hotels. <span class="gold">Why Suba Wins.</span></h2>
+  <p class="slide-subtitle anim">
+    India has 300+ hotel companies. The mid-market Tier 2/3 space is under-penetrated for branded supply. Selective signing based on micro-market analysis — no cancellations (only delays). Quality bar maintained through mystery audits.
+  </p>
+
+  <div class="card-grid">
+    <div class="card anim">
+      <div class="card-icon" style="color:var(--accent-gold);">🔑</div>
+      <div class="card-title">Choice Franchise</div>
+      <div class="card-body">Exclusive India franchise for Comfort, Quality, Clarion. 500+ rooms/year commitment. Global distribution (7,400 hotels), loyalty (68M members). A moat few can replicate.</div>
+    </div>
+    <div class="card anim">
+      <div class="card-icon" style="color:var(--accent-teal); background: rgba(0, 229, 255, 0.1);">📍</div>
+      <div class="card-title">Location-Led Strategy</div>
+      <div class="card-body">Hotels near airports, SEZs, highways, pilgrimage nodes, industrial clusters. Cluster strategy = operating leverage + brand recall + shared infrastructure. Faster breakeven in Tier 2/3.</div>
+    </div>
+    <div class="card anim">
+      <div class="card-icon" style="color:var(--accent-blue); background: rgba(77, 172, 255, 0.1);">🧬</div>
+      <div class="card-title">Dual Brand Setup</div>
+      <div class="card-body">Only Indian hotel company with domestic + international brands across all segments. Right brand for each micro-market without dilution. Improves deal conversion.</div>
+    </div>
+    <div class="card anim">
+      <div class="card-icon" style="color:var(--accent-red); background: rgba(255, 77, 77, 0.1);">🤝</div>
+      <div class="card-title">Owner Flywheel</div>
+      <div class="card-body">Growing proportion of signings from repeat owners. Lowers acquisition cost, shortens stabilization. Reduces execution risk. Self-reinforcing trust loop.</div>
+    </div>
+  </div>
+
+  <div style="margin-top:32px;overflow-x:auto;">
+    <table class="data-table anim">
+      <thead><tr><th>Player</th><th>Focus</th><th>Tier 2/3</th><th>Asset Model</th><th>Intl Brands</th></tr></thead>
+      <tbody>
+        <tr><td><strong style="color:var(--accent-gold); font-size:15px;">Suba Hotels</strong></td><td>Mid-market, multi-seg</td><td class="highlight" style="font-size:15px;">Deep (81%)</td><td>~96% asset-light</td><td class="highlight">Yes (Choice)</td></tr>
+        <tr><td>OYO</td><td>Budget/Economy</td><td>Wide, shallow</td><td>Aggregator</td><td>No</td></tr>
+        <tr><td>Lemon Tree</td><td>Midscale/Economy</td><td>Moderate</td><td>Mixed (heavy owned)</td><td>No</td></tr>
+        <tr><td>IHCL (Taj)</td><td>Luxury/Premium</td><td>Limited</td><td>Heavy asset</td><td>Own brands</td></tr>
+        <tr><td>ITC Hotels</td><td>Luxury</td><td>Limited</td><td>Heavy asset</td><td>No</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="slide" id="management" data-slide="8">
+  <div class="slide-label anim">08 — Management & Expertise</div>
+  <h2 class="slide-title anim">Third-Generation <span class="teal">Hospitality DNA</span></h2>
+  <p class="slide-subtitle anim">
+    A family-run business with ambition to institutionalize. Hiring Premal Zaveri (ex-Mahindra Holidays, Chalet Hotels, CBRE, HVS, Taj, Knight Frank) signals serious intent to professionalize.
+  </p>
+
+  <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));">
+    <div class="card anim">
+      <div class="card-title">Mansur Mehta</div>
+      <div style="font-size:12px;letter-spacing:1px;color:var(--accent-gold);margin-bottom:12px;font-weight:600;text-transform:uppercase;">Chairman & MD</div>
+      <div class="card-body">Custodian of the Mehta legacy. Strategy, capital allocation, stakeholder relationships. "Founder's Day is deeply meaningful — reflecting a journey that began with just 10 rooms."</div>
+    </div>
+    <div class="card anim">
+      <div class="card-title">Mubeen Mehta</div>
+      <div style="font-size:12px;letter-spacing:1px;color:var(--accent-teal);margin-bottom:12px;font-weight:600;text-transform:uppercase;">WTD & CEO</div>
+      <div class="card-body">3rd-gen representative. Strategy, operations, investor comms. Data-driven on capital efficiency. Led the 7-hotel Founder's Day launch. "A first-of-its-kind in Indian hospitality."</div>
+    </div>
+    <div class="card anim">
+      <div class="card-title">Chandrakant Shetty</div>
+      <div style="font-size:12px;letter-spacing:1px;color:var(--accent-blue);margin-bottom:12px;font-weight:600;text-transform:uppercase;">COO</div>
+      <div class="card-body">Day-to-day ops across 125+ hotels. Manages cluster heads, 30-member sales team, GDS, OTA strategy, corporate contracts. Targets 10–15% ARR + 5–7% occupancy growth.</div>
+    </div>
+    <div class="card anim">
+      <div class="card-title">Premal Zaveri</div>
+      <div style="font-size:12px;letter-spacing:1px;color:var(--accent-gold);margin-bottom:12px;font-weight:600;text-transform:uppercase;">SVP BD (Jan 2026)</div>
+      <div class="card-body">20+ yrs: Taj, CBRE, HVS, Chalet Hotels (NSE: CHALET), Knight Frank ME, Mahindra Holidays. MBA K.J. Somaiya, ISB analytics. The "professionalizing" hire.</div>
+    </div>
+  </div>
+
+  <div class="card anim" style="margin-top:24px; border-left: 4px solid var(--accent-gold);">
+    <div class="card-title">Management Acumen — The Honest Read</div>
+    <div class="card-body" style="margin-top:10px;">
+      <strong style="color:var(--accent-teal); font-size:15px;">Strengths:</strong> Clear strategy articulation. Capital discipline (1 owned project at a time). Asset-light maintained at 50%+ growth. IPO proceeds deployed as stated. Hired institutional talent. 7 hotels in 1 day = execution proof. Limited margin dilution from expansion. No debt. Selective signing (micro-market analysis, no cancellations).<br><br>
+      <strong style="color:var(--accent-red); font-size:15px;">Watch:</strong> Family-run concentration risk. Promoter -23.8% optics. Rising debtors (34→58 days). Lost ~6 hotels in 12 months. Cash from ops dropped ₹11→₹4 Cr. "Potential fundraise" hinted = dilution risk. Interest capitalization. Governance track record under construction.
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="risks" data-slide="9">
+  <div class="slide-label anim">09 — Risks & Considerations</div>
+  <h2 class="slide-title anim">What Could Go <span style="color:var(--accent-red);">Wrong</span></h2>
+
+  <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+    <div class="card anim" style="border-top: 4px solid var(--accent-red);">
+      <div class="card-title" style="color:var(--accent-red);">SME Liquidity Risk</div>
+      <div class="card-body">1,258 shareholders. Many days: 8K–14K shares (₹10-20L). Stock hit ₹97.65 on 1.77L vol. Exit at scale = impossible. Mainboard migration = catalyst but no timeline. Market maker is NNM Securities.</div>
+    </div>
+    <div class="card anim" style="border-top: 4px solid var(--accent-red);">
+      <div class="card-title" style="color:var(--accent-red);">Franchise Concentration</div>
+      <div class="card-body">~58% keys under Choice. Master franchise dependency. Counter: 15-yr contracts, 7-10yr lock-ins, 500 rooms/yr commitment both ways, Suba has own domestic brands. Conversion from franchise → management is a lever.</div>
+    </div>
+    <div class="card anim" style="border-top: 4px solid var(--accent-red);">
+      <div class="card-title" style="color:var(--accent-red);">Quality at Scale</div>
+      <div class="card-body">125+ hotels, 72+ cities with lean team. Lost ~6 hotels in 12 months. Mystery audits + quarterly training exist, but one bad review cycle could dent brand. Tier 2/3 = word-of-mouth matters more.</div>
+    </div>
+    <div class="card anim" style="border-top: 4px solid var(--accent-red);">
+      <div class="card-title" style="color:var(--accent-red);">Working Capital Pressure</div>
+      <div class="card-body">Debtor days: 34→46→58. Cash from ops: ₹10→₹11→₹4 Cr. Partly growth-driven, but trajectory needs reversal. "No debt currently" but borrowings at ₹57 Cr on balance sheet (Sep '25).</div>
+    </div>
+    <div class="card anim" style="border-top: 4px solid var(--accent-red);">
+      <div class="card-title" style="color:var(--accent-red);">Cyclical + Seasonal</div>
+      <div class="card-body">Hospitality is cyclical. H2 = 60-65% of revenue. Any slowdown, pandemic, or tourism disruption hits occupancy. Counter: Tier 2/3 business/pilgrimage demand is more resilient than pure leisure.</div>
+    </div>
+    <div class="card anim" style="border-top: 4px solid var(--accent-red);">
+      <div class="card-title" style="color:var(--accent-red);">Dilution Risk</div>
+      <div class="card-body">"Potential fundraise" hinted alongside internal accruals. Any equity raise at ₹100-125 range = dilutive. Interest capitalization flags. 689 employees across 125+ hotels = lean but fragile.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="outlook" data-slide="10">
+  <div class="slide-label anim">10 — Growth Runway & Vision</div>
+  <h2 class="slide-title anim">3–5 Year Vision: <span class="gold">7,500–8,000 Keys</span></h2>
+  <p class="slide-subtitle anim">
+    From ~4,800 keys → 7,500–8,000 keys. ~127 total hotels with >6,000 keys (inc. pipeline). ~1,599 keys to open in next 16–18 months. Continue India focus + selective international.
+  </p>
+
+  <div class="metrics-row">
+    <div class="metric-box anim"><div class="metric-value">~127</div><div class="metric-label">Total Hotels (inc. pipeline)</div></div>
+    <div class="metric-box anim"><div class="metric-value teal">>6,000</div><div class="metric-label">Total Keys (inc. pipeline)</div></div>
+    <div class="metric-box anim"><div class="metric-value blue">1,599</div><div class="metric-label">Pipeline Keys (16-18M)</div></div>
+    <div class="metric-box anim"><div class="metric-value">500+</div><div class="metric-label">Choice Rooms/Year</div></div>
+  </div>
+
+  <div class="card anim" style="margin-bottom:32px; border-left: 4px solid var(--accent-teal);">
+    <div class="card-title" style="color:var(--accent-teal);">Pipeline Breakdown (~1,599 keys in 16–18 months)</div>
+    <div class="card-body" style="margin-top:10px;">
+      Revenue share dominant: ~665 keys. Management/Franchise: ~702 keys. Lease: ~124 keys. Owned: ~100 keys (e.g. Ujjain). ~31 hotels in pre-opening phase (~1,600 keys). ~94% expected operational within 12 months. Pipeline does not include additional opportunities in development.
+    </div>
+  </div>
+
+  <h3 style="font-family:'DM Serif Display', serif;font-size:28px;margin:36px 0 20px;">Post-IPO Timeline</h3>
+  <div class="timeline">
+    <div class="tl-item anim"><div class="tl-date">Oct 2025</div><div class="tl-text"><strong style="color:var(--text-primary);">Listed 7 Oct at ₹154 (+39%).</strong> Rallied to ₹200 by 23 Oct (upper circuits). Signed Quality Rama INN Ayodhya.</div></div>
+    <div class="tl-item anim"><div class="tl-date">Nov 2025</div><div class="tl-text">Dapoli, Ujjain-Narwar signed. Investor meets. Stock corrected ₹175 → ₹152.</div></div>
+    <div class="tl-item anim"><div class="tl-date">Dec 2025</div><div class="tl-text">Hyderabad Gachibowli signed. Stock: ₹138–153. Volume declining.</div></div>
+    <div class="tl-item anim"><div class="tl-date">Jan 2026</div><div class="tl-text">Zaveri hired (SVP-BD). First concall 27 Jan. Gurugram + Vizag signed. Dubai ops live.</div></div>
+    <div class="tl-item anim"><div class="tl-date">Feb 2026</div><div class="tl-text">Stock bounced ₹104→₹150 (10 Feb spike), then faded. Gurugram (58 keys) + Vizag (32 keys).</div></div>
+    <div class="tl-item anim"><div class="tl-date">Mar 2026</div><div class="tl-text">Click Collection Ayodhya opened. Vijayawada + Orai signed. <strong style="color:var(--accent-red);">All-time low ₹97.65 on 30 Mar.</strong></div></div>
+    <div class="tl-item anim"><div class="tl-date" style="color:var(--accent-gold-light);">7 Apr 2026</div><div class="tl-text"><strong style="color:var(--accent-gold); font-size:16px;">Founder's Day: 7 hotels in 1 day (300+ keys). Portfolio → 102+ hotels, 4,660+ keys. Click Elite launched. Stock recovered ₹100→₹125 in 7 sessions.</strong></div></div>
+  </div>
+
+  <div class="card anim" style="margin-top:28px; border-left: 4px solid var(--accent-gold);">
+    <div class="card-title" style="color:var(--accent-gold);">The Structural Thesis</div>
+    <div class="card-body" style="margin-top:10px;">
+      India's domestic travel is structural — infrastructure buildout, rising middle class, religious tourism boom, MICE/wedding demand in Tier 2 cities. Branded supply in these markets is thin. Growth outlook: 35–50% revenue/PBT growth in FY26. 3–5 year vision: ~4,500 → 7,500–8,000 keys. Continue India focus + selective international (UAE/Saudi). The question: can Suba execute at scale while maintaining quality, capital discipline, and governance as they grow from SME into a serious mid-cap hospitality platform?
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="peers" data-slide="11">
+  <div class="slide-label anim">11 — Peer Analysis</div>
+  <h2 class="slide-title anim">How Does <span class="gold">Suba</span> Stack Up?</h2>
+  <p class="slide-subtitle anim">
+    Comparing across SME peers (GCH) and listed mid-tier hotel players (Royal Orchid, Sayaji, Samhi). Each operates with a different model — asset-heavy vs asset-light, managed vs owned — which makes margin and return comparisons nuanced.
+  </p>
+
+  <div style="overflow-x:auto;">
+    <table class="data-table anim">
+      <thead>
+        <tr>
+          <th>Metric</th>
+          <th class="num" style="color:var(--accent-gold);font-weight:700; font-size:14px;">Suba Hotels</th>
+          <th class="num">GCH (Grand Continent)</th>
+          <th class="num">Royal Orchid</th>
+          <th class="num">Sayaji Hotels</th>
+          <th class="num">Samhi Hotels</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Listing</td><td class="num" style="color:var(--accent-gold);">NSE SME</td><td class="num">NSE SME</td><td class="num">BSE + NSE</td><td class="num">BSE</td><td class="num">BSE + NSE</td></tr>
+        <tr><td>Market Cap (₹ Cr)</td><td class="num highlight">~300</td><td class="num">~235</td><td class="num">~1,087</td><td class="num">~513</td><td class="num">~3,334</td></tr>
+        <tr><td>CMP (₹)</td><td class="num">~125</td><td class="num">~94</td><td class="num">~396</td><td class="num">~293</td><td class="num">~151</td></tr>
+        <tr><td>Revenue FY25 (₹ Cr)</td><td class="num highlight">79</td><td class="num">73</td><td class="num">~320</td><td class="num">~138</td><td class="num">1,130</td></tr>
+        <tr><td>Revenue Growth YoY</td><td class="num highlight">+52%</td><td class="num highlight">+133%</td><td class="num">+9%</td><td class="num" style="color:var(--accent-red);">-8%</td><td class="num">+18%</td></tr>
+        <tr><td>EBITDA Margin (Latest Annual)</td><td class="num highlight">29%</td><td class="num">26%</td><td class="num">23%</td><td class="num" style="color:var(--accent-red);">18%</td><td class="num highlight">36%</td></tr>
+        <tr><td>EBITDA Margin (TTM / Recent)</td><td class="num">~20% (H1)</td><td class="num" style="color:var(--accent-red);">~9% (H1)</td><td class="num">~21%</td><td class="num" style="color:var(--accent-red);">~4% (H1)</td><td class="num highlight">36%</td></tr>
+        <tr><td>PAT FY25 (₹ Cr)</td><td class="num">15</td><td class="num">11</td><td class="num">~48</td><td class="num">~5</td><td class="num">86</td></tr>
+        <tr><td>Stock P/E</td><td class="num highlight">17.6x</td><td class="num">35x</td><td class="num">23.6x</td><td class="num">N/M</td><td class="num">21.6x</td></tr>
+        <tr><td>ROCE</td><td class="num highlight">24.2%</td><td class="num">19.5%</td><td class="num">17.4%</td><td class="num" style="color:var(--accent-red);">5.9%</td><td class="num">9.4%</td></tr>
+        <tr><td>ROE</td><td class="num highlight">37.9%</td><td class="num">15.6%</td><td class="num">22.4%</td><td class="num" style="color:var(--accent-red);">1.3%</td><td class="num">9.6%</td></tr>
+        <tr><td>Hotels / Properties</td><td class="num highlight">~125</td><td class="num">~16</td><td class="num">112+</td><td class="num">15</td><td class="num">32</td></tr>
+        <tr><td>Keys / Rooms</td><td class="num highlight">~4,800</td><td class="num">~750</td><td class="num">N/A</td><td class="num">~1,500</td><td class="num">~4,948</td></tr>
+        <tr><td>Primary Model</td><td class="num" style="font-size:12px;">Asset-light (96%)</td><td class="num" style="font-size:12px;">Lease-heavy</td><td class="num" style="font-size:12px;">Mixed (managed + owned)</td><td class="num" style="font-size:12px;">Owned + managed</td><td class="num" style="font-size:12px;">Asset-heavy (owned)</td></tr>
+        <tr><td>Promoter Holding</td><td class="num">60.9%</td><td class="num">54.9%</td><td class="num">~51%</td><td class="num">~44%</td><td class="num">~41%</td></tr>
+        <tr><td>Dividend</td><td class="num">Nil</td><td class="num">Nil</td><td class="num">0.63%</td><td class="num">Nil</td><td class="num">Nil</td></tr>
+        <tr><td>52W Range (₹)</td><td class="num">97.65–200</td><td class="num">76.5–255</td><td class="num">311–594</td><td class="num">250–315</td><td class="num">120–255</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card-grid" style="margin-top:32px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+    <div class="card anim" style="border-top: 4px solid var(--accent-gold);">
+      <div class="card-title" style="color:var(--accent-gold);">GCH — The Closest SME Peer</div>
+      <div class="card-body">Also SME-listed, mid-market, asset-light(ish). But GCH is lease-heavy (not franchise-heavy like Suba), has only ~16 properties vs Suba's 125+, and margins have cratered to ~9% in H1 FY26 from 34% a year ago. Similar "margin issue" flagged — but the underlying model differs. GCH trades at 35x PE vs Suba's 17.6x despite weaker TTM metrics. GCH IPO also saw a massive run-up (to ₹255) then crash to ₹76.5 — same SME dynamics.</div>
+    </div>
+    <div class="card anim" style="border-top: 4px solid var(--accent-teal);">
+      <div class="card-title" style="color:var(--accent-teal);">Royal Orchid — The Closest Scale Peer</div>
+      <div class="card-body">112+ hotels in 75+ locations — almost identical scale to Suba. Mixed model (owned + managed + franchise). Mainboard listed. Better price discovery but ROE (22%) and ROCE (17%) are lower than Suba. Revenue ~4x Suba but market cap is ~3.5x (suggesting similar valuation per hotel on mainboard). Also flagged for capitalizing interest.</div>
+    </div>
+    <div class="card anim" style="border-top: 4px solid var(--accent-blue);">
+      <div class="card-title" style="color:var(--accent-blue);">Samhi — The Asset-Heavy Giant</div>
+      <div class="card-body">Not really a peer — Samhi is asset-heavy (owns 32 hotels, ₹3,200+ Cr in fixed assets, ₹2,246 Cr borrowings). Partners with Marriott, IHG, Hyatt. ₹3,334 Cr market cap. Was loss-making until FY25. 36% EBITDA margin but only 9.6% ROE due to massive capital employed. Different universe — but useful benchmark for hotel-sector multiples.</div>
+    </div>
+    <div class="card anim" style="border-top: 4px solid var(--accent-red);">
+      <div class="card-title" style="color:var(--accent-red);">Sayaji — The Cautionary Tale</div>
+      <div class="card-body">15 hotels, luxury/4-5 star segment, mostly owned/leased. Revenue declining (-8% 5Y CAGR). ROE collapsed to 1.3%. H1 FY26 margins are negative (-6% OPM in one quarter). ₹513 Cr market cap on ~₹138 Cr revenue with virtually no profit = expensive on fundamentals. Shows what happens when the owned model faces headwinds without growth.</div>
+    </div>
+  </div>
+
+  <div class="quote-block anim">
+    Key takeaway: Suba trades at the lowest PE (17.6x) among peers, has the highest ROE (37.9%) and ROCE (24.2%), and the fastest revenue growth (+52%). The trade-off is SME liquidity risk and governance track record. If Suba migrates to mainboard and maintains execution, the valuation gap to Royal Orchid/Samhi could narrow materially.
+  </div>
+</section>
+
+<section class="slide" id="disclaimer" data-slide="12" style="justify-content:flex-start; padding-top:100px;">
+  <div class="slide-label anim">12 — Disclaimer</div>
+  <h2 class="slide-title anim" style="font-size:clamp(36px,5vw,52px);">Important <span class="gold">Disclaimer</span></h2>
+
+  <div class="card anim" style="margin-top:24px; border-top:4px solid var(--accent-red);">
+    <div class="card-title" style="color:var(--accent-red); font-size:22px;">⚠ Not Investment Advice</div>
+    <div class="card-body" style="margin-top:12px; font-size:14px; line-height:1.8;">
+      This presentation is prepared for <strong>educational and informational purposes only</strong>. It does not constitute investment advice, financial advice, trading advice, or any other form of professional advice. The information contained herein should not be construed as a recommendation to buy, sell, or hold any security, including shares of Suba Hotels Limited (NSE SME: SUBAHOTELS) or any other company mentioned.<br><br>
+      
+      <strong>No offer or solicitation:</strong> Nothing in this document constitutes an offer to sell, or a solicitation of an offer to buy, any securities. Any such offer would only be made pursuant to a formal offering memorandum or prospectus.<br><br>
+      
+      <strong>Accuracy of information:</strong> While every effort has been made to ensure the accuracy of the data presented, the author makes no representations or warranties — express or implied — as to the accuracy, completeness, reliability, or timeliness of the information. Data has been sourced from Screener.in, NSE filings, company disclosures, conference call transcripts, and public press releases. These sources may contain errors, omissions, or outdated information.<br><br>
+      
+      <strong>Forward-looking statements:</strong> This presentation may contain forward-looking statements about the company's plans, projections, targets, and expectations. These statements are based on management's current beliefs and are subject to significant risks and uncertainties. Actual results may differ materially from those projected. Such statements include but are not limited to revenue growth guidance, pipeline targets, ARR/occupancy projections, and the 3–5 year vision of 7,500–8,000 keys.<br><br>
+
+      <strong>SME-specific risks:</strong> SUBAHOTELS is listed on the NSE SME platform. SME stocks are inherently more volatile, less liquid, and carry higher risk than mainboard-listed securities. The trading volumes are extremely thin (often under ₹20 lakh daily turnover), and price discovery may not reflect true fundamental value. Investors should be aware that entry and exit at desired prices may not always be possible.<br><br>
+
+      <strong>No conflict disclosure:</strong> The author (sachprat07) may or may not hold positions in the securities discussed. This presentation does not disclose the author's personal holdings. The author is not a SEBI-registered research analyst (RA), investment adviser (IA), or portfolio manager. The author has received no compensation from any company mentioned in this presentation.<br><br>
+
+      <strong>Peer comparisons:</strong> Comparisons with Grand Continent Hotels (GCHOTELS), Royal Orchid Hotels (ROHLTD), Sayaji Hotels (SAYAJIHOTL), and Samhi Hotels (SAMHI) are for illustrative purposes only. Each company has a different business model, capital structure, risk profile, and operating environment. Metrics may not be directly comparable. Data reflects the most recent publicly available information at the time of preparation (April 2026).<br><br>
+
+      <strong>Tax and regulatory:</strong> This presentation does not provide any tax, legal, or regulatory advice. Investors should consult qualified professionals for advice specific to their individual circumstances. Securities laws and tax regulations vary by jurisdiction.<br><br>
+
+      <strong>Do your own research (DYOR):</strong> Investors are strongly encouraged to conduct their own independent research, verify all data points, read the company's DRHP/RHP, annual reports, and regulatory filings before making any investment decisions. Past performance is not indicative of future results. The value of investments can go down as well as up, and investors may lose their entire capital.
+    </div>
+  </div>
+
+  <div style="margin-top:32px; padding:24px; border:1px solid var(--border); border-radius:10px; background:var(--bg-card); box-shadow:var(--shadow-glow);">
+    <div style="font-size:14px; color:var(--text-secondary); line-height:1.8;">
+      <strong style="color:var(--text-primary);">Data Sources:</strong> Screener.in (financial metrics), NSE India (price data, filings), Company disclosures under SEBI LODR Regulation 30, Conference call transcript dated 27 January 2026, Press releases, DRHP/RHP available at subahotels.com, JLL India Hospitality Industry Overview Report.<br><br>
+      <strong style="color:var(--text-primary);">Last Updated:</strong> 8 April 2026 · <strong style="color:var(--text-primary);">Prepared by:</strong> <a href="https://x.com/sachprat07" target="_blank" style="color:var(--accent-gold);text-decoration:none;font-weight:600;">@sachprat07</a><br><br>
+      <em>All views expressed are personal opinions and do not represent the views of any organization, employer, or institution. This is not SEBI-registered research.</em>
+    </div>
+  </div>
+</section>
+
+<div class="footer-bar">
+  <a href="https://x.com/sachprat07" target="_blank" rel="noopener">
+    <svg style="width:18px;height:18px;" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    sachprat07
+  </a>
+  <div style="margin-top:12px; font-weight:500;">Data sourced from NSE, Screener.in, Company filings & Concalls · Not investment advice · DYOR</div>
+</div>
+
+<script>
+// ═══ REAL PRICE DATA FROM NSE CSV ═══
+const priceData = [
+  {date:'07-Oct-25',close:161.90,high:161.90,low:154.20,vol:2798400},
+  {date:'08-Oct-25',close:169.95,high:169.95,low:169.95,vol:67200},
+  {date:'09-Oct-25',close:178.40,high:178.40,low:178.40,vol:42000},
+  {date:'10-Oct-25',close:187.30,high:187.30,low:187.30,vol:24000},
+  {date:'13-Oct-25',close:196.65,high:196.65,low:191.00,vol:1786800},
+  {date:'14-Oct-25',close:186.85,high:197.00,low:186.85,vol:628800},
+  {date:'15-Oct-25',close:178.40,high:187.00,low:177.50,vol:322800},
+  {date:'16-Oct-25',close:187.10,high:187.30,low:174.00,vol:666000},
+  {date:'17-Oct-25',close:181.05,high:186.00,low:178.00,vol:288000},
+  {date:'20-Oct-25',close:190.05,high:190.10,low:184.10,vol:490800},
+  {date:'21-Oct-25',close:194.20,high:195.00,low:188.05,vol:166800},
+  {date:'23-Oct-25',close:181.35,high:200.00,low:179.00,vol:565200},
+  {date:'24-Oct-25',close:176.85,high:185.40,low:175.00,vol:190800},
+  {date:'27-Oct-25',close:169.85,high:179.85,low:164.95,vol:378000},
+  {date:'28-Oct-25',close:173.65,high:179.05,low:164.00,vol:188400},
+  {date:'29-Oct-25',close:181.45,high:183.20,low:173.50,vol:256800},
+  {date:'30-Oct-25',close:176.85,high:183.50,low:175.00,vol:109200},
+  {date:'31-Oct-25',close:170.60,high:179.00,low:168.40,vol:152400},
+  {date:'03-Nov-25',close:170.95,high:172.95,low:163.50,vol:193200},
+  {date:'04-Nov-25',close:169.35,high:174.90,low:168.60,vol:73200},
+  {date:'06-Nov-25',close:167.90,high:167.95,low:163.00,vol:217200},
+  {date:'07-Nov-25',close:177.95,high:183.70,low:167.90,vol:226800},
+  {date:'10-Nov-25',close:172.60,high:180.00,low:171.00,vol:91200},
+  {date:'11-Nov-25',close:168.95,high:176.55,low:167.95,vol:100800},
+  {date:'12-Nov-25',close:170.15,high:170.90,low:165.00,vol:62400},
+  {date:'13-Nov-25',close:160.85,high:170.00,low:155.00,vol:207600},
+  {date:'14-Nov-25',close:152.55,high:160.90,low:149.00,vol:244800},
+  {date:'17-Nov-25',close:160.00,high:165.00,low:156.00,vol:267600},
+  {date:'18-Nov-25',close:165.85,high:168.00,low:157.00,vol:147600},
+  {date:'19-Nov-25',close:166.15,high:172.85,low:163.25,vol:109200},
+  {date:'20-Nov-25',close:175.20,high:178.00,low:167.00,vol:165600},
+  {date:'21-Nov-25',close:167.40,high:174.00,low:166.05,vol:134400},
+  {date:'24-Nov-25',close:163.05,high:168.45,low:163.00,vol:61200},
+  {date:'25-Nov-25',close:169.50,high:170.70,low:159.00,vol:141600},
+  {date:'26-Nov-25',close:162.05,high:171.90,low:160.10,vol:112800},
+  {date:'27-Nov-25',close:161.85,high:163.90,low:156.00,vol:108000},
+  {date:'28-Nov-25',close:162.50,high:163.95,low:161.00,vol:19200},
+  {date:'01-Dec-25',close:160.10,high:164.90,low:159.15,vol:56400},
+  {date:'02-Dec-25',close:157.85,high:159.70,low:156.75,vol:80400},
+  {date:'03-Dec-25',close:151.40,high:157.70,low:150.00,vol:147600},
+  {date:'04-Dec-25',close:150.85,high:153.55,low:149.00,vol:84000},
+  {date:'05-Dec-25',close:146.60,high:154.90,low:145.00,vol:48000},
+  {date:'08-Dec-25',close:138.15,high:152.75,low:134.95,vol:168000},
+  {date:'09-Dec-25',close:144.20,high:149.00,low:132.00,vol:134400},
+  {date:'10-Dec-25',close:147.45,high:149.95,low:143.50,vol:25200},
+  {date:'11-Dec-25',close:143.40,high:149.00,low:143.00,vol:31200},
+  {date:'12-Dec-25',close:153.05,high:154.50,low:147.00,vol:68400},
+  {date:'15-Dec-25',close:149.70,high:151.55,low:148.00,vol:31200},
+  {date:'16-Dec-25',close:153.20,high:153.95,low:151.00,vol:14400},
+  {date:'17-Dec-25',close:150.00,high:151.95,low:148.75,vol:16800},
+  {date:'18-Dec-25',close:152.50,high:153.70,low:145.80,vol:39600},
+  {date:'19-Dec-25',close:153.80,high:154.00,low:150.20,vol:18000},
+  {date:'22-Dec-25',close:151.80,high:155.80,low:146.00,vol:72000},
+  {date:'23-Dec-25',close:152.25,high:154.00,low:150.50,vol:10800},
+  {date:'24-Dec-25',close:148.35,high:152.25,low:146.15,vol:32400},
+  {date:'26-Dec-25',close:143.05,high:148.75,low:142.00,vol:44400},
+  {date:'29-Dec-25',close:138.55,high:143.45,low:137.10,vol:54000},
+  {date:'30-Dec-25',close:143.95,high:145.00,low:138.55,vol:28800},
+  {date:'31-Dec-25',close:143.05,high:145.35,low:142.20,vol:13200},
+  {date:'01-Jan-26',close:143.95,high:145.65,low:139.10,vol:20400},
+  {date:'02-Jan-26',close:140.75,high:141.90,low:140.00,vol:32400},
+  {date:'05-Jan-26',close:137.05,high:139.15,low:136.10,vol:105600},
+  {date:'06-Jan-26',close:137.75,high:138.50,low:135.80,vol:14400},
+  {date:'07-Jan-26',close:135.70,high:142.80,low:135.30,vol:33600},
+  {date:'08-Jan-26',close:137.35,high:138.00,low:135.20,vol:30000},
+  {date:'09-Jan-26',close:132.05,high:136.85,low:130.70,vol:42000},
+  {date:'12-Jan-26',close:124.45,high:130.00,low:117.55,vol:350400},
+  {date:'13-Jan-26',close:128.70,high:130.25,low:126.50,vol:51600},
+  {date:'14-Jan-26',close:125.45,high:127.45,low:123.60,vol:153600},
+  {date:'16-Jan-26',close:123.15,high:125.00,low:120.00,vol:60000},
+  {date:'19-Jan-26',close:115.35,high:119.00,low:113.00,vol:218400},
+  {date:'20-Jan-26',close:110.10,high:116.95,low:109.00,vol:169200},
+  {date:'21-Jan-26',close:115.45,high:117.70,low:108.00,vol:188400},
+  {date:'22-Jan-26',close:120.35,high:123.00,low:117.00,vol:43200},
+  {date:'23-Jan-26',close:119.55,high:123.00,low:117.00,vol:37200},
+  {date:'27-Jan-26',close:114.30,high:119.20,low:113.05,vol:48000},
+  {date:'28-Jan-26',close:121.55,high:122.00,low:114.95,vol:14400},
+  {date:'29-Jan-26',close:115.80,high:121.00,low:112.50,vol:24000},
+  {date:'30-Jan-26',close:117.35,high:118.90,low:114.00,vol:13200},
+  {date:'01-Feb-26',close:113.45,high:119.90,low:112.00,vol:18000},
+  {date:'02-Feb-26',close:109.05,high:113.45,low:104.00,vol:193200},
+  {date:'03-Feb-26',close:119.45,high:120.70,low:113.00,vol:123600},
+  {date:'04-Feb-26',close:123.65,high:124.45,low:120.00,vol:42000},
+  {date:'05-Feb-26',close:118.70,high:122.00,low:117.50,vol:40800},
+  {date:'06-Feb-26',close:120.65,high:122.00,low:116.45,vol:16800},
+  {date:'09-Feb-26',close:130.00,high:130.90,low:123.00,vol:52800},
+  {date:'10-Feb-26',close:146.40,high:149.90,low:131.00,vol:128400},
+  {date:'11-Feb-26',close:134.85,high:144.00,low:130.00,vol:158400},
+  {date:'12-Feb-26',close:134.70,high:137.00,low:132.25,vol:20400},
+  {date:'13-Feb-26',close:135.80,high:137.00,low:128.65,vol:21600},
+  {date:'16-Feb-26',close:130.35,high:133.00,low:130.00,vol:21600},
+  {date:'17-Feb-26',close:128.00,high:134.30,low:127.50,vol:57600},
+  {date:'18-Feb-26',close:127.45,high:130.50,low:124.20,vol:63600},
+  {date:'19-Feb-26',close:127.25,high:128.50,low:125.25,vol:43200},
+  {date:'20-Feb-26',close:127.00,high:127.50,low:125.10,vol:21600},
+  {date:'23-Feb-26',close:131.90,high:132.00,low:127.00,vol:30000},
+  {date:'24-Feb-26',close:128.25,high:132.90,low:125.00,vol:44400},
+  {date:'25-Feb-26',close:134.20,high:137.70,low:128.05,vol:64800},
+  {date:'26-Feb-26',close:132.65,high:134.20,low:131.00,vol:8400},
+  {date:'27-Feb-26',close:130.15,high:134.00,low:126.45,vol:49200},
+  {date:'02-Mar-26',close:122.00,high:127.00,low:120.00,vol:76800},
+  {date:'04-Mar-26',close:124.85,high:125.50,low:119.05,vol:62400},
+  {date:'05-Mar-26',close:122.55,high:126.20,low:121.45,vol:33600},
+  {date:'06-Mar-26',close:123.85,high:125.40,low:122.50,vol:31200},
+  {date:'09-Mar-26',close:117.00,high:120.00,low:116.10,vol:100800},
+  {date:'10-Mar-26',close:115.50,high:121.00,low:115.00,vol:61200},
+  {date:'11-Mar-26',close:114.15,high:117.00,low:113.10,vol:184800},
+  {date:'12-Mar-26',close:118.95,high:120.00,low:107.05,vol:73200},
+  {date:'13-Mar-26',close:114.75,high:116.50,low:114.00,vol:26400},
+  {date:'16-Mar-26',close:115.75,high:117.00,low:112.00,vol:34800},
+  {date:'17-Mar-26',close:115.35,high:116.50,low:112.55,vol:26400},
+  {date:'18-Mar-26',close:118.85,high:120.00,low:115.35,vol:50400},
+  {date:'19-Mar-26',close:115.25,high:117.45,low:114.05,vol:40800},
+  {date:'20-Mar-26',close:119.80,high:120.00,low:115.50,vol:68400},
+  {date:'23-Mar-26',close:111.75,high:118.75,low:107.00,vol:145200},
+  {date:'24-Mar-26',close:115.85,high:119.80,low:110.10,vol:117600},
+  {date:'25-Mar-26',close:116.95,high:122.00,low:115.20,vol:57600},
+  {date:'27-Mar-26',close:109.00,high:114.05,low:108.00,vol:229200},
+  {date:'30-Mar-26',close:100.95,high:107.00,low:97.65,vol:177600},
+  {date:'01-Apr-26',close:107.80,high:111.80,low:105.00,vol:82800},
+  {date:'02-Apr-26',close:110.40,high:113.00,low:103.00,vol:36000},
+  {date:'06-Apr-26',close:120.05,high:121.50,low:111.00,vol:79200},
+  {date:'07-Apr-26',close:124.60,high:126.80,low:120.00,vol:100800},
+];
+
+function drawPriceChart() {
+  const canvas = document.getElementById('priceCanvas');
+  if (!canvas) return;
+  const container = canvas.parentElement;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const W = container.clientWidth - 48;
+  const H = 260; // Adjusted height
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  ctx.scale(dpr, dpr);
+
+  const pad = {top:30, right:45, bottom:35, left:10};
+  const cW = W - pad.left - pad.right;
+  const cH = H - pad.top - pad.bottom;
+  const n = priceData.length;
+
+  const allLows = priceData.map(d => d.low);
+  const allHighs = priceData.map(d => d.high);
+  const minP = Math.min(...allLows) - 5;
+  const maxP = Math.max(...allHighs) + 5;
+
+  const toX = i => pad.left + (i / (n - 1)) * cW;
+  const toY = p => pad.top + (1 - (p - minP) / (maxP - minP)) * cH;
+
+  // Grid
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)'; ctx.lineWidth = 1;
+  for (let p = Math.ceil(minP/20)*20; p <= maxP; p += 20) {
+    const y = toY(p);
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(W-pad.right, y); ctx.stroke();
+    ctx.fillStyle = '#94A3B8'; ctx.font = '11px "Outfit"'; ctx.textAlign = 'right';
+    ctx.fillText('₹'+p, W-5, y+4);
+  }
+
+  // IPO line
+  ctx.strokeStyle = '#FFD700'; ctx.lineWidth = 1.5; ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(pad.left, toY(111)); ctx.lineTo(W-pad.right, toY(111)); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#FFD700'; ctx.font = '600 11px "Outfit"'; ctx.textAlign = 'left';
+  ctx.fillText('IPO ₹111', pad.left+4, toY(111)-6);
+
+  // Area fill
+  const grad = ctx.createLinearGradient(0, pad.top, 0, H-pad.bottom);
+  grad.addColorStop(0, 'rgba(0, 229, 255, 0.2)');
+  grad.addColorStop(1, 'rgba(0, 229, 255, 0)');
+  ctx.beginPath();
+  ctx.moveTo(toX(0), H-pad.bottom);
+  for (let i = 0; i < n; i++) ctx.lineTo(toX(i), toY(priceData[i].close));
+  ctx.lineTo(toX(n-1), H-pad.bottom);
+  ctx.fillStyle = grad; ctx.fill();
+
+  // Line with color
+  for (let i = 1; i < n; i++) {
+    ctx.beginPath();
+    ctx.moveTo(toX(i-1), toY(priceData[i-1].close));
+    ctx.lineTo(toX(i), toY(priceData[i].close));
+    ctx.strokeStyle = priceData[i].close >= 111 ? '#00E5FF' : '#FF4D4D';
+    ctx.lineWidth = 2.5; ctx.stroke();
+  }
+
+  // Volume
+  const maxVol = Math.max(...priceData.map(d => d.vol));
+  for (let i = 0; i < n; i++) {
+    const bh = (priceData[i].vol / maxVol) * 35;
+    ctx.fillStyle = priceData[i].close >= 111 ? 'rgba(0, 229, 255, 0.2)' : 'rgba(255, 77, 77, 0.2)';
+    ctx.fillRect(toX(i)-1.5, H-pad.bottom-bh, 3, bh);
+  }
+
+  // Markers
+  const peakIdx = priceData.findIndex(d => d.high >= 200);
+  const lowIdx = priceData.findIndex(d => d.low <= 97.65);
+  [{idx:0,label:'Listed\n₹162',c:'#00E5FF'},{idx:peakIdx,label:'Peak ₹200',c:'#FFD700'},{idx:lowIdx,label:'Low ₹97.65',c:'#FF4D4D'},{idx:n-1,label:'₹125',c:'#F8FAFC'}].forEach(m => {
+    if(m.idx<0) return;
+    const px=toX(m.idx), py=toY(priceData[m.idx].close);
+    ctx.beginPath(); ctx.arc(px,py,5,0,Math.PI*2);
+    ctx.fillStyle=m.c; ctx.fill();
+    ctx.strokeStyle='#0f2c4b'; ctx.lineWidth=2.5; ctx.stroke();
+    ctx.fillStyle=m.c; ctx.font='600 11px "Outfit"'; ctx.textAlign='center';
+    m.label.split('\n').forEach((l,i,a) => ctx.fillText(l, px, py-10-(a.length-1-i)*14));
+  });
+
+  // X dates
+  ctx.fillStyle='#94A3B8'; ctx.font='10px "Outfit"'; ctx.textAlign='center';
+  const step = Math.floor(n/7);
+  for(let i=0;i<n;i+=step) ctx.fillText(priceData[i].date, toX(i), H-8);
+
+  // Tooltip
+  const tooltip = document.getElementById('chartTooltip');
+  canvas.onmousemove = e => {
+    const rect = canvas.getBoundingClientRect();
+    const mx = (e.clientX-rect.left)*(W/rect.width);
+    let ci=0, md=Infinity;
+    for(let i=0;i<n;i++){const d=Math.abs(toX(i)-mx);if(d<md){md=d;ci=i;}}
+    if(md>25){tooltip.style.display='none';return;}
+    const d=priceData[ci];
+    tooltip.querySelector('.tt-date').textContent=d.date;
+    tooltip.querySelector('.tt-close').textContent='₹'+d.close.toFixed(2);
+    tooltip.querySelector('.tt-close').style.color=d.close>=111?'#00E5FF':'#FF4D4D';
+    tooltip.querySelector('.tt-high').textContent='₹'+d.high.toFixed(2);
+    tooltip.querySelector('.tt-low').textContent='₹'+d.low.toFixed(2);
+    tooltip.querySelector('.tt-vol').textContent=(d.vol/1000).toFixed(0)+'K';
+    tooltip.style.display='block';
+    let tx=e.clientX-container.getBoundingClientRect().left+20;
+    let ty=e.clientY-container.getBoundingClientRect().top-40;
+    if(tx+200>W) tx-=220; if(ty<10) ty=10;
+    tooltip.style.left=tx+'px'; tooltip.style.top=ty+'px';
+  };
+  canvas.onmouseleave = () => tooltip.style.display='none';
+
+  // Touch support
+  canvas.ontouchmove = e => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    const mx = (touch.clientX-rect.left)*(W/rect.width);
+    let ci=0, md=Infinity;
+    for(let i=0;i<n;i++){const d=Math.abs(toX(i)-mx);if(d<md){md=d;ci=i;}}
+    if(md>35) return;
+    const d=priceData[ci];
+    tooltip.querySelector('.tt-date').textContent=d.date;
+    tooltip.querySelector('.tt-close').textContent='₹'+d.close.toFixed(2);
+    tooltip.querySelector('.tt-close').style.color=d.close>=111?'#00E5FF':'#FF4D4D';
+    tooltip.querySelector('.tt-high').textContent='₹'+d.high.toFixed(2);
+    tooltip.querySelector('.tt-low').textContent='₹'+d.low.toFixed(2);
+    tooltip.querySelector('.tt-vol').textContent=(d.vol/1000).toFixed(0)+'K';
+    tooltip.style.display='block';
+    tooltip.style.left=(touch.clientX-container.getBoundingClientRect().left+16)+'px';
+    tooltip.style.top='10px';
+  };
+  canvas.ontouchend = () => tooltip.style.display='none';
+}
+
+// ═══ OBSERVERS ═══
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      const idx = Array.from(entry.target.parentElement?.children||[]).indexOf(entry.target);
+      setTimeout(() => {
+        entry.target.classList.add('visible');
+        entry.target.querySelectorAll('.progress-fill').forEach(f => f.style.width=f.dataset.width+'%');
+      }, Math.min(idx*80, 400));
+    }
+  });
+}, {threshold:0.15, rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.anim,.card,.metric-box,.tl-item').forEach(el => observer.observe(el));
+
+const slides = document.querySelectorAll('.slide');
+const counter = document.getElementById('slideCounter');
+const navLinks = document.querySelectorAll('.nav-link');
+const slideObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      counter.textContent=`${e.target.dataset.slide} / ${slides.length}`;
+      navLinks.forEach(l=>l.classList.remove('active'));
+      document.querySelector(`.nav-link[href="#${e.target.id}"]`)?.classList.add('active');
+    }
+  });
+}, {threshold:0.3});
+slides.forEach(s => slideObs.observe(s));
+
+let lastScroll=0;
+window.addEventListener('scroll',()=>{
+  const c=window.scrollY;
+  document.getElementById('nav').classList.toggle('hidden',c>lastScroll&&c>100);
+  lastScroll=c;
+},{passive:true});
+navLinks.forEach(l=>l.addEventListener('click',()=>document.getElementById('navLinks').classList.remove('open')));
+
+drawPriceChart();
+window.addEventListener('resize', drawPriceChart);
+</script>
+</body>
+</html>
