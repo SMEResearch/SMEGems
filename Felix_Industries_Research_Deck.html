@@ -9,33 +9,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
 
 :root {
-  /* Aqua-Eco Dual Tone Palette */
-  --bg-grad-1: #020b12;
-  --bg-grad-2: #071b26;
+  /* Deep Oceanic Blue-Green Background */
+  --bg-grad-1: #01161e; /* Deepest teal-blue */
+  --bg-grad-2: #033038; /* Rich sea-green/blue */
   
-  /* Glassmorphism Surfaces */
-  --surface-glass: rgba(10, 25, 38, 0.6);
-  --surface-hover: rgba(16, 40, 58, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  /* Glassmorphism Surfaces (Tinted to match the ocean theme) */
+  --surface-glass: rgba(4, 35, 45, 0.6);
+  --surface-hover: rgba(8, 56, 70, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
   
-  /* Dual Gradients (Water + Recycling) */
-  --dual-gradient: linear-gradient(135deg, #00f2fe 0%, #10b981 100%);
-  --water-gradient: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
-  --eco-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  /* Dual Gradients (Cerulean Blue to Emerald Green) */
+  --dual-gradient: linear-gradient(135deg, #0ea5e9 0%, #10b981 100%);
+  --water-gradient: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
+  --eco-gradient: linear-gradient(135deg, #059669 0%, #10b981 100%);
   
   /* Solid Accents */
-  --accent-cyan: #00f2fe;
-  --accent-emerald: #10b981;
+  --accent-cyan: #0ea5e9;    /* Bright Cerulean Blue */
+  --accent-emerald: #10b981; /* Vibrant Emerald Green */
   --alert-red: #f43f5e;
   --alert-amber: #f59e0b;
   
   /* Typography Colors */
   --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-dim: #64748b;
+  --text-muted: #cbd5e1; /* Slightly brighter for readability on teal */
+  --text-dim: #94a3b8;
   
   /* Glows */
-  --glow-cyan: rgba(0, 242, 254, 0.15);
+  --glow-cyan: rgba(14, 165, 233, 0.15);
   --glow-emerald: rgba(16, 185, 129, 0.15);
 }
 
@@ -59,7 +59,7 @@ body {
   width: 100vw; height: 100vh;
   z-index: -1;
   pointer-events: none;
-  opacity: 0.35;
+  opacity: 0.95;
 }
 
 /* NAV */
@@ -169,7 +169,13 @@ strong { color: var(--text-main); font-weight: 600; }
   content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
   background: var(--dual-gradient);
 }
-.stat-card .label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
+.stat-card .label { 
+  font-size: 12px;               /* Slightly bumped up the size */
+  color: var(--accent-cyan);     /* Changed to the bright neon cyan from the theme */
+  text-transform: uppercase; 
+  letter-spacing: 1.5px; 
+  font-weight: 800;              /* Maxed out the boldness */
+}
 .stat-card .value { font-family: 'Space Mono', monospace; font-size: 28px; font-weight: 700; color: var(--text-main); margin: 8px 0; letter-spacing: -1px;}
 .stat-card .sub { font-size: 12px; font-weight: 500; }
 .stat-card .sub.up { color: var(--accent-emerald); }
@@ -179,7 +185,17 @@ strong { color: var(--text-main); font-weight: 600; }
 /* TABLES */
 .table-wrapper { overflow-x: auto; background: var(--surface-glass); border: 1px solid var(--glass-border); border-radius: 16px; margin: 20px 0; backdrop-filter: blur(10px); }
 table { width: 100%; border-collapse: collapse; font-size: 14px; }
-th { text-align: left; padding: 16px 20px; color: var(--text-dim); font-weight: 600; border-bottom: 1px solid var(--glass-border); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; background: rgba(0,0,0,0.2);}
+th { 
+  text-align: left; 
+  padding: 16px 20px; 
+  color: var(--text-main); /* Changed from muted dim to bright white */
+  font-weight: 800;        /* Changed from 600 to 800 for maximum boldness */
+  border-bottom: 1px solid var(--glass-border); 
+  font-size: 12px;         /* Slightly increased font size */
+  text-transform: uppercase; 
+  letter-spacing: 1px; 
+  background: rgba(0,0,0,0.4); /* Made the background slightly darker for contrast */
+}
 td { padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,0.03); color: var(--text-muted); font-family: 'Space Mono', monospace; font-size: 13px;}
 tr:hover td { background: var(--glow-cyan); color: var(--text-main); }
 tr:last-child td { border-bottom: none; }
@@ -282,7 +298,7 @@ strong { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; }
 
 <div class="page active" id="page-cover">
   <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;text-align:center;">
-    <div class="hero-badge">✦ Hidden Champions of the SME Platform</div>
+    <div class="hero-badge">SME GEMS ✦ Hidden Champions of the SME Platform</div>
     <div class="hero-title-wrapper">
       <h1>Felix Industries Ltd</h1>
     </div>
@@ -295,7 +311,7 @@ strong { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; }
       <div class="stat-card" style="min-width:160px;text-align:center;"><div class="label">FY27E Rev</div><div class="value">₹180+ Cr</div><div class="sub up">Mgmt Guidance</div></div>
     </div>
     
-    <p style="font-size:13px;color:var(--text-dim);max-width:600px;font-family:'Space Mono',monospace;">NSE: FELIX &nbsp;|&nbsp; ISIN: INE901X01013 &nbsp;|&nbsp; Sector: Environmental Engineering</p>
+    <p style="font-size:13px;color:var(--text-dim);max-width:600px;font-family:'Space Mono',monospace;">NSE: FELIX &nbsp;|&nbsp; Sector: Environmental Engineering</p>
     <p style="font-size:12px;color:var(--text-dim);margin-top:24px;border-top:1px solid var(--glass-border);padding-top:16px;">⚠ Independent research compilation for educational purposes only. Not investment advice.</p>
   </div>
 </div>
@@ -356,7 +372,8 @@ strong { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; }
 
   <div class="flag-card" style="border-color: rgba(16, 185, 129, 0.3); border-left-color: var(--accent-emerald); background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), transparent);">
     <h4 style="color: var(--accent-emerald);">The Turnaround: From Lumpy EPC to Annuity BOOT</h4>
-    <p>For years (2017-2022), Felix operated almost exclusively as a pure-play EPC contractor. This model was highly lumpy, capital-intensive, and prone to severe margin compression. During this "stagnant phase," the company practically held no public earnings calls, offered little to no transparency to minority shareholders, and frequently missed its own internal growth targets.<br><br>The turnaround was purely a <strong>business model shift</strong>. Management executed a hard pivot toward BOOT (Build, Own, Operate, Transfer) and long-term O&M contracts, ensuring 5-10 years of recurring revenue per project. To execute this, they restructured into specialized subsidiaries (Rivita for O&G, Enovation for ZLD) and brought in new operational focus. The financial turnaround became undeniable with the late 2023 and early 2024 disclosures, proving the BOOT model was structurally expanding margins from single-digits to 25%+.</p>
+    <p>For years (2017–2022), Felix ran predominantly as a pure-play EPC contractor. The model was lumpy, working-capital heavy, and vulnerable to margin compression—worsened by COVID-era disruptions, slow debtor recoveries, and capital constraints. Revenues stagnated, profits stayed thin-to-negative, transparency was minimal (earnings calls, shareholder updates), with possible shortcomings on internal growth targets.
+<br><br>The turnaround was a clean <strong>business model shift</strong>. Management shifted aggressively to <strong>BOOT (Build-Own-Operate-Transfer)</strong> and long-term O&M contracts, locking in 5–10+ years of recurring annuity revenue per project. They operationalized specialized subsidiaries—<strong>Rivita for O&G and Enovation for ZLD</strong>—while sharpening execution focus. The shift turned undeniable in late-2023 and early-2024 disclosures: BOOT/O&M structurally lifted margins from single digits to 25%+ EBITDA potential, with visible acceleration in FY25–26 order book and profitability.</p>
   </div>
 </div>
 
@@ -596,7 +613,7 @@ strong { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; }
 
   <div class="flag-card">
     <h4>⚠ Reality Check: Felix & Government Contracts</h4>
-    <p>Felix's IR materials and investor presentations prominently feature the JJM opportunity, positioning the company as a beneficiary of this massive government spending wave. However, <strong>this is potentially misleading</strong>.</p>
+    <p>Felix's IR materials at places, prominently feature the JJM opportunity, positioning the company as a beneficiary of this massive government spending wave. However, <strong>this is potentially misleading</strong>.</p>
     <p style="margin-top:8px;">On the Q3 FY26 concall (20 Feb 2026), when directly asked about government contracts, <strong>Director Finance Nishant Sharma stated clearly:</strong> "We generally are working with, mostly with private entities... government projects have a very typical tendency of functioning in a very different manner, and it becomes challenging to recover money. That's why we have till now avoided taking government contracts."</p>
     <p style="margin-top:8px;">Felix has <strong>explicitly avoided JJM and direct government tenders</strong>. Their business is overwhelmingly private-sector focused (industrial clients like Aarti Industries, HOCCO, Oil & Gas players). The only government-adjacent work is via their 20% stake in Eco-Vision for municipal plastic recycling contracts, which were not direct EPC tenders.</p>
   </div>
@@ -647,7 +664,7 @@ strong { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; }
       <li><strong>Iran War & Oman disruption:</strong> Oman has been directly hit in the 2026 Iran war. Felix's FY27 Oman target (₹75-80 Cr = ~40% of total) is at serious risk. Strait of Hormuz closure disrupts oil trade, Oman's economy, and Felix's ability to export processed oil. The ceasefire (8 Apr) is fragile.</li>
       <li><strong>Execution concentration risk:</strong> Management can handle only 4-5 large orders simultaneously. Any client-side delays (2-3 months common) disrupt the entire revenue timeline. Q4 FY26 expected to deliver ₹45 Cr — enormous concentration in one quarter.</li>
       <li><strong>Promoter pledge at 32%:</strong> If stock falls sharply, pledged shares could face margin calls. Pledge creation activity between Sep'25 and Feb'26 is concerning during a period of supposed growth.</li>
-      <li><strong>Historical execution vs Guidances:</strong> While the current BOOT pivot is working, management historically missed their informal growth targets during the stagnant EPC phase (2017-2022). FY26 guidance was ₹110 Cr with only ₹65 Cr done in 9 months. FY27 guidance of ₹180-200 Cr is a massive 4-5x jump from FY25 in two years.</li>
+      <li><strong>Historical execution & Guidances:</strong> The BOOT pivot is now delivering clear momentum, yet management’s historical track record on growth targets remains mixed. Informal targets struggled during the lumpy EPC years (2017–2022). For FY26, guidance was set at ₹110 Cr; after nine months, only ₹65 Cr has been booked. The FY27 target of ₹180–200 Cr implies a sharp 4–5x jump from FY25 in just two years—highly ambitious, but now supported by a stronger order book and annuity cash flows.</li>
     </ul>
   </div>
 
@@ -657,14 +674,7 @@ strong { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; }
       <li><strong>Working capital intensity:</strong> EPC/BOOT projects require upfront capital. Cash conversion cycle is stretched due to high payables and receivables.</li>
       <li><strong>Feedstock dependency (Oman):</strong> Oil processing volumes depend entirely on third-party refinery waste generation. Client slowdowns directly impact Felix's throughput.</li>
       <li><strong>Low institutional ownership:</strong> FII 1.24%, DII 0.43%. The stock is retail-driven, which means higher volatility and less price discovery support.</li>
-    </ul>
-  </div>
-
-  <div class="card" style="border-top: 3px solid var(--accent-cyan);">
-    <h3 style="color:var(--accent-cyan);">🔵 Structural / Long-term Risks</h3>
-    <ul class="bullet-list">
-      <li><strong>Geographic concentration:</strong> India operations heavily concentrated in Gujarat industrial corridor</li>
-      <li><strong>No dividend track record:</strong> Zero dividend payout. All profits reinvested — appropriate for growth stage but limits appeal for income investors</li>
+         <li><strong>No dividend track record:</strong> Zero dividend payout. All profits reinvested — appropriate for growth stage but limits appeal for income investors</li>
       <li><strong>Mainboard listing timing:</strong> Company plans to apply post March '26 audits. Any delays or rejection would limit liquidity and institutional participation</li>
     </ul>
   </div>
@@ -698,7 +708,7 @@ strong { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; }
       <tr><td>P/E (TTM)</td><td class="mono">17.9x</td><td class="mono">12x</td><td class="mono">10x</td><td class="mono">29x</td></tr>
     </table>
   </div>
-  <p>Felix trades at a premium to most peers on current metrics. The premium is only justified if FY27 guidance materializes. On forward estimates (FY27E), the stock is potentially cheap at 7-11x PE — but that's a big "if".</p>
+  <p>Felix trades at a premium to most peers on current metrics. The premium is only justified if FY27 guidance materializes. On forward estimates (FY27E), the stock is potentially cheap at 7-11x PE — <strong>but that's a big "if".</strong></p>
 </div>
 
 <div class="page" id="page-disclaimer">
@@ -812,11 +822,14 @@ function handleSwipe() {
     }
 }
 
-// Interactive Particle Background Setup (Aqua-Eco theme)
+// Interactive Water/Ocean Background Setup
 const canvas = document.getElementById('interactive-bg');
 const ctx = canvas.getContext('2d');
-let particles = [];
-let mouse = { x: null, y: null };
+
+let mouseX = window.innerWidth / 2;
+let mouseY = window.innerHeight / 2;
+let currentX = mouseX;
+let currentY = mouseY;
 
 function resize() {
   canvas.width = window.innerWidth;
@@ -825,69 +838,66 @@ function resize() {
 window.addEventListener('resize', resize);
 resize();
 
+// Track mouse and touch movements
 window.addEventListener('mousemove', (e) => {
-  mouse.x = e.x;
-  mouse.y = e.y;
+  mouseX = e.clientX;
+  mouseY = e.clientY;
 });
 
-class Particle {
-  constructor() {
-    this.x = Math.random() * canvas.width;
-    this.y = Math.random() * canvas.height;
-    this.vx = (Math.random() - 0.5) * 0.4;
-    this.vy = (Math.random() - 0.5) * 0.4;
-    this.radius = Math.random() * 2.5 + 0.5;
-    this.isEmerald = Math.random() > 0.5; // Randomly assign cyan or emerald
-  }
-  update() {
-    this.x += this.vx;
-    this.y += this.vy;
-    if (this.x < 0 || this.x > canvas.width) this.vx = -this.vx;
-    if (this.y < 0 || this.y > canvas.height) this.vy = -this.vy;
-    
-    // Mouse repel
-    if (mouse.x != null) {
-      let dx = mouse.x - this.x;
-      let dy = mouse.y - this.y;
-      let dist = Math.sqrt(dx*dx + dy*dy);
-      if (dist < 120) {
-        this.x -= dx * 0.02;
-        this.y -= dy * 0.02;
-      }
-    }
-  }
-  draw() {
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    ctx.fillStyle = this.isEmerald ? 'rgba(16, 185, 129, 0.6)' : 'rgba(0, 242, 254, 0.6)';
-    ctx.fill();
-  }
-}
+window.addEventListener('touchmove', (e) => {
+  mouseX = e.touches[0].clientX;
+  mouseY = e.touches[0].clientY;
+}, {passive: true});
 
-for (let i = 0; i < 90; i++) particles.push(new Particle());
+let time = 0;
 
 function animateBg() {
+  // Clear the canvas every frame
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  for (let i = 0; i < particles.length; i++) {
-    particles[i].update();
-    particles[i].draw();
-    for (let j = i; j < particles.length; j++) {
-      let dx = particles[i].x - particles[j].x;
-      let dy = particles[i].y - particles[j].y;
-      let dist = Math.sqrt(dx*dx + dy*dy);
-      if (dist < 130) {
-        ctx.beginPath();
-        // Blend colors based on distance
-        ctx.strokeStyle = `rgba(0, 242, 254, ${(1 - dist/130) * 0.3})`;
-        ctx.lineWidth = 0.8;
-        ctx.moveTo(particles[i].x, particles[i].y);
-        ctx.lineTo(particles[j].x, particles[j].y);
-        ctx.stroke();
-      }
-    }
+
+  // 1. Smoothly interpolate cursor position (creates a delayed, fluid feel)
+  currentX += (mouseX - currentX) * 0.04;
+  currentY += (mouseY - currentY) * 0.04;
+
+  // 2. Draw slow, undulating ambient waves
+  ctx.beginPath();
+  ctx.moveTo(0, canvas.height);
+  
+  for(let x = 0; x <= canvas.width; x += 20) {
+      // Calculate wave height using multiple sine waves for organic movement
+      let y = canvas.height * 0.6 + 
+              Math.sin(x * 0.002 + time) * 80 + 
+              Math.cos(x * 0.004 + time * 0.8) * 40;
+      ctx.lineTo(x, y);
   }
+  ctx.lineTo(canvas.width, canvas.height);
+  ctx.lineTo(0, canvas.height);
+
+  // Very subtle gradient for the ambient wave (Cyan to Emerald)
+  let waveGradient = ctx.createLinearGradient(0, canvas.height * 0.4, 0, canvas.height);
+  waveGradient.addColorStop(0, 'rgba(0, 242, 254, 0.015)'); 
+  waveGradient.addColorStop(1, 'rgba(16, 185, 129, 0.04)');
+  ctx.fillStyle = waveGradient;
+  ctx.fill();
+
+  // 3. Draw interactive "fluid glow" that follows the cursor
+  // The radius is large (350px) to simulate light dispersing in water
+  let cursorGlow = ctx.createRadialGradient(currentX, currentY, 0, currentX, currentY, 350);
+  cursorGlow.addColorStop(0, 'rgba(0, 242, 254, 0.08)');  // Inner cyan glow
+  cursorGlow.addColorStop(0.4, 'rgba(16, 185, 129, 0.03)'); // Mid emerald transition
+  cursorGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');           // Fades to transparent
+
+  ctx.fillStyle = cursorGlow;
+  ctx.beginPath();
+  ctx.arc(currentX, currentY, 350, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Increment time for continuous wave movement
+  time += 0.008;
   requestAnimationFrame(animateBg);
 }
+
+// Start animation loop
 animateBg();
 
 // Chart.js Setup for Price Graph
