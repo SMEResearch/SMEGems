@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Felix Industries Ltd — Research Deck</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  /* Deep Forest-Earth Background — recycling, earth, sustainability */
+  --bg-grad-1: #0c1a12; /* Deep forest black-green */
+  --bg-grad-2: #1a2a1e; /* Warm dark pine */
+  
+  /* Glassmorphism Surfaces */
+  --surface-glass: rgba(18, 42, 28, 0.6);
+  --surface-hover: rgba(28, 60, 38, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  
+  /* Dual Gradients (Teal Water to Warm Amber Energy) */
+  --dual-gradient: linear-gradient(135deg, #2dd4bf 0%, #d97706 100%);
+  --water-gradient: linear-gradient(135deg, #14b8a6 0%, #2dd4bf 100%);
+  --eco-gradient: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  
+  /* Solid Accents */
+  --accent-cyan: #2dd4bf;    /* Teal (water) */
+  --accent-emerald: #10b981; /* Emerald (recycle) */
+  --alert-red: #f43f5e;
+  --alert-amber: #d97706;    /* Warm amber (clean energy) */
+  
+  /* Typography Colors */
+  --text-main: #f0fdf4;
+  --text-muted: #d1d5db;
+  --text-dim: #9ca3af;
+  
+  /* Glows */
+  --glow-cyan: rgba(45, 212, 191, 0.15);
+  --glow-emerald: rgba(16, 185, 129, 0.15);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: linear-gradient(135deg, var(--bg-grad-1) 0%, var(--bg-grad-2) 100%);
+  background-attachment: fixed;
+  color: var(--text-main);
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+/* INTERACTIVE BACKGROUND CANVAS */
+#interactive-bg {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.95;
+}
+
+/* NAV */
+nav {
+  position: fixed; top:0; left:0; right:0; z-index:100;
+  background: rgba(2, 11, 18, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 0 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+}
+nav .logo { 
+  font-family: 'Outfit', sans-serif; 
+  font-size: 24px; 
+  font-weight: 800;
+  background: var(--dual-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 1.5px;
+  flex-shrink: 0;
+  margin-right: 16px;
+}
+nav .tabs { 
+  display:flex; gap:8px; 
+  overflow-x: auto; 
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  flex-grow: 1;
+  padding: 0 8px;
+  /* Hide scrollbar for clean look */
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
+}
+nav .tabs::-webkit-scrollbar { display: none; }
+
+nav .tabs button {
+  background: transparent; border: 1px solid transparent; 
+  color: var(--text-muted); font-size: 13px; font-weight: 600;
+  padding: 8px 16px; cursor: pointer; white-space: nowrap; border-radius: 8px;
+  transition: all 0.3s ease;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  flex-shrink: 0; /* Prevents buttons from squishing */
+}
+nav .tabs button:hover { color: var(--text-main); background: var(--surface-hover); }
+nav .tabs button.active { 
+  color: #fff; 
+  background: var(--glow-cyan); 
+  border-color: rgba(0, 242, 254, 0.3);
+  box-shadow: 0 0 15px var(--glow-cyan);
+}
+
+/* PAGES */
+.page { display:none; min-height:100vh; padding:100px 24px 80px; max-width:1200px; margin:auto; animation: fadeUp 0.5s ease forwards;}
+.page.active { display:block; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* TYPOGRAPHY */
+h1, h2, h3 { font-family: 'Outfit', sans-serif; }
+h1 { font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.1; font-weight: 800; letter-spacing: -1px; }
+h2 { 
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem); 
+  font-weight: 600; 
+  margin-bottom: 24px; 
+  background: var(--dual-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+h2::after {
+  content: ''; display: block; width: 60px; height: 3px; 
+  background: var(--dual-gradient); margin-top: 8px; border-radius: 2px;
+}
+h3 { font-size: 1.3rem; font-weight: 600; margin-bottom: 12px; color: var(--accent-cyan); }
+p { color: var(--text-muted); margin-bottom: 16px; font-size: 1.05rem; }
+strong { color: var(--text-main); font-weight: 600; }
+
+/* CARDS (GLASSMORPHISM) */
+.card {
+  background: var(--surface-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 24px;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+.card:hover { transform: translateY(-3px); border-color: rgba(0, 242, 254, 0.4); }
+
+.card-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px; margin:24px 0; }
+
+.stat-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%), var(--surface-glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 20px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.stat-card::before {
+  content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+  background: var(--dual-gradient);
+}
+.stat-card .label { 
+  font-size: 12px;               /* Slightly bumped up the size */
+  color: var(--accent-cyan);     /* Changed to the bright neon cyan from the theme */
+  text-transform: uppercase; 
+  letter-spacing: 1.5px; 
+  font-weight: 800;              /* Maxed out the boldness */
+}
+.stat-card .value { font-family: 'Space Mono', monospace; font-size: 28px; font-weight: 700; color: var(--text-main); margin: 8px 0; letter-spacing: -1px;}
+.stat-card .sub { font-size: 12px; font-weight: 500; }
+.stat-card .sub.up { color: var(--accent-emerald); }
+.stat-card .sub.down { color: var(--alert-red); }
+.stat-card .sub.neutral { color: var(--alert-amber); }
+
+/* TABLES */
+.table-wrapper { overflow-x: auto; background: var(--surface-glass); border: 1px solid var(--glass-border); border-radius: 16px; margin: 20px 0; backdrop-filter: blur(10px); }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { 
+  text-align: left; 
+  padding: 16px 20px; 
+  color: var(--text-main); /* Changed from muted dim to bright white */
+  font-weight: 800;        /* Changed from 600 to 800 for maximum boldness */
+  border-bottom: 1px solid var(--glass-border); 
+  font-size: 12px;         /* Slightly increased font size */
+  text-transform: uppercase; 
+  letter-spacing: 1px; 
+  background: rgba(0,0,0,0.4); /* Made the background slightly darker for contrast */
+}
+td { padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,0.03); color: var(--text-muted); font-family: 'Space Mono', monospace; font-size: 13px;}
+tr:hover td { background: var(--glow-cyan); color: var(--text-main); }
+tr:last-child td { border-bottom: none; }
+strong { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; }
+
+/* FLAGS & ALERTS */
+.flag-card {
+  background: linear-gradient(135deg, rgba(244, 63, 94, 0.1), rgba(245, 158, 11, 0.05));
+  border: 1px solid rgba(244, 63, 94, 0.3);
+  border-left: 4px solid var(--alert-red);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 20px 0;
+  backdrop-filter: blur(10px);
+}
+.flag-card h4 { color: var(--alert-red); font-size: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; font-family: 'Outfit';}
+.flag-card p { font-size: 14px; color: var(--text-muted); margin: 0;}
+
+.info-card {
+  background: var(--glow-cyan);
+  border: 1px solid rgba(0, 242, 254, 0.2);
+  border-left: 4px solid var(--accent-cyan);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 20px 0;
+  backdrop-filter: blur(10px);
+}
+.info-card h4 { color: var(--accent-cyan); font-size: 16px; margin-bottom: 12px; font-family: 'Outfit'; }
+
+/* TIMELINE */
+.timeline { position: relative; padding-left: 32px; margin: 32px 0; }
+.timeline::before { content: ''; position: absolute; left: 11px; top: 0; bottom: 0; width: 2px; background: var(--glass-border); }
+.timeline .event { position: relative; margin-bottom: 32px; }
+.timeline .event::before { 
+  content: ''; position: absolute; left: -27px; top: 6px; width: 14px; height: 14px; 
+  border-radius: 50%; background: var(--dual-gradient); box-shadow: 0 0 12px var(--accent-cyan); 
+}
+.timeline .event .year { font-family: 'Space Mono', monospace; font-size: 16px; color: var(--accent-cyan); font-weight: 700; margin-bottom: 4px; display: inline-block; }
+.timeline .event .desc { font-size: 15px; color: var(--text-muted); }
+
+/* PAGE 1 HERO */
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 20px; border-radius: 30px;
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  font-size: 12px; font-weight: 700; color: var(--gold);
+  letter-spacing: 1px; text-transform: uppercase;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 15px rgba(251, 191, 36, 0.05);
+}
+.hero-title-wrapper { margin-bottom: 16px; }
+.hero-title-wrapper h1 {
+  background: var(--dual-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+/* CHART CANVAS */
+.chart-container { 
+  width: 100%; height: 350px; position: relative; margin: 24px 0; 
+  background: var(--surface-glass); padding: 20px; 
+  border-radius: 16px; border: 1px solid var(--glass-border); 
+  backdrop-filter: blur(10px);
+}
+
+/* TWO COL & LISTS */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+@media(max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+
+.bullet-list { list-style: none; padding: 0; }
+.bullet-list li { padding: 8px 0 8px 24px; position: relative; font-size: 15px; color: var(--text-muted); }
+.bullet-list li::before { 
+  content: ''; position: absolute; left: 0; top: 16px; 
+  width: 6px; height: 6px; border-radius: 50%; 
+  background: var(--accent-cyan); box-shadow: 0 0 8px var(--accent-cyan);
+}
+
+/* Scroll bar for whole page */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-grad-1); }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-cyan); }
+
+.disclaimer-box {
+  background: var(--surface-glass); border: 1px solid var(--glass-border);
+  border-radius: 16px; padding: 40px; font-size: 13px; color: var(--text-dim); line-height: 1.8;
+}
+</style>
+</head>
+<body>
+
+<canvas id="interactive-bg"></canvas>
+
+<nav>
+  <div class="logo">FELIX</div>
+  <div class="tabs" id="navTabs"></div>
+</nav>
+
+<div class="page active" id="page-cover">
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;text-align:center;">
+    <div class="hero-badge">SME GEMS ✦ Hidden Champions of the SME Platform</div>
+    <div class="hero-title-wrapper">
+      <h1>Felix Industries Ltd</h1>
+    </div>
+    <p style="font-size:clamp(16px,2.5vw,22px);color:var(--text-muted);max-width:700px;font-weight:300;">An Integrated Environmental Engineering & Circular Economy Platform — Water, Waste Oil, Plastics, Metals</p>
+    
+    <div style="margin:40px 0;display:flex;gap:16px;flex-wrap:wrap;justify-content:center;width:100%;">
+      <div class="stat-card" style="min-width:160px;text-align:center;"><div class="label">CMP</div><div class="value">₹180</div><div class="sub neutral">09 Apr 2026</div></div>
+      <div class="stat-card" style="min-width:160px;text-align:center;"><div class="label">Mkt Cap</div><div class="value">₹310 Cr</div><div class="sub neutral">NSE SME</div></div>
+      <div class="stat-card" style="min-width:160px;text-align:center;"><div class="label">Order Book</div><div class="value">₹290+ Cr</div><div class="sub up">High Visibility</div></div>
+      <div class="stat-card" style="min-width:160px;text-align:center;"><div class="label">FY27E Rev</div><div class="value">₹180+ Cr</div><div class="sub up">Mgmt Guidance</div></div>
+    </div>
+    
+    <p style="font-size:13px;color:var(--text-dim);max-width:600px;font-family:'Space Mono',monospace;">NSE: FELIX &nbsp;|&nbsp; Sector: Environmental Engineering</p>
+    <p style="font-size:12px;color:var(--text-dim);margin-top:24px;border-top:1px solid var(--glass-border);padding-top:16px;">⚠ Independent research compilation for educational purposes only. Not investment advice.</p>
+  </div>
+</div>
+
+<div class="page" id="page-overview">
+  <h2>Company Overview</h2>
+  <p>Felix Industries Ltd (est. 2010, listed Dec 2017 on NSE SME) is an environmental engineering and resource-recovery company headquartered in Ahmedabad, Gujarat. The company positions itself as a <strong>technology company, not a contracting firm</strong> — focused on proprietary processes for converting industrial waste streams into reusable resources under a zero-waste philosophy.</p>
+
+  <div class="card-grid">
+    <div class="stat-card"><div class="label">Founded</div><div class="value">2010</div><div class="sub neutral">Listed Dec 2017</div></div>
+    <div class="stat-card"><div class="label">IPO Price</div><div class="value">₹35</div><div class="sub up">~5x from IPO</div></div>
+    <div class="stat-card"><div class="label">FY25 Revenue</div><div class="value">₹37 Cr</div><div class="sub up">+8.7% YoY</div></div>
+    <div class="stat-card"><div class="label">9M FY26 Rev</div><div class="value">₹65 Cr</div><div class="sub up">~175% YoY</div></div>
+    <div class="stat-card"><div class="label">FY25 PAT</div><div class="value">₹9 Cr</div><div class="sub up">+82% YoY</div></div>
+    <div class="stat-card"><div class="label">EBITDA Margin</div><div class="value">25-30%</div><div class="sub neutral">Guided range</div></div>
+    <div class="stat-card"><div class="label">Promoter Holding</div><div class="value">50.78%</div><div class="sub down">Pledged: ~32%</div></div>
+    <div class="stat-card"><div class="label">Employees</div><div class="value">~200+</div><div class="sub neutral">India + Oman</div></div>
+  </div>
+
+  <h3 style="margin-top: 32px;">Business Segments — Not Just Water EPC</h3>
+  <p>Felix has evolved significantly from its origins as a water treatment EPC player. Today, it operates across four environmental verticals, making it a diversified circular-economy platform:</p>
+
+  <div class="two-col">
+    <div class="card">
+      <h3>💧 Water & Wastewater</h3>
+      <p>ETPs, STPs, RO systems, ZLD solutions. Models: EPC, BOOT, BOO, O&M. Serves pharma, chemicals, textiles, food & dairy industries. Proprietary technologies: RoSoft, Aiwasun.</p>
+    </div>
+    <div class="card">
+      <h3>🛢️ Waste Oil / Hydrocarbon</h3>
+      <p>The dominant growth vertical. Processes oily sludge, used lubricants, refinery waste — converting them into reusable oil products. Oman plant operational at 30 TPD, scaling to 100 TPD.</p>
+    </div>
+    <div class="card">
+      <h3>♻️ Plastics & Infrastructure</h3>
+      <p>Acquired a 20% stake in Eco-Vision Aqua Care (Dec 2024) for ₹4.2 Cr to execute a 4 MLD CETP project in Ahmedabad (₹70 Cr total cost). Also holding 40-year municipal contracts for plastics.</p>
+    </div>
+    <div class="card">
+      <h3>🔩 Metals & Acid Reclamation</h3>
+      <p>New subsidiary: Felix Prime Metals Pvt Ltd (Nov 2025). Metal recovery achieving 99.999% purity (Cu, Zn) from hazardous waste. Acid reclamation pilot operational in Punjab.</p>
+    </div>
+  </div>
+
+  <h3 style="margin-top: 16px;">Execution Models</h3>
+  <p>Felix operates through multiple models — EPC (one-time sell), BOO (rental), BOOT (invest & operate 5-10 years then transfer), O&M (recurring operations), and PPP (public-private partnerships). The strategic thrust is to increase the share of recurring O&M and BOOT revenue, which carries structurally higher margins and provides visibility.</p>
+
+  <h3 style="margin-top: 24px;">Industry Tailwinds</h3>
+  <p>India's water and wastewater treatment market is estimated at ~$10.4 billion (FY24) with projections to reach ~$17.9 billion by FY29, growing at an 11.6% CAGR. The country still only treats roughly 30% of its wastewater — leaving a massive shortfall. Per capita freshwater availability is declining steadily (from 1,800 m³ in 2001 to an expected 1,300 m³ by 2031). Industrial ZLD mandates are tightening, especially in water-intensive sectors like textiles, pharma, and chemicals — directly benefiting companies like Felix that specialize in industrial compliance solutions. The global wastewater management market is projected to grow from ~$6.9 billion (FY24) to ~$9.8 billion by FY29.</p>
+</div>
+
+<div class="page" id="page-history">
+  <h2>Journey & The Revival Story</h2>
+
+  <div class="timeline">
+    <div class="event"><div class="year">2010</div><div class="desc">Inception as an eco-tech startup focused on water treatment.</div></div>
+    <div class="event"><div class="year">Nov 2017</div><div class="desc"><strong>IPO on NSE SME</strong> — Listed 5 Dec 2017. Modest raise of ₹4.79 Cr at ₹35/share.</div></div>
+    <div class="event"><div class="year">2018-2022</div><div class="desc"><strong>The Stagnant EPC Phase</strong> — The company operated almost entirely as a pure-play EPC contractor. Top-line stagnated around ₹14-20 Cr and PAT hovered around negligible levels (₹0.5-1 Cr). Transparency was minimal (no concalls) and informal guidances were frequently missed due to the lumpy nature of EPC.</div></div>
+    <div class="event"><div class="year">2023</div><div class="desc"><strong>The Business Pivot</strong> — Realizing the flaws of pure EPC, management successfully transitioned the business model towards high-margin, recurring BOOT and O&M contracts. Specialized subsidiaries were activated to ring-fence specific niches.</div></div>
+    <div class="event"><div class="year">Nov 2023</div><div class="desc"><strong>Results Validation</strong> — The Nov 09, 2023 disclosure for Q2 FY24 results showed a half-yearly PAT of ~₹97 Lakhs and structurally expanding EBITDA margins, marking the first clear financial evidence of the turnaround taking effect.</div></div>
+    <div class="event"><div class="year">2025</div><div class="desc"><strong>Breakout Phase</strong> — Major multi-year contracts secured: ₹110 Cr ZLD BOOT (Ratani), ₹63 Cr F&B BOOT (HOCCO), and the ONGC operations via Rivita. Margins expand drastically to 25%+.</div></div>
+    <div class="event"><div class="year">2026 (current)</div><div class="desc">9M FY26 revenue hits ₹65 Cr. FY26 guidance ₹110 Cr. FY27 guidance ₹180-200 Cr. Institutional interactions and transparency vastly improved.</div></div>
+  </div>
+
+  <div class="flag-card" style="border-color: rgba(16, 185, 129, 0.3); border-left-color: var(--accent-emerald); background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), transparent);">
+    <h4 style="color: var(--accent-emerald);">The Turnaround: From Lumpy EPC to Annuity BOOT</h4>
+    <p>For years (2017–2022), Felix ran predominantly as a pure-play EPC contractor. The model was lumpy, working-capital heavy, and vulnerable to margin compression—worsened by COVID-era disruptions, slow debtor recoveries, and capital constraints. Revenues stagnated, profits stayed thin-to-negative, transparency was minimal (earnings calls, shareholder updates), with possible shortcomings on internal growth targets.
+<br><br>The turnaround was a clean <strong>business model shift</strong>. Management shifted aggressively to <strong>BOOT (Build-Own-Operate-Transfer)</strong> and long-term O&M contracts, locking in 5–10+ years of recurring annuity revenue per project. They operationalized specialized subsidiaries—<strong>Rivita for O&G and Enovation for ZLD</strong>—while sharpening execution focus. The shift turned undeniable in late-2023 and early-2024 disclosures: BOOT/O&M structurally lifted margins from single digits to 25%+ EBITDA potential, with visible acceleration in FY25–26 order book and profitability.</p>
+  </div>
+</div>
+
+<div class="page" id="page-structure">
+  <h2>Group Structure & Partnerships</h2>
+  <p>To execute the pivot from a generic EPC contractor to a specialized environmental platform, Felix restructured its operations into distinct subsidiaries and joint ventures.</p>
+
+  <div class="card" style="border-top: 2px solid var(--accent-cyan);">
+    <h3 style="color: var(--text-main);">🏢 Parent Entity: Felix Industries Limited</h3>
+    <p>Holds the core intellectual property, manufacturing capabilities (₹45-50 Cr capacity facility in India), and oversees the consolidated balance sheet.</p>
+  </div>
+
+  <h3 style="margin-top: 32px; color: var(--text-muted);">Wholly-Owned & Majority Subsidiaries</h3>
+  <div class="two-col">
+    <div class="card">
+      <h3 style="color: var(--accent-cyan);">🛢️ Rivita Solutions Pvt Ltd</h3>
+      <p><strong>Focus:</strong> Oil & Gas Sector Operations.<br><strong>Key Milestone:</strong> As per Jan 31, 2025 disclosures, Rivita acts as the key vehicle for executing the <strong>ONGC Deal</strong>. It secured a multi-year ₹5.8 Cr contract for specialized water injection and Effluent Treatment Plant (ETP) operations for the PSUs.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--accent-emerald);">🌍 Felix Industries LLC (Oman)</h3>
+      <p><strong>Focus:</strong> Middle East Hydrocarbon Recovery.<br><strong>Key Milestone:</strong> Acquired Al Mohtashem Trading & Contracting for 1.47M Omani Rials (~₹31.94 Cr) in Dec 2023. Houses the 100 TPD waste oil processing facility and the 175 KW Waste-to-Energy turbines.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--accent-cyan);">🔬 Enovation Aquaprocess Pvt Ltd</h3>
+      <p><strong>Focus:</strong> Complex Zero Liquid Discharge (ZLD).<br>Holds the proprietary Mixed Salt Separation technologies used to isolate sellable by-products (sodium chloride, magnesium) from toxic industrial brine.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--accent-emerald);">🔩 Felix Prime Metals Pvt Ltd</h3>
+      <p><strong>Focus:</strong> High-Purity Metal Reclamation.<br>Incorporated in Nov 2025. Focused on solvent extraction technology to recover 99.999% pure Zinc (4 tons/day) and Copper (2 tons/day) from hazardous e-waste and industrial sludge.</p>
+    </div>
+  </div>
+
+  <h3 style="margin-top: 32px; color: var(--text-muted);">Joint Ventures & Associate Companies</h3>
+  <div class="card" style="border-left: 4px solid var(--accent-emerald);">
+    <h3 style="color: var(--accent-emerald);">♻️ Eco-Vision Aqua Care Pvt Ltd</h3>
+    <p><strong>Relationship:</strong> 20% Strategic Equity Stake (Acquired Dec 2024 for ₹4.2 Cr).<br><strong>Purpose:</strong> Acts as the infrastructure arm to bid for massive municipal and centralized projects without over-leveraging Felix's standalone balance sheet.<br><strong>Operations:</strong> Currently executing a 4 MLD Central Effluent Treatment Plant (CETP) in Ahmedabad (₹70 Cr total project cost) and holding exclusive 40-year municipal contracts for plastic waste recycling (scaling to 1,000 MT/month).</p>
+  </div>
+</div>
+
+<div class="page" id="page-funding">
+  <h2>Capital Structuring & Equity Raises</h2>
+  <p>While the company claims to rely largely on internal accruals and bank debt for CAPEX, its aggressive growth has been supported by strategic preferential warrant issues to promoters and non-promoter groups. Tracking these prices provides clear insight into management's valuation expectations over the turnaround cycle.</p>
+
+  <div class="card">
+    <h3>1. Initial Public Offering (Nov 2017)</h3>
+    <p>Felix went public to fund early machinery and working capital needs, but growth stagnated shortly after.</p>
+    <div class="table-wrapper">
+      <table>
+        <tr><th>Metric</th><th>Detail</th></tr>
+        <tr><td>Issue Price</td><td class="mono">₹35 (FV ₹10 + ₹25 premium)</td></tr>
+        <tr><td>Issue Size</td><td class="mono">₹4.79 Cr (13,68,000 shares)</td></tr>
+        <tr><td>Listing Date</td><td class="mono">5 Dec 2017 on NSE SME</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>2. The Turnaround Funding (Jan / Oct 2023)</h3>
+    <p>To fund the subsidiary expansion and the Oman acquisition, the company executed its first major preferential issue.</p>
+    <ul class="bullet-list">
+      <li><strong>Jan 04, 2023 (Approval):</strong> The Board approved the allotment of 73,50,000 convertible warrants at <strong>₹41 per share</strong> (FV ₹10 + ₹31 premium), aggregating to ₹30.13 Cr. The promoter entity (Felix Nano Synthesis Pvt Ltd) took the lion's share with 31,00,000 warrants.</li>
+      <li><strong>Oct 30, 2023 (Conversion):</strong> The company filed final NSE disclosures confirming the allotment of 50,60,000 equity shares upon conversion of the aforementioned warrants at the ₹41 price.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>3. The Premium Growth Phase (Aug 2025)</h3>
+    <p>As the BOOT business scaled and the stock price surged, the company raised further capital at a significantly higher valuation to support working capital intensity.</p>
+    <ul class="bullet-list">
+      <li><strong>Allotment:</strong> Issued 33,14,780 equity shares at <strong>₹175 per share</strong> (FV ₹10 + ₹165 premium).</li>
+      <li><strong>Forfeiture:</strong> 9,36,650 warrants were forfeited due to non-payment within the 18-month regulatory window.</li>
+    </ul>
+  </div>
+  
+  <div class="info-card" style="border-color: var(--alert-amber); border-left-color: var(--alert-amber); background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), transparent);">
+    <h4 style="color: var(--alert-amber);">Valuation Floor Established</h4>
+    <p>The August 2025 allotment at ₹175 serves as an implicit floor for recent promoter and insider confidence. With the stock currently trading around ₹180 (April 2026), retail investors are essentially buying in at the exact same valuation multiple the promoters recently paid for their warrants.</p>
+  </div>
+</div>
+
+<div class="page" id="page-tech">
+  <h2>Technical Moat & Capabilities</h2>
+  <p>Felix differentiates itself from generic water EPC contractors through proprietary process engineering. The MD, Ritesh Patel (Chemical Engineering background, ex-Gujarat Pollution Control Board) has repeatedly positioned Felix as a <strong>"technology company, not a contracting company"</strong>.</p>
+
+  <div class="info-card" style="border-color: rgba(16, 185, 129, 0.3); border-left-color: var(--accent-emerald);">
+    <h4 style="color: var(--accent-emerald);">Strategic Capacity Saturation</h4>
+    <p>As per mid-2025 concall details, Felix's Indian equipment manufacturing facility (₹45-50 Cr capacity) is <strong>100% fully booked for FY26</strong>. Management is deliberately not accepting new generic equipment orders, reallocating internal resources entirely to execute their high-value, long-term BOOT project pipeline.</p>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <h3 style="color: var(--accent-cyan);">🔬 Mixed Salt Separation</h3>
+      <p>Proprietary CETP process to separate sodium chloride, magnesium, sulfur and other salts from mixed-salt concentrate solutions. Subsidiary Enovation Aquaprocess holds the IP.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--accent-emerald);">⚗️ Metal Recovery</h3>
+      <p>Advanced process engineering achieving 99.999% purity in copper and zinc recovery from hazardous waste. A significant technical moat vs generic waste processors.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--accent-cyan);">💧 RoSoft & Aiwasun</h3>
+      <p>In-house developed water reclamation technologies for household and industrial applications. Marketed through Felix WMC subsidiary.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--accent-emerald);">🛢️ Oil Processing</h3>
+      <p>Oman plant designed as a multi-purpose facility. Distillation, re-refining, catalytic cracking capabilities. Creates reusable fuels and lubricants from waste crude.</p>
+    </div>
+  </div>
+
+  <h3 style="margin-top: 32px;">Infrastructure Scale</h3>
+  <div class="card-grid">
+    <div class="stat-card"><div class="label">Production Area</div><div class="value">~34,260</div><div class="sub neutral">Sq meters</div></div>
+    <div class="stat-card"><div class="label">Wastewater Capacity</div><div class="value">17+ MLD</div><div class="sub neutral">Operational</div></div>
+    <div class="stat-card"><div class="label">Hydrocarbon Processing</div><div class="value">100 TPD</div><div class="sub neutral">Target by Mar'26</div></div>
+    <div class="stat-card"><div class="label">Tech Portfolio</div><div class="value">450+</div><div class="sub neutral">Proprietary Apps</div></div>
+  </div>
+</div>
+
+<div class="page" id="page-financials">
+  <h2>Financials & Order Book</h2>
+
+  <h3>Major Contract Wins (₹290+ Cr Visibility)</h3>
+  <p>Felix's forward pipeline includes several transformative, long-duration contracts secured over the past year:</p>
+  <div class="table-wrapper">
+    <table>
+      <tr><th>Customer / Region</th><th>Value (₹ Cr)</th><th>Model</th><th>Details</th></tr>
+      <tr><td><strong>Gujarat Client (ZLD)</strong></td><td class="mono">140.08</td><td>BOOT + O&M</td><td>10-yr: 1500 KLD ZLD + WTP + 120 KLD STP</td></tr>
+      <tr><td><strong>F&B Company</strong></td><td class="mono">63.64</td><td>O&M</td><td>10-yr: 500 KLD ZLD + 500 KLD WTP</td></tr>
+      <tr><td><strong>Oman (Qalhat & Sur)</strong></td><td class="mono">40.0</td><td>End-to-end</td><td>5-yr waste management (OMR 1.8M)</td></tr>
+      <tr><td><strong>Oman LNG</strong></td><td class="mono">~45.0</td><td>Open contract</td><td>5-yr oil processing; expect 1-yr completion</td></tr>
+      <tr><td><strong>Gujarat (7-yr BOOT)</strong></td><td class="mono">22.0 p.a.</td><td>BOOT</td><td>500 KLD WTP + 600 KLD ETP + STP</td></tr>
+      <tr><td><strong>Oil & Gas (various)</strong></td><td class="mono">~6.0</td><td>BOO</td><td>3-yr contracts: effluent processing, Gujarat</td></tr>
+      <tr><td><strong>ONGC (via Rivita)</strong></td><td class="mono">5.8</td><td>EPC + O&M</td><td>6 active projects; water injection, ETP</td></tr>
+    </table>
+  </div>
+
+  <h3 style="margin-top: 32px;">Annual P&L (Consolidated, ₹ Cr)</h3>
+  <div class="table-wrapper">
+    <table>
+      <tr><th>Particulars</th><th>FY23</th><th>FY24</th><th>FY25</th><th>TTM</th></tr>
+      <tr><td>Revenue</td><td class="mono">19</td><td class="mono">34</td><td class="mono">37</td><td class="mono">78</td></tr>
+      <tr><td>Material Cost (% Rev)</td><td class="mono">46.7%</td><td class="mono">37.2%</td><td class="mono">28.6%</td><td class="mono">—</td></tr>
+      <tr><td>Gross Profit</td><td class="mono">10</td><td class="mono">21</td><td class="mono">26</td><td class="mono">—</td></tr>
+      <tr><td>EBITDA</td><td class="mono">2</td><td class="mono">6</td><td class="mono">8</td><td class="mono">24</td></tr>
+      <tr><td>EBITDA Margin</td><td class="mono">11%</td><td class="mono">17%</td><td class="mono">23%</td><td class="mono">31%</td></tr>
+      <tr><td>Other Income</td><td class="mono">0</td><td class="mono">2</td><td class="mono">6</td><td class="mono">4</td></tr>
+      <tr><td>PAT</td><td class="mono">1</td><td class="mono">5</td><td class="mono">9</td><td class="mono">18</td></tr>
+      <tr><td>PAT Margin</td><td class="mono">6%</td><td class="mono">15%</td><td class="mono">25%</td><td class="mono">23%</td></tr>
+      <tr><td>EPS (₹)</td><td class="mono">2.30</td><td class="mono">4.03</td><td class="mono">6.66</td><td class="mono">11.08</td></tr>
+    </table>
+  </div>
+  <p style="font-size: 12px; color: var(--text-dim);">Note: Gross margin improved ~1,800 bps in 2 years — driven by shift to higher value-add BOOT/O&M work and lower material intensity as revenue mix evolves away from basic EPC.</p>
+
+  <h3 style="margin-top: 32px;">Quarterly Performance (₹ Cr)</h3>
+  <div class="table-wrapper">
+    <table>
+      <tr><th></th><th>Q1FY25</th><th>Q2FY25</th><th>Q3FY25</th><th>Q4FY25</th><th>Q1FY26</th><th>Q2FY26</th><th>Q3FY26</th></tr>
+      <tr><td>Sales</td><td class="mono">8.0</td><td class="mono">8.0</td><td class="mono">7.8</td><td class="mono">13.0</td><td class="mono">20.6</td><td class="mono">17.4</td><td class="mono">26.8</td></tr>
+      <tr><td>EBITDA %</td><td class="mono">6.7%</td><td class="mono">6.7%</td><td class="mono">45.1%</td><td class="mono">28.2%</td><td class="mono">27.1%</td><td class="mono">44.3%</td><td class="mono">27.3%</td></tr>
+      <tr><td>PAT</td><td class="mono">0.5</td><td class="mono">0.3</td><td class="mono">4.7</td><td class="mono">3.8</td><td class="mono">3.6</td><td class="mono">5.3</td><td class="mono">5.0</td></tr>
+      <tr><td>PAT %</td><td class="mono">6.4%</td><td class="mono">3.9%</td><td class="mono">50.5%</td><td class="mono">25.0%</td><td class="mono">17.9%</td><td class="mono">27.6%</td><td class="mono">20.8%</td></tr>
+    </table>
+  </div>
+  <p style="font-size: 12px; color: var(--text-dim);">Revenue is growing at a CQGR of ~22%. Q2 FY26's elevated 44% EBITDA margin was a one-off from a single high-margin order; management targets 25-30% as sustainable. Q4 FY26 expected at ~₹45 Cr driven by a ₹25 Cr EPC delivery in March.</p>
+
+  <h3 style="margin-top: 32px;">FY27 Revenue Split (Management Guidance, ₹ Cr)</h3>
+  <div class="table-wrapper">
+    <table>
+      <tr><th>Segment</th><th>₹ Cr (Approx)</th><th>Nature</th></tr>
+      <tr><td>India O&M (domestic)</td><td class="mono">~50</td><td>Recurring; post-FY27 target ₹85+ Cr</td></tr>
+      <tr><td>Oman (oil processing + LNG)</td><td class="mono">~75-80</td><td>Recurring + contract-based</td></tr>
+      <tr><td>EPC Projects (India)</td><td class="mono">~25-50</td><td>Project-based, lumpy</td></tr>
+      <tr><td>Plastics recycling</td><td class="mono">~70-84</td><td>Recurring (₹6-7 Cr/month target)</td></tr>
+      <tr><td>Metals (potential upside)</td><td class="mono">~50</td><td>New vertical, if discussions materialize</td></tr>
+    </table>
+  </div>
+  <p style="font-size: 12px; color: var(--alert-amber);">⚠ Plastics & metals remain aspirational — acquisition incomplete, metals in discussion phase. The core ~₹175 Cr (O&M + Oman + EPC) has higher visibility.</p>
+
+  <h3 style="margin-top: 32px;">Management Guidance & Forward PE</h3>
+  <div class="card-grid">
+    <div class="stat-card"><div class="label">FY26E Revenue</div><div class="value">₹110 Cr</div><div class="sub neutral">On track per mgmt</div></div>
+    <div class="stat-card"><div class="label">FY27E Revenue</div><div class="value">₹180-200 Cr</div><div class="sub up">+63-82% growth</div></div>
+    <div class="stat-card"><div class="label">FY27E EBITDA %</div><div class="value">25-30%</div><div class="sub neutral">Guided range</div></div>
+    <div class="stat-card"><div class="label">FY27E PAT %</div><div class="value">17-21%</div><div class="sub neutral">~20% target</div></div>
+  </div>
+  <div class="table-wrapper" style="margin-top: 16px;">
+    <table>
+      <tr><th>Scenario</th><th>FY27E Rev</th><th>PAT %</th><th>PAT (₹ Cr)</th><th>EPS (₹)</th><th>Fwd PE @ ₹180</th></tr>
+      <tr><td>Conservative</td><td class="mono">₹150 Cr</td><td class="mono">18%</td><td class="mono">27</td><td class="mono">15.7</td><td class="mono" style="color: var(--accent-emerald);">11.5x</td></tr>
+      <tr><td>Base (Mgmt)</td><td class="mono">₹180 Cr</td><td class="mono">20%</td><td class="mono">36</td><td class="mono">20.9</td><td class="mono" style="color: var(--accent-emerald);">8.6x</td></tr>
+      <tr><td>Bull</td><td class="mono">₹200 Cr</td><td class="mono">22%</td><td class="mono">44</td><td class="mono">25.6</td><td class="mono" style="color: var(--accent-emerald);">7.0x</td></tr>
+    </table>
+  </div>
+  <p style="font-size: 12px; color: var(--text-dim);">At CMP ₹180 and TTM PE ~17.9x, the stock appears fairly valued. But on FY27 estimates (if delivered), forward PE compresses to 7-11.5x — optically cheap. The entire thesis hinges on execution.</p>
+
+  <h3 style="margin-top: 32px;">Balance Sheet & Cash Flows (₹ Cr)</h3>
+  <div class="two-col">
+    <div>
+      <div class="table-wrapper">
+        <table>
+          <tr><th></th><th>FY23</th><th>FY24</th><th>FY25</th><th>H1'26</th></tr>
+          <tr><td>Equity + Reserves</td><td class="mono">16</td><td class="mono">65</td><td class="mono">90</td><td class="mono">143</td></tr>
+          <tr><td>Borrowings</td><td class="mono">4</td><td class="mono">3</td><td class="mono">18</td><td class="mono">19</td></tr>
+          <tr><td>Total Assets</td><td class="mono">24</td><td class="mono">77</td><td class="mono">149</td><td class="mono">213</td></tr>
+          <tr><td>D/E Ratio</td><td class="mono">0.27x</td><td class="mono">0.04x</td><td class="mono">0.20x</td><td class="mono">0.13x</td></tr>
+        </table>
+      </div>
+    </div>
+    <div>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Cash Flow</th><th>FY23</th><th>FY24</th><th>FY25</th></tr>
+          <tr><td>CFO</td><td class="mono">-6</td><td class="mono">-33</td><td class="mono">30</td></tr>
+          <tr><td>CFI</td><td class="mono">-1</td><td class="mono">-4</td><td class="mono">-67</td></tr>
+          <tr><td>CFF</td><td class="mono">7</td><td class="mono">42</td><td class="mono">36</td></tr>
+          <tr><td>FCFF</td><td class="mono">-7</td><td class="mono">-38</td><td class="mono">-38</td></tr>
+        </table>
+      </div>
+      <p style="font-size: 11px; color: var(--text-dim);">CFO turned positive in FY25 (₹30 Cr) after 2 negative years. Heavy CFI outflow (₹67 Cr) reflects BOOT capex + Oman facility investment. FCFF remains negative — typical for asset-heavy growth phase.</p>
+    </div>
+  </div>
+
+  <h3 style="margin-top: 32px;">Key Ratios</h3>
+  <div class="table-wrapper">
+    <table>
+      <tr><th>Metric</th><th>FY23</th><th>FY24</th><th>FY25</th></tr>
+      <tr><td>ROCE</td><td class="mono">9.4%</td><td class="mono">10.4%</td><td class="mono">12.1%</td></tr>
+      <tr><td>ROE</td><td class="mono">7.2%</td><td class="mono">7.6%</td><td class="mono">10.2%</td></tr>
+      <tr><td>Interest Coverage</td><td class="mono">3.8x</td><td class="mono">11.9x</td><td class="mono">12.7x</td></tr>
+      <tr><td>Debtor Days</td><td class="mono">109</td><td class="mono">139</td><td class="mono">157</td></tr>
+      <tr><td>Inventory Days</td><td class="mono">195</td><td class="mono">337</td><td class="mono">489</td></tr>
+      <tr><td>Days Payable</td><td class="mono">76</td><td class="mono">133</td><td class="mono">743</td></tr>
+      <tr><td>Cash Conversion Cycle</td><td class="mono">228</td><td class="mono">343</td><td class="mono">-97</td></tr>
+    </table>
+  </div>
+  <p style="font-size: 12px; color: var(--text-dim);">Rising debtor & inventory days reflect EPC project cycle elongation and O&M spare stocking. The negative CCC in FY25 is driven by extremely high payables (civil subcontractors on BOOT projects) — structurally different from healthy negative CCC. Returns (ROCE 12%, ROE 10%) are modest but improving as scale kicks in.</p>
+</div>
+
+<div class="page" id="page-mgmt">
+  <h2>Management & Governance</h2>
+
+  <div class="card">
+    <h3 style="color: var(--accent-cyan);">👤 Ritesh V. Patel — Managing Director & Founder</h3>
+    <p>12+ years in environmental engineering. Chemical Engineering background. Ex-Gujarat Pollution Control Board (GPCB). Specialist in membrane separation, RO, and complex industrial effluent treatment. The technical brain of Felix — personally involved in process design for every major project.</p>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <h3 style="color: var(--accent-emerald);">👤 Vinay R. Patel — CEO & WTD</h3>
+      <p>34+ years experience. Manages 450+ proprietary technology portfolio. Oversees admin & regulatory frameworks. Career focused on balancing industrial growth with resource conservation.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--accent-emerald);">👤 Uday C. Shah — CFO</h3>
+      <p>25 years in finance. Ex-Axis Bank (SME Financing, 2003-2012). CA qualified. Leads fiscal planning, business modeling, and financial reporting.</p>
+    </div>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <h3 style="color: var(--accent-cyan);">👤 Nishant Sharma — Director Finance</h3>
+      <p>He originally served as the company's Internal Auditor (Proprietor of Nishant Sharma & Co.) before formally resigning from that independent post on Feb 21, 2023. He later transitioned into the management team, currently handling investor relations and financial strategy. Very active on concalls — provides granular segment-level guidance.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--accent-cyan);">👤 Hena Shah — Company Secretary</h3>
+      <p>ICSI member. Expertise in SEBI regulations and Companies Act compliance. Previously at Paramount Cosmetics.</p>
+    </div>
+  </div>
+
+  <div class="flag-card">
+    <h4>⚠ Management Concerns</h4>
+    <p><strong>Promoter pledge at ~32%:</strong> Screener.in flags that promoters have pledged 32% of their holding. This is significant. Pledge creation activity was noted between Sep 2025 and Feb 2026. While management says growth is being funded via bank debt, the pledge suggests the promoter entity is leveraging its stake.<br><br><strong>Promoter dilution:</strong> Promoter holding has dropped from 73.14% (FY23) to 50.78% (Sep'25) — a ~22% decline. This was partly through preferential warrant allotments.<br><br><strong>Small management bandwidth:</strong> By their own admission, Felix can only handle 4-5 large engineering orders simultaneously. This is a structural bottleneck.</p>
+  </div>
+</div>
+
+<div class="page" id="page-oman">
+  <h2>International Operations & Oman Risk</h2>
+
+  <h3>Oman Operations Overview</h3>
+  <p>Felix Industries LLC (wholly-owned subsidiary in Oman, est. FY23) operates from an ~18,000 sq mt facility in Sumair, Oman. The operations focus on waste oil processing and hazardous waste management for the Gulf region's oil & gas sector.</p>
+
+  <div class="card">
+    <h3 style="color: var(--accent-emerald);">The Al Mohtashem Acquisition (Dec 2023)</h3>
+    <p>On Dec 11, 2023, the wholly-owned subsidiary Felix Industries SPC officially acquired the ongoing business and assets of Al Mohtashem Trading & Contracting LLC. The total consideration was <strong>1.47 million Omani Rials (~₹31.94 Cr)</strong>. This acquired infrastructure included crucial oil & sludge separation plants, effluent treatment systems, and oil filtration units—forming the base for their 100 TPD goal.</p>
+  </div>
+
+  <div class="card-grid">
+    <div class="stat-card"><div class="label">Current Capacity</div><div class="value">30 TPD</div><div class="sub up">Scaling to 60 → 100</div></div>
+    <div class="stat-card"><div class="label">Waste-to-Energy</div><div class="value">175 KW</div><div class="sub up">~₹1 Cr annual savings</div></div>
+    <div class="stat-card"><div class="label">9M FY26 Oman Rev</div><div class="value">₹12 Cr</div><div class="sub neutral">Operationalized</div></div>
+    <div class="stat-card"><div class="label">FY27E Oman Target</div><div class="value">₹75-80 Cr</div><div class="sub up">Key Growth Driver</div></div>
+  </div>
+
+  <p><strong>Margin Kicker:</strong> A major catalyst at the Oman facility is the installation of 175 KW Waste-to-Energy turbines. These capture excess steam from chemical incineration, generating ₹35k/day in pure energy savings.</p>
+
+  <div class="flag-card">
+    <h4>🔴 CRITICAL RISK: 2026 Iran War & Oman Impact</h4>
+    <p>On 28 February 2026, the US and Israel launched military strikes on Iran, triggering the 2026 Iran War. Iran retaliated with missile and drone strikes on US bases and allied countries across the Gulf — <strong>including Oman</strong>.</p>
+    <p style="margin-top:8px;"><strong>Direct strikes on Oman:</strong> Duqm Port, Port of Khasab, Salalah Port, and Sohar all faced disruptions. The Strait of Hormuz was effectively closed by Iran.</p>
+    <p style="margin-top:8px;"><strong>Impact on Felix:</strong> While Sumair is inland, the broader disruption to Oman's oil & gas sector and shipping routes is material. Felix's Oman LNG contract execution and ability to export processed oil face heightened uncertainty. This remains the single biggest near-term risk to Felix's FY27 Oman revenue target of ₹75-80 Cr.</p>
+  </div>
+</div>
+
+<div class="page" id="page-jjm">
+  <h2>Jal Jeevan Mission & Govt Tenders</h2>
+
+  <div class="info-card" style="border-color: var(--accent-cyan); border-left-color: var(--accent-cyan);">
+    <h4 style="color: var(--accent-cyan);">ℹ Context: The Jal Jeevan Mission Opportunity</h4>
+    <p>India's JJM has a total outlay of ~₹8.7 lakh crore extended till 2028. India generates ~72,368 MLD of sewage but only treats ~28% effectively — a massive gap of ~52,132 MLD that remains untreated. This creates a structural demand for wastewater treatment and recycling companies.</p>
+  </div>
+
+  <div class="flag-card">
+    <h4>⚠ Reality Check: Felix & Government Contracts</h4>
+    <p>Felix's IR materials at places, prominently feature the JJM opportunity, positioning the company as a beneficiary of this massive government spending wave. However, <strong>this is potentially misleading</strong>.</p>
+    <p style="margin-top:8px;">On the Q3 FY26 concall (20 Feb 2026), when directly asked about government contracts, <strong>Director Finance Nishant Sharma stated clearly:</strong> "We generally are working with, mostly with private entities... government projects have a very typical tendency of functioning in a very different manner, and it becomes challenging to recover money. That's why we have till now avoided taking government contracts."</p>
+    <p style="margin-top:8px;">Felix has <strong>explicitly avoided JJM and direct government tenders</strong>. Their business is overwhelmingly private-sector focused (industrial clients like Aarti Industries, HOCCO, Oil & Gas players). The only government-adjacent work is via their 20% stake in Eco-Vision for municipal plastic recycling contracts, which were not direct EPC tenders.</p>
+  </div>
+</div>
+
+<div class="page" id="page-comp">
+  <h2>Competitive Landscape</h2>
+
+  <h3>Peer Comparison (Latest Available Data)</h3>
+  <div class="table-wrapper">
+    <table>
+      <tr><th>Company</th><th>Listing</th><th>Mkt Cap (₹Cr)</th><th>Rev (₹Cr)</th><th>EBITDA %</th><th>PAT %</th><th>P/E</th></tr>
+      <tr><td><strong>Felix Industries</strong></td><td>SME</td><td class="mono">310</td><td class="mono">78 (TTM)</td><td class="mono">31%</td><td class="mono">23%</td><td class="mono">17.9x</td></tr>
+      <tr><td>Effwa Infra & Research</td><td>SME</td><td class="mono">487</td><td class="mono">214</td><td class="mono">16%</td><td class="mono">~12%</td><td class="mono">~27x</td></tr>
+      <tr><td>Apex Ecotech</td><td>SME</td><td class="mono">178</td><td class="mono">82</td><td class="mono">~14%</td><td class="mono">~12%</td><td class="mono">~18x</td></tr>
+      <tr><td>Concord Enviro Systems</td><td>Mainboard</td><td class="mono">586</td><td class="mono">~600</td><td class="mono">10-12%</td><td class="mono">~9%</td><td class="mono">12x</td></tr>
+      <tr><td>VA Tech Wabag</td><td>Mainboard</td><td class="mono">8,305</td><td class="mono">3,686</td><td class="mono">13-15%</td><td class="mono">~9%</td><td class="mono">~22x</td></tr>
+      <tr><td>JITF Infralogistics</td><td>Mainboard</td><td class="mono">784</td><td class="mono">334</td><td class="mono">15%</td><td class="mono">6%</td><td class="mono">29x</td></tr>
+    </table>
+  </div>
+  <p style="font-size: 12px; color: var(--text-dim);">Sources: Screener.in, Tickertape. Effwa & Apex are SME-listed environmental engineering peers. Concord is a ZLD/membrane specialist (recently mainboard-listed). VA Tech Wabag is the largest Indian pure-play water company with global operations. JITF is a waste-to-energy/infra holding co.</p>
+
+  <h3 style="margin-top: 32px;">Peer-by-Peer Context</h3>
+  <div class="two-col">
+    <div class="card">
+      <h3 style="color: var(--accent-cyan);">vs Effwa Infra (SME peer)</h3>
+      <p>Effwa is the closest SME comp — a turnkey water/wastewater EPC firm serving PSUs (Tata Steel, IOC) with ₹214 Cr revenue but lower margins (~16% EBITDA). Effwa does government projects Felix avoids. At 27x PE on lower margins, Effwa trades at a premium to Felix — suggesting the market values scale and government order books highly. Felix's edge is higher profitability and the unique oil/plastics/metals diversification Effwa lacks.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--accent-cyan);">vs Apex Ecotech (SME peer)</h3>
+      <p>Apex is the smallest peer at ₹82 Cr revenue but boasts strong ROE (~40% 3-year average) and is nearly debt-free. Focused purely on water/wastewater and ZLD — no oil or plastics verticals. At ~18x PE, valuation is comparable to Felix. Apex's Q3 FY26 was their highest-ever quarter, showing strong execution momentum. Both compete in industrial ZLD/ETP space, but Felix's international presence and multi-vertical strategy set it apart.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--accent-cyan);">vs Concord Enviro (Mainboard)</h3>
+      <p>Concord is 7x larger by revenue with global ZLD installations across India, Middle East, and Southeast Asia. However, margins are significantly thinner (10-12% EBITDA vs Felix's 25-30%) reflecting competitive bidding at scale. Concord's FY26 guidance is ₹600 Cr with 10-12% EBITDA. At 12x PE, Concord anchors the "what scale looks like at lower margins" benchmark. Felix's premium is justified only if growth materializes.</p>
+    </div>
+    <div class="card">
+      <h3 style="color: var(--accent-cyan);">vs VA Tech Wabag (Mainboard)</h3>
+      <p>Wabag is the aspirational benchmark — India's largest pure-play water company at ₹8,305 Cr market cap and ₹3,686 Cr revenue, with presence across 25+ countries and 6,500+ projects executed. EBITDA margins of 13-15% are guided, with a ₹15,800 Cr order book providing 4-5 years of revenue visibility. At ~22x PE, Wabag trades at a modest premium to Felix. Both serve industrial and municipal clients, but Wabag is ~47x Felix's revenue — a different league entirely. Felix's higher margins (25-30% vs 13-15%) reflect its niche positioning, though Wabag's scale and net-cash balance sheet offer far lower execution risk.</p>
+    </div>
+  </div>
+
+  <h3 style="margin-top: 24px;">Felix's Core Differentiation</h3>
+  <ul class="bullet-list">
+    <li><strong>Multi-vertical platform:</strong> No peer operates across water + waste oil + plastics + metals + hazardous waste simultaneously. This is Felix's most distinctive attribute.</li>
+    <li><strong>Private-sector only:</strong> While Effwa and JITF rely heavily on government orders, Felix works exclusively with private industrial clients — faster decisions, better payment cycles, higher margins. Even Wabag's order book is ~60% municipal.</li>
+    <li><strong>International operations:</strong> Only Felix and Concord among this peer set have meaningful overseas presence. Felix's Oman facility gives it a foothold in Gulf oil & gas waste markets.</li>
+    <li><strong>Circular economy play:</strong> Felix converts waste into sellable outputs (processed oil, recycled plastic granules, recovered metals). Most peers just treat and discharge — Felix monetizes the waste stream itself.</li>
+    <li><strong>O&M revenue pivot:</strong> Management targets O&M growing from ₹7-8 Cr/quarter to ₹50 Cr/year (FY27) and ₹85+ Cr post-FY27. This recurring revenue base differentiates from pure EPC players.</li>
+  </ul>
+</div>
+
+<div class="page" id="page-risks">
+  <h2>Risk Assessment</h2>
+
+  <div class="card" style="border-top: 3px solid var(--alert-red);">
+    <h3 style="color:var(--alert-red);">🔴 High Severity Risks</h3>
+    <ul class="bullet-list">
+      <li><strong>Iran War & Oman disruption:</strong> Oman has been directly hit in the 2026 Iran war. Felix's FY27 Oman target (₹75-80 Cr = ~40% of total) is at serious risk. Strait of Hormuz closure disrupts oil trade, Oman's economy, and Felix's ability to export processed oil. The ceasefire (8 Apr) is fragile.</li>
+      <li><strong>Execution concentration risk:</strong> Management can handle only 4-5 large orders simultaneously. Any client-side delays (2-3 months common) disrupt the entire revenue timeline. Q4 FY26 expected to deliver ₹45 Cr — enormous concentration in one quarter.</li>
+      <li><strong>Promoter pledge at 32%:</strong> If stock falls sharply, pledged shares could face margin calls. Pledge creation activity between Sep'25 and Feb'26 is concerning during a period of supposed growth.</li>
+      <li><strong>Historical execution & Guidances:</strong> The BOOT pivot is now delivering clear momentum, yet management’s historical track record on growth targets remains mixed. Informal targets struggled during the lumpy EPC years (2017–2022). For FY26, guidance was set at ₹110 Cr; after nine months, only ₹65 Cr has been booked. The FY27 target of ₹180–200 Cr implies a sharp 4–5x jump from FY25 in just two years—highly ambitious, but now supported by a stronger order book and annuity cash flows.</li>
+    </ul>
+  </div>
+
+  <div class="card" style="border-top: 3px solid var(--alert-amber);">
+    <h3 style="color:var(--alert-amber);">🟡 Medium Severity Risks</h3>
+    <ul class="bullet-list">
+      <li><strong>Working capital intensity:</strong> EPC/BOOT projects require upfront capital. Cash conversion cycle is stretched due to high payables and receivables.</li>
+      <li><strong>Feedstock dependency (Oman):</strong> Oil processing volumes depend entirely on third-party refinery waste generation. Client slowdowns directly impact Felix's throughput.</li>
+      <li><strong>Low institutional ownership:</strong> FII 1.24%, DII 0.43%. The stock is retail-driven, which means higher volatility and less price discovery support.</li>
+         <li><strong>No dividend track record:</strong> Zero dividend payout. All profits reinvested — appropriate for growth stage but limits appeal for income investors</li>
+      <li><strong>Mainboard listing timing:</strong> Company plans to apply post March '26 audits. Any delays or rejection would limit liquidity and institutional participation</li>
+    </ul>
+  </div>
+</div>
+
+<div class="page" id="page-price">
+  <h2>Stock Price & Valuation</h2>
+
+  <div class="card">
+    <h3 style="color: var(--accent-cyan);">📈 Price History (IPO to Apr 2026)</h3>
+    <p>Felix listed at ₹35.50 in Dec 2017. Spent 2018-2022 mostly in the ₹20-50 range with no meaningful volume. The stock started its re-rating from mid-2023 as the BOOT pivot materialized. Touched an all-time high of ₹220 before correcting to current ~₹180 levels.</p>
+    
+    <div class="chart-container">
+      <canvas id="priceChart"></canvas>
+    </div>
+
+    <div class="card-grid">
+      <div class="stat-card"><div class="label">IPO Price (Nov '17)</div><div class="value">₹35</div></div>
+      <div class="stat-card"><div class="label">All-Time Low</div><div class="value">~₹10.8</div><div class="sub down">During 2020</div></div>
+      <div class="stat-card"><div class="label">52-Week High</div><div class="value">₹220</div></div>
+      <div class="stat-card"><div class="label">CMP (09 Apr)</div><div class="value">₹180</div></div>
+    </div>
+  </div>
+
+  <h3 style="margin-top: 32px;">Peer Valuation Snapshot</h3>
+  <div class="table-wrapper">
+    <table>
+      <tr><th>Metric</th><th>Felix</th><th>Effwa</th><th>Apex Eco</th><th>Concord</th><th>Wabag</th><th>JITF</th></tr>
+      <tr><td>Mkt Cap (₹Cr)</td><td class="mono">310</td><td class="mono">487</td><td class="mono">178</td><td class="mono">586</td><td class="mono">8,305</td><td class="mono">784</td></tr>
+      <tr><td>P/E (TTM)</td><td class="mono">17.9x</td><td class="mono">~27x</td><td class="mono">~18x</td><td class="mono">12x</td><td class="mono">~22x</td><td class="mono">29x</td></tr>
+      <tr><td>EBITDA %</td><td class="mono">31%</td><td class="mono">16%</td><td class="mono">~14%</td><td class="mono">10-12%</td><td class="mono">13-15%</td><td class="mono">15%</td></tr>
+      <tr><td>Rev (₹Cr)</td><td class="mono">78</td><td class="mono">214</td><td class="mono">82</td><td class="mono">~600</td><td class="mono">3,686</td><td class="mono">334</td></tr>
+    </table>
+  </div>
+  <p>Felix trades at a discount to most SME peers (Effwa 27x, JITF 29x) while commanding the highest margins in the set. Against mainboard players, Felix's 17.9x PE is below Wabag's ~22x. The premium over Concord (12x) reflects the growth trajectory being priced in. On FY27 forward estimates (if delivered), Felix's PE compresses to 7-11x — <strong>which would make it the cheapest in this entire peer set.</strong></p>
+</div>
+
+<div class="page" id="page-disclaimer">
+  <h2>Disclaimer</h2>
+  <div class="disclaimer-box">
+    <p style="color:var(--alert-red);font-weight:700;font-size:15px;margin-bottom:16px;font-family:'Outfit',sans-serif;">⚠ IMPORTANT: THIS IS NOT INVESTMENT ADVICE</p>
+    <p>This research deck has been compiled for <strong>educational and informational purposes only</strong>. It is intended to enhance understanding of the business, industry, and financial analysis of Felix Industries Ltd (NSE: FELIX). It should <strong>not</strong> be construed as investment advice, a recommendation to buy, sell, or hold any securities.</p>
+    <p>The information presented is based on publicly available data including company filings, concall transcripts, NSE disclosures, investor presentations, and third-party research reports. While efforts have been made to ensure accuracy, we do not guarantee the completeness, accuracy, or timeliness of the content. Some data points may have changed since compilation.</p>
+    <p>Key assumptions and forward-looking statements (revenue guidance, margin targets, expansion plans) are based on management commentary and may differ materially from actual outcomes. The company is an SME-listed entity with limited liquidity, limited institutional coverage, and higher inherent risk than mainboard-listed companies.</p>
+    <p>The author/compiler has <strong>no position</strong> in Felix Industries Ltd and receives no compensation from the company or its affiliates. This document does not constitute a SEBI Research Analyst report.</p>
+    <p><strong>Risks highlighted in this deck are not exhaustive.</strong> Investors should conduct their own due diligence and consult with a qualified financial advisor before making any investment decisions. Past performance is not indicative of future results. All investments are subject to market risks, including potential loss of capital.</p>
+    <p style="margin-top:32px;text-align:center;">
+      <a href="https://x.com/sachprat07" target="_blank" rel="noopener" style="color:var(--accent-cyan);text-decoration:none;font-size:16px;font-weight:600;display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border:1px solid rgba(0,242,254,0.3);border-radius:30px;background:rgba(0,242,254,0.05);transition:all 0.3s;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        @sachprat07
+      </a>
+    </p>
+    <p style="text-align:center;margin-top:16px;font-size:12px;font-family:'Space Mono',monospace;">Compiled: April 2026 &nbsp;|&nbsp; Data sources: NSE, Screener.in, Company Filings, Concalls</p>
+  </div>
+</div>
+
+<script>
+// Tab navigation
+const pages = [
+  {id:'page-cover', label:'Cover'},
+  {id:'page-overview', label:'Overview'},
+  {id:'page-history', label:'History & Pivot'},
+  {id:'page-structure', label:'Group Structure'},
+  {id:'page-funding', label:'Funding & Equity'},
+  {id:'page-tech', label:'Technical Moat'},
+  {id:'page-financials', label:'Financials'},
+  {id:'page-mgmt', label:'Management'},
+  {id:'page-oman', label:'Oman & Geopolitics'},
+  {id:'page-jjm', label:'JJM Flag'},
+  {id:'page-comp', label:'Competition'},
+  {id:'page-risks', label:'Risks'},
+  {id:'page-price', label:'Price & Valuation'},
+  {id:'page-disclaimer', label:'Disclaimer'},
+];
+
+const navTabs = document.getElementById('navTabs');
+pages.forEach((p,i) => {
+  const btn = document.createElement('button');
+  btn.textContent = p.label;
+  btn.className = i===0?'active':'';
+  btn.onclick = () => {
+    document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active'));
+    document.getElementById(p.id).classList.add('active');
+    document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    // Auto-center the clicked tab in the scrollable top bar
+    btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    
+    window.scrollTo({top:0, behavior:'smooth'});
+  };
+  navTabs.appendChild(btn);
+});
+
+// Desktop Mouse Wheel Scrolling for Tabs
+navTabs.addEventListener('wheel', (evt) => {
+    evt.preventDefault();
+    navTabs.scrollLeft += evt.deltaY;
+});
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  if(e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+    const btns = [...document.querySelectorAll('.tabs button')];
+    const idx = btns.findIndex(b => b.classList.contains('active'));
+    const next = e.key === 'ArrowRight' ? Math.min(idx+1, btns.length-1) : Math.max(idx-1, 0);
+    btns[next].click();
+  }
+});
+
+// Moderate Mobile Swipe Gesture Integration
+let touchstartX = 0;
+let touchstartY = 0;
+let touchendX = 0;
+let touchendY = 0;
+let touchstartTime = 0;
+
+document.addEventListener('touchstart', e => {
+    touchstartX = e.changedTouches[0].screenX;
+    touchstartY = e.changedTouches[0].screenY;
+    touchstartTime = Date.now();
+}, {passive: true});
+
+document.addEventListener('touchend', e => {
+    touchendX = e.changedTouches[0].screenX;
+    touchendY = e.changedTouches[0].screenY;
+    handleSwipe();
+}, {passive: true});
+
+function handleSwipe() {
+    const distanceX = touchendX - touchstartX;
+    const distanceY = touchendY - touchstartY;
+    const elapsed = Date.now() - touchstartTime;
+    
+    // Stricter swipe: >100px horizontal, mostly horizontal (2x ratio), completed within 600ms, not too slow
+    if (Math.abs(distanceX) > 100 && Math.abs(distanceX) > Math.abs(distanceY) * 2 && elapsed < 600 && elapsed > 80) {
+        const activeBtn = document.querySelector('.tabs button.active');
+        if(!activeBtn) return;
+        const btns = [...document.querySelectorAll('.tabs button')];
+        const currentIndex = btns.indexOf(activeBtn);
+        
+        if (distanceX < 0 && currentIndex < btns.length - 1) {
+            // Swipe Left -> Go to Next Page
+            btns[currentIndex + 1].click();
+        } else if (distanceX > 0 && currentIndex > 0) {
+            // Swipe Right -> Go to Previous Page
+            btns[currentIndex - 1].click();
+        }
+    }
+}
+
+// Interactive Water/Ocean Background Setup
+const canvas = document.getElementById('interactive-bg');
+const ctx = canvas.getContext('2d');
+
+let mouseX = window.innerWidth / 2;
+let mouseY = window.innerHeight / 2;
+let currentX = mouseX;
+let currentY = mouseY;
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// Track mouse and touch movements
+window.addEventListener('mousemove', (e) => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+});
+
+window.addEventListener('touchmove', (e) => {
+  mouseX = e.touches[0].clientX;
+  mouseY = e.touches[0].clientY;
+}, {passive: true});
+
+let time = 0;
+
+function animateBg() {
+  // Clear the canvas every frame
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // 1. Smoothly interpolate cursor position (creates a delayed, fluid feel)
+  currentX += (mouseX - currentX) * 0.04;
+  currentY += (mouseY - currentY) * 0.04;
+
+  // 2. Draw slow, undulating ambient waves
+  ctx.beginPath();
+  ctx.moveTo(0, canvas.height);
+  
+  for(let x = 0; x <= canvas.width; x += 20) {
+      // Calculate wave height using multiple sine waves for organic movement
+      let y = canvas.height * 0.6 + 
+              Math.sin(x * 0.002 + time) * 80 + 
+              Math.cos(x * 0.004 + time * 0.8) * 40;
+      ctx.lineTo(x, y);
+  }
+  ctx.lineTo(canvas.width, canvas.height);
+  ctx.lineTo(0, canvas.height);
+
+  // Very subtle gradient for the ambient wave (Cyan to Emerald)
+  let waveGradient = ctx.createLinearGradient(0, canvas.height * 0.4, 0, canvas.height);
+  waveGradient.addColorStop(0, 'rgba(0, 242, 254, 0.015)'); 
+  waveGradient.addColorStop(1, 'rgba(16, 185, 129, 0.04)');
+  ctx.fillStyle = waveGradient;
+  ctx.fill();
+
+  // 3. Draw interactive "fluid glow" that follows the cursor
+  // The radius is large (350px) to simulate light dispersing in water
+  let cursorGlow = ctx.createRadialGradient(currentX, currentY, 0, currentX, currentY, 350);
+  cursorGlow.addColorStop(0, 'rgba(0, 242, 254, 0.08)');  // Inner cyan glow
+  cursorGlow.addColorStop(0.4, 'rgba(16, 185, 129, 0.03)'); // Mid emerald transition
+  cursorGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');           // Fades to transparent
+
+  ctx.fillStyle = cursorGlow;
+  ctx.beginPath();
+  ctx.arc(currentX, currentY, 350, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Increment time for continuous wave movement
+  time += 0.008;
+  requestAnimationFrame(animateBg);
+}
+
+// Start animation loop
+animateBg();
+
+// Chart.js Setup for Price Graph
+document.addEventListener("DOMContentLoaded", function() {
+  const chartCanvas = document.getElementById('priceChart');
+  if(chartCanvas) {
+    const ctxChart = chartCanvas.getContext('2d');
+    
+    // Create gradient fill for the chart
+    let gradientFill = ctxChart.createLinearGradient(0, 0, 0, 400);
+    gradientFill.addColorStop(0, 'rgba(0, 242, 254, 0.4)');
+    gradientFill.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
+
+    const chartLabels = ['Dec 2017', 'Sep 2018', 'Sep 2019', 'Apr 2020 (Low)', 'Sep 2021', 'Sep 2022', 'Sep 2023', 'Sep 2024', 'Apr 2026'];
+    const chartData = [35.5, 23.0, 15.35, 11.65, 41.75, 24.90, 114.0, 276.7, 180.0];
+
+    new Chart(ctxChart, {
+      type: 'line',
+      data: {
+        labels: chartLabels,
+        datasets: [{
+          label: 'Price (₹)',
+          data: chartData,
+          borderColor: '#00f2fe',
+          backgroundColor: gradientFill,
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4, // Smoother curves
+          pointBackgroundColor: '#10b981',
+          pointBorderColor: '#0a1926',
+          pointBorderWidth: 2,
+          pointRadius: 6,
+          pointHoverRadius: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: 'rgba(10, 25, 38, 0.9)',
+            titleColor: '#f8fafc',
+            bodyColor: '#94a3b8',
+            borderColor: 'rgba(255,255,255,0.1)',
+            borderWidth: 1,
+            titleFont: { family: 'Plus Jakarta Sans', size: 14 },
+            bodyFont: { family: 'Space Mono', size: 13 },
+            padding: 12,
+            displayColors: false,
+            callbacks: {
+              label: function(context) { return '₹ ' + context.parsed.y.toFixed(2); }
+            }
+          }
+        },
+        scales: {
+          y: {
+            grid: { color: 'rgba(255,255,255,0.05)', drawBorder: false },
+            ticks: { 
+              color: '#64748b', 
+              font: { family: 'Space Mono', size: 12 },
+              callback: function(val) { return '₹' + val; } 
+            }
+          },
+          x: {
+            grid: { display: false, drawBorder: false },
+            ticks: { 
+              color: '#64748b', 
+              font: { family: 'Plus Jakarta Sans', size: 12 },
+              maxRotation: 45, minRotation: 45 
+            }
+          }
+        }
+      }
+    });
+  }
+});
+</script>
+
+</body>
+</html>
