@@ -226,6 +226,7 @@
         }
         .risk-card h4 { font-family: var(--serif); font-weight: 700; font-size: 1.15rem; color: var(--ink); margin-bottom: 0.35rem; }
         .risk-card .level { display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 1.5px; padding: 0.2rem 0.6rem; border-radius: 3px; margin-left: 0.5rem; vertical-align: middle; }
+        .risk-card .level.low { background: rgba(39,174,96,0.15); color: var(--success); }
         .risk-card .level.high   { background: rgba(231,76,60,0.15); color: var(--danger); }
         .risk-card .level.medium { background: rgba(232,160,32,0.15); color: var(--gold); }
         .risk-card p { font-size: 0.86rem; color: var(--ink-60); line-height: 1.55; }
@@ -721,10 +722,12 @@
             <p class="page-sub fx d2">Six risk vectors — assessed candidly with severity ratings</p>
 
             <div class="g2 fx d2">
-                <div class="risk-card">
-                    <h4>Working Capital Cycle <span class="level medium">MEDIUM</span></h4>
-                    <p style="margin-top:0.5rem;">Banks/NBFCs settle commissions in 3–6 months — inherent to the model. WC days improved from 189 (FY25) to 98 (H1 FY26) amid 240%+ YoY revenue growth. FY25 consolidated OCF was −₹26.9 Cr from growth investments. Receivables appear to support revenue expansion and should improve as mix stabilises.</p>
-                </div>
+                <div class="risk-card" style="border-top-color: var(--success);">
+    <h4>Working Capital Cycle & Credit Risk <span class="level low">LOW</span></h4>
+    <p style="margin-top:0.5rem;">
+        Banks/NBFCs settle commissions in 3–6 months — inherent to the model. <strong>However, management recently clarified the maximum rotation cycle is 90–120 days, with 20% of payments realised in 30 days and another 60% within 60 days.</strong> WC days improved from 189 (FY25) to 98 (H1 FY26) amid 240%+ YoY revenue growth. FY25 consolidated OCF was −₹26.9 Cr from growth investments. Receivables appear to support revenue expansion and should improve as mix stabilises. <strong>Crucially, the company carries absolutely zero credit or bad debt risk, as 100% of the end-borrower default risk is borne by the partner banks and NBFCs.</strong>
+    </p>
+</div>
                 <div class="risk-card" style="border-top-color: var(--danger);">
                     <h4>AkikoPay Execution Risk <span class="level high">HIGH</span></h4>
                     <p style="margin-top:0.5rem;">KYC integration was pending at Q3 launch; iOS delayed from initial Feb 15 target. Daily wallet deposits ₹1.5–2L is very early stage. Super apps are notoriously hard to monetise at scale. Paytm-like regulatory intervention on wallets is a real tail risk. The 1M user target in 6 months is aspirational.</p>
