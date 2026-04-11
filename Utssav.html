@@ -176,8 +176,29 @@
 
         .chart-box { background: var(--bg-panel); backdrop-filter: blur(12px); padding: 1.5rem; border-radius: 8px; height: 450px; border: 1px solid var(--border-color); }
 
+        /* Custom Scrollbar for tables */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+        .table-container::-webkit-scrollbar {
+            height: 6px;
+        }
+        .table-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+        .table-container::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.4);
+            border-radius: 4px;
+        }
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(212, 175, 55, 0.7);
+        }
+
         .table-custom { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 1rem; }
-        .table-custom th, .table-custom td { padding: 1.2rem 1rem; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 0.95rem; transition: background 0.3s; }
+        .table-custom th, .table-custom td { padding: 1.2rem 1rem; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 0.95rem; transition: background 0.3s; white-space: nowrap; }
         .table-custom th { color: var(--accent-gold); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; }
         .table-custom tr:hover td { background: rgba(212, 175, 55, 0.05); cursor: crosshair; }
 
@@ -252,8 +273,8 @@
 
             <div class="grid-4 mb-1">
                 <div class="card gold-border stagger-2">
-                    <div class="metric-label">FY26 Revenue Update</div>
-                    <div class="metric-value">₹1,156 Cr</div>
+                    <div class="metric-label">FY26 Revenue Est.</div>
+                    <div class="metric-value">~₹1,156 Cr</div>
                     <div class="highlight-gold" style="font-size: 0.85rem;">+79% YoY Growth</div>
                 </div>
                 <div class="card gold-border stagger-2">
@@ -283,10 +304,10 @@
                 <div class="card stagger-4">
                     <h3 class="serif-text highlight-gold mb-1" style="font-size: 1.8rem;">FY26 UPDATE HIGHLIGHTS</h3>
                     <ul class="custom-list">
-                        <li><strong>Revenue Trajectory:</strong> ~79% YoY Revenue Growth achieved in FY26[cite: 32].</li>
-                        <li><strong>H2 FY26 Surge:</strong> ~88% YoY Revenue Growth in H2, supported by peak festive demand[cite: 31, 36].</li>
-                        <li><strong>Client Acquisition:</strong> Onboarded 112 new corporate clients in FY26, diversifying risk[cite: 34, 39].</li>
-                        <li><strong>Volume Disconnect:</strong> While revenue surged, physical Volume Growth settled at ~11% YoY [cite: 33] (below early ~30-35% guidance) as gold price inflation drove ticket sizes rather than sheer off-take.</li>
+                        <li><strong>Revenue Trajectory:</strong> ~79% YoY Revenue Growth achieved in FY26.</li>
+                        <li><strong>H2 FY26 Surge:</strong> ~88% YoY Revenue Growth in H2, supported by peak festive demand.</li>
+                        <li><strong>Client Acquisition:</strong> Onboarded 112 new corporate clients in FY26, diversifying risk.</li>
+                        <li><strong>Volume Disconnect:</strong> While revenue surged to ~₹1,156 Cr, physical Volume Growth settled at ~11% YoY (below early ~30-35% guidance) as gold price inflation drove ticket sizes rather than sheer off-take.</li>
                     </ul>
                 </div>
             </div>
@@ -398,10 +419,10 @@
                     <h3 class="serif-text highlight-gold mb-1" style="font-size: 1.4rem;">DIAMOND JEWELLERY</h3>
                     <p style="color: var(--success); font-size: 0.8rem; text-transform: uppercase; margin-bottom: 10px;">Premium Growth Segment</p>
                     <ul class="custom-list" style="font-size: 0.85rem;">
-                        <li>Natural diamonds reached ~3.5% of Revenue in H2 FY26[cite: 34].</li>
+                        <li>Natural diamonds reached ~3.5% of Revenue in H2 FY26.</li>
                         <li>Lab-grown diamonds currently ~1% contribution but scaling via B2B tie-ups.</li>
                         <li>Targeting ₹100–500 Cr standalone revenue from this segment.</li>
-                        <li>Drives better product mix and realization[cite: 41].</li>
+                        <li>Drives better product mix and realization.</li>
                     </ul>
                 </div>
                 <div class="card stagger-4">
@@ -420,7 +441,7 @@
                 <h3 class="serif-text highlight-gold mb-1" style="font-size: 1.5rem;">B2B MODEL ADVANTAGES</h3>
                 <ul class="custom-list">
                     <li><strong>Direct to Corporates:</strong> 100% B2B model with no retail distribution channels, avoiding storefront capex.</li>
-                    <li><strong>Customer Additions:</strong> Onboarded 112 new clients in FY26 [cite: 34] to diversify away from the top 10 clients who hold ~50% concentration.</li>
+                    <li><strong>Customer Additions:</strong> Onboarded 112 new clients in FY26 to diversify away from the top 10 clients who hold ~50% concentration.</li>
                     <li><strong>Fixed % Markup on Gold:</strong> Revenue is fixed % markup on gold value — structural passthrough. 100% hedging of gold mitigates price volatility.</li>
                     <li><strong>Design as Moat:</strong> Non-overcrowded market position sustained by constant design velocity.</li>
                 </ul>
@@ -432,8 +453,13 @@
             <h1 class="title stagger-1">P&L Summary</h1>
             <p class="subtitle stagger-1">FY20–FY25 Audited · H1 FY26 Unaudited · FY26 Scale-Up</p>
 
-            <div class="card gold-border stagger-2">
-                <div style="overflow-x: auto;">
+            <div class="card danger-border stagger-2 mb-1" style="background: rgba(239, 68, 68, 0.05); padding: 1.5rem;">
+                <h3 class="serif-text" style="color: var(--danger); font-size: 1.4rem; margin-bottom: 0.5rem;"><i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i> CRITICAL CONTEXT: The Volume Disconnect</h3>
+                <p style="color: #d4d4d8; font-size: 1rem; line-height: 1.6; margin-bottom: 0;">While FY26 revenue estimate hits a massive <strong>~₹1,156 Cr</strong> (+79% YoY), physical volume growth settled at only <strong>~11%</strong> — significantly below management's March guidance of 30-35%. The topline surge is predominantly driven by gold price inflation, meaning physical capacity utilization (~60%) and true operational leverage are lagging the revenue headline.</p>
+            </div>
+
+            <div class="card gold-border stagger-3">
+                <div class="table-container">
                     <table class="table-custom">
                         <tr style="border-bottom: 2px solid var(--accent-gold);">
                             <th>Period</th>
@@ -477,8 +503,8 @@
                         </tr>
                         <tr style="border-top: 2px dashed var(--border-color);">
                             <td style="color: var(--success); font-weight: bold;">FY26 Est. Update</td>
-                            <td style="color: var(--success); font-weight: bold;">~₹1,156 Cr</td>
-                            <td colspan="4" style="color: var(--success); text-align:center; font-style: italic;">Based on April 10 update of 79% YoY Topline Growth[cite: 32]. PAT Target ~4.0%</td>
+                            <td style="color: var(--success); font-weight: bold;">~₹1,156 Cr*</td>
+                            <td colspan="4" style="color: var(--success); text-align:center; font-style: italic;">Based on April 10 update of 79% YoY Topline Growth. PAT Target ~4.0%</td>
                         </tr>
                     </table>
                 </div>
@@ -504,7 +530,7 @@
 
                 <div class="card gold-border stagger-3">
                     <h3 class="serif-text highlight-gold mb-1" style="font-size: 1.5rem;">Capacity & Expansion Plan</h3>
-                    <div style="overflow-x: auto;">
+                    <div class="table-container">
                         <table class="table-custom mb-1" style="font-size: 0.85rem;">
                             <tr><th>Period</th><th>Capacity</th><th>Utilisation</th><th>Note</th></tr>
                             <tr><td>FY22</td><td>750 kg</td><td>80%</td><td>Pre-listing base capacity</td></tr>
@@ -559,7 +585,7 @@
                 <div class="grid-4" style="margin-top: 1rem;">
                     <div>
                         <h4 style="color: var(--text-main); font-size: 0.95rem;">Working Capital Scale-Up</h4>
-                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 5px;">Revenue grew 79% FY25→FY26[cite: 32]. Capital Needs: Seeking institutional funds/debt for further WC scaling.</p>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 5px;">Revenue grew 79% FY25→FY26. Capital Needs: Seeking institutional funds/debt for further WC scaling.</p>
                     </div>
                     <div>
                         <h4 style="color: var(--text-main); font-size: 0.95rem;">Capacity Expansion to 2.5T</h4>
@@ -591,7 +617,7 @@
                     <h3 class="serif-text highlight-gold mb-1" style="font-size: 1.5rem;">MACRO OUTLOOK & GEOPOLITICS</h3>
                     <ul class="custom-list">
                         <li><strong>Overall Demand:</strong> Extremely positive with no pressure despite geopolitics; markets are stable and war impacts have subsided. Strong traction in seasonally favorable quarters.</li>
-                        <li><strong>Rising Gold Prices — Net Positive for Utssav:</strong> Utssav charges a fixed % markup over gold value. Rising gold prices directly inflate absolute revenue without margin degradation, though it can compress physical volume growth[cite: 42].</li>
+                        <li><strong>Rising Gold Prices — Net Positive for Utssav:</strong> Utssav charges a fixed % markup over gold value. Rising gold prices directly inflate absolute revenue without margin degradation, though it can compress physical volume growth.</li>
                         <li><strong>Inventory & Hedging:</strong> Real-time inventory systems implemented for new markets. 100% hedging ensures minimal impact from gold price shocks.</li>
                     </ul>
                 </div>
@@ -642,7 +668,7 @@
                     <ul class="custom-list" style="font-size: 0.85rem;">
                         <li><strong>FY30 Objective:</strong> Management has stated a long-term goal to hit INR 4,000Cr in revenue.</li>
                         <li><strong>Dubai WOS going live:</strong> First export revenues from UAE subsidiary provide new global growth narrative into GCC/US.</li>
-                        <li><strong>Natural Diamond Scale-up:</strong> Hit ~3.5% of Revenue in H2 FY26[cite: 34]. Sustained acceleration here drives margin re-rating.</li>
+                        <li><strong>Natural Diamond Scale-up:</strong> Hit ~3.5% of Revenue in H2 FY26. Sustained acceleration here drives margin re-rating.</li>
                         <li><strong>Capital Action:</strong> Plans to raise funds (equity or debt) to bring in big institutional investors and fulfill working capital requirements.</li>
                     </ul>
                 </div>
@@ -655,7 +681,7 @@
             <p class="subtitle stagger-1">Where Utssav Stands · SME & Mainboard · Key Differentiators</p>
 
             <div class="card gold-border stagger-2">
-                <div style="overflow-x: auto;">
+                <div class="table-container">
                     <table class="table-custom">
                         <tr style="border-bottom: 2px solid var(--accent-gold);">
                             <th>Company</th>
@@ -707,7 +733,7 @@
 
                 <h3 class="serif-text highlight-gold mt-2 mb-1" style="font-size: 1.5rem;">UTSSAV DIFFERENTIATION vs. PEERS</h3>
                 <ul class="custom-list">
-                    <li><strong>Valuation Gap:</strong> Trading at ~11.6x P/E despite 79% YoY Topline growth [cite: 32] and 31.5% ROE. Larger Mainboard peers (Sky Gold) trade near 40x.</li>
+                    <li><strong>Valuation Gap:</strong> Trading at ~11.6x P/E despite 79% YoY Topline growth and 31.5% ROE. Larger Mainboard peers (Sky Gold) trade near 40x.</li>
                     <li><strong>Pure B2B, No Retail Risk:</strong> No showroom capex, no franchise model — highly scalable capital-light model.</li>
                     <li><strong>Design Velocity Moat:</strong> 400+ new CAD designs/month. Retailer-exclusive designs create deep switching costs.</li>
                 </ul>
@@ -723,9 +749,9 @@
                 <div class="card success-border stagger-2">
                     <h3 class="serif-text highlight-gold mb-1" style="font-size: 1.5rem; color: var(--success);">✅ POSITIVES / WHAT'S WORKING</h3>
                     <ul class="custom-list success-list">
-                        <li><strong>📈 79% Revenue Growth:</strong> Stupendous topline execution reaching ~₹1,156 Cr in FY26[cite: 32]. Management targeting ₹4,000 Cr by FY30.</li>
-                        <li><strong>🤝 Network Expansion:</strong> Added 112 new clients in FY26 [cite: 34], de-risking the top-heavy 50% concentration from top 10 clients[cite: 39].</li>
-                        <li><strong>💎 Diamond Uptick:</strong> Natural diamond contribution scaled to ~3.5% of H2 FY26 revenues [cite: 34], proving product-mix upgrade thesis[cite: 41].</li>
+                        <li><strong>📈 79% Revenue Growth:</strong> Stupendous topline execution reaching ~₹1,156 Cr in FY26. Management targeting ₹4,000 Cr by FY30.</li>
+                        <li><strong>🤝 Network Expansion:</strong> Added 112 new clients in FY26, de-risking the top-heavy 50% concentration from top 10 clients.</li>
+                        <li><strong>💎 Diamond Uptick:</strong> Natural diamond contribution scaled to ~3.5% of H2 FY26 revenues, proving product-mix upgrade thesis.</li>
                         <li><strong>🌍 Dubai WOS:</strong> Export offices to target GCC/US markets directly.</li>
                         <li><strong>👥 Promoter Conviction:</strong> Pankaj Jagawat holds 8.5L unconverted warrants @ ₹222 & made open-market purchases of 1,78,200 shares (Mar 2026).</li>
                     </ul>
@@ -734,9 +760,9 @@
                 <div class="card danger-border stagger-3">
                     <h3 class="serif-text" style="color: var(--danger); margin-bottom: 1rem; font-size: 1.5rem;">⚠️ RISKS / WATCH POINTS</h3>
                     <ul class="custom-list risk-list">
-                        <li><strong>📉 Volume Disconnect:</strong> Management guided 30-35% volume growth in March, but FY26 actual volume growth came in at ~11%[cite: 33]. High gold prices inflate the revenue number, but physical off-take is growing slower than guided[cite: 42].</li>
+                        <li><strong>📉 Volume Disconnect:</strong> As noted in Financials, FY26 actual volume growth (~11%) missed March guidance (30-35%). Topline is inflated by gold prices, delaying full operational leverage.</li>
                         <li><strong>💧 Working Capital Intensity:</strong> Rapid revenue scaling will force the company to raise additional institutional funds/debt.</li>
-                        <li><strong>⚙️ Capacity Utilization:</strong> Currently at ~60%. Slower physical volume growth means operational leverage will take longer to realize fully.</li>
+                        <li><strong>⚙️ Capacity Utilization:</strong> Currently stalling at ~60% due to the slower physical volume growth mentioned above.</li>
                         <li><strong>⚖️ Warrant Dilution Ahead:</strong> 8.5L warrants remain unconverted at ₹222.</li>
                     </ul>
                 </div>
