@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>L.T. Elevator Ltd — Investment Deck</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --crimson: #c8102e;
+            --crimson-dim: rgba(200,16,46,0.10);
+            --crimson-glow: rgba(200,16,46,0.25);
+            --amber: #e8a838;
+            --amber-dim: rgba(232,168,56,0.10);
+            --cream: #faf3e8;
+            --bone: #f0e6d6;
+            --charcoal: #1a1a1e;
+            --ink: #0e0e10;
+            --slate: #2a2a30;
+            --muted: #8a8078;
+            --text: #f0ebe4;
+            --success: #2ec4b6;
+            --danger: #e63946;
+            --grad: linear-gradient(135deg, var(--crimson), var(--amber));
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { width: 100%; height: 100%; overflow: hidden; background: var(--ink); color: var(--text); font-family: 'Sora', sans-serif; }
+
+        #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+        #deck { position: relative; z-index: 1; width: 100%; height: 100%; overflow: hidden; touch-action: pan-y; }
+        .slide {
+            position: absolute; inset: 0; opacity: 0; visibility: hidden;
+            transition: opacity 0.6s cubic-bezier(.4,0,.2,1), transform 0.6s cubic-bezier(.4,0,.2,1);
+            transform: translateX(60px);
+            display: flex; align-items: center; justify-content: center;
+            padding: 2.5rem 4rem; overflow-y: auto;
+        }
+        .slide.active { opacity: 1; visibility: visible; transform: translateX(0); }
+        .slide.exit-left { opacity: 0; visibility: visible; transform: translateX(-60px); }
+        .slide-inner { max-width: 1100px; width: 100%; }
+
+        #progress-bar { position: fixed; top: 0; left: 0; height: 3px; z-index: 100; background: var(--grad); transition: width 0.4s ease; box-shadow: 0 0 12px var(--crimson-glow); }
+
+        #nav-dots { position: fixed; right: 1.5rem; top: 50%; transform: translateY(-50%); z-index: 90; display: flex; flex-direction: column; gap: 10px; }
+        .nav-dot { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--muted); background: transparent; cursor: pointer; transition: all 0.3s; position: relative; }
+        .nav-dot:hover { border-color: var(--amber); transform: scale(1.3); }
+        .nav-dot.active { background: var(--crimson); border-color: var(--crimson); box-shadow: 0 0 10px var(--crimson-glow); }
+        .nav-dot .dot-label { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); background: var(--charcoal); color: var(--text); padding: 4px 10px; border-radius: 4px; font-size: 0.65rem; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s; font-weight: 600; border: 1px solid rgba(200,16,46,0.15); }
+        .nav-dot:hover .dot-label { opacity: 1; }
+
+        .nav-arrow { position: fixed; z-index: 90; background: rgba(26,26,30,0.7); backdrop-filter: blur(8px); border: 1px solid rgba(200,16,46,0.12); color: var(--muted); cursor: pointer; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s; font-size: 1rem; }
+        .nav-arrow:hover { color: var(--crimson); border-color: var(--crimson-glow); background: rgba(200,16,46,0.08); }
+        .nav-arrow.disabled { opacity: 0.2; pointer-events: none; }
+        #arrow-prev { bottom: 2rem; left: 2rem; }
+        #arrow-next { bottom: 2rem; right: 5rem; }
+
+        #slide-counter { position: fixed; bottom: 2.3rem; left: 50%; transform: translateX(-50%); z-index: 90; font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+        #slide-counter span { color: var(--crimson); font-weight: 700; }
+
+        /* COVER */
+        .cover-slide .slide-inner { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 80vh; }
+        .cover-logo { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 2.5rem; animation: fadeDown 1s ease 0.3s forwards; opacity: 0; }
+        .cover-wordmark {
+            font-family: 'Sora', sans-serif; font-weight: 800; font-size: clamp(3.5rem, 6vw, 5.5rem);
+            letter-spacing: 12px; text-transform: uppercase; line-height: 1;
+            background: linear-gradient(135deg, #fff 0%, #c8102e 40%, #e8a838 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 30px rgba(200,16,46,0.25));
+        }
+        .cover-wordmark .dot { -webkit-text-fill-color: var(--crimson); font-size: 0.7em; }
+        .cover-tagline { font-size: 0.7rem; letter-spacing: 6px; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+        .cover-divider { width: 60px; height: 2px; background: var(--grad); margin: 6px 0; border-radius: 2px; }
+        @keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        .cover-title { font-family: 'Playfair Display', serif; font-size: clamp(3rem, 7vw, 6rem); font-weight: 900; line-height: 1.05; margin-bottom: 1.5rem; animation: fadeUp 1s ease 0.6s forwards; opacity: 0; }
+        .cover-title .red { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .cover-sub { font-size: 1.1rem; color: var(--muted); max-width: 600px; line-height: 1.7; margin-bottom: 2.5rem; animation: fadeUp 1s ease 0.9s forwards; opacity: 0; }
+        .cover-pills { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; animation: fadeUp 1s ease 1.2s forwards; opacity: 0; }
+        .cover-pill { padding: 8px 18px; border-radius: 24px; font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; border: 1px solid rgba(200,16,46,0.2); background: rgba(200,16,46,0.06); color: var(--crimson); }
+        .cover-pill.amber { border-color: rgba(232,168,56,0.2); background: rgba(232,168,56,0.06); color: var(--amber); }
+        .cover-cta { margin-top: 3rem; animation: fadeUp 1s ease 1.5s forwards; opacity: 0; cursor: pointer; display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s; }
+        .cover-cta:hover { color: var(--crimson); }
+        .cover-cta i { animation: bounce 2s ease infinite; }
+        @keyframes bounce { 0%,100% { transform: translateX(0); } 50% { transform: translateX(6px); } }
+
+        /* CONTENT */
+        .badge { display: inline-block; padding: 5px 14px; border-radius: 2px; font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1rem; background: var(--crimson-dim); color: var(--crimson); border: 1px solid rgba(200,16,46,0.2); }
+        .badge.amber { background: var(--amber-dim); color: var(--amber); border-color: rgba(232,168,56,0.2); }
+        .stitle { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 800; margin-bottom: 0.6rem; line-height: 1.15; }
+        .ssub { font-size: 0.95rem; color: var(--muted); margin-bottom: 1.8rem; line-height: 1.6; border-left: 3px solid transparent; padding-left: 1rem; border-image: var(--grad) 1; }
+        .ssub strong { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; }
+
+        .card { background: rgba(26,26,30,0.75); backdrop-filter: blur(12px); border: 1px solid rgba(200,16,46,0.08); border-radius: 8px; padding: 1.4rem; position: relative; transition: all 0.35s; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--grad); opacity: 0; transition: opacity 0.3s; }
+        .card:hover { border-color: rgba(200,16,46,0.2); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.45); }
+        .card:hover::before { opacity: 1; }
+        .card.amber-top::before { background: linear-gradient(90deg, var(--amber), var(--crimson)); }
+        .card-title { font-family: 'Sora', sans-serif; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.8rem; }
+        .card-title.red { color: var(--crimson); }
+        .card-title.amber { color: var(--amber); }
+
+        .metric-card { text-align: center; }
+        .metric-card .metric-num { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 2.5vw, 2.2rem); font-weight: 900; margin: 0.4rem 0; }
+        .metric-card .metric-num.grad { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .metric-card .metric-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
+        .metric-card .metric-sub { font-size: 0.72rem; margin-top: 4px; font-weight: 600; }
+
+        /* FLIP CARDS */
+        .flip-container { perspective: 1000px; height: 220px; cursor: pointer; }
+        .flip-card { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(.4,0,.2,1); }
+        .flip-container:hover .flip-card, .flip-container.flipped .flip-card { transform: rotateY(180deg); }
+        .flip-front, .flip-back { position: absolute; inset: 0; backface-visibility: hidden; border-radius: 8px; padding: 1.4rem; display: flex; flex-direction: column; justify-content: center; }
+        .flip-front { background: rgba(26,26,30,0.8); border: 1px solid rgba(200,16,46,0.1); }
+        .flip-back { background: linear-gradient(135deg, rgba(200,16,46,0.12), rgba(232,168,56,0.08)); border: 1px solid rgba(200,16,46,0.2); transform: rotateY(180deg); }
+        .flip-hint { font-size: 0.65rem; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-top: auto; }
+
+        /* ACCORDION */
+        .accordion-item { border: 1px solid rgba(200,16,46,0.08); border-radius: 6px; margin-bottom: 8px; overflow: hidden; transition: all 0.3s; }
+        .accordion-item:hover { border-color: rgba(200,16,46,0.15); }
+        .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: rgba(26,26,30,0.6); transition: background 0.3s; font-weight: 600; font-size: 0.9rem; }
+        .accordion-header:hover { background: rgba(200,16,46,0.04); }
+        .accordion-header i { transition: transform 0.3s; color: var(--crimson); font-size: 0.8rem; }
+        .accordion-item.open .accordion-header i { transform: rotate(180deg); }
+        .accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s; padding: 0 1.2rem; background: rgba(14,14,16,0.4); }
+        .accordion-item.open .accordion-body { max-height: 500px; padding: 1rem 1.2rem; }
+
+        ul.cl { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; }
+        ul.cl li { position: relative; padding-left: 1.4rem; line-height: 1.6; color: #ccc5bb; font-size: 0.88rem; }
+        ul.cl li::before { content: '\25B8'; position: absolute; left: 0; color: var(--crimson); font-size: 0.8rem; top: 2px; }
+        ul.cl.amber li::before { color: var(--amber); }
+        ul.cl.risk li::before { content: '\26A0'; color: var(--danger); font-size: 0.7rem; }
+
+        .table-custom { width: 100%; border-collapse: collapse; margin-top: 0.8rem; }
+        .table-custom th, .table-custom td { padding: 0.8rem; text-align: left; border-bottom: 1px solid rgba(200,16,46,0.06); font-size: 0.88rem; }
+        .table-custom th { color: var(--crimson); text-transform: uppercase; font-size: 0.72rem; letter-spacing: 1.5px; font-weight: 700; }
+        .table-custom tr:hover td { background: rgba(200,16,46,0.04); }
+
+        .chart-box { background: rgba(26,26,30,0.7); padding: 1.2rem; border-radius: 8px; height: 380px; border: 1px solid rgba(200,16,46,0.08); }
+        .callout { border-left: 3px solid; border-image: var(--grad) 1; padding: 1.2rem 1.4rem; background: linear-gradient(135deg, rgba(200,16,46,0.05), rgba(232,168,56,0.03)); border-radius: 0 8px 8px 0; margin-top: 1.2rem; }
+        .callout p { font-size: 0.95rem; line-height: 1.7; }
+        .pill { display: inline-flex; align-items: center; gap: 5px; background: var(--crimson-dim); border: 1px solid rgba(200,16,46,0.15); border-radius: 16px; padding: 3px 12px; font-size: 0.72rem; font-weight: 700; color: var(--crimson); }
+        .pill.green { background: rgba(46,196,182,0.10); border-color: rgba(46,196,182,0.2); color: var(--success); }
+
+        .footer-brand { text-align: center; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid rgba(200,16,46,0.08); }
+        .footer-brand a { color: var(--crimson); text-decoration: none; font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 8px; transition: color 0.3s; }
+        .footer-brand a:hover { color: var(--text); }
+
+        @media (max-width: 1100px) { .grid-4 { grid-template-columns: repeat(2,1fr); } .slide { padding: 2rem; } }
+        @media (max-width: 768px) { .grid-3, .grid-2 { grid-template-columns: 1fr; } .slide { padding: 1.5rem 1.2rem; padding-bottom: 5rem; align-items: flex-start; } #nav-dots { display: none; } #arrow-prev { left: 1rem; bottom: 1.2rem; } #arrow-next { right: 1rem; bottom: 1.2rem; } .cover-title { font-size: 2.5rem; } .flip-container { height: 200px; } }
+    </style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+<div id="progress-bar"></div>
+<div id="nav-dots"></div>
+<button class="nav-arrow" id="arrow-prev" onclick="go(-1)"><i class="fas fa-chevron-left"></i></button>
+<button class="nav-arrow" id="arrow-next" onclick="go(1)"><i class="fas fa-chevron-right"></i></button>
+<div id="slide-counter"></div>
+
+<div id="deck">
+
+    <!-- 0: COVER -->
+    <div class="slide cover-slide active" data-label="Cover">
+        <div class="slide-inner">
+            <div class="cover-logo">
+                <div class="cover-wordmark">L<span class="dot">.</span>T<span class="dot">.</span> Elevator</div>
+                <div class="cover-divider"></div>
+                <div class="cover-tagline">BSE SME: 544518 &bull; EST. 2008 &bull; Kolkata</div>
+            </div>
+            <h1 class="cover-title">India's Only Listed<br><span class="red">Pure-Play Elevator Maker</span></h1>
+            <p class="cover-sub">Three engines — B2B Elevators, Automated Parking, D2C Home Elevators — one vertically integrated factory. Now expanding to Malaysia & Australia.</p>
+            <div class="cover-pills">
+                <div class="cover-pill">&#8377;340 Cr MCap</div>
+                <div class="cover-pill">&#8377;110+ Cr FY26</div>
+                <div class="cover-pill amber">~93% YoY Growth</div>
+                <div class="cover-pill amber">&#8377;300 Cr+ Order Book</div>
+            </div>
+            <div class="cover-cta" onclick="go(1)">Explore the Deck <i class="fas fa-arrow-right"></i></div>
+        </div>
+    </div>
+
+    <!-- 1: SNAPSHOT -->
+    <div class="slide" data-label="Snapshot">
+        <div class="slide-inner">
+            <div class="badge">01 &bull; Company Snapshot</div>
+            <h2 class="stitle">The Numbers That Matter</h2>
+            <div class="grid-4" style="margin-bottom:1.4rem;">
+                <div class="card metric-card"><div class="metric-label">Market Cap</div><div class="metric-num grad">&#8377;340 Cr</div><div class="metric-sub" style="color:var(--muted);">CMP &#8377;178</div></div>
+                <div class="card metric-card"><div class="metric-label">FY26 Topline</div><div class="metric-num">&#8377;110+ Cr</div><div class="pill green" style="margin:4px auto 0;"><i class="fas fa-arrow-up" style="font-size:0.6rem;"></i> ~93% YoY</div></div>
+                <div class="card metric-card"><div class="metric-label">Order Book</div><div class="metric-num" style="color:var(--amber);">&#8377;300+ Cr</div><div class="metric-sub" style="color:var(--muted);">Revenue Visibility</div></div>
+                <div class="card metric-card"><div class="metric-label">ROCE (FY25)</div><div class="metric-num">33%</div><div class="metric-sub" style="color:var(--success);">ROE 3Y Avg: 31%</div></div>
+            </div>
+            <div class="card">
+                <div class="card-title red">Executive Summary</div>
+                <p style="color:var(--muted);line-height:1.7;font-size:0.92rem;">Promoted by Arvind, Usha & Yash Gupta, L.T. Elevator leverages 17 years of engineering DNA. The company operates core B2B elevators, a booming B2G automated parking subsidiary (Park Smart) — which recently executed the <strong style="color:var(--amber);">&#8377;63 Cr largest multi-level car parking in the North East</strong>, inaugurated by the Chief Minister of Meghalaya — and is integrating Ricardo Elevators, a hyper-growth D2C home elevator brand. FY26 marks a breakout year with overseas expansion into <strong style="color:var(--amber);">Malaysia & Australia</strong>.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2: JOURNEY -->
+    <div class="slide" data-label="Journey">
+        <div class="slide-inner">
+            <div class="badge">02 &bull; Company Journey</div>
+            <h2 class="stitle">17 Years of Engineering DNA</h2>
+            <p class="ssub">Click each milestone to reveal details</p>
+            <div class="accordion-item open"><div class="accordion-header" onclick="toggleAccordion(this)"><span>2008 — Founded in Kolkata</span><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><p style="color:var(--muted);font-size:0.88rem;line-height:1.7;">Incorporated in Kolkata. Began elevator design, manufacturing, and installation from the ground up with a focus on engineering excellence.</p></div></div>
+            <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)"><span>2018–2020 — Scale & Certification</span><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><p style="color:var(--muted);font-size:0.88rem;line-height:1.7;">ISO 9001:2008 certified. Expanded to 20+ branch offices. Crossed 8,000+ AMC installations. Park Smart Solutions launched as a wholly-owned subsidiary for automated parking.</p></div></div>
+            <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)"><span>Sep 2025 — IPO at &#8377;78 (183x Oversubscribed)</span><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><p style="color:var(--muted);font-size:0.88rem;line-height:1.7;">Listed on BSE SME platform raising &#8377;39 Cr for capacity expansion and working capital. Listed at a 74.5% premium. Massive retail and institutional demand.</p></div></div>
+            <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)"><span>Nov 2025 — Blockbuster H1 FY26</span><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><p style="color:var(--muted);font-size:0.88rem;line-height:1.7;">Revenue +140% YoY to &#8377;47 Cr. PAT +597% YoY to &#8377;6.45 Cr. EBITDA margins expanded to 21.3%.</p></div></div>
+            <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)"><span style="color:var(--amber);">FY26 — Breakout Year</span><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><p style="color:var(--muted);font-size:0.88rem;line-height:1.7;">Ricardo merger term sheet signed. &#8377;63 Cr North East parking project executed & inaugurated by CM of Meghalaya. Expanded to Malaysia & Australia. Full-year topline crossed &#8377;110 Cr+.</p></div></div>
+        </div>
+    </div>
+
+    <!-- 3: VERTICALS (Flip Cards) -->
+    <div class="slide" data-label="Verticals">
+        <div class="slide-inner">
+            <div class="badge">03 &bull; Business Verticals</div>
+            <h2 class="stitle">Three Engines, One Factory</h2>
+            <p class="ssub">Hover or tap each card to <strong>reveal the details</strong></p>
+            <div class="grid-3">
+                <div class="flip-container" onclick="this.classList.toggle('flipped')"><div class="flip-card"><div class="flip-front"><div class="card-title red" style="font-size:1rem;">01. B2B Elevators</div><p style="color:var(--muted);font-size:0.85rem;">Core business — passenger, goods, hospital lifts.</p><div class="flip-hint">Tap to reveal &rarr;</div></div><div class="flip-back"><ul class="cl" style="font-size:0.82rem;"><li>800 units/yr capacity (62% utilization).</li><li>Strong East India base; now 50%+ orders from outside.</li><li>8,000+ AMC installations — recurring revenue.</li><li>Expanding to metros and Tier-2 cities.</li></ul></div></div></div>
+                <div class="flip-container" onclick="this.classList.toggle('flipped')"><div class="flip-card"><div class="flip-front"><div class="card-title red" style="font-size:1rem;">02. Park Smart (B2G)</div><p style="color:var(--muted);font-size:0.85rem;">Automated multi-level parking systems.</p><div class="flip-hint">Tap to reveal &rarr;</div></div><div class="flip-back"><ul class="cl" style="font-size:0.82rem;"><li>1,600 units/yr capacity (71% utilization).</li><li><strong style="color:var(--amber);">&#8377;63 Cr North East landmark</strong> — biggest in region.</li><li>Inaugurated by CM of Meghalaya in Shillong.</li><li>324.5 decimal land acquired for expansion.</li></ul></div></div></div>
+                <div class="flip-container" onclick="this.classList.toggle('flipped')"><div class="flip-card"><div class="flip-front" style="border-color:rgba(232,168,56,0.15);"><div class="card-title amber" style="font-size:1rem;">03. Ricardo (D2C Home)</div><p style="color:var(--muted);font-size:0.85rem;">Home elevators — bungalows, duplexes, villas.</p><div class="flip-hint">Tap to reveal &rarr;</div></div><div class="flip-back"><ul class="cl amber" style="font-size:0.82rem;"><li>&#8377;10–11L ASP. &#8377;6 Cr/month order inflows.</li><li>60 orders/month via 18 pan-India centers.</li><li>Already receiving inquiries & executing projects.</li><li>Full consolidation expected in FY27.</li></ul></div></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4: FINANCIALS -->
+    <div class="slide" data-label="Financials">
+        <div class="slide-inner">
+            <div class="badge">04 &bull; Financials</div>
+            <h2 class="stitle">Profitability Inflection</h2>
+            <div class="grid-2">
+                <div class="card"><div class="card-title red">H1 FY26 (Unaudited)</div><ul class="cl"><li><strong>Revenue:</strong> &#8377;46.99 Cr <span class="pill green" style="font-size:0.68rem;padding:2px 8px;">+140%</span></li><li><strong>EBITDA:</strong> &#8377;10.01 Cr (21.3%) <span class="pill green" style="font-size:0.68rem;padding:2px 8px;">+289%</span></li><li><strong>PAT:</strong> &#8377;6.45 Cr (13.6%) <span class="pill green" style="font-size:0.68rem;padding:2px 8px;">+597%</span></li><li><strong>FY26 Full Year:</strong> <strong style="color:var(--crimson);">&#8377;110+ Cr (~93% YoY)</strong></li></ul></div>
+                <div class="card"><div class="card-title red">Growth Trajectory</div><table class="table-custom"><thead><tr><th>Metric</th><th>3Y CAGR</th><th>FY25</th></tr></thead><tbody><tr><td>Revenue</td><td>31%</td><td>&#8377;57 Cr</td></tr><tr><td>PAT</td><td>184%</td><td>Accelerating</td></tr><tr><td>ROCE</td><td>—</td><td>33%</td></tr></tbody></table><p style="font-size:0.8rem;color:var(--muted);margin-top:12px;">H1 = ~40% of annual revenue. H2 historically stronger (~60%).</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5: RICARDO -->
+    <div class="slide" data-label="Ricardo">
+        <div class="slide-inner">
+            <div class="badge amber">05 &bull; Ricardo Deal</div>
+            <h2 class="stitle">Manufacturing Meets D2C</h2>
+            <p class="ssub">Integration on track. <strong>Full consolidation expected in FY27.</strong></p>
+            <div class="grid-2">
+                <div class="card amber-top"><div class="card-title amber">The D2C Engine</div><p style="font-size:0.85rem;color:var(--muted);margin-bottom:8px;">100% digital acquisition via Meta/Insta. &#8377;10-12L/month spend generates 2,500+ inquiries and ~60 orders.</p><ul class="cl amber" style="font-size:0.84rem;"><li>&#8377;6 Cr/month inflows — contributing meaningfully.</li><li>Already receiving inquiries & executing projects.</li><li>3–6 month delivery cycle.</li></ul></div>
+                <div class="card"><div class="card-title red">Why It Works</div><ul class="cl" style="font-size:0.84rem;"><li><strong>Cash Flow:</strong> B2C pays 95-100% upfront (vs slow B2G).</li><li><strong>Geography:</strong> East (LT) + 18 pan-India centers (Ricardo).</li><li><strong>Terms:</strong> 2-3% dilution; 3-4 year lock-in.</li><li><strong>Synergies:</strong> In-house manufacturing fixes quality & margins.</li></ul></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6: UNIT ECONOMICS -->
+    <div class="slide" data-label="Economics">
+        <div class="slide-inner">
+            <div class="badge">06 &bull; Unit Economics</div>
+            <h2 class="stitle">The B2C Margin Premium</h2>
+            <div class="grid-3">
+                <div class="card"><div class="card-title red">ASP & COGS</div><p style="font-size:0.85rem;color:var(--muted);line-height:1.65;">ASP &#8377;10-11L. COGS ~&#8377;6L (55-60%). In-house manufacturing widens the spread.</p></div>
+                <div class="card amber-top"><div class="card-title amber">Opex & Marketing</div><p style="font-size:0.85rem;color:var(--muted);line-height:1.65;">Digital marketing: 2-5% of ASP. Branch opex ~10%. Extreme operating leverage at scale.</p></div>
+                <div class="card"><div class="card-title red">Target Margins</div><p style="font-size:0.85rem;color:var(--muted);line-height:1.65;">B2G: 13-15% net. B2C Home: 20%+ target. Combined: 18-22% net margin.</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7: GROWTH MAP -->
+    <div class="slide" data-label="Growth">
+        <div class="slide-inner">
+            <div class="badge">07 &bull; Growth Roadmap</div>
+            <h2 class="stitle">Executing &#8377;300 Cr+ Order Book</h2>
+            <p class="ssub"><strong>Domestic depth + International reach + New verticals</strong></p>
+            <div class="grid-3">
+                <div class="card"><div class="card-title red">Factory Capex</div><p style="font-size:0.84rem;color:var(--muted);line-height:1.65;">IPO-funded Howrah land. Q4 FY27 Go-Live targets 2.5x capacity. Preferential allotment as M&A war chest.</p></div>
+                <div class="card amber-top"><div class="card-title amber">International</div><p style="font-size:0.84rem;color:var(--muted);line-height:1.65;">Expanded to <strong style="color:var(--amber);">Malaysia & Australia</strong> in FY26. Diversifies revenue and positions LT globally.</p></div>
+                <div class="card"><div class="card-title red">Park Smart</div><p style="font-size:0.84rem;color:var(--muted);line-height:1.65;">Near 100% utilization. &#8377;63 Cr NE landmark delivered. 324.5 decimal land acquired. Scaling beyond East India.</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 8: VALUATION -->
+    <div class="slide" data-label="Valuation">
+        <div class="slide-inner">
+            <div class="badge">08 &bull; Valuation</div>
+            <h2 class="stitle">Growth Not Yet Priced In</h2>
+            <div class="grid-2">
+                <div class="chart-box"><canvas id="priceChart"></canvas></div>
+                <div class="card"><div class="card-title red">De-rating via Earnings</div><ul class="cl" style="font-size:0.88rem;"><li><strong>Current:</strong> &#8377;340 Cr MCap &bull; CMP &#8377;178 &bull; TTM P/E ~24x.</li><li><strong>FY26:</strong> &#8377;110+ Cr (~93% YoY). P/E compresses naturally.</li><li><strong>FY27E:</strong> &#8377;170-180 Cr Core + &#8377;60-70 Cr Ricardo at 13-15% net margins...</li></ul><div class="callout"><p>At an implied <strong style="color:var(--crimson);">~10x FY27E Forward P/E</strong>, current price assigns modest premium to successful execution of &#8377;300 Cr+ order book and international expansion.</p></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 9: RISKS -->
+    <div class="slide" data-label="Risks">
+        <div class="slide-inner">
+            <div class="badge" style="color:var(--danger);border-color:rgba(230,57,70,0.3);">09 &bull; Key Risks</div>
+            <h2 class="stitle">What Could Break the Thesis</h2>
+            <div class="grid-2">
+                <div class="card" style="border-color:rgba(230,57,70,0.15);"><div class="card-title" style="color:var(--danger);">1. Negative OCF</div><p style="font-size:0.84rem;color:var(--muted);line-height:1.6;">OCF was -&#8377;3 Cr in FY24/FY25. Must improve as B2C advance-payment mix scales up.</p></div>
+                <div class="card" style="border-color:rgba(230,57,70,0.15);"><div class="card-title" style="color:var(--danger);">2. Working Capital</div><p style="font-size:0.84rem;color:var(--muted);line-height:1.6;">Inventory days 478. Cash cycle 515 days. Quarterly WC monitoring required.</p></div>
+                <div class="card" style="border-color:rgba(230,57,70,0.15);"><div class="card-title" style="color:var(--danger);">3. Integration Risk</div><p style="font-size:0.84rem;color:var(--muted);line-height:1.6;">Migrating Ricardo's outsourced production in-house involves quality and process risks.</p></div>
+                <div class="card" style="border-color:rgba(230,57,70,0.15);"><div class="card-title" style="color:var(--danger);">4. Dilution Risk</div><p style="font-size:0.84rem;color:var(--muted);line-height:1.6;">Aggressive M&A relies on planned preferential raise. Pricing and promoter participation are key.</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 10: WATCHLIST -->
+    <div class="slide" data-label="Watchlist">
+        <div class="slide-inner">
+            <div class="badge">10 &bull; What to Track</div>
+            <h2 class="stitle">Quarterly Checklist</h2>
+            <div class="card"><ul class="cl"><li><strong style="color:var(--amber);">OCF Trajectory:</strong> Ricardo advance payments should pull OCF positive.</li><li><strong style="color:var(--danger);">Working Capital (Critical):</strong> Must compress from 478 inventory days.</li><li><strong style="color:var(--amber);">Home Elevator Traction:</strong> Inquiry-to-order conversion post-Ricardo linkup.</li><li><strong style="color:var(--amber);">International Revenue:</strong> Malaysia & Australia pipeline.</li><li><strong style="color:var(--amber);">Factory Timeline:</strong> Q4 FY27 Go-Live progress.</li><li><strong style="color:var(--danger);">Preferential Allotment (Critical):</strong> Promoters subscribing = confidence signal.</li><li><strong style="color:var(--amber);">MNC Entry:</strong> Otis/Kone in D2C home space?</li></ul></div>
+        </div>
+    </div>
+
+    <!-- 11: THESIS -->
+    <div class="slide" data-label="Thesis">
+        <div class="slide-inner">
+            <div class="badge" style="background:transparent;border-color:var(--muted);color:var(--muted);">11 &bull; Thesis</div>
+            <h2 class="stitle">Opportunity vs. Risk</h2>
+            <div class="grid-2">
+                <div class="card" style="border-top:3px solid var(--success);"><div class="card-title" style="color:var(--success);">Strengths & Upside</div><ul class="cl"><li>Only listed pure-play elevator co.</li><li>FY26: &#8377;110+ Cr (~93% YoY growth).</li><li>Triple engine: Elevators + ParkSmart + Ricardo.</li><li>&#8377;63 Cr NE landmark. Malaysia & Australia entry.</li><li>&#8377;300 Cr+ order book. FY27E P/E ~10x.</li></ul></div>
+                <div class="card" style="border-top:3px solid var(--danger);"><div class="card-title" style="color:var(--danger);">Risks & Watch-points</div><ul class="cl risk"><li>Historical OCF negative (-&#8377;3 Cr).</li><li>Inventory days 478. Elevated WC.</li><li>M&A relies on preferential raise.</li><li>Ricardo integration unproven.</li><li>High promoter remuneration ratio.</li></ul></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 12: DISCLAIMER -->
+    <div class="slide" data-label="Disclaimer">
+        <div class="slide-inner">
+            <h2 class="stitle">Disclaimer</h2>
+            <p class="ssub">L.T. Elevator Ltd &bull; BSE SME: 544518 &bull; April 2026</p>
+            <div class="card" style="border-color:rgba(230,57,70,0.12);"><p style="font-size:0.84rem;line-height:1.8;color:var(--muted);"><strong style="color:var(--text);">IMPORTANT NOTICE:</strong><br><br>This presentation is prepared solely for educational and informational purposes. It does not constitute personalised investment advice or a recommendation to buy, sell, or hold any security. SME stocks carry elevated risk due to limited trading liquidity, smaller scale, and evolving governance standards. All financial data is sourced from publicly available filings. Readers must independently verify all information and consult a SEBI-registered advisor. The author may or may not hold positions in the securities discussed.</p></div>
+            <div class="footer-brand"><p style="color:var(--muted);font-size:0.85rem;">Research & Analysis: <strong style="color:var(--crimson);">SME Gems</strong></p><p style="margin-top:12px;"><a href="https://x.com/sachprat07" target="_blank"><svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> @sachprat07</a></p></div>
+        </div>
+    </div>
+</div>
+
+<script>
+/* PARTICLES */
+const canvas=document.getElementById('bg-canvas'),ctx=canvas.getContext('2d');let W,H,pts=[];
+const mouse={x:null,y:null,r:160};
+function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight;}
+addEventListener('resize',resize);resize();
+addEventListener('mousemove',e=>{mouse.x=e.x;mouse.y=e.y;});
+addEventListener('mouseout',()=>{mouse.x=mouse.y=null;});
+addEventListener('touchmove',e=>{if(e.touches[0]){mouse.x=e.touches[0].clientX;mouse.y=e.touches[0].clientY;}},{passive:true});
+addEventListener('touchend',()=>{mouse.x=mouse.y=null;});
+
+class P{
+    constructor(){this.reset();this.y=Math.random()*H;}
+    reset(){this.x=Math.random()*W;this.y=H+30;this.bx=this.x;this.s=Math.random()*18+8;this.vy=-(Math.random()*0.5+0.15);this.o=Math.random()*0.07+0.015;this.t=Math.floor(Math.random()*4);const c=['200,16,46','232,168,56','240,234,226','46,196,182'];this.c=c[Math.floor(Math.random()*c.length)];this.rot=Math.random()*Math.PI*2;this.rv=(Math.random()-0.5)*0.005;}
+    draw(){ctx.save();ctx.translate(this.x,this.y);ctx.rotate(this.rot);ctx.strokeStyle=`rgba(${this.c},${this.o})`;ctx.lineWidth=1.2;ctx.beginPath();const s=this.s;if(this.t===0){ctx.strokeRect(-s/2,-s/2,s,s*1.2);ctx.moveTo(0,-s/2);ctx.lineTo(0,-s*1.5);}else if(this.t===1){ctx.moveTo(-s/2,s/4);ctx.lineTo(0,-s/4);ctx.lineTo(s/2,s/4);}else if(this.t===2){ctx.arc(0,0,s/2.5,0,Math.PI*2);}else{ctx.moveTo(-s/2,0);ctx.lineTo(0,-s/2);ctx.lineTo(s/2,0);ctx.lineTo(0,s/2);ctx.closePath();}ctx.stroke();ctx.restore();}
+    update(){this.y+=this.vy;this.rot+=this.rv;if(this.y<-40)this.reset();if(mouse.x!=null){let dx=mouse.x-this.x,dy=mouse.y-this.y,d=Math.sqrt(dx*dx+dy*dy);if(d<mouse.r){let f=(mouse.r-d)/mouse.r;this.x-=(dx/d)*f*4;this.y-=(dy/d)*f*4;}else{this.x+=(this.bx-this.x)*0.02;}}this.draw();}
+}
+function initP(){pts=[];let n=Math.floor(W*H/22000);for(let i=0;i<n;i++)pts.push(new P());}
+function animP(){ctx.clearRect(0,0,W,H);pts.forEach(p=>p.update());requestAnimationFrame(animP);}
+initP();animP();
+
+/* NAVIGATION */
+const slides=document.querySelectorAll('.slide'),total=slides.length;let cur=0;
+const dotsC=document.getElementById('nav-dots');
+slides.forEach((s,i)=>{const d=document.createElement('div');d.className='nav-dot'+(i===0?' active':'');d.onclick=()=>goTo(i);const l=document.createElement('span');l.className='dot-label';l.textContent=s.dataset.label||`Slide ${i+1}`;d.appendChild(l);dotsC.appendChild(d);});
+
+function goTo(n){
+    if(n<0||n>=total||n===cur)return;
+    const prev=cur;
+    slides[prev].classList.remove('active');
+    slides[prev].classList.add('exit-left');
+    cur=n;
+    slides[cur].classList.add('active');
+    setTimeout(()=>slides[prev].classList.remove('exit-left'),600);
+    updateUI();
+    if(cur===8)setTimeout(renderChart,400);
+}
+function go(dir){goTo(cur+dir);}
+function updateUI(){
+    document.querySelectorAll('.nav-dot').forEach((d,i)=>d.classList.toggle('active',i===cur));
+    document.getElementById('progress-bar').style.width=((cur/(total-1))*100)+'%';
+    document.getElementById('arrow-prev').classList.toggle('disabled',cur===0);
+    document.getElementById('arrow-next').classList.toggle('disabled',cur===total-1);
+    document.getElementById('slide-counter').innerHTML=`<span>${String(cur+1).padStart(2,'0')}</span> / ${String(total).padStart(2,'0')}`;
+}
+updateUI();
+
+addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown')go(1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(-1);});
+let tx=0;
+document.getElementById('deck').addEventListener('touchstart',e=>{tx=e.touches[0].clientX;},{passive:true});
+document.getElementById('deck').addEventListener('touchend',e=>{let dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50){if(dx<0)go(1);else go(-1);}},{passive:true});
+let wl=false;
+document.getElementById('deck').addEventListener('wheel',e=>{if(wl)return;wl=true;if(e.deltaY>30)go(1);else if(e.deltaY<-30)go(-1);setTimeout(()=>wl=false,700);},{passive:true});
+
+/* ACCORDION */
+function toggleAccordion(h){h.parentElement.classList.toggle('open');}
+
+/* CHART */
+let ci=null;
+function renderChart(){
+    const el=document.getElementById('priceChart');if(!el)return;const c=el.getContext('2d');if(ci)ci.destroy();
+    const g=c.createLinearGradient(0,0,0,350);g.addColorStop(0,'rgba(200,16,46,0.18)');g.addColorStop(1,'rgba(200,16,46,0)');
+    ci=new Chart(c,{type:'line',data:{labels:['19 Sep','06 Oct','20 Oct','04 Nov','19 Nov','03 Dec','17 Dec','01 Jan','16 Jan','01 Feb','13 Feb','27 Feb','16 Mar','28 Mar','11 Apr'],datasets:[{label:'Price (₹)',data:[142.9,137.1,133.15,147.7,179.55,183.45,180.75,221,219.7,186.5,179.3,188.5,171.25,175,178],borderColor:'#c8102e',backgroundColor:g,borderWidth:2.5,pointBackgroundColor:'#e8a838',pointBorderColor:'#0e0e10',pointBorderWidth:2,pointRadius:3.5,pointHoverRadius:7,pointHoverBackgroundColor:'#c8102e',fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:1200,easing:'easeOutQuart'},plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a1a1e',titleColor:'#8a8078',bodyColor:'#c8102e',titleFont:{family:'Sora',size:11},bodyFont:{family:'Sora',size:13,weight:'bold'},borderColor:'rgba(200,16,46,0.2)',borderWidth:1,padding:10,callbacks:{label:c=>'₹ '+c.parsed.y}}},scales:{y:{grid:{color:'rgba(200,16,46,0.04)'},ticks:{color:'#8a8078',font:{family:'Sora'}}},x:{grid:{display:false},ticks:{color:'#8a8078',font:{family:'Sora',size:10},maxRotation:45}}}}});
+}
+</script>
+</body>
+</html>
