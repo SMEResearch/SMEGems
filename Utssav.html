@@ -20,6 +20,7 @@
             --text-muted: #a1a1aa;
             --danger: #ef4444;
             --success: #10b981;
+            --warning: #fbbf24; /* Amber/Yellow Caution Color */
             --border-color: rgba(212, 175, 55, 0.15); 
         }
 
@@ -157,6 +158,7 @@
         .card.gold-border::before { background: var(--accent-gold); opacity: 1;}
         .card.danger-border::before { background: var(--danger); opacity: 1;}
         .card.success-border::before { background: var(--success); opacity: 1;}
+        .card.warning-border::before { background: var(--warning); opacity: 1;}
 
         .card:hover i.fa-gem, .card:hover i.fa-ring, .card:hover i.fa-chart-line {
             transform: scale(1.1); color: var(--accent-gold); transition: transform 0.3s;
@@ -453,9 +455,9 @@
             <h1 class="title stagger-1">P&L Summary</h1>
             <p class="subtitle stagger-1">FY20–FY25 Audited · H1 FY26 Unaudited · FY26 Scale-Up</p>
 
-            <div class="card danger-border stagger-2 mb-1" style="background: rgba(239, 68, 68, 0.05); padding: 1.5rem;">
-                <h3 class="serif-text" style="color: var(--danger); font-size: 1.4rem; margin-bottom: 0.5rem;"><i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i> CRITICAL CONTEXT: The Volume Disconnect</h3>
-                <p style="color: #d4d4d8; font-size: 1rem; line-height: 1.6; margin-bottom: 0;">While FY26 revenue estimate hits a massive <strong>~₹1,156 Cr</strong> (+79% YoY), physical volume growth settled at only <strong>~11%</strong> — significantly below management's March guidance of 30-35%. The topline surge is predominantly driven by gold price inflation, meaning physical capacity utilization (~60%) and true operational leverage are lagging the revenue headline.</p>
+            <div class="card warning-border stagger-2 mb-1" style="background: rgba(251, 191, 36, 0.05); padding: 1.5rem;">
+                <h3 class="serif-text" style="color: var(--warning); font-size: 1.4rem; margin-bottom: 0.5rem;"><i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i> CAUTIONARY CONTEXT: The Volume Disconnect</h3>
+                <p style="color: #d4d4d8; font-size: 1rem; line-height: 1.6; margin-bottom: 0;">While FY26 revenue estimate hits a massive <strong>~₹1,156 Cr</strong> (+79% YoY), physical volume growth settled at only <strong>~11%</strong> — significantly below the ~30-35% target, which was re-iterated during the March'26 investor meet. The topline surge is predominantly driven by gold price inflation, which on the contrary was a contributory for reduction in volumes. Physical capacity utilization and true operational leverage appears to be at mismatch with revenue headline at the moment. Further stability in gold prices should help boost volume growth in FY27.</p>
             </div>
 
             <div class="card gold-border stagger-3">
