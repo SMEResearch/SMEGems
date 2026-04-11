@@ -28,7 +28,24 @@
             --grad: linear-gradient(135deg, var(--crimson), var(--amber));
         }
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html, body { width: 100%; height: 100%; overflow: hidden; background: var(--ink); color: var(--text); font-family: 'Sora', sans-serif; }
+        
+        /* Added a subtle blueprint grid to the background */
+        html, body { 
+            width: 100%; height: 100%; overflow: hidden; 
+            background-color: var(--ink); 
+            background-image: 
+                linear-gradient(rgba(240, 235, 228, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(240, 235, 228, 0.02) 1px, transparent 1px);
+            background-size: 30px 30px;
+            background-position: center center;
+            color: var(--text); font-family: 'Sora', sans-serif; 
+        }
+
+        /* Ambient Glowing Orbs */
+        .ambient-glow { position: fixed; border-radius: 50%; filter: blur(120px); z-index: 0; pointer-events: none; opacity: 0.5; }
+        .glow-1 { top: -15%; left: -10%; width: 50vw; height: 50vw; background: var(--crimson-glow); }
+        .glow-2 { bottom: -10%; right: -5%; width: 45vw; height: 45vw; background: var(--amber-dim); }
+        .glow-3 { top: 40%; left: 40%; width: 30vw; height: 30vw; background: rgba(200, 16, 46, 0.08); }
 
         #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 
@@ -158,6 +175,10 @@
     </style>
 </head>
 <body>
+<div class="ambient-glow glow-1"></div>
+<div class="ambient-glow glow-2"></div>
+<div class="ambient-glow glow-3"></div>
+
 <canvas id="bg-canvas"></canvas>
 <div id="progress-bar"></div>
 <div id="nav-dots"></div>
@@ -167,13 +188,12 @@
 
 <div id="deck">
 
-    <!-- 0: COVER -->
     <div class="slide cover-slide active" data-label="Cover">
         <div class="slide-inner">
             <div class="cover-logo">
                 <div class="cover-wordmark">L<span class="dot">.</span>T<span class="dot">.</span> Elevator</div>
                 <div class="cover-divider"></div>
-                <div class="cover-tagline">BSE SME: 544518 &bull; EST. 2008 &bull; Kolkata</div>
+                <div class="cover-tagline">EST. 2008 &bull; Kolkata</div>
             </div>
             <h1 class="cover-title">India's Only Listed<br><span class="red">Pure-Play Elevator Maker</span></h1>
             <p class="cover-sub">Three engines — B2B Elevators, Automated Parking, D2C Home Elevators — one vertically integrated factory. Now expanding to Malaysia & Australia.</p>
@@ -187,7 +207,6 @@
         </div>
     </div>
 
-    <!-- 1: SNAPSHOT -->
     <div class="slide" data-label="Snapshot">
         <div class="slide-inner">
             <div class="badge">01 &bull; Company Snapshot</div>
@@ -205,7 +224,6 @@
         </div>
     </div>
 
-    <!-- 2: JOURNEY -->
     <div class="slide" data-label="Journey">
         <div class="slide-inner">
             <div class="badge">02 &bull; Company Journey</div>
@@ -219,7 +237,6 @@
         </div>
     </div>
 
-    <!-- 3: VERTICALS (Flip Cards) -->
     <div class="slide" data-label="Verticals">
         <div class="slide-inner">
             <div class="badge">03 &bull; Business Verticals</div>
@@ -233,7 +250,6 @@
         </div>
     </div>
 
-    <!-- 4: FINANCIALS -->
     <div class="slide" data-label="Financials">
         <div class="slide-inner">
             <div class="badge">04 &bull; Financials</div>
@@ -245,7 +261,6 @@
         </div>
     </div>
 
-    <!-- 5: RICARDO -->
     <div class="slide" data-label="Ricardo">
         <div class="slide-inner">
             <div class="badge amber">05 &bull; Ricardo Deal</div>
@@ -258,7 +273,6 @@
         </div>
     </div>
 
-    <!-- 6: UNIT ECONOMICS -->
     <div class="slide" data-label="Economics">
         <div class="slide-inner">
             <div class="badge">06 &bull; Unit Economics</div>
@@ -271,7 +285,6 @@
         </div>
     </div>
 
-    <!-- 7: GROWTH MAP -->
     <div class="slide" data-label="Growth">
         <div class="slide-inner">
             <div class="badge">07 &bull; Growth Roadmap</div>
@@ -285,7 +298,6 @@
         </div>
     </div>
 
-    <!-- 8: VALUATION -->
     <div class="slide" data-label="Valuation">
         <div class="slide-inner">
             <div class="badge">08 &bull; Valuation</div>
@@ -297,7 +309,6 @@
         </div>
     </div>
 
-    <!-- 9: RISKS -->
     <div class="slide" data-label="Risks">
         <div class="slide-inner">
             <div class="badge" style="color:var(--danger);border-color:rgba(230,57,70,0.3);">09 &bull; Key Risks</div>
@@ -311,7 +322,6 @@
         </div>
     </div>
 
-    <!-- 10: WATCHLIST -->
     <div class="slide" data-label="Watchlist">
         <div class="slide-inner">
             <div class="badge">10 &bull; What to Track</div>
@@ -320,7 +330,6 @@
         </div>
     </div>
 
-    <!-- 11: THESIS -->
     <div class="slide" data-label="Thesis">
         <div class="slide-inner">
             <div class="badge" style="background:transparent;border-color:var(--muted);color:var(--muted);">11 &bull; Thesis</div>
@@ -332,7 +341,6 @@
         </div>
     </div>
 
-    <!-- 12: DISCLAIMER -->
     <div class="slide" data-label="Disclaimer">
         <div class="slide-inner">
             <h2 class="stitle">Disclaimer</h2>
@@ -344,7 +352,7 @@
 </div>
 
 <script>
-/* PARTICLES */
+/* PARTICLES RE-THEMED */
 const canvas=document.getElementById('bg-canvas'),ctx=canvas.getContext('2d');let W,H,pts=[];
 const mouse={x:null,y:null,r:160};
 function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight;}
@@ -356,11 +364,57 @@ addEventListener('touchend',()=>{mouse.x=mouse.y=null;});
 
 class P{
     constructor(){this.reset();this.y=Math.random()*H;}
-    reset(){this.x=Math.random()*W;this.y=H+30;this.bx=this.x;this.s=Math.random()*18+8;this.vy=-(Math.random()*0.5+0.15);this.o=Math.random()*0.07+0.015;this.t=Math.floor(Math.random()*4);const c=['200,16,46','232,168,56','240,234,226','46,196,182'];this.c=c[Math.floor(Math.random()*c.length)];this.rot=Math.random()*Math.PI*2;this.rv=(Math.random()-0.5)*0.005;}
-    draw(){ctx.save();ctx.translate(this.x,this.y);ctx.rotate(this.rot);ctx.strokeStyle=`rgba(${this.c},${this.o})`;ctx.lineWidth=1.2;ctx.beginPath();const s=this.s;if(this.t===0){ctx.strokeRect(-s/2,-s/2,s,s*1.2);ctx.moveTo(0,-s/2);ctx.lineTo(0,-s*1.5);}else if(this.t===1){ctx.moveTo(-s/2,s/4);ctx.lineTo(0,-s/4);ctx.lineTo(s/2,s/4);}else if(this.t===2){ctx.arc(0,0,s/2.5,0,Math.PI*2);}else{ctx.moveTo(-s/2,0);ctx.lineTo(0,-s/2);ctx.lineTo(s/2,0);ctx.lineTo(0,s/2);ctx.closePath();}ctx.stroke();ctx.restore();}
-    update(){this.y+=this.vy;this.rot+=this.rv;if(this.y<-40)this.reset();if(mouse.x!=null){let dx=mouse.x-this.x,dy=mouse.y-this.y,d=Math.sqrt(dx*dx+dy*dy);if(d<mouse.r){let f=(mouse.r-d)/mouse.r;this.x-=(dx/d)*f*4;this.y-=(dy/d)*f*4;}else{this.x+=(this.bx-this.x)*0.02;}}this.draw();}
+    reset(){this.x=Math.random()*W;this.y=H+60;this.bx=this.x;this.s=Math.random()*18+12;this.vy=-(Math.random()*0.4+0.1);this.o=Math.random()*0.05+0.02;this.t=Math.floor(Math.random()*4);const c=['200,16,46','232,168,56','240,234,226','46,196,182'];this.c=c[Math.floor(Math.random()*c.length)];}
+    
+    draw(){
+        ctx.save();
+        ctx.translate(this.x,this.y);
+        ctx.strokeStyle=`rgba(${this.c},${this.o * 1.5})`; 
+        ctx.lineWidth=1;
+        ctx.beginPath();
+        const s=this.s;
+
+        // Themed elements: Elevators, Guide Rails, Upward Trends
+        if(this.t===0){
+            // Elevator car with hoist cable
+            ctx.strokeRect(-s/2,-s,s,s*1.2);
+            ctx.moveTo(0,-s);ctx.lineTo(0,-s*3);
+        }else if(this.t===1){
+            // Ascending arrow
+            ctx.moveTo(-s/2, s/2); ctx.lineTo(0, -s/2); ctx.lineTo(s/2, s/2);
+        }else if(this.t===2){
+            // Geometric nodes
+            ctx.strokeRect(-s/4,-s/4,s/2,s/2);
+            ctx.moveTo(-s/4,0); ctx.lineTo(-s,0);
+        }else{
+            // Vertical guide rails
+            ctx.moveTo(-s/2, -s*2); ctx.lineTo(-s/2, s*2);
+            ctx.moveTo(s/2, -s*2); ctx.lineTo(s/2, s*2);
+        }
+        
+        ctx.stroke();
+        ctx.restore();
+    }
+    
+    update(){
+        this.y+=this.vy;
+        if(this.y<-80)this.reset();
+        
+        if(mouse.x!=null){
+            let dx=mouse.x-this.x,dy=mouse.y-this.y,d=Math.sqrt(dx*dx+dy*dy);
+            if(d<mouse.r){
+                let f=(mouse.r-d)/mouse.r;
+                this.x-=(dx/d)*f*3;
+                this.y-=(dy/d)*f*3;
+            }else{
+                this.x+=(this.bx-this.x)*0.03;
+            }
+        }
+        this.draw();
+    }
 }
-function initP(){pts=[];let n=Math.floor(W*H/22000);for(let i=0;i<n;i++)pts.push(new P());}
+
+function initP(){pts=[];let n=Math.floor(W*H/25000);for(let i=0;i<n;i++)pts.push(new P());}
 function animP(){ctx.clearRect(0,0,W,H);pts.forEach(p=>p.update());requestAnimationFrame(animP);}
 initP();animP();
 
