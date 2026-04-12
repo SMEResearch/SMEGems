@@ -754,7 +754,7 @@
     /* Mobile styling: Stack controls and force grid layout */
     .controls-bar { flex-direction: column; align-items: stretch; gap: 12px; }
     .search-wrap input { width: 100%; }
-    .view-toggles { display: none; } /* Hide the toggle on mobile */
+    .view-toggles { display: flex; align-self: flex-start; } /* Restored the "three lines" toggle for mobile */
 
     /* If user was in list view and resizes to mobile, force it to stack like a normal card */
     .card-grid.list-view .card { flex-direction: column; }
@@ -788,7 +788,7 @@
   </h1>
 
   <p class="hero-sub">
-    Deep-dive insights on lesser-known companies with mainboard-quality fundamentals — strong margins, growing order books, and credible promoters.
+    Deep-dive insights on lesser-known companies with mainboard-quality fundamentals — strong margins, growing order books, and credible promoters.<br><br><span style="color: var(--white); font-weight: 400;"> Use either the card (⊞) or the list view (☰). Select a tag to filter. Click on Read Insight to access the full analysis.</span>
   </p>
 
   <div class="hero-pills">
