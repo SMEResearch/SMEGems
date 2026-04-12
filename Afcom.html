@@ -360,6 +360,7 @@ table tr:hover td { background:rgba(212,168,67,0.05); }
   </p>
     </div>
   </div>
+ </div>
 </div>
 
 <!-- SLIDE 4: IPO & CAPITAL RAISES -->
@@ -423,8 +424,10 @@ table tr:hover td { background:rgba(212,168,67,0.05); }
   <div class="slide-number">05 / 14 — Price History</div>
   <h1>Stock Price <span class="accent">Journey</span></h1>
   <div class="subtitle">From ₹108 IPO to ₹1100+ peak — a move of more than 10x in 18 months. Currently consolidating around ₹750.</div>
- <div class="scroll-content" style="display:flex;flex-direction:column;">
-    <canvas id="priceChart" style="flex:1;max-height:55vh;"></canvas>
+<div class="scroll-content" style="display:flex;flex-direction:column;">
+   <div style="position: relative; flex: 1; max-height: 55vh; min-height: 300px;">
+       <canvas id="priceChart"></canvas>
+   </div>
     <div class="grid-4" style="margin-top:16px;">
       <div class="card" style="padding:12px;text-align:center;">
         <div style="font-family:'Space Mono';font-size:18px;color:var(--gold);">₹108</div>
