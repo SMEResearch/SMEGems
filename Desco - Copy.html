@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Desco Infratech — Investment Thesis | @sachprat07</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--n:#0a1628;--d:#0f2042;--a:#00d4aa;--o:#ff6b35;--g:#ffd700;--w:#f0f4f8;--m:#8899aa;--gl:rgba(255,255,255,0.04);--b:rgba(0,212,170,0.15);--r:#ff4757;--gr:#2ed573}
+body{font-family:'DM Sans',system-ui,sans-serif;background:linear-gradient(135deg,var(--n),var(--d),#0a1a2e);color:var(--w);min-height:100vh;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+/* Animated BG */
+.bg{position:fixed;inset:0;pointer-events:none;z-index:0}
+.bg-grid{position:absolute;inset:0;opacity:.025;background-image:linear-gradient(var(--a) 1px,transparent 1px),linear-gradient(90deg,var(--a) 1px,transparent 1px);background-size:60px 60px}
+.bg-orb{position:absolute;border-radius:50%;filter:blur(80px);animation:orbFloat 20s ease-in-out infinite}
+.bg-orb.o1{width:300px;height:300px;background:rgba(0,212,170,.04);top:10%;left:10%;animation-delay:0s}
+.bg-orb.o2{width:250px;height:250px;background:rgba(255,215,0,.03);top:60%;right:5%;animation-delay:-7s}
+.bg-orb.o3{width:200px;height:200px;background:rgba(255,107,53,.03);bottom:10%;left:30%;animation-delay:-14s}
+@keyframes orbFloat{0%,100%{transform:translate(0,0)}25%{transform:translate(30px,-20px)}50%{transform:translate(-20px,30px)}75%{transform:translate(20px,10px)}}
+.particles{position:absolute;inset:0;overflow:hidden}
+.particle{position:absolute;width:2px;height:2px;background:var(--a);border-radius:50%;opacity:.3;animation:rise linear infinite}
+@keyframes rise{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:.3}90%{opacity:.3}100%{transform:translateY(-10vh) scale(1);opacity:0}}
+/* Pipe flow at bottom */
+.pipe{position:fixed;bottom:0;left:0;right:0;height:3px;z-index:50;overflow:hidden;opacity:.4}
+.pipe-g{width:80px;height:3px;background:linear-gradient(90deg,transparent,var(--a),transparent);border-radius:2px;animation:pf 4s linear infinite}
+@keyframes pf{0%{transform:translateX(-80px)}100%{transform:translateX(100vw)}}
+/* Top nav */
+.tn{position:sticky;top:0;z-index:100;padding:12px 16px;background:rgba(10,22,40,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--b);display:flex;justify-content:space-between;align-items:center}
+.tn .br{font-size:18px;font-weight:800;color:var(--a)}
+.tn .sn{font-size:15px;color:var(--m);margin-left:8px}
+.tn .ct{font-size:14px;color:var(--m);margin-right:8px}
+.mb{background:var(--gl);border:1px solid var(--b);border-radius:8px;padding:8px 14px;color:var(--a);font-size:15px;cursor:pointer;font-weight:600;font-family:inherit}
+/* Bottom nav */
+.bn{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(10,22,40,.95);backdrop-filter:blur(14px);border-top:1px solid var(--b);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.nb{padding:12px 20px;border-radius:10px;font-size:16px;font-weight:600;border:none;cursor:pointer;transition:all .3s;font-family:inherit;white-space:nowrap;flex-shrink:0}
+.nb.on{background:var(--a);color:var(--n)}.nb.off{background:var(--gl);color:var(--m);opacity:.4;cursor:default}
+.ds{display:flex;gap:4px;overflow:hidden;flex:1;justify-content:center;max-width:180px}
+.dt{width:6px;height:6px;border-radius:50%;cursor:pointer;transition:all .3s;flex-shrink:0}
+.dt.c{background:var(--a);box-shadow:0 0 6px rgba(0,212,170,.4)}.dt.v{background:rgba(0,212,170,.35)}.dt.f{background:rgba(255,255,255,.08)}
+/* Menu */
+.mo{position:fixed;inset:0;z-index:200;background:rgba(10,22,40,.96);backdrop-filter:blur(20px);padding:60px 20px 20px;overflow-y:auto;display:none}
+.mo.open{display:block}
+.mc{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--a);font-size:28px;cursor:pointer}
+.mi{display:block;width:100%;padding:14px 18px;border-radius:10px;text-align:left;cursor:pointer;background:transparent;border:1px solid transparent;color:var(--m);font-size:17px;font-weight:400;transition:all .2s;font-family:inherit;margin-bottom:4px}
+.mi.act{background:rgba(0,212,170,.08);border-color:rgba(0,212,170,.25);color:var(--a);font-weight:700}
+/* Content */
+.ct-w{max-width:840px;margin:0 auto;padding:24px 16px 100px;position:relative;z-index:1}
+/* Components */
+.cd{background:var(--gl);border:1px solid var(--b);border-radius:14px;padding:22px 24px;backdrop-filter:blur(10px);margin-bottom:14px;line-height:1.6}
+.cd.ac{background:linear-gradient(135deg,rgba(0,212,170,.07),rgba(0,212,170,.02));border-color:rgba(0,212,170,.25)}
+.mx{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:22px}
+.mt{background:var(--gl);border:1px solid var(--b);border-radius:12px;padding:16px 18px;text-align:center;flex:1 1 130px;min-width:120px}
+.mt .l{font-size:13px;color:var(--m);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.mt .v{font-size:26px;font-weight:800;line-height:1.1}
+.mt .s{font-size:13px;color:var(--m);margin-top:4px}
+.st{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.st span{font-size:28px!important}
+.st h2{font-size:24px;font-weight:800;letter-spacing:-.5px;margin:0}
+.st .ln{flex:1;height:1px;background:linear-gradient(90deg,rgba(0,212,170,.25),transparent);margin-left:8px}
+.bw{margin-bottom:12px}.bl{display:flex;justify-content:space-between;font-size:15px;color:var(--m);margin-bottom:4px;font-weight:500}
+.bt{height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden}
+.bf{height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(.4,0,.2,1);width:0}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{padding:10px 8px;text-align:right;color:var(--m);font-weight:600;font-size:13px;border-bottom:1px solid var(--b)}
+td{padding:10px 8px;text-align:right;color:var(--m);border-bottom:1px solid rgba(0,212,170,.05)}
+td:first-child,th:first-child{text-align:left}td:first-child{color:var(--w);font-weight:600}
+.tb{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.tbtn{padding:8px 16px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:1px solid var(--b);background:var(--gl);color:var(--m);transition:all .3s;font-family:inherit}
+.tbtn.on{background:var(--a);color:var(--n);border-color:var(--a)}
+.tg{padding:6px 12px;background:rgba(0,212,170,.06);border:1px solid var(--b);border-radius:7px;font-size:14px;display:inline-block;margin:3px}
+.co{padding:12px 14px;border-radius:8px;font-size:14px;line-height:1.6;margin-top:8px}
+.co.or{background:rgba(255,107,53,.08);border:1px solid rgba(255,107,53,.2);color:var(--o)}
+.co.gr{background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.2);color:var(--a)}
+.pc{cursor:pointer}.pd{margin-top:8px;font-size:15px;color:var(--m);line-height:1.6;border-top:1px solid var(--b);padding-top:8px;display:none}
+.pc.ex .pd{display:block}
+.rs{padding:4px 10px;border-radius:6px;font-size:12px;font-weight:700;display:inline-block}
+.cv{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:78vh;text-align:center;position:relative}
+.cg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,rgba(0,212,170,.04),transparent 70%);filter:blur(60px);pointer-events:none}
+.svg-c{overflow-x:auto;overflow-y:hidden}
+@media(max-width:600px){.mx{gap:8px}.mt{min-width:100px;padding:12px 10px}.mt .v{font-size:22px}.st h2{font-size:22px}.st span{font-size:24px!important}.g2{grid-template-columns:1fr}.cv h1{font-size:46px!important}.ds{max-width:120px}.nb{padding:10px 16px;font-size:15px}}
+@media(max-width:380px){.mt{min-width:85px;padding:10px 8px}.mt .v{font-size:20px}.mt .l{font-size:11px}.ds{max-width:90px;gap:2px}.dt{width:5px;height:5px}}
+</style>
+</head>
+<body>
+<div class="bg"><div class="bg-grid"></div><div class="bg-orb o1"></div><div class="bg-orb o2"></div><div class="bg-orb o3"></div>
+<div class="particles" id="particles"></div></div>
+<div class="pipe"><div class="pipe-g"></div></div>
+
+<div class="tn"><div><span class="br">DESCO</span><span class="sn" id="sn">Cover</span></div><div><span class="ct" id="ct">1/12</span><button class="mb" onclick="tm()">☰</button></div></div>
+<div class="mo" id="mo"><button class="mc" onclick="tm()">✕</button><div style="font-size:17px;font-weight:700;color:var(--a);margin-bottom:16px">Navigate</div><div id="mis"></div></div>
+<div class="ct-w" id="sc"></div>
+<div class="bn"><button class="nb" id="pb" onclick="pv()">← Prev</button><div class="ds" id="ds"></div><button class="nb" id="xb" onclick="nx()">Next →</button></div>
+
+<script>
+// Particles
+(function(){const p=document.getElementById('particles');for(let i=0;i<15;i++){const d=document.createElement('div');d.className='particle';d.style.left=Math.random()*100+'%';d.style.animationDuration=(8+Math.random()*12)+'s';d.style.animationDelay=(-Math.random()*20)+'s';d.style.width=d.style.height=(1+Math.random()*2)+'px';p.appendChild(d)}})();
+
+const S=[
+{id:'cover',n:'Cover'},
+{id:'snapshot',n:'Snapshot'},
+{id:'history',n:'Journey & IPO'},
+{id:'financials',n:'Financials'},
+{id:'orderbook',n:'Order Book & Verticals'},
+{id:'cbg',n:'CBG & Green Hydrogen'},
+{id:'opportunity',n:'The Gas Crisis Opportunity'},
+{id:'peers',n:'Peers & Positioning'},
+{id:'team',n:'Team, KP Group & Governance'},
+{id:'pricechart',n:'Price & Chart'},
+{id:'outlook',n:'Outlook & Risks'},
+{id:'disclaimer',n:'Disclaimer'}
+];
+let cur=0;
+
+function M(l,v,s,c='var(--a)'){return`<div class="mt"><div class="l">${l}</div><div class="v" style="color:${c}">${v}</div>${s?`<div class="s">${s}</div>`:''}</div>`}
+function T(i,t){return`<div class="st"><span>${i}</span><h2>${t}</h2><div class="ln"></div></div>`}
+function C(h,a){return`<div class="cd${a?' ac':''}">${h}</div>`}
+function B(l,v,mx,c='var(--a)'){return`<div class="bw"><div class="bl"><span>${l}</span><span style="color:${c}">${v}%</span></div><div class="bt"><div class="bf" style="width:${(v/mx)*100}%;background:linear-gradient(90deg,${c},${c}88)"></div></div></div>`}
+
+const SL={
+cover:()=>`<div class="cv"><div class="cg"></div>
+<div style="font-size:14px;letter-spacing:4px;color:var(--a);text-transform:uppercase;margin-bottom:14px;font-weight:600">SME Gems · Hidden Champions</div>
+<h1 style="font-size:clamp(46px,10vw,80px);font-weight:900;line-height:1.05;letter-spacing:-2px">DESCO<br><span style="background:linear-gradient(135deg,var(--a),var(--g));-webkit-background-clip:text;-webkit-text-fill-color:transparent">INFRATECH</span></h1>
+<div style="font-size:18px;color:var(--m);margin-top:16px;max-width:560px;line-height:1.6">From pipelines to power — India's emerging CGD & infrastructure EPC player in a transformational growth phase</div>
+<div style="display:flex;gap:12px;margin-top:32px;flex-wrap:wrap;justify-content:center">
+<div style="padding:8px 18px;border-radius:20px;font-size:14px;font-weight:600;border:1px solid var(--b);color:var(--a);background:var(--gl)">CMP ₹155 · MCap ₹119 Cr</div>
+<div style="padding:8px 18px;border-radius:20px;font-size:14px;font-weight:600;border:1px solid var(--b);color:var(--a);background:var(--gl)">OB ₹345+ Cr · D/E 0.1x</div>
+<div style="padding:8px 18px;border-radius:20px;font-size:14px;font-weight:600;border:1px solid var(--b);color:var(--a);background:var(--gl)">FY25 Rev ₹59 Cr · +102% YoY</div>
+</div>
+<div style="font-size:12px;color:var(--m);margin-top:40px">*As of Apr 2026 · Not investment advice</div></div>`,
+
+snapshot:()=>`${T('⚡','Company Snapshot')}
+<div class="mx">${M('CMP / MCap','₹155 / ₹119 Cr','BSE: 544387')}${M('FY25 Revenue','₹59.45 Cr','+102% YoY')}${M('EBITDA','₹13.34 Cr','22.45%','var(--gr)')}${M('PAT','₹9.06 Cr','15.2%','var(--g)')}${M('Order Book','₹345+ Cr','Excl. L1','var(--o)')}${M('D/E','0.1x','Net Worth ₹61 Cr','var(--gr)')}</div>
+${C(`<strong style="color:var(--a)">What is Desco?</strong> — Founded 2011, Surat (roots to 1992 via Desai Associates — 35th year). EPC & O&M for CGD sector — MDPE & steel pipelines, PNG last-mile, O&M for Adani/BPCL/IOCL/GAIL/Torrent. Post-IPO: Power & Transmission (Viviana Power Tech, KP Group), Water (AMRUT 2.0), CBG production (BioGreen WOS + 75% SGAEPL), Green Hydrogen MoU (KPI Green H2 + Naveriya Gas). Operating in 55+ cities, 14 states, 4,000+ km pipeline laid, 2L+ PNG connections.`,1)}
+${C(`<div style="font-size:16px;font-weight:700;color:var(--a);margin-bottom:8px">H1 FY26 Revenue Split by Region</div><div style="display:flex;flex-wrap:wrap;gap:8px">${['Gujarat 23.1%','UP 17.9%','TN 15.7%','HR 14.1%','MH 11.8%','Punjab 5.9%','Delhi 5.1%','MP 3.5%','RJ 2.4%','TG 0.4%'].map(s=>`<span class="tg" style="color:var(--w)">${s.split(' ')[0]}: <strong style="color:var(--a)">${s.split(' ')[1]}</strong></span>`).join('')}</div><div style="margin-top:10px;font-size:14px;color:var(--m)">North 43% · West 40.9% · South 16.1% — South guided to surpass 40%. PNG installs up 599% H1 YoY.</div>`)}`,
+
+history:()=>`${T('📜','Journey, IPO & Pre-IPO')}
+<div style="position:relative;padding-left:26px">
+<div style="position:absolute;left:9px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--a),rgba(0,212,170,.1))"></div>
+${[
+{y:'2011',t:'Founded',d:'Surat. Small CGD pipeline works. Desai Associates roots since 1992.'},
+{y:'2019-24',t:'Scale & IPO Prep',d:'Expanded to Adani/Torrent/BPCL. FY24 EBITDA margin leapt to 19%. Converted to public company Jul 2024.'},
+{y:'Mar 2025',t:'IPO — BSE SME',d:'₹30.75 Cr raised. 55.74x oversubscribed (NII 233.62x). Listed ₹160 (+6.67%). IPO objects: corporate office (✓ 100%), machinery (varied to WC), working capital (✓ 100%), GCP (✓ 100%).'},
+{y:'FY25',t:'Breakout',d:'Revenue doubled ₹59 Cr. PAT +173%. Order book crossed ₹330 Cr.'},
+{y:'H2 2025',t:'Diversification',d:'Jul: KP Group order (Power entry). Sep: BioGreen WOS. Oct: Green H2 MoU. Nov: IPO objects variation (₹168L machinery→WC). Jan 26: MoA alteration + SGAEPL MOU.'},
+{y:'2026',t:'Current Phase',d:'Feb: SGAEPL subsidiary (75%). ₹40.43 Cr KP Group solar/cable orders. BPCL LOI for multi-state pipelines (KA, WB, BR, MH, JH, TN). Apr: Promoter share consolidation — Indiraben gifted 23.82L shares (31.04%) to Pankaj Desai.'}
+].map((e,i,a)=>`<div style="margin-bottom:18px;position:relative"><div style="position:absolute;left:-22px;top:6px;width:12px;height:12px;border-radius:50%;background:${i===a.length-1?'var(--g)':'var(--a)'};border:2px solid var(--n);box-shadow:0 0 6px rgba(0,212,170,.2)"></div><span style="font-size:15px;font-weight:700;color:var(--a);min-width:70px;display:inline-block">${e.y}</span><span style="font-size:17px;font-weight:700;margin-left:8px">${e.t}</span><div style="font-size:15px;color:var(--m);margin-top:4px;line-height:1.6">${e.d}</div></div>`).join('')}
+</div>
+${C(`<div style="font-size:16px;font-weight:700;color:var(--g);margin-bottom:8px">Pre-IPO Lock-in Opening (Apr 2026)</div><div style="font-size:15px;color:var(--m);line-height:1.7">After the 1-year lock-in expired (~Apr 1, 2026), Desco's pre-IPO shares became freely tradeable. In most SME IPOs — especially those where pre-IPO allocation resembled crowdfunding with many small individual investors — this triggers heavy selling and sharp price drops. Desco was no exception in terms of the setup (significant pre-IPO investor base from the promoter's Surat/Gujarat network). Yet the stock held up remarkably well — prices didn't crater as feared. This was likely managed through a combination of promoter confidence signals (open-market buying at ₹162 in Mar 2026, Indiraben→Pankaj share gift consolidating family control at 31.24%), gradual exits rather than panic selling, and genuine institutional interest absorbing supply. A notable positive for governance and investor confidence.</div>`,1)}`,
+
+financials:()=>`${T('📊','Financial Performance')}
+<div class="tb"><button class="tbtn on" onclick="sft('pl',this)">P&L</button><button class="tbtn" onclick="sft('bs',this)">Balance Sheet</button><button class="tbtn" onclick="sft('cf',this)">Cash Flow</button></div>
+<div id="f-pl"><div style="overflow-x:auto"><table><thead><tr><th></th><th>FY22</th><th>FY23</th><th>FY24</th><th>FY25</th><th>H1 FY26</th></tr></thead><tbody>
+<tr><td>Revenue</td><td>20</td><td>29</td><td>29</td><td>59</td><td>42</td></tr>
+<tr><td>EBITDA</td><td>2</td><td>2</td><td>6</td><td>14</td><td>9</td></tr>
+<tr><td>OPM %</td><td style="color:var(--gr)">8%</td><td style="color:var(--gr)">8%</td><td style="color:var(--gr)">19%</td><td style="color:var(--gr)">23%</td><td style="color:var(--gr)">21.4%</td></tr>
+<tr><td>PAT</td><td>1</td><td>1</td><td>3</td><td>9</td><td>6.17</td></tr>
+<tr><td>PAT %</td><td>5%</td><td>4%</td><td>10%</td><td>15.2%</td><td>14.7%</td></tr>
+</tbody></table></div><div style="font-size:13px;color:var(--m);margin-top:8px">₹ Cr. H1 FY26: +85.7% Rev, +89.9% PAT YoY. FY26 guidance: ₹108-115 Cr (conservative). PAT margin min 13%.</div></div>
+<div id="f-bs" style="display:none"><div style="overflow-x:auto"><table><thead><tr><th></th><th>FY23</th><th>FY24</th><th>FY25</th><th>H1 FY26</th></tr></thead><tbody>
+<tr><td>Equity</td><td>0.25</td><td>0.28</td><td>8</td><td>8</td></tr>
+<tr><td>Reserves</td><td>5</td><td>12</td><td>51</td><td>54</td></tr>
+<tr><td>Borrowings</td><td>6</td><td>4</td><td>11</td><td>6</td></tr>
+<tr><td>Net Worth</td><td>-</td><td>-</td><td>5.88</td><td>61.36</td></tr>
+</tbody></table></div><div style="font-size:13px;color:var(--m);margin-top:8px">D/E: 0.19x (FY25) → 0.1x (H1 FY26). Targeting below 0.22x with bank syndication. Total shares: 76,76,008 at FV ₹10.</div></div>
+<div id="f-cf" style="display:none">${C(`<div style="font-size:15px;color:var(--m);line-height:1.7">
+<strong style="color:var(--r)">OCF H1 FY26: Negative (~50% of revenue)</strong> — Strategic pre-mobilization advances (kept laborers during Diwali), raw material advances, new geography expansions.<br><br>
+<strong style="color:var(--g)">Guidance:</strong> "20-30% negative max. Won't promise positive in 6-12 months during 90-100% growth." Collections/billing catch-up from Oct. Bank WC loan in final discussions.<br><br>
+<strong style="color:var(--a)">Receivables:</strong> ₹13→₹20 Cr in 6 months. Management: no concern — all PSU/blue-chip clients. Retention money rises proportionally with growth.</div>`)}</div>
+<div class="mx" style="margin-top:16px">${M('ROCE','31.2%','','var(--gr)')}${M('ROE','25.6%','3Y: 28.2%')}${M('P/E','~7.5x','at ₹155','var(--g)')}${M('P/B','~1.9x','BV ~₹80','var(--o)')}</div>`,
+
+orderbook:()=>`${T('📋','Order Book & Business Verticals')}
+<div class="mx">${M('Confirmed OB','₹345+ Cr','Nov 2025, excl L1')}${M('Bid Pipeline','₹413 Cr','100% CGD','var(--g)')}${M('Execution','18m EPC','24m O&M','var(--o)')}</div>
+${C(`<div style="font-size:16px;font-weight:700;color:var(--a);margin-bottom:12px">Composition</div>${B('EPC (CGD + Power) — ₹326.61 Cr',95,100)}${B('O&M — ₹12.22 Cr',4,100,'var(--g)')}${B('Power & Transmission — ₹6.66 Cr',2,100,'var(--o)')}<div style="font-size:13px;color:var(--m);margin-top:6px">Target OB: ₹525-550 Cr by FY26. Key clients: Adani, BPCL, IOCL, HPCL, GAIL, Torrent, Sabarmati, MNGL, IGL, Reliance, L&T. 75% PSU, 25% private.</div>`)}
+${C(`<div style="font-size:16px;font-weight:700;color:var(--a);margin-bottom:12px">Business Verticals — FY26 Revenue Mix</div>${B('CGD (Core) — Pipeline laying, PNG, O&M',70,100)}${B('Power & Transmission — Execution partner, 12-12.5% margin',18,100,'var(--g)')}${B('Water (AMRUT 2.0) — Selective, MP projects',8,100,'#4FC3F7')}${B('Renewables — Selective (KP Group only)',4,100,'var(--o)')}<div style="font-size:13px;color:var(--m);margin-top:6px">Power strategy: execution partner only (no material supply) to protect margins. Industry 8-10%, Desco 12-12.5%. Viviana Power Tech in Punjab, KP Group in Gujarat. Selective bidding: 30-40% win rate.</div>`)}`,
+
+cbg:()=>`${T('🌿','CBG Venture & Green Hydrogen')}
+${C(`<strong style="color:var(--gr)">Strategic Shift:</strong> EPC contractor → <strong style="color:var(--a)">Gas producer/seller</strong>. Vertical integration to asset-based recurring revenue.`,1)}
+<div class="mx">${M('CapEx/Plant','₹25-26 Cr','5 TPD')}${M('PAT Margin','21-24%','EBITDA ~35%','var(--gr)')}${M('Revenue/Plant','₹13-14 Cr','Annual','var(--g)')}${M('Payback','3-4 Yrs','','var(--o)')}</div>
+${C(`<div style="font-size:15px;color:var(--m);line-height:1.8">
+🏭 <strong style="color:var(--w)">Two Entities:</strong> (1) Desco BioGreen (100% WOS, Sep 2025). (2) 75% in SGAEPL (₹40.5L, UP-based, advanced-stage project — pipeline connectivity for grid injection, all approvals obtained).<br>
+📍 <strong style="color:var(--w)">Locations:</strong> Gujarat, UP (Greater Noida), MP (Dahod-Indore — cheaper land, abundant agri waste)<br>
+📈 <strong style="color:var(--w)">Ramp:</strong> 3-5 TPD FY27 → 10-12 by 2027 → 20-25+ by 2028 → 50+ long-term. Also exploring acquiring ready CBG units.<br>
+🏛️ <strong style="color:var(--w)">SATAT Initiative:</strong> Mandatory off-take by CGD entities, subsidies, IREDA loans. Full Day-1 capacity utilization.<br>
+💰 Min price ₹72.9/kg. Funding: 80-85% debt. Revenue under BioGreen subsidiary from FY27.</div>`)}
+${C(`<div style="font-size:16px;font-weight:700;color:var(--g);margin-bottom:8px">Green Hydrogen MoU (Oct 16, 2025)</div><div style="font-size:15px;color:var(--m);line-height:1.7">Tripartite with <strong style="color:var(--w)">KPI Green H2 & Ammonia</strong> (investments) + <strong style="color:var(--w)">Naveriya Gas</strong> (CGD domain). <strong style="color:var(--a)">Desco = Technology Partner</strong> — hydrogen generation, compression, blending into CGD pipelines, delivery systems. Also exploring hydrogen compressor stations for vehicular fuel along national highways. Execution in 12-18 months. Positions Desco among early movers in India's emerging green hydrogen ecosystem.</div>`)}`,
+
+opportunity:()=>`${T('🔥','The Gas Crisis — Desco\'s Moment')}
+${C(`<div style="font-size:16px;color:var(--w);line-height:1.8"><strong style="color:var(--o)">The Iran-US War & Strait of Hormuz Crisis (Mar 2026)</strong> has created the largest energy supply disruption in history. 90% of India's LPG imports transit the now-blockaded Strait. LPG prices surged ₹60/cylinder (₹4,000 on black market). Qatar's Ras Laffan LNG complex hit — 17% capacity lost, 3-5 years to repair. LNG spot prices in Asia up 140%+. India installed 5.8 lakh new piped gas connections in March alone. Government invoked Essential Commodities Act — PNG/CNG getting Tier 1 priority. <strong style="color:var(--a)">This is a structural tailwind for CGD EPC companies like Desco.</strong></div>`,1)}
+<div class="g2">
+${C(`<div style="font-size:17px;font-weight:700;color:var(--a);margin-bottom:6px">Within-City (CGD) — Direct Beneficiary</div><div style="font-size:15px;color:var(--m);line-height:1.7">PNG is domestic/sourced, unaffected by war. LPG crisis → mass PNG adoption. Govt's 15% gas share target by 2030 (currently 6.3%) now has urgency. 300+ GAs need pipeline infrastructure. Desco's core CGD EPC work directly benefits — more connections = more pipeline laying.</div>`)}
+${C(`<div style="font-size:17px;font-weight:700;color:var(--g);margin-bottom:6px">Inter-City Gas Pipelines — Future Option</div><div style="font-size:15px;color:var(--m);line-height:1.7">Management stated no inter-city plans currently. However, Desco already executes steel pipe laying and backbone pipeline installations (BPCL multi-state LOI covers steel pipelines across 6 states). The technical capability exists — the strategic choice to enter inter-city trunk pipelines remains an option as India's national gas grid expands. PNGRB has authorized ~33,500 km; ~25,000 km operational — massive expansion remaining.</div>`)}
+${C(`<div style="font-size:17px;font-weight:700;color:var(--gr);margin-bottom:6px">CBG as LPG Alternative</div><div style="font-size:15px;color:var(--m);line-height:1.7">LPG crisis makes CBG (from agricultural waste) viable as cooking/transport fuel. Desco BioGreen directly benefits. SATAT mandates CGD off-take. Biomass now permitted as fuel for restaurants during crisis — CBG is the permanent solution.</div>`)}
+${C(`<div style="font-size:17px;font-weight:700;color:var(--o);margin-bottom:6px">Resilience Factor</div><div style="font-size:15px;color:var(--m);line-height:1.7">CGD is essential service — Tier 1 priority under crisis. Uninterrupted even in Surat floods 2006. Gas/power are non-discretionary. Govt billing discounts aid working capital. Multi-decade runway.</div>`)}
+</div>`,
+
+peers:()=>`${T('⚔️','Peers & Competitive Positioning')}
+<div style="font-size:15px;color:var(--m);margin-bottom:14px">Management-named peers: Rudra, Likhitha, Positron, Pratham. Updated metrics from Screener.</div>
+<div style="overflow-x:auto;margin-bottom:14px"><table>
+<thead><tr><th>Company</th><th>MCap</th><th>Revenue</th><th>P/E</th><th>ROCE</th><th>ROE</th><th>D/E</th><th>Platform</th></tr></thead>
+<tbody>
+<tr style="color:var(--a)"><td style="color:var(--a);font-weight:800">Desco Infratech</td><td>₹119 Cr</td><td>₹59 Cr</td><td>7.5x</td><td>31.2%</td><td>25.6%</td><td>0.1x</td><td>BSE SME</td></tr>
+<tr><td>Likhitha Infra</td><td>₹579 Cr</td><td>₹286 Cr</td><td>11.0x</td><td>27.6%</td><td>20.3%</td><td>~0x</td><td>Mainboard</td></tr>
+<tr><td>Pratham EPC</td><td>₹234 Cr</td><td>₹50 Cr</td><td>22.6x</td><td>25.6%</td><td>19.9%</td><td>Low</td><td>NSE SME</td></tr>
+<tr><td>Rudra Gas</td><td>₹49 Cr</td><td>~₹20 Cr</td><td>7.1x</td><td>23.2%</td><td>22.7%</td><td>Low</td><td>BSE SME</td></tr>
+</tbody></table></div>
+<div style="font-size:15px;color:var(--m);margin-bottom:16px;line-height:1.6">Note: Positron Energy (NSE: POSITRON) is sometimes mentioned as a peer, but they operate a fundamentally different business model. Positron provides management & technical advisory services for the oil & gas industry and operates in gas aggregation, rather than executing core infrastructure EPC and O&M contracts like Desco. Therefore, they are not truly comparable in terms of operational metrics or capital structure.</div>
+${C(`<div style="font-size:16px;font-weight:700;color:var(--a);margin-bottom:10px">Why Desco Stands Out</div><div style="font-size:15px;color:var(--m);line-height:1.8">
+✦ <strong style="color:var(--w)">Cheapest among profitable peers</strong> — P/E 7.5x vs Likhitha 11x, Pratham 22.6x<br>
+✦ <strong style="color:var(--w)">Highest growth rate</strong> — 90-100% guided (FY26) vs peers at 15-30%<br>
+✦ <strong style="color:var(--w)">Best ROCE</strong> — 31.2% tops all CGD peers<br>
+✦ <strong style="color:var(--w)">Most diversified</strong> — CGD + Power + CBG + H2 (peers are mostly pure CGD)<br>
+✦ <strong style="color:var(--w)">Strongest client list</strong> — Adani, BPCL, IOCL, GAIL, Torrent (AA/AAA rated)<br>
+✦ <strong style="color:var(--w)">Iran crisis tailwind</strong> — CGD EPC demand accelerating (5.8L new connections in Mar alone)<br>
+✦ <strong style="color:var(--w)">FY26 forward P/E ~5-6x</strong> at ₹108-115 Cr revenue guidance — significant re-rating potential<br>
+✦ <strong style="color:var(--w)">Likhitha</strong> is the closest mainboard comp — 5x Desco's revenue but only ~5x MCap, similar ROCE. Desco is earlier in the growth curve with higher trajectory.</div>`,1)}`,
+
+team:()=>`${T('👤','Team, KP Group & Governance')}
+<div class="g2">
+${C(`<div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+<div style="width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--a),var(--d));display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;flex-shrink:0">PD</div>
+<div><div style="font-size:18px;font-weight:800">Pankaj Pruthu Desai</div><div style="font-size:14px;color:var(--a)">CMD | 33+ yrs gas industry</div></div></div>
+<div style="font-size:14px;color:var(--m);margin-top:10px;line-height:1.6">Holding: 31.24% (post Apr 2026 gift from Indiraben). Open-market buying at ₹162 (Mar 2026) shows confidence. Total shares: 76.76L.</div>`,1)}
+${C(`<div style="font-size:16px;font-weight:700;margin-bottom:8px">Key Team</div><div style="font-size:14px;color:var(--m);line-height:1.7">
+<strong style="color:var(--w)">Malhar Desai</strong> — WTD (Finance, IR, Strategy)<br>
+<strong style="color:var(--w)">Samarth Desai</strong> — ED (Projects, Legal)<br>
+<strong style="color:var(--w)">Kishor Unadkat</strong> — COO<br>
+<strong style="color:var(--w)">Rushabh Mashkaria</strong> — CFO<br>
+<strong style="color:var(--w)">Muskan Khandal</strong> — CS & Compliance<br>
+Regional heads: Hozefa Chudawala (South), Niranjan Patra (North), Mahesh Patil (MH)</div>`)}
+</div>
+${C(`<div style="font-size:16px;font-weight:700;color:var(--g);margin-bottom:8px">KP Group Connection — Farrukh Patel</div><div style="font-size:15px;color:var(--m);line-height:1.7">
+<strong style="color:var(--w)">Farrukh Patel</strong> (KP Group, ~₹2,500 Cr empire) acquired 39,000 Desco shares at ₹150 just before IPO (Feb 25, 2025) — appeared in RHP but not DRHP. While quantum is small, his Surat business ecosystem connection with the Desai family suggests a mentoring/strategic relationship. KP Group subsequently awarded ₹40.43 Cr orders and signed the green hydrogen tripartite MoU. Patel is known for grooming young entrepreneurs in Gujarat's industrial ecosystem — the Desai brothers (Malhar, Samarth) have benefited from this strategic alliance for credentials in power & renewables.</div>`)}
+${C(`<div style="font-size:16px;font-weight:700;color:var(--o);margin-bottom:8px">IPO Objects Variation</div><div style="font-size:15px;color:var(--m);line-height:1.6">
+<strong>Postal Ballot #1 (Nov 2025):</strong> ₹168.04L machinery → working capital. All other objects 100% utilized.<br>
+<strong>Postal Ballot #2 (Jan 2026):</strong> MoA alteration — 6 new main object clauses for CBG, biogas, manpower, vehicles, machinery.<br>
+Both approved via special resolution. While IPO objects variation is common in SME space, it signals pivot from asset-heavy to asset-light execution. MoA alteration is a positive — formally enables new verticals.</div>`)}`,
+
+pricechart:()=>{
+const d=[{dt:"Apr'25",p:160,l:"List"},{dt:"May",p:249},{dt:"Jun",p:230},{dt:"Jul",p:265},{dt:"Sep",p:294,l:"52W Hi"},{dt:"Nov",p:240},{dt:"Jan'26",p:192},{dt:"Mar",p:135,l:"52W Lo"},{dt:"Apr",p:155,l:"Now"}];
+const mx=294,mn=135,rng=mx-mn,H=180;
+let pts=d.map((x,i)=>`${i*70},${H-((x.p-mn)/rng)*(H-20)}`).join(' ');
+let area=`M 0,${H-((d[0].p-mn)/rng)*(H-20)} `+d.map((x,i)=>`L ${i*70},${H-((x.p-mn)/rng)*(H-20)}`).join(' ')+` L ${(d.length-1)*70},${H} L 0,${H} Z`;
+let dots=d.map((x,i)=>{let y=H-((x.p-mn)/rng)*(H-20);return`<circle cx="${i*70}" cy="${y}" r="${x.l?5:3.5}" fill="${x.l?'var(--g)':'var(--a)'}"/><text x="${i*70}" y="${H+16}" text-anchor="middle" fill="var(--m)" font-size="12">${x.dt}</text><text x="${i*70}" y="${y-10}" text-anchor="middle" fill="var(--w)" font-size="13" font-weight="600">₹${x.p}</text>${x.l?`<text x="${i*70}" y="${y-22}" text-anchor="middle" fill="var(--g)" font-size="11">${x.l}</text>`:''}`}).join('');
+let ipoY=H-((150-mn)/rng)*(H-20);
+return T('📈','Price & Chart')+`
+<div class="mx">${M('IPO','₹150','')}${M('Listing','₹160','+6.67%','var(--gr)')}${M('52W High','₹294','','var(--g)')}${M('52W Low','₹135','','var(--r)')}${M('CMP','₹155','₹119 Cr MCap')}</div>
+${C(`<div style="font-size:15px;font-weight:700;color:var(--a);margin-bottom:12px">Listing to Present</div><div class="svg-c"><svg width="100%" height="${H+45}" viewBox="0 0 ${(d.length-1)*70+20} ${H+45}" style="min-width:${d.length*55}px"><defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--a)" stop-opacity=".25"/><stop offset="100%" stop-color="var(--a)" stop-opacity="0"/></linearGradient></defs><path d="${area}" fill="url(#cg)"/><polyline points="${pts}" fill="none" stroke="var(--a)" stroke-width="2" stroke-linejoin="round"/>${dots}<line x1="0" y1="${ipoY}" x2="${(d.length-1)*70}" y2="${ipoY}" stroke="var(--o)" stroke-width="1" stroke-dasharray="3,3"/><text x="${(d.length-1)*70+5}" y="${ipoY+4}" fill="var(--o)" font-size="12">IPO ₹150</text></svg></div>`)}
+${C(`<div style="font-size:15px;color:var(--m);line-height:1.7">✦ Nearly doubled to ₹294 in ~5 months on strong H1 results<br>✦ Correction mirrors broader SME selloff + pre-IPO lock-in expiry<br>✦ Promoter buying at ₹162 shows confidence in business trajectory<br>✦ At CMP ₹155: forward P/E ~5-6x on FY26 guidance — among cheapest CGD plays<br>✦ Iran crisis is a structural catalyst not yet priced in</div>`)}`;
+},
+
+outlook:()=>`${T('🔮','Outlook, Opportunities & Risks')}
+${C(`<div style="font-size:16px;font-weight:700;color:var(--a);margin-bottom:8px">Bull Case — What Could Go Right</div><div style="font-size:15px;color:var(--m);line-height:1.7">
+✦ FY26 guidance ₹108-115 Cr | FY27: ₹220-240 Cr (at 90-100% growth) | Vision 2030: ₹1,000 Cr<br>
+✦ Iran crisis accelerates CGD adoption — PNG becomes national priority (Tier 1 allocation)<br>
+✦ CBG revenue from FY27 at 21-24% PAT margins — recurring, asset-based income<br>
+✦ South India to surpass 40% revenue (from 16%) — massive under-penetrated market<br>
+✦ Green hydrogen blending — early-mover with KP Group. ₹40+ Cr orders just the beginning<br>
+✦ Order book ₹345+ Cr + ₹413 Cr pipeline = multi-year revenue visibility<br>
+✦ Re-rating from P/E 7.5x toward peer average 15-20x as scale improves</div>`,1)}
+${C(`<div style="font-size:16px;font-weight:700;color:var(--r);margin-bottom:8px">Bear Case — What Could Go Wrong</div><div style="font-size:15px;color:var(--m);line-height:1.7">
+⚠️ <strong style="color:var(--w)">Cash Flow:</strong> OCF negative during high-growth phase. 20-30% of revenue. No positive OCF for 6-12 months.<br>
+⚠️ <strong style="color:var(--w)">Receivables:</strong> ₹13→₹20 Cr in 6 months. Revenue growth driving retention money buildup.<br>
+⚠️ <strong style="color:var(--w)">Power Margins:</strong> Blended PAT may drop 0.75-1% as power/transmission grows (12.5% vs CGD 15%+).<br>
+⚠️ <strong style="color:var(--w)">CBG Execution:</strong> SGAEPL has NIL turnover 3 years. Tech providers being finalized. 3-4 year payback.<br>
+⚠️ <strong style="color:var(--w)">IPO Objects Variation:</strong> ₹168.04L machinery→WC. Governance watch for further changes.<br>
+⚠️ <strong style="color:var(--w)">Client Concentration:</strong> Top 10 = 90%+ revenue. 75% PSU-dependent.<br>
+⚠️ <strong style="color:var(--w)">Seasonality:</strong> H1/H2 ~35/65%. Q2 slow due to South India monsoon (Sep-Dec).</div>`)}`,
+
+disclaimer:()=>`<div class="cv" style="min-height:65vh">
+<div style="font-size:14px;letter-spacing:4px;color:var(--a);text-transform:uppercase;margin-bottom:20px">Disclaimer</div>
+${C(`<div style="font-size:15px;color:var(--m);line-height:1.8;text-align:left;max-width:560px">
+<p>For <strong style="color:var(--w)">educational and informational purposes only</strong>. Not investment advice. Not a SEBI-registered advisor.</p>
+<p>Data from exchange filings, concalls, investor presentations, and direct interactions. Past performance ≠ future results.</p>
+<p>SME stocks carry higher risk: lower liquidity, higher volatility, limited analyst coverage, potential governance concerns.</p>
+<p style="border-top:1px solid var(--b);padding-top:12px;margin-top:12px"><strong style="color:var(--a)">Sources:</strong> BSE Exchange Filings, Company Concalls, Investor PPTs, Direct Investor Interactions</p></div>`)}
+<div style="margin-top:32px;display:flex;flex-direction:column;align-items:center;gap:8px">
+<a href="https://x.com/sachprat07" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--w)">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="var(--w)"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+<span style="font-size:20px;font-weight:800">@sachprat07</span></a>
+<div style="font-size:13px;color:var(--m);margin-top:8px">SME Gems · Hidden Champions of the SME Platform</div>
+</div></div>`
+};
+
+function sft(id,btn){['pl','bs','cf'].forEach(t=>{const e=document.getElementById('f-'+t);if(e)e.style.display='none'});document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'));const e=document.getElementById('f-'+id);if(e)e.style.display='block';btn.classList.add('on');ab()}
+
+function ab(){setTimeout(()=>{document.querySelectorAll('.bf').forEach(b=>{const w=b.style.width;b.style.width='0';setTimeout(()=>b.style.width=w,80)})},30)}
+
+function render(){
+  const s=S[cur];
+  document.getElementById('sn').textContent=s.n;
+  document.getElementById('ct').textContent=`${cur+1}/${S.length}`;
+  document.getElementById('sc').innerHTML=SL[s.id]();
+  ab();
+  const pb=document.getElementById('pb'),xb=document.getElementById('xb');
+  pb.className='nb '+(cur===0?'off':'on');pb.disabled=cur===0;
+  xb.className='nb '+(cur===S.length-1?'off':'on');xb.disabled=cur===S.length-1;
+  document.getElementById('ds').innerHTML=S.map((_,i)=>`<div class="dt ${i===cur?'c':i<cur?'v':'f'}" onclick="go(${i})"></div>`).join('');
+  document.getElementById('mis').innerHTML=S.map((s,i)=>`<button class="mi${i===cur?' act':''}" onclick="go(${i});tm()"><span style="color:var(--m);margin-right:10px;font-size:15px">${String(i+1).padStart(2,'0')}</span>${s.n}</button>`).join('');
+  window.scrollTo(0,0);
+}
+function go(i){cur=i;render()}
+function pv(){if(cur>0){cur--;render()}}
+function nx(){if(cur<S.length-1){cur++;render()}}
+function tm(){document.getElementById('mo').classList.toggle('open')}
+
+// Keyboard
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')nx();if(e.key==='ArrowLeft')pv();if(e.key==='Escape')document.getElementById('mo').classList.remove('open')});
+// Swipe — moderated threshold
+let sx=0,sy=0;
+document.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
+document.addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-sx;
+  const dy=e.changedTouches[0].clientY-sy;
+  if(Math.abs(dx)>100 && Math.abs(dy)<80){dx<0?nx():pv()}
+},{passive:true});
+
+render();
+</script>
+</body>
+</html>
