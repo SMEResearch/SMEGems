@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=3.0,user-scalable=yes">
+<title>FlySBS Aviation — Research Deck</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#141418;--card:#222229;--card2:#2a2a32;
+  --copper:#c77d4a;--copper-l:#e8a46d;--copper-dim:rgba(199,125,74,0.12);
+  --emerald:#34d399;--emerald-dim:rgba(52,211,153,0.08);
+  --rose:#fb7185;--rose-dim:rgba(251,113,133,0.07);
+  --slate:#64748b;--amber:#fbbf24;
+  --text:#dcdee3;--muted:#999da8;--dim:#5a5e6a;
+  --border:rgba(192,196,204,0.1);
+  --serif:'Libre Baskerville',Georgia,serif;
+  --sans:'Manrope',system-ui,sans-serif;
+}
+html,body{height:100%;overflow:hidden;font-family:var(--sans);background:var(--bg);color:var(--text);-webkit-text-size-adjust:100%}
+.deck-wrap{position:relative;width:100%;height:100%;overflow:hidden}
+.deck-track{display:flex;height:100%;transition:transform 0.5s cubic-bezier(0.4,0,0.2,1);will-change:transform}
+.deck-track.swiping{transition:none}
+.slide{min-width:100%;width:100%;height:100%;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:20px;padding-bottom:130px;display:block;position:relative}
+.slide::-webkit-scrollbar{width:3px}
+.slide::-webkit-scrollbar-thumb{background:var(--copper);border-radius:4px}
+@media(min-width:700px){.slide{padding:36px 40px 130px}}
+
+/* grain */
+.grain{position:fixed;inset:0;pointer-events:none;z-index:999;opacity:0.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* nav */
+.nav-bar{position:fixed;bottom:0;left:0;right:0;z-index:100;background:linear-gradient(0deg,rgba(20,20,24,0.98) 60%,transparent);padding:12px 16px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.nav-dots{display:flex;gap:6px;align-items:center;justify-content:center;flex:1;flex-wrap:wrap}
+.nav-dot{width:9px;height:9px;border-radius:50%;background:var(--dim);cursor:pointer;transition:all 0.35s;border:none;outline:none;flex-shrink:0}
+.nav-dot.active{background:var(--copper);width:26px;border-radius:5px;box-shadow:0 0 12px rgba(199,125,74,0.5)}
+.nav-btn{background:none;border:1px solid var(--dim);color:var(--muted);width:38px;height:38px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:all 0.3s}
+.nav-btn:hover{border-color:var(--copper);color:var(--copper)}
+.nav-btn:disabled{opacity:0.15;cursor:default}
+.pg-count{position:fixed;top:14px;right:18px;z-index:100;font-size:12px;color:var(--muted);letter-spacing:2px;font-weight:600}
+.pg-count span{color:var(--copper)}
+.key-hint{position:fixed;top:14px;left:18px;z-index:100;font-size:10px;color:var(--dim);display:flex;gap:5px;align-items:center}
+.key-hint kbd{background:var(--card);border:1px solid var(--border);padding:2px 6px;border-radius:4px;font-size:9px}
+@media(max-width:768px){.key-hint{display:none}}
+
+/* TYPOGRAPHY */
+h1{font-family:var(--serif);font-size:clamp(34px,7vw,58px);font-weight:700;color:#e0e2e8;line-height:1.12}
+h2{font-family:var(--serif);font-size:clamp(23px,4.5vw,36px);font-weight:700;color:var(--copper);line-height:1.15;margin-bottom:16px;position:relative;padding-bottom:12px}
+h2::after{content:'';position:absolute;bottom:0;left:0;width:48px;height:2px;background:linear-gradient(90deg,var(--copper),transparent)}
+h3{font-size:clamp(11px,1.6vw,13px);font-weight:700;color:var(--copper-l);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}
+p,.txt{font-size:clamp(14px,1.8vw,16px);line-height:1.75;color:var(--muted)}
+.txt-sm{font-size:clamp(13px,1.6vw,15px);line-height:1.7;color:var(--muted)}
+.copper{color:var(--copper)}.copper-l{color:var(--copper-l)}.emerald{color:var(--emerald)}.rose{color:var(--rose)}.amber{color:var(--amber)}.silver{color:#e0e2e8}
+.fw6{font-weight:600}.fw7{font-weight:700}
+
+/* LAYOUT */
+.g{display:grid;gap:16px}
+.g2{grid-template-columns:1fr}
+.g3{grid-template-columns:1fr}
+.g4{grid-template-columns:repeat(2,1fr)}
+@media(min-width:700px){.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}}
+.mb{margin-bottom:16px}.mt{margin-top:16px}
+.flex{display:flex;gap:10px;flex-wrap:wrap}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;position:relative;transition:transform 0.3s,box-shadow 0.3s,border-color 0.3s;min-width:0;width:100%}
+.card:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.35);border-color:rgba(199,125,74,0.2)}
+.card-top{position:absolute;top:0;left:24px;right:24px;height:1px;background:linear-gradient(90deg,transparent,var(--copper),transparent)}
+.card-glow{box-shadow:0 0 40px rgba(199,125,74,0.08)}
+
+/* STATS */
+.stat-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-around}
+.stat{text-align:center;padding:14px 10px;flex:1;min-width:100px}
+.stat .v{font-family:var(--serif);font-size:clamp(26px,4.5vw,42px);font-weight:700;color:#e0e2e8;display:block;line-height:1.1}
+.stat .v.copper{color:var(--copper-l)}.stat .v.emerald{color:var(--emerald)}
+.stat .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-top:7px;display:block;font-weight:600}
+.stat .s{font-size:11px;margin-top:3px;display:block}
+
+/* BADGES */
+.badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;white-space:nowrap}
+.b-copper{background:var(--copper-dim);color:var(--copper);border:1px solid rgba(199,125,74,0.3)}
+.b-emerald{background:var(--emerald-dim);color:var(--emerald);border:1px solid rgba(52,211,153,0.25)}
+.b-rose{background:var(--rose-dim);color:var(--rose);border:1px solid rgba(251,113,133,0.25)}
+.b-silver{background:rgba(192,196,204,0.08);color:#c0c4cc;border:1px solid rgba(192,196,204,0.2)}
+
+/* TABLE & RESPONSIVE WRAPPER */
+.table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:8px;padding-bottom:4px;display:block}
+.table-wrap::-webkit-scrollbar{height:4px}
+.table-wrap::-webkit-scrollbar-thumb{background:var(--copper);border-radius:4px}
+table{width:100%;border-collapse:collapse;font-size:clamp(12px,1.5vw,14px)}
+th{text-align:left;padding:9px 10px;color:var(--copper);font-weight:700;border-bottom:1px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.03);color:var(--muted);white-space:nowrap}
+tr:hover td{color:var(--text)}.tr{text-align:right}
+
+/* BARS */
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.bar-lbl{width:60px;font-size:12px;color:var(--muted);text-align:right;flex-shrink:0;font-weight:600}
+.bar-track{flex:1;height:24px;background:rgba(255,255,255,0.03);border-radius:6px;overflow:hidden}
+.bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;padding:0 10px;font-size:10px;font-weight:700;color:#fff;width:0;transition:width 1.1s cubic-bezier(0.4,0,0.2,1)}
+.bf-copper{background:linear-gradient(90deg,#a0603a,var(--copper))}.bf-emerald{background:linear-gradient(90deg,#059669,var(--emerald))}.bf-slate{background:linear-gradient(90deg,#475569,var(--slate))}.bf-rose{background:linear-gradient(90deg,#e11d48,var(--rose))}
+
+/* TIMELINE */
+.tl{position:relative;padding-left:28px}
+.tl::before{content:'';position:absolute;left:7px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--copper),var(--emerald),transparent)}
+.tl-i{position:relative;margin-bottom:14px;padding-left:14px}
+.tl-i::before{content:'';position:absolute;left:-24px;top:5px;width:9px;height:9px;border-radius:50%;background:var(--copper);box-shadow:0 0 8px rgba(199,125,74,0.3)}
+.tl-yr{font-weight:800;color:var(--copper);font-size:14px}
+.tl-tx{font-size:13px;color:var(--muted);margin-top:3px;line-height:1.6}
+
+/* RISKS */
+.risk{padding:14px 18px;border-left:3px solid var(--rose);background:var(--rose-dim);border-radius:0 12px 12px 0;margin-bottom:10px;transition:transform 0.25s}
+.risk:hover{transform:translateX(4px)}
+.risk-y{border-left-color:var(--amber);background:rgba(251,191,36,0.06)}
+.risk .rt{font-weight:700;color:var(--text);font-size:14px;margin-bottom:4px}
+.risk .rd{font-size:14px;color:var(--muted);line-height:1.7}
+
+/* MOATS */
+.moat{display:flex;align-items:flex-start;gap:14px;padding:14px 18px;border:1px solid var(--border);border-radius:12px;margin-bottom:10px;background:rgba(199,125,74,0.02);transition:all 0.3s}
+.moat:hover{border-color:var(--copper);background:rgba(199,125,74,0.05);transform:translateX(4px)}
+.moat-ic{font-size:20px;flex-shrink:0;width:26px;text-align:center;margin-top:2px}
+.moat-t{font-weight:700;color:var(--text);font-size:14px}
+.moat-d{font-size:14px;color:var(--muted);margin-top:3px;line-height:1.65}
+
+/* LINKS */
+.x-link{display:inline-flex;align-items:center;gap:7px;color:var(--muted);text-decoration:none;font-size:15px;transition:color 0.3s;font-weight:600}
+.x-link:hover{color:var(--copper)}.x-logo{width:20px;height:20px}
+
+/* DISCLAIMER */
+.disc{font-size:11px;color:var(--dim);line-height:1.7;padding:14px;border:1px solid rgba(255,255,255,0.05);border-radius:10px;background:rgba(255,255,255,0.01)}
+
+/* ANIMATION */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity 0.6s ease,transform 0.6s ease}
+.reveal.show{opacity:1;transform:translateY(0)}
+.reveal-d1{transition-delay:0.1s}.reveal-d2{transition-delay:0.2s}.reveal-d3{transition-delay:0.3s}.reveal-d4{transition-delay:0.4s}.reveal-d5{transition-delay:0.5s}
+.particles{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.particle{position:absolute;width:2px;height:2px;background:#c0c4cc;border-radius:50%;opacity:0.1;animation:floatUp linear infinite}
+@keyframes floatUp{0%{transform:translateY(100vh) scale(0)}50%{opacity:0.2}100%{transform:translateY(-10vh) scale(1);opacity:0}}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:0.04;pointer-events:none;z-index:0}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.shimmer{background:linear-gradient(90deg,#e0e2e8,#fff,var(--copper-l),#e0e2e8);background-size:200% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 5s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(0.97);opacity:0.7}50%{transform:scale(1.03);opacity:1}}
+.pulse{animation:pulse 3s ease-in-out infinite}
+
+/* CHART */
+.chart-wrap{display:flex;align-items:flex-end;gap:3px;height:100px;padding:10px 0}
+.chart-bar{flex:1;min-width:4px;border-radius:3px 3px 0 0;cursor:pointer;position:relative;transition:filter 0.2s}
+.chart-bar:hover{filter:brightness(1.4)}
+.chart-bar .tip{position:absolute;top:-28px;left:50%;transform:translateX(-50%);background:var(--card2);padding:3px 8px;border-radius:6px;font-size:10px;color:var(--copper);white-space:nowrap;opacity:0;transition:opacity 0.2s;pointer-events:none;border:1px solid var(--border);z-index:5}
+.chart-bar:hover .tip{opacity:1}
+
+/* cover centering */
+.cover-center{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 100px);text-align:center;position:relative}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="pg-count"><span id="pgCur">1</span> / <span id="pgTot">13</span></div>
+<div class="key-hint"><kbd>←</kbd><kbd>→</kbd> navigate</div>
+
+<div class="deck-wrap" id="deckWrap">
+<div class="deck-track" id="deckTrack">
+
+<section class="slide">
+<div class="cover-center">
+<div class="particles" id="particles1"></div>
+<div class="orb" style="width:400px;height:400px;background:var(--copper);top:-100px;right:-100px"></div>
+<div class="orb" style="width:300px;height:300px;background:#c0c4cc;bottom:-80px;left:-80px"></div>
+<div class="reveal" style="margin-bottom:20px;z-index:1"><span class="badge b-copper" style="font-size:12px;padding:7px 20px;letter-spacing:3px;white-space:normal;line-height:1.4">SME GMEs &bull; Hidden Champions of the SME Platform</span></div>
+<h1 class="reveal reveal-d1 shimmer" style="font-size:clamp(38px,8vw,70px);margin-bottom:8px;z-index:1">FlySBS Aviation</h1>
+<p class="reveal reveal-d2" style="font-size:clamp(14px,2.2vw,20px);color:var(--copper);font-weight:500;letter-spacing:5px;z-index:1">FLY ANYTIME &middot; ANYWHERE</p>
+<p class="reveal reveal-d3" style="color:var(--muted);font-size:clamp(14px,1.8vw,17px);max-width:600px;margin:20px auto;z-index:1">India's emerging DGCA-approved private jet charter company — asset-light operations, over 90% repeat client revenue, serving customers across 6 continents</p>
+<div class="reveal reveal-d4 flex" style="justify-content:center;margin-bottom:28px;z-index:1"><span class="badge b-silver">NSE: FLYSBS</span><span class="badge b-emerald">MCap ~₹720 Cr</span><span class="badge b-copper">CMP ~₹415</span></div>
+<div class="reveal reveal-d5" style="z-index:1"><a href="https://x.com/sachprat07" target="_blank" class="x-link"><svg class="x-logo" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>@sachprat07</a><p style="font-size:11px;color:var(--dim);margin-top:10px">Independent Research &bull; April 2026</p></div>
+</div>
+</section>
+
+<section class="slide">
+<h2 class="reveal">Company Snapshot</h2>
+<div class="g g4 mb reveal reveal-d1">
+<div class="card stat"><div class="card-top"></div><span class="v copper">₹415</span><span class="l">Current Price</span><span class="s rose">52W: ₹355 – ₹790</span></div>
+<div class="card stat"><div class="card-top"></div><span class="v">~₹720Cr</span><span class="l">Market Cap</span><span class="s emerald">NSE SME</span></div>
+<div class="card stat"><div class="card-top"></div><span class="v">~15.3x</span><span class="l">TTM P/E</span><span class="s">EPS ~₹27.2</span></div>
+<div class="card stat"><div class="card-top"></div><span class="v emerald">34.6%</span><span class="l">ROCE</span><span class="s emerald">Near debt-free</span></div>
+</div>
+<div class="g g2 reveal reveal-d2">
+<div class="card"><div class="card-top"></div><h3>Company Identity</h3>
+<div class="table-wrap"><table><tr><td>Incorporated</td><td class="tr">August 2020, Chennai</td></tr><tr><td>Listed on</td><td class="tr">NSE SME (August 2025)</td></tr><tr><td>IPO Size</td><td class="tr">₹102.53 Crore (fresh issue)</td></tr><tr><td>Promoter Holding</td><td class="tr">32.47%</td></tr><tr><td>Team Size</td><td class="tr">21 full-time + 6 retainers</td></tr><tr><td>Sector</td><td class="tr">Private Aviation / Charter</td></tr></table></div></div>
+<div class="card"><div class="card-top"></div><h3>Financial Highlights</h3>
+<div class="table-wrap"><table><tr><td>Revenue (Trailing 12M)</td><td class="tr copper fw7">~₹248 Crore</td></tr><tr><td>Net Profit (Trailing 12M)</td><td class="tr emerald fw7">~₹47 Crore</td></tr><tr><td>Operating Margin</td><td class="tr">~25%</td></tr><tr><td>Return on Equity (3Y Avg)</td><td class="tr">27.7%</td></tr><tr><td>Revenue Growth (3Y)</td><td class="tr copper fw7">Robust</td></tr><tr><td>Profit CAGR (3Y)</td><td class="tr emerald fw7">205%</td></tr></table></div></div>
+</div>
+</section>
+
+<section class="slide">
+<h2 class="reveal">How the Business Works</h2>
+<p class="txt mb reveal reveal-d1">FlySBS Aviation is a DGCA-approved private jet charter company based in Chennai. It does not own aircraft — it leases jets and then offers charter services to corporate clients, wealthy individuals, celebrities, and diplomats who need to fly privately, either within India or internationally.</p>
+<div class="g g2 mb reveal reveal-d2">
+<div class="card"><div class="card-top"></div><h3>Dry Lease — The Growth Engine</h3><p class="txt-sm">In a dry lease, FlySBS takes full control of the aircraft. It hires the pilots, manages maintenance, buys fuel, and operates the jet entirely on its own. This means <span class="copper fw7">higher profit margins</span> because the company captures the full value chain. A dry-leased aircraft breaks even at just 37-38 flying hours per month, while FlySBS currently flies about 74 hours — nearly 2x breakeven. Dry lease revenue has grown from 9.5% of total in FY24 to 34% by Q3 FY26.</p></div>
+<div class="card"><div class="card-top"></div><h3>Wet Lease — The Legacy Model</h3><p class="txt-sm">In a wet lease, a global lessor provides the jet along with crew and maintenance. FlySBS acts as marketing and sales intermediary. While this was how the company started and still accounts for ~66% of revenue, <span class="rose fw6">margins are lower</span> because the lessor captures most of the operating value. Strategy is to progressively replace wet leases with dry leases as fleet grows.</p></div>
+</div>
+
+<div class="card reveal reveal-d3"><div class="card-top"></div>
+<h3>Key Operating Numbers (FY25)</h3>
+<div class="stat-row">
+<div class="stat"><span class="v copper pulse">6</span><span class="l">Continents Served</span></div>
+<div class="stat"><span class="v">340+</span><span class="l">Unique Destinations</span></div>
+<div class="stat"><span class="v">479</span><span class="l">Total Departures</span></div>
+</div>
+<div class="stat-row mt">
+<div class="stat"><span class="v emerald">79–90%</span><span class="l">Revenue from Repeat Clients</span></div>
+<div class="stat"><span class="v">87%+</span><span class="l">Revenue from Corporate Clients</span></div>
+<div class="stat"><span class="v">~75%</span><span class="l">Revenue from International Flights</span></div>
+</div>
+</div>
+</section>
+
+<section class="slide">
+<h2 class="reveal">Leadership, Afcom Holdings & Governance Flags</h2>
+<div class="g g2 mb reveal reveal-d1">
+<div class="card"><div class="card-top"></div><h3>Capt. Deepak Parasuraman — Managing Director</h3><p class="txt-sm">A career pilot with 26+ years in aviation and over 20,000 hours of flying experience across 23 aircraft types. He previously ran a private jet business that captured 94% market share. He also founded AFCOM Cargo Airline, giving him deep expertise in both passenger and cargo aviation.</p></div>
+<div class="card"><div class="card-top"></div><h3>Mr. Ambashankar — CEO & Whole-Time Director</h3><p class="txt-sm">23 years of operations management, previously with Mercedes-Benz, Emirates Trading Agency, and Tata Finance. He leads day-to-day operations, safety compliance, and customer relationships.</p></div>
+</div>
+<div class="card mb reveal reveal-d2"><div class="card-top"></div><h3>Kannan Ramakrishnan — Non-Executive Director & Promoter</h3><p class="txt-sm">Nearly 30 years in the luxury automobile industry, including a 20-year association with Mercedes-Benz. This gives him direct access to ultra-high-net-worth individuals and corporate leaders who form the core client base for private jet services.</p></div>
+
+<div class="card card-glow mb reveal reveal-d3"><div class="card-top"></div>
+<h3>The Afcom Holdings Connection — Synergies and Investor Perception</h3>
+<p class="txt-sm">FlySBS has a sister company called <span class="copper fw7">Afcom Holdings Limited</span>, which operates 3 Boeing 737-800 cargo aircraft. The two businesses are fundamentally different — Afcom does scheduled cargo while FlySBS does non-scheduled passenger charter — but they share operational synergies like joint fuel procurement, MRO (maintenance) negotiations, and regulatory expertise that help reduce costs for both companies.</p>
+<p class="txt-sm mt">However, <span class="rose fw7">there is a recurring perception among investors that the promoters are more invested in and focused on Afcom than on FlySBS</span>, given Afcom's larger fleet and the MD's deeper historical roots in cargo aviation.<span class="rose fw7"> This is subjective, but it surfaces frequently in investor discussions and deserves attention from anyone evaluating this stock.</span></p>
+</div>
+
+<div class="risk reveal reveal-d4"><div class="rt">⚠ Deccan Chronicle — A Reputational Shadow</div><div class="rd">The MD's brother, P. Karthik Iyer Parasuraman, is involved in multiple CBI cases, Enforcement Directorate proceedings, and bank fraud complaints connected to the Deccan Chronicle Holdings collapse. While Karthik holds absolutely no stake or directorship in FlySBS — and the company disclosed this clearly in its IPO prospectus — the family association creates an unavoidable reputational overhang.<strong> CARE Ratings flagged this in their Q3 FY26 monitoring report. The Board responded that this "exceeds the mandate of a monitoring agency."</strong></div></div>
+</section>
+
+<section class="slide">
+<h2 class="reveal">Fleet Expansion & Company Timeline</h2>
+<div class="card mb reveal reveal-d1"><div class="card-top"></div>
+<h3>Current & Planned Fleet (April 2026)</h3>
+<div class="table-wrap">
+<table><tr><th>Aircraft</th><th>Seats</th><th>Lease Type</th><th>Status</th></tr>
+<tr><td>Embraer Legacy 600</td><td>13</td><td>Dry Lease</td><td><span class="badge b-emerald">Flying</span></td></tr>
+<tr><td>Dassault Falcon 2000</td><td>Varies</td><td>Wet Lease</td><td><span class="badge b-emerald">Flying</span></td></tr>
+<tr><td>Bombardier Challenger 605</td><td>Varies</td><td>Wet Lease</td><td><span class="badge b-emerald">Flying</span></td></tr>
+<tr><td>Embraer Legacy (2nd)</td><td>13</td><td>Dry Lease</td><td><span class="badge b-emerald">Inducted Mar 2026</span></td></tr>
+<tr><td>Embraer Legacy (3rd)</td><td>13</td><td>Dry Lease</td><td><span class="badge b-copper">In-Principle Agreed</span></td></tr>
+<tr><td>Embraer Legacy (4th)</td><td>13</td><td>Dry Lease</td><td><span class="badge b-copper">In-Principle Agreed</span></td></tr>
+<tr><td>Cessna Citation CJ2+ (1st)</td><td>7</td><td>Dry Lease</td><td><span class="badge b-copper">Expected by Q1 FY27</span></td></tr>
+<tr><td>Cessna Citation CJ2+ (2nd)</td><td>7</td><td>Dry Lease</td><td><span class="badge b-copper">Expected by Q1 FY27</span></td></tr>
+<tr><td>Cessna Citation CJ2+ (3rd)</td><td>7</td><td>Dry Lease</td><td><span class="badge b-copper">Expected by Q1 FY27</span></td></tr></table>
+</div>
+<p class="txt-sm mt"><span class="rose fw6">Important note:</span> The original plan targeted multiple inductions in Q4 FY26, but only one new induction came in Q4 FY26 against estimates. The recent Iran-US conflict and associated disruption in international aviation logistics may push the timeline for remaining fleet additions (including the two 13-seaters signed in-principle) beyond Q1 FY27. Import processes, regulatory clearances, and global aircraft availability could all be affected by the ongoing geopolitical situation.</p>
+</div>
+
+<div class="card reveal reveal-d2"><div class="card-top"></div>
+<h3>Company Journey</h3>
+<div class="tl">
+<div class="tl-i"><span class="tl-yr">2020</span><div class="tl-tx">Company incorporated in Chennai. Entered a wet lease with a global lessor and commenced chartering services.</div></div>
+<div class="tl-i"><span class="tl-yr">2022</span><div class="tl-tx">Completed first international charter flight. Built up a base of 25 unique clients.</div></div>
+<div class="tl-i"><span class="tl-yr">2023</span><div class="tl-tx">Inducted the first dry-lease aircraft (Embraer Legacy 600). Received NSOP permit from DGCA.</div></div>
+<div class="tl-i"><span class="tl-yr">2024</span><div class="tl-tx">Revenue crossed ₹100 Crore. Received CAMO approval. Converted from Private to Public Limited company.</div></div>
+<div class="tl-i"><span class="tl-yr">2025</span><div class="tl-tx">Successful IPO on NSE SME in August, raising ₹102.53 Crore. Approved UAE subsidiary for international expansion in December. Recognized by Government of Madhya Pradesh.</div></div>
+<div class="tl-i"><span class="tl-yr">2026</span><div class="tl-tx">Inducted second Embraer Legacy in March. Further fleet additions in progress, though timelines may shift due to Iran-US conflict disruption.</div></div>
+</div></div>
+</section>
+
+<section class="slide">
+<h2 class="reveal">Financial Performance</h2>
+<div class="card mb reveal reveal-d1"><div class="card-top"></div>
+<h3>Profit & Loss Summary (₹ Crore)</h3>
+<div class="table-wrap">
+<table><tr><th></th><th>FY21</th><th>FY22</th><th>FY23</th><th>FY24</th><th>FY25</th><th>TTM</th></tr>
+<tr><td>Revenue</td><td>16</td><td>27</td><td>34</td><td>106</td><td>194</td><td class="copper fw7">~248</td></tr>
+<tr><td>Operating Profit</td><td>2</td><td>1</td><td>5</td><td>15</td><td>40</td><td>63</td></tr>
+<tr><td>Operating Margin</td><td>13%</td><td>4%</td><td>14%</td><td>14%</td><td>21%</td><td class="emerald fw7">~25%</td></tr>
+<tr><td>Net Profit</td><td>2</td><td>1</td><td>3</td><td>11</td><td>28</td><td class="emerald fw7">~47</td></tr></table>
+</div>
+<p class="txt-sm mt">Revenue has grown from ₹16 Crore in FY21 to approximately ₹248 Crore on a trailing basis — a robust compound annual growth over three years. Net profit has compounded at 205%. Operating margins have improved from 14% to 25% as the company shifts to higher-margin dry lease operations.</p>
+</div>
+
+<div class="card mb reveal reveal-d2"><div class="card-top"></div>
+<h3>Revenue Growth Visual</h3>
+<div class="bar-row"><span class="bar-lbl">FY21</span><div class="bar-track"><div class="bar-fill bf-copper" data-w="6%">₹16</div></div></div>
+<div class="bar-row"><span class="bar-lbl">FY22</span><div class="bar-track"><div class="bar-fill bf-copper" data-w="11%">₹27</div></div></div>
+<div class="bar-row"><span class="bar-lbl">FY23</span><div class="bar-track"><div class="bar-fill bf-copper" data-w="14%">₹34</div></div></div>
+<div class="bar-row"><span class="bar-lbl">FY24</span><div class="bar-track"><div class="bar-fill bf-copper" data-w="43%">₹106</div></div></div>
+<div class="bar-row"><span class="bar-lbl">FY25</span><div class="bar-track"><div class="bar-fill bf-emerald" data-w="78%">₹194</div></div></div>
+<div class="bar-row"><span class="bar-lbl">TTM</span><div class="bar-track"><div class="bar-fill bf-copper" data-w="100%">~₹248</div></div></div>
+</div>
+
+<div class="card reveal reveal-d3"><div class="card-top"></div>
+<h3>Forward Guidance — With Key Caveats</h3>
+<p class="txt-sm">During Q3 FY26, they were on track to deliver <span class="copper fw7">significantly better than FY25</span>. Extrapolated estimates:</p>
+<div class="table-wrap">
+<table class="mt"><tr><td>FY26/FY27 Estimate</td><td class="tr copper fw7">₹330+ Crore</td><td class="tr txt-sm">Subject to fleet timelines</td></tr></table>
+</div>
+<p class="txt-sm mt"><span class="rose fw7">However, this guidance was given before the Iran-US conflict escalated.</span> Since then, global aviation fuel (ATF) prices have come under upward pressure, and operational disruptions in the Middle East — which accounts for a notable portion of FlySBS's international charter demand — may create headwinds. The ~330+Cr revenue target may be difficult to achieve if fuel costs remain elevated, international charter bookings from the Gulf region decline, and planned fleet inductions face delays due to disrupted global aircraft logistics. <span class="copper fw7">Investors should treat these projections with caution until the next update provides clarity on the actual impact.</span></p>
+</div>
+</section>
+
+<section class="slide">
+<h2 class="reveal">Where the Revenue Comes From</h2>
+<div class="card mb reveal reveal-d1"><div class="card-top"></div>
+<h3>International vs Domestic Revenue (Q3 FY26)</h3>
+<div class="bar-row"><span class="bar-lbl">Int'l</span><div class="bar-track"><div class="bar-fill bf-copper" data-w="70%">₹59.5 Cr — 70%</div></div></div>
+<div class="bar-row"><span class="bar-lbl">Domestic</span><div class="bar-track"><div class="bar-fill bf-slate" data-w="30%">₹25.2 Cr — 30%</div></div></div>
+<p class="txt-sm mt">International charters are the dominant revenue source, covering destinations across Europe, Africa, the Middle East, Japan, Southeast Asia, CIS countries, and Australia. International operations only started in 2022 but have rapidly become the company's core business.</p>
+</div>
+<div class="card mb reveal reveal-d2"><div class="card-top"></div>
+<h3>Dry Lease vs Wet Lease Revenue (Q3 FY26)</h3>
+<div class="bar-row"><span class="bar-lbl">Wet</span><div class="bar-track"><div class="bar-fill bf-rose" data-w="66%">₹56.1 Cr — 66%</div></div></div>
+<div class="bar-row"><span class="bar-lbl">Dry</span><div class="bar-track"><div class="bar-fill bf-emerald" data-w="34%">₹28.6 Cr — 34%</div></div></div>
+<p class="txt-sm mt">Dry lease share has been steadily rising — from 9.5% in FY24, to 23% in FY25, and now 34% in Q3 FY26. The long-term plan is to shift entirely to dry lease for better control and higher margins.</p>
+</div>
+<div class="g g2 reveal reveal-d3">
+<div class="card"><div class="card-top"></div><h3>Repeat vs First-Time Clients</h3>
+<div class="bar-row"><span class="bar-lbl">Repeat</span><div class="bar-track"><div class="bar-fill bf-emerald" data-w="79%">79%</div></div></div>
+<div class="bar-row"><span class="bar-lbl">New</span><div class="bar-track"><div class="bar-fill bf-copper" data-w="21%">21%</div></div></div>
+<p class="txt-sm mt">Repeat revenue was 95.6% in FY24, now 79%. This decline is healthy — it means FlySBS is acquiring 45 new clients (₹38.7 Cr revenue) while retaining its base.</p></div>
+<div class="card"><div class="card-top"></div><h3>Corporate vs Individual Clients</h3>
+<div class="bar-row"><span class="bar-lbl">Corporate</span><div class="bar-track"><div class="bar-fill bf-copper" data-w="87%">87%</div></div></div>
+<div class="bar-row"><span class="bar-lbl">HNI/UHNI</span><div class="bar-track"><div class="bar-fill bf-slate" data-w="13%">13%</div></div></div>
+<p class="txt-sm mt">Corporates are the backbone. HNI share rising from 5.3% (FY24) to 12.6% as the brand gains luxury market recognition.</p></div>
+</div>
+</section>
+
+<section class="slide">
+<h2 class="reveal">The Market Opportunity</h2>
+<div class="g g3 mb reveal reveal-d1">
+<div class="card stat"><div class="card-top"></div><span class="v copper">$274M</span><span class="l">India Private Jet Market (FY24)</span><span class="s emerald">→ $500-550M by FY29</span></div>
+<div class="card stat"><div class="card-top"></div><span class="v">13–15%</span><span class="l">Expected Annual Growth</span></div>
+<div class="card stat"><div class="card-top"></div><span class="v">116</span><span class="l">Licensed Operators</span><span class="s rose">Only ~74 jets available</span></div>
+</div>
+
+<div class="card mb reveal reveal-d2"><div class="card-top"></div>
+<h3>India Is Massively Underpenetrated Compared to the World</h3>
+<p class="txt-sm mb">India has 6,884 ultra-high-net-worth individuals and is the world's fourth-largest economy — yet it has only about 120 registered private jets. Compare that to the United States, which has over 14,500 private jets, or Europe with roughly 3,000. This enormous gap between wealth and private aviation infrastructure is the fundamental reason why the market is expected to nearly double in the next five years.</p>
+<div class="bar-row"><span class="bar-lbl">USA</span><div class="bar-track"><div class="bar-fill bf-copper" data-w="100%">14,500+ jets</div></div></div>
+<div class="bar-row"><span class="bar-lbl">Europe</span><div class="bar-track"><div class="bar-fill bf-copper" data-w="22%">~3,000 jets</div></div></div>
+<div class="bar-row"><span class="bar-lbl">India</span><div class="bar-track"><div class="bar-fill bf-rose" data-w="3%">~120 jets</div></div></div>
+<p class="txt-sm mt">There are <span class="copper fw7">no listed competitors</span> in India's private jet charter space. The largest unlisted player, VSR Ventures, holds about 33% national share. FlySBS has ~34% of South India and ~7-8% nationally.</p>
+</div>
+
+<div class="card reveal reveal-d3"><div class="card-top"></div>
+<h3>What Is Driving the Growth</h3>
+<p class="txt-sm">Private jet travel for a group of 13 passengers from Chennai to London costs roughly ₹11.03 lakh per person round trip — almost identical to ₹11.04 lakh for first-class commercial tickets. But the private jet saves 5-7 hours each way, with no layovers, no airport queues, and complete privacy. India's rising number of wealthy individuals, the government's UDAN scheme building 100+ new airports, growing economic activity in Tier 2 and Tier 3 cities, and the post-COVID shift toward private travel are all creating strong structural demand for this service.</p>
+</div>
+</section>
+
+<section class="slide">
+<h2 class="reveal">What Protects the Business (Competitive Moat)</h2>
+<div class="reveal reveal-d1">
+<div class="moat"><div class="moat-ic">🛡️</div><div><div class="moat-t">Extremely High Regulatory Barriers</div><div class="moat-d">Getting a Non-Scheduled Operator Permit from DGCA takes 2 to 2.5 years with extensive certifications, safety audits, trained crew, and certified infrastructure. New competitors cannot enter quickly.</div></div></div>
+<div class="moat"><div class="moat-ic">🔄</div><div><div class="moat-t">Exceptional Client Retention</div><div class="moat-d">In FY24, 95.6% of revenue came from repeat clients. Remarkably, 90% of FlySBS clients were first-time private jet users — FlySBS created the demand and owns the relationship. Once clients experience the service, switching costs are high.</div></div></div>
+<div class="moat"><div class="moat-ic">✈️</div><div><div class="moat-t">Strong Unit Economics on Dry Lease</div><div class="moat-d">Each aircraft breaks even at 37-38 flying hours per month, while actual utilization runs at 74+ hours. The transition from wet to dry lease is expected to add 200-300 basis points to profit margins.</div></div></div>
+<div class="moat"><div class="moat-ic">⏱️</div><div><div class="moat-t">Unmatched Operational Speed</div><div class="moat-d">FlySBS can arrange a domestic charter with just 4 hours notice and international flights with 6-8 hours — compared to 42-72 hours for most competitors. This comes from maintaining 3 complete crew sets per aircraft.</div></div></div>
+<div class="moat"><div class="moat-ic">🏢</div><div><div class="moat-t">Afcom Holdings Synergies</div><div class="moat-d">The sister company's cargo operations provide shared MRO negotiations, fuel procurement leverage, and regulatory expertise — a cost advantage no other private jet charter operator in India can replicate.</div></div></div>
+<div class="moat"><div class="moat-ic">🏷️</div><div><div class="moat-t">The Only Listed Pure-Play in India</div><div class="moat-d">No other publicly listed company is focused exclusively on private jet charter. This gives FlySBS a unique advantage for raising capital, building institutional visibility, and attracting talent.</div></div></div>
+</div>
+</section>
+
+<section class="slide">
+<h2 class="reveal">Key Risks to the Investment</h2>
+<div class="reveal reveal-d1">
+<div class="risk"><div class="rt">🔴 Accident or Safety Incident — Existential</div><div class="rd">A single accident could lead to temporary or permanent shutdown. The fleet consists of pre-owned aircraft roughly 10 years old. The company maintains strict DGCA safety protocols with an in-house CAMO team and DGCA-approved MRO partner, but the tail risk of a catastrophic event remains the single biggest threat.</div></div>
+<div class="risk"><div class="rt">🔴 Technical Grounding Could Halt Revenue</div><div class="rd">Since the jets are about a decade old, there is meaningful risk of technical issues grounding one or more aircraft for extended periods. With only a few dry-lease aircraft currently operational, even one aircraft grounded for maintenance could immediately impact 15-20% of revenue.</div></div>
+<div class="risk"><div class="rt">🔴 Middle East Disruption — A Direct and Reverberating Threat</div><div class="rd">Approximately 70% of FlySBS's revenue comes from international routes, with the Middle East being a key market both as a destination and a source of corporate clients. <span class="rose fw7">The recent disruption from the Iran-US conflict has reverberating effects across the entire Gulf aviation corridor.</span> Dubai, a major hub for FlySBS's international clientele, is directly affected. The downstream impacts include: dampened demand from Dubai-based corporate clients, disrupted routing and overflight permissions, increased insurance costs for aircraft flying in or near conflict zones, elevated aviation fuel prices globally, and a broader chilling effect on international charter bookings. This is not theoretical — it is an active geopolitical situation with real commercial consequences for a company so heavily exposed to international revenue.</div></div>
+<div class="risk"><div class="rt">🔴 Fuel Costs and Currency Exposure</div><div class="rd">Aviation turbine fuel is one of the largest operating expenses, and it is entirely market-driven. With ~70% of revenue from international charters, FlySBS faces significant forex exposure. A weakening rupee or sustained fuel price spike — both of which are becoming more likely in the current geopolitical environment — could meaningfully compress margins.</div></div>
+<div class="risk risk-y"><div class="rt">🟡 Pre-IPO Lock-in Expiry — Supply Pressure Ahead (~Aug 2026)</div><div class="rd">The one-year lock-in period for pre-IPO investors expires around August 2026. When this lifts, a large block of shares becomes eligible for sale, typically creating supply pressure. Promoter holding is already at 32.47% (down from 47% pre-IPO). Additional selling by early investors could further erode sentiment.</div></div>
+<div class="risk risk-y"><div class="rt">🟡 Governance Concerns and Promoter Perception</div><div class="rd">Several governance flags: the Deccan Chronicle family connection, two auditor resignations in three years, initial queries by CARE Ratings on fund transfers <span class="rose fw7"> (clarified by management as strictly for fleet with no deviations), </span>. Added to this is the persistent perception that promoters may be more focused on Afcom Holdings. Individually minor; collectively, a governance overhang.</div></div>
+<div class="risk risk-y"><div class="rt">🟡 SME Platform Liquidity & Bulk Deal Volatility</div><div class="rd">As an SME listed stock, FlySBS is structurally susceptible to lower market liquidity. Furthermore, bulk deal entries and sudden exits by High Net-Worth Individuals (HNIs) and early investors can significantly hamper the stock price and drive extreme volatility, entirely independent of the underlying business fundamentals.</div></div>
+<div class="risk risk-y"><div class="rt">🟡 Execution Risk on Fleet Expansion and Target Guidance</div><div class="rd">The ~330+Cr revenue target is entirely dependent on timely fleet induction. Sourcing pre-owned jets globally is competitive with limited supply. Any delays — exacerbated by the current geopolitical environment — directly impact revenue targets. The ~330+Cr revenue target was issued before the Iran-US conflict escalated.</div></div>
+</div>
+</section>
+
+<section class="slide">
+<h2 class="reveal">IPO Fund Utilization</h2>
+<div class="card mb reveal reveal-d1"><div class="card-top"></div>
+<h3>How the ₹102.53 Crore IPO Money Has Been Used (as of December 31, 2025)</h3>
+<div class="table-wrap">
+<table><tr><th>Purpose</th><th>Allocated</th><th>Spent So Far</th><th>Remaining</th></tr>
+<tr><td>Acquiring pre-owned aircraft on dry lease</td><td>₹80.47 Cr</td><td>₹64.88 Cr</td><td class="copper fw7">₹15.59 Cr</td></tr>
+<tr><td>Repaying outstanding borrowings</td><td>₹7.27 Cr</td><td>₹7.27 Cr</td><td class="emerald">₹0 (fully repaid Nov'25)</td></tr>
+<tr><td>General corporate purposes</td><td>₹9.79 Cr</td><td>₹9.10 Cr</td><td>₹0.69 Cr</td></tr>
+<tr><td>IPO issue expenses</td><td>₹4.99 Cr</td><td>₹4.99 Cr</td><td>₹0</td></tr>
+<tr><td class="copper fw7">Total</td><td class="copper fw7">₹102.53 Cr</td><td class="copper fw7">₹86.24 Cr</td><td class="copper fw7">₹16.29 Cr remaining</td></tr></table>
+</div>
+</div>
+<div class="g g2 reveal reveal-d2">
+<div class="card"><div class="card-top"></div><h3>What the Monitoring Agency Flagged</h3><p class="txt-sm">CARE Ratings initially noted that FlySBS transferred IPO proceeds to its regular cash credit (CC) account for international payments, as the designated monitoring account was not linked to a forex platform. <span class="copper fw7"> However, management has explicitly clarified that there are no deviations in fund utilization as per monitoring agency reports. The IPO funds are strictly allocated for the fleet, and any minor ancillary expenses were correctly accounted for under General Corporate Purposes (GCP).</span></p></div>
+<div class="card"><div class="card-top"></div><h3>Where Unused Funds Are Parked</h3><p class="txt-sm">The remaining ₹16.29 Crore is in fixed deposits with ICICI Bank: ₹10 Cr (maturing April 2026), ₹5 Cr (May 2026), and ₹2 Cr (May 2026) — all earning 5% annual interest. The company's outstanding term loan was fully foreclosed on November 27, 2025. The Board also approved setting up a wholly-owned subsidiary in the UAE in December 2025 to expand international operations.</p></div>
+</div>
+</section>
+
+<section class="slide">
+<h2 class="reveal">Valuation & Stock Price</h2>
+<div class="g g4 mb reveal reveal-d1">
+<div class="card stat"><div class="card-top"></div><span class="v copper">₹415</span><span class="l">Current Price</span></div>
+<div class="card stat"><div class="card-top"></div><span class="v rose">–47%</span><span class="l">From 52W High</span></div>
+<div class="card stat"><div class="card-top"></div><span class="v">~15.3x</span><span class="l">TTM P/E</span></div>
+<div class="card stat"><div class="card-top"></div><span class="v">2.7x</span><span class="l">Price-to-Book</span></div>
+</div>
+
+<div class="card mb reveal reveal-d2"><div class="card-top"></div>
+<h3>Price Journey Since IPO Listing</h3>
+<p class="txt-sm mb">FlySBS listed at ₹448.85 on August 8, 2025 — a 99% premium to its IPO price of ₹225. The stock surged to ₹790 within 18 days (August 26). Since then, it has corrected ~47% to ~₹415 in the broader SME sell-off.</p>
+<div class="chart-wrap" id="priceChart"></div>
+<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--dim);padding:0 4px"><span>Aug '25 (Listing)</span><span>Oct '25</span><span>Dec '25</span><span>Feb '26</span><span>Apr '26</span></div>
+</div>
+
+<div class="g g2 reveal reveal-d3">
+<div class="card"><div class="card-top"></div><h3>Valuation Scenarios</h3>
+<div class="table-wrap">
+<table><tr><th>Scenario</th><th>FY26E Rev</th><th>FY26E PAT</th><th>P/E</th></tr>
+<tr><td class="copper fw6">At Guidance</td><td>₹330+ Cr</td><td>~₹53 Cr</td><td class="emerald fw7">~13.6x</td></tr>
+<tr><td>Conservative</td><td>₹280-300 Cr</td><td>~₹48-49 Cr</td><td>~14.7x – 15.0x</td></tr></table>
+</div>
+<p class="txt-sm mt">If management delivers ₹330+ Cr revenue with ~16% net margins, the stock trades at ~13.6x forward earnings — attractive for a high-growth business. But SME execution risks and the current geopolitical headwinds warrant a meaningful discount.</p></div>
+<div class="card"><div class="card-top"></div><h3>Shareholding (Dec 2025)</h3>
+<div class="bar-row"><span class="bar-lbl">Promoter</span><div class="bar-track"><div class="bar-fill bf-copper" data-w="32.5%">32.47%</div></div></div>
+<div class="bar-row"><span class="bar-lbl">FII</span><div class="bar-track"><div class="bar-fill bf-slate" data-w="5%">2.15%</div></div></div>
+<div class="bar-row"><span class="bar-lbl">DII</span><div class="bar-track"><div class="bar-fill bf-rose" data-w="3%">1.21% ↓</div></div></div>
+<div class="bar-row"><span class="bar-lbl">Public</span><div class="bar-track"><div class="bar-fill bf-copper" data-w="64%">64.16%</div></div></div>
+<p class="txt-sm mt rose">DIIs halved their stake (3.21% → 1.21%) in one quarter. Pre-IPO lock-in expiry around August 2026 could add further selling pressure.</p></div>
+</div>
+</section>
+
+<section class="slide">
+<h2 class="reveal">Summary & Disclaimer</h2>
+<div class="card card-glow mb reveal reveal-d1"><div class="card-top"></div>
+<h3 style="color:var(--emerald)">The Bull Case for FlySBS</h3>
+<p class="txt-sm">The only publicly listed pure-play company in India's $274 million private jet charter market, which is expected to nearly double to $500-550 million by FY29. Revenue has been compounding rapidly over three years, with improving margins as the company transitions to a higher-margin dry lease model. The balance sheet is virtually debt-free with a 34.6% return on capital. India has a massive demand-supply gap — 6,884 ultra-high-net-worth individuals but only 120 private jets. Fleet expansion is funded through IPO proceeds and underway, with management guiding for a ~330+Cr revenue target. The regulatory moat (2+ years for a new NSOP permit) and 90%+ repeat client revenue provide strong barriers to competition.</p>
+</div>
+
+<div class="card mb reveal reveal-d2" style="border-color:rgba(251,113,133,0.2)"><div class="card-top" style="background:linear-gradient(90deg,transparent,var(--rose),transparent)"></div>
+<h3 style="color:var(--rose)">The Bear Case for FlySBS</h3>
+<p class="txt-sm">The existential tail risk of an accident or technical grounding with pre-owned aircraft (~10 years old) is a risk worth mentioning. Other key points to consider: Perception of promoter focus being split between Afcom Holdings and FlySBS, the remote Deccan Chronicle family connection. Pre-IPO lock-in expiry around August 2026 and potential bulk deal exits by early investors may add severe selling pressure. The Iran-US conflict has reverberating effects on the Middle East, which is a key market — this could dampen international charter demand, push up fuel costs, and delay fleet inductions. The ~330+Cr revenue target was issued before the geopolitical situation escalated and may no longer be achievable.</p>
+</div>
+
+<div style="text-align:center;margin:18px 0" class="reveal reveal-d3"><span class="badge b-copper" style="font-size:12px;padding:7px 22px;letter-spacing:3px;white-space:normal;line-height:1.4">SME GMEs &bull; Hidden Champions of the SME Platform</span></div>
+
+<div class="disc reveal reveal-d4"><strong>DISCLAIMER:</strong> This document is prepared for <strong>educational and informational purposes only</strong> and does not constitute investment advice, a recommendation, or an offer to buy or sell any securities. The author is not a SEBI-registered investment advisor. All information is sourced from publicly available company filings, NSE disclosures, company presentations, and third-party sources believed to be reliable but not independently verified. Past performance is not indicative of future results. The author may or may not hold positions in the securities discussed. SME stocks carry substantially higher risk including limited analyst coverage and higher volatility. <strong>Invest at your own risk. Do your own due diligence and consult a qualified financial advisor before making investment decisions.</strong></div>
+
+<div style="text-align:center;margin-top:20px" class="reveal reveal-d5"><a href="https://x.com/sachprat07" target="_blank" class="x-link" style="font-size:16px"><svg class="x-logo" viewBox="0 0 24 24" fill="currentColor" style="width:22px;height:22px"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>@sachprat07</a><p style="font-size:11px;color:var(--dim);margin-top:10px">Data as of April 13, 2026 &bull; Sources: NSE, Screener.in, Company Filings, CARE Ratings</p></div>
+</section>
+
+</div></div>
+
+<div class="nav-bar">
+<button class="nav-btn" id="prevBtn" onclick="goSlide(current-1)">&#8249;</button>
+<div class="nav-dots" id="navDots"></div>
+<button class="nav-btn" id="nextBtn" onclick="goSlide(current+1)">&#8250;</button>
+</div>
+
+<script>
+const track=document.getElementById('deckTrack'),wrap=document.getElementById('deckWrap'),slides=document.querySelectorAll('.slide'),total=slides.length;
+let current=0;document.getElementById('pgTot').textContent=total;
+const dotsC=document.getElementById('navDots');
+for(let i=0;i<total;i++){const d=document.createElement('button');d.className='nav-dot'+(i===0?' active':'');d.onclick=()=>goSlide(i);dotsC.appendChild(d)}
+function goSlide(n){if(n<0||n>=total)return;current=n;track.style.transform='translateX(-'+current*100+'%)';document.getElementById('pgCur').textContent=current+1;document.querySelectorAll('.nav-dot').forEach(function(d,i){d.classList.toggle('active',i===current)});document.getElementById('prevBtn').disabled=current===0;document.getElementById('nextBtn').disabled=current===total-1;triggerReveals(current);slides[current].scrollTop=0}
+function triggerReveals(si){var els=slides[si].querySelectorAll('.reveal');els.forEach(function(el){el.classList.remove('show')});requestAnimationFrame(function(){setTimeout(function(){els.forEach(function(el){el.classList.add('show')})},80)});slides[si].querySelectorAll('.bar-fill[data-w]').forEach(function(bar){bar.style.width='0';setTimeout(function(){bar.style.width=bar.dataset.w},250)})}
+triggerReveals(0);
+document.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key==='ArrowDown')goSlide(current+1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')goSlide(current-1)});
+
+var tsx=0,tsy=0,tdx=0,sw=false, isVert=false, isHoriz=false;
+wrap.addEventListener('touchstart',function(e){
+    tsx=e.touches[0].clientX;tsy=e.touches[0].clientY;
+    tdx=0;sw=false; isVert=false; isHoriz=false;
+},{passive:true});
+wrap.addEventListener('touchmove',function(e){
+    if(e.target.closest('.table-wrap') || e.target.closest('table')) return;
+    var dx=e.touches[0].clientX-tsx, dy=e.touches[0].clientY-tsy;
+    
+    // Lock scrolling direction once per gesture
+    if(!isVert && !isHoriz) {
+        if(Math.abs(dy) > 8 && Math.abs(dy) > Math.abs(dx)) {
+            isVert = true;
+        } else if(Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) {
+            isHoriz = true;
+        }
+    }
+    
+    if(isHoriz){
+        sw=true;tdx=dx;
+        track.classList.add('swiping');
+        track.style.transform='translateX('+(-(current*100)+(dx/wrap.offsetWidth)*100)+'%)'
+        if(e.cancelable) e.preventDefault();
+    }
+},{passive:false});
+wrap.addEventListener('touchend',function(){
+    track.classList.remove('swiping');
+    if(sw && isHoriz){
+        if(tdx<-50)goSlide(current+1);
+        else if(tdx>50)goSlide(current-1);
+        else goSlide(current)
+    }
+    sw=false; isVert=false; isHoriz=false;
+});
+
+var pd=[449,705,790,569,530,510,490,470,500,444,489,514,488,465,492,508,485,500,413,392,416,415],ce=document.getElementById('priceChart'),mx=Math.max.apply(null,pd),mn=Math.min.apply(null,pd);
+pd.forEach(function(p,i){var b=document.createElement('div');b.className='chart-bar';b.style.height=((p-mn)/(mx-mn))*85+15+'%';b.style.background=p>600?'var(--emerald)':p>480?'var(--copper)':'var(--rose)';b.style.opacity=0.45+(i/pd.length)*0.55;b.innerHTML='<span class="tip">\u20B9'+p+'</span>';ce.appendChild(b)});
+var pc=document.getElementById('particles1');if(pc)for(var i=0;i<25;i++){var p=document.createElement('div');p.className='particle';p.style.left=Math.random()*100+'%';p.style.animationDuration=(5+Math.random()*8)+'s';p.style.animationDelay=Math.random()*6+'s';p.style.width=p.style.height=(1+Math.random()*2)+'px';pc.appendChild(p)}
+</script>
+</body>
+</html>
