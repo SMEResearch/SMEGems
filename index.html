@@ -45,6 +45,43 @@
     --border: rgba(244,240,232,0.1);
   }
 
+  /* ── FLOATING SCROLL ARROWS ── */
+.scroll-nav {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 99;
+}
+
+.scroll-btn {
+  width: 40px; 
+  height: 40px;
+  background: rgba(5, 17, 31, 0.85);
+  border: 0.5px solid var(--border);
+  color: var(--gold);
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  font-size: 18px;
+  backdrop-filter: blur(4px);
+  transition: all 0.2s;
+  outline: none;
+}
+
+.scroll-btn:hover { 
+  border-color: var(--gold); 
+  background: rgba(232, 160, 32, 0.1); 
+}
+
+@media (max-width: 700px) {
+  .scroll-nav { bottom: 20px; right: 20px; }
+}
+
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   html { scroll-behavior: smooth; }
@@ -881,8 +918,8 @@
         </div>
       </div>
       <div class="card-footer">
-        <a href="Oriana.html" target="_blank" class="btn-report" onclick="trackReport('Oriana Power')">READ INSIGHT →</a>
-        <a href="Oriana.html" target="_blank" class="btn-preview" onclick="trackReport('Oriana Power')">↗</a>
+        <a href="Oriana.html" class="btn-report" onclick="trackReport('Oriana Power')">READ INSIGHT →</a>
+        <a href="Oriana.html" class="btn-preview" onclick="trackReport('Oriana Power')">↗</a>
       </div>
     </div>
 
@@ -921,8 +958,8 @@
         </div>
       </div>
       <div class="card-footer">
-        <a href="OBSC.html" target="_blank" class="btn-report" onclick="trackReport('OBSC Perfection')">READ INSIGHT →</a>
-        <a href="OBSC.html" target="_blank" class="btn-preview" onclick="trackReport('OBSC Perfection')">↗</a>
+        <a href="OBSC.html" class="btn-report" onclick="trackReport('OBSC Perfection')">READ INSIGHT →</a>
+        <a href="OBSC.html" class="btn-preview" onclick="trackReport('OBSC Perfection')">↗</a>
       </div>
     </div>
 
@@ -961,8 +998,8 @@
         </div>
       </div>
       <div class="card-footer">
-        <a href="LTElevator.html" target="_blank" class="btn-report" onclick="trackReport('L.T. Elevator')">READ INSIGHT →</a>
-        <a href="LTElevator.html" target="_blank" class="btn-preview" onclick="trackReport('L.T. Elevator')">↗</a>
+        <a href="LTElevator.html" class="btn-report" onclick="trackReport('L.T. Elevator')">READ INSIGHT →</a>
+        <a href="LTElevator.html" class="btn-preview" onclick="trackReport('L.T. Elevator')">↗</a>
       </div>
     </div>
 
@@ -1001,8 +1038,8 @@
         </div>
       </div>
       <div class="card-footer">
-        <a href="Zappfresh.html" target="_blank" class="btn-report" onclick="trackReport('DSM Fres Foods')">READ INSIGHT →</a>
-        <a href="Zappfresh.html" target="_blank" class="btn-preview" onclick="trackReport('DSM Fresh Foods')">↗</a>
+        <a href="Zappfresh.html" class="btn-report" onclick="trackReport('DSM Fres Foods')">READ INSIGHT →</a>
+        <a href="Zappfresh.html" class="btn-preview" onclick="trackReport('DSM Fresh Foods')">↗</a>
       </div>
     </div>
 
@@ -1041,8 +1078,8 @@
         </div>
       </div>
         <div class="card-footer">
-        <a href="Aimtron.html" target="_blank" class="btn-report" onclick="trackReport('Aimtron Electronics')">READ INSIGHT →</a>
-        <a href="Aimtron.html" target="_blank" class="btn-preview" onclick="trackReport('Aimtron Electronics')">↗</a>
+        <a href="Aimtron.html" class="btn-report" onclick="trackReport('Aimtron Electronics')">READ INSIGHT →</a>
+        <a href="Aimtron.html" class="btn-preview" onclick="trackReport('Aimtron Electronics')">↗</a>
       </div>
     </div>
 
@@ -1081,8 +1118,8 @@
         </div>
       </div>
        <div class="card-footer">
-        <a href="Monolithisch.html" target="_blank" class="btn-report" onclick="trackReport('Monolithisch India')">READ INSIGHT →</a>
-        <a href="Monolithisch.html" target="_blank" class="btn-preview" onclick="trackReport('Monolithisch India')">↗</a>
+        <a href="Monolithisch.html" class="btn-report" onclick="trackReport('Monolithisch India')">READ INSIGHT →</a>
+        <a href="Monolithisch.html" class="btn-preview" onclick="trackReport('Monolithisch India')">↗</a>
       </div>
     </div>
 
@@ -1121,8 +1158,8 @@
         </div>
       </div>
         <div class="card-footer">
-        <a href="Yashhighvoltage.html" target="_blank" class="btn-report" onclick="trackReport('Yash Highvoltage')">READ INSIGHT →</a>
-        <a href="Yashhighvoltage.html" target="_blank" class="btn-preview" onclick="trackReport('Yash Highvoltage')">↗</a>
+        <a href="Yashhighvoltage.html" class="btn-report" onclick="trackReport('Yash Highvoltage')">READ INSIGHT →</a>
+        <a href="Yashhighvoltage.html" class="btn-preview" onclick="trackReport('Yash Highvoltage')">↗</a>
       </div>
     </div>
 
@@ -1161,8 +1198,8 @@
         </div>
       </div>
        <div class="card-footer">
-        <a href="CFF.html" target="_blank" class="btn-report" onclick="trackReport('CFF Fluid Control')">READ INSIGHT →</a>
-        <a href="CFF.html" target="_blank" class="btn-preview" onclick="trackReport('CFF Fluid Control')">↗</a>
+        <a href="CFF.html" class="btn-report" onclick="trackReport('CFF Fluid Control')">READ INSIGHT →</a>
+        <a href="CFF.html" class="btn-preview" onclick="trackReport('CFF Fluid Control')">↗</a>
       </div>
     </div>
 
@@ -1201,8 +1238,8 @@
         </div>
       </div>
       <div class="card-footer">
-        <a href="GSMFoils.html" target="_blank" class="btn-report" onclick="trackReport('GSM Foils')">READ INSIGHT →</a>
-        <a href="GSMFoils.html" target="_blank" class="btn-preview" onclick="trackReport('GSM Foils')">↗</a>
+        <a href="GSMFoils.html" class="btn-report" onclick="trackReport('GSM Foils')">READ INSIGHT →</a>
+        <a href="GSMFoils.html" class="btn-preview" onclick="trackReport('GSM Foils')">↗</a>
       </div>
     </div>
 
@@ -1241,8 +1278,8 @@
         </div>
       </div>
       <div class="card-footer">
-        <a href="Osel.html" target="_blank" class="btn-report" onclick="trackReport('Osel Devices')">READ INSIGHT →</a>
-        <a href="Osel.html" target="_blank" class="btn-preview" onclick="trackReport('Osel Devices')">↗</a>
+        <a href="Osel.html" class="btn-report" onclick="trackReport('Osel Devices')">READ INSIGHT →</a>
+        <a href="Osel.html" class="btn-preview" onclick="trackReport('Osel Devices')">↗</a>
       </div>
     </div>
 
@@ -1281,8 +1318,8 @@
         </div>
       </div>
        <div class="card-footer">
-        <a href="Akiko.html" target="_blank" class="btn-report" onclick="trackReport('Akiko Global Services')">READ INSIGHT →</a>
-        <a href="Akiko.html" target="_blank" class="btn-preview" onclick="trackReport('Akiko Global Services')">↗</a>
+        <a href="Akiko.html" class="btn-report" onclick="trackReport('Akiko Global Services')">READ INSIGHT →</a>
+        <a href="Akiko.html" class="btn-preview" onclick="trackReport('Akiko Global Services')">↗</a>
       </div>
     </div>
 
@@ -1321,8 +1358,8 @@
         </div>
       </div>
         <div class="card-footer">
-        <a href="RajeshPower.html" target="_blank" class="btn-report" onclick="trackReport('Rajesh Power Services')">READ INSIGHT →</a>
-        <a href="RajeshPower.html" target="_blank" class="btn-preview" onclick="trackReport('Rajesh Power Services')">↗</a>
+        <a href="RajeshPower.html" class="btn-report" onclick="trackReport('Rajesh Power Services')">READ INSIGHT →</a>
+        <a href="RajeshPower.html" class="btn-preview" onclick="trackReport('Rajesh Power Services')">↗</a>
       </div>
     </div>
 
@@ -1361,8 +1398,8 @@
         </div>
       </div>
       <div class="card-footer">
-        <a href="RNFI.html" target="_blank" class="btn-report" onclick="trackReport('RNFI Services')">READ INSIGHT →</a>
-        <a href="RNFI.html" target="_blank" class="btn-preview" onclick="trackReport('RNFI Services')">↗</a>
+        <a href="RNFI.html" class="btn-report" onclick="trackReport('RNFI Services')">READ INSIGHT →</a>
+        <a href="RNFI.html" class="btn-preview" onclick="trackReport('RNFI Services')">↗</a>
       </div>
     </div>
 
@@ -1401,8 +1438,8 @@
         </div>
       </div>
       <div class="card-footer">
-        <a href="Prizor.html" target="_blank" class="btn-report" onclick="trackReport('Prizor Viztech')">READ INSIGHT →</a>
-        <a href="Prizor.html" target="_blank" class="btn-preview" onclick="trackReport('Prizor Viztech')">↗</a>
+        <a href="Prizor.html" class="btn-report" onclick="trackReport('Prizor Viztech')">READ INSIGHT →</a>
+        <a href="Prizor.html" class="btn-preview" onclick="trackReport('Prizor Viztech')">↗</a>
       </div>
     </div>
 
@@ -1441,8 +1478,8 @@
         </div>
       </div>
         <div class="card-footer">
-        <a href="Viviana.html" target="_blank" class="btn-report" onclick="trackReport('Viviana Power Tech')">READ INSIGHT →</a>
-        <a href="Viviana.html" target="_blank" class="btn-preview" onclick="trackReport('Viviana Power Tech')">↗</a>
+        <a href="Viviana.html" class="btn-report" onclick="trackReport('Viviana Power Tech')">READ INSIGHT →</a>
+        <a href="Viviana.html" class="btn-preview" onclick="trackReport('Viviana Power Tech')">↗</a>
       </div>
 </div>
 
@@ -1481,8 +1518,8 @@
         </div>
       </div>
       <div class="card-footer">
-        <a href="AlpexSolar.html" target="_blank" class="btn-report" onclick="trackReport('Alpex Solar')">READ INSIGHT →</a>
-        <a href="AlpexSolar.html" target="_blank" class="btn-preview" onclick="trackReport('Alpex Solar')">↗</a>
+        <a href="AlpexSolar.html" class="btn-report" onclick="trackReport('Alpex Solar')">READ INSIGHT →</a>
+        <a href="AlpexSolar.html" class="btn-preview" onclick="trackReport('Alpex Solar')">↗</a>
       </div>
     </div>
 
@@ -1521,8 +1558,8 @@
         </div>
       </div>
        <div class="card-footer">
-        <a href="KalyaniCastTech.html" target="_blank" class="btn-report" onclick="trackReport('Kalyani Cast-Tech')">READ INSIGHT →</a>
-        <a href="KalyaniCastTech.html" target="_blank" class="btn-preview" onclick="trackReport('Kalyani Cast-Tech')">↗</a>
+        <a href="KalyaniCastTech.html" class="btn-report" onclick="trackReport('Kalyani Cast-Tech')">READ INSIGHT →</a>
+        <a href="KalyaniCastTech.html" class="btn-preview" onclick="trackReport('Kalyani Cast-Tech')">↗</a>
       </div>
     </div>
 
@@ -1561,8 +1598,8 @@
         </div>
       </div>
       <div class="card-footer">
-        <a href="Afcom.html" target="_blank" class="btn-report" onclick="trackReport('AFCOM Holdings')">READ INSIGHT →</a>
-        <a href="Afcom.html" target="_blank" class="btn-preview" onclick="trackReport('AFCOM Holdings')">↗</a>
+        <a href="Afcom.html" class="btn-report" onclick="trackReport('AFCOM Holdings')">READ INSIGHT →</a>
+        <a href="Afcom.html" class="btn-preview" onclick="trackReport('AFCOM Holdings')">↗</a>
       </div>
     </div>
 
@@ -1601,8 +1638,8 @@
         </div>
       </div>
        <div class="card-footer">
-        <a href="Utssav.html" target="_blank" class="btn-report" onclick="trackReport('Utssav CZ Gold Jewels')">READ INSIGHT →</a>
-        <a href="Utssav.html" target="_blank" class="btn-preview" onclick="trackReport('Utssav CZ Gold Jewels')">↗</a>
+        <a href="Utssav.html" class="btn-report" onclick="trackReport('Utssav CZ Gold Jewels')">READ INSIGHT →</a>
+        <a href="Utssav.html" class="btn-preview" onclick="trackReport('Utssav CZ Gold Jewels')">↗</a>
       </div>
     </div>
 
@@ -1641,8 +1678,8 @@
         </div>
       </div>
       <div class="card-footer">
-        <a href="Airfloa.html" target="_blank" class="btn-report" onclick="trackReport('Airfloa Rail Technology')">READ INSIGHT →</a>
-        <a href="Airfloa.html" target="_blank" class="btn-preview" onclick="trackReport('Airfloa Rail Technology')">↗</a>
+        <a href="Airfloa.html" class="btn-report" onclick="trackReport('Airfloa Rail Technology')">READ INSIGHT →</a>
+        <a href="Airfloa.html" class="btn-preview" onclick="trackReport('Airfloa Rail Technology')">↗</a>
       </div>
     </div>
     
@@ -1681,8 +1718,8 @@
         </div>
       </div>
       <div class="card-footer">
-        <a href="SubaHotels.html" target="_blank" class="btn-report" onclick="trackReport('Suba Hotels')">READ INSIGHT →</a>
-        <a href="SubaHotels.html" target="_blank" class="btn-preview" onclick="trackReport('Suba Hotels')">↗</a>
+        <a href="SubaHotels.html" class="btn-report" onclick="trackReport('Suba Hotels')">READ INSIGHT →</a>
+        <a href="SubaHotels.html" class="btn-preview" onclick="trackReport('Suba Hotels')">↗</a>
       </div>
     </div>
 
@@ -1721,8 +1758,8 @@
         </div>
       </div>
       <div class="card-footer">
-        <a href="Felix.html" target="_blank" class="btn-report" onclick="trackReport('Felix Industries')">READ INSIGHT →</a>
-        <a href="Felix.html" target="_blank" class="btn-preview" onclick="trackReport('Felix Industries')">↗</a>
+        <a href="Felix.html" class="btn-report" onclick="trackReport('Felix Industries')">READ INSIGHT →</a>
+        <a href="Felix.html" class="btn-preview" onclick="trackReport('Felix Industries')">↗</a>
       </div>
     </div>
 
@@ -1761,8 +1798,8 @@
         </div>
       </div>
       <div class="card-footer">
-        <a href="FlySBS.html" target="_blank" class="btn-report" onclick="trackReport('FlySBS Aviation')">READ INSIGHT →</a>
-        <a href="FlySBS.html" target="_blank" class="btn-preview" onclick="trackReport('FlySBS Aviation')">↗</a>
+        <a href="FlySBS.html" class="btn-report" onclick="trackReport('FlySBS Aviation')">READ INSIGHT →</a>
+        <a href="FlySBS.html" class="btn-preview" onclick="trackReport('FlySBS Aviation')">↗</a>
       </div>
     </div>
 
@@ -1801,8 +1838,8 @@
         </div>
       </div>
       <div class="card-footer">
-        <a href="Desco.html" target="_blank" class="btn-report" onclick="trackReport('Desco Infratech')">READ INSIGHT →</a>
-        <a href="Desco.html" target="_blank" class="btn-preview" onclick="trackReport('Desco Infratech')">↗</a>
+        <a href="Desco.html" class="btn-report" onclick="trackReport('Desco Infratech')">READ INSIGHT →</a>
+        <a href="Desco.html" class="btn-preview" onclick="trackReport('Desco Infratech')">↗</a>
       </div>
     </div>
 
@@ -1841,8 +1878,8 @@
         </div>
       </div>
       <div class="card-footer">
-        <a href="Effwa.html" target="_blank" class="btn-report" onclick="trackReport('Effwa Infra & Research')">READ INSIGHT →</a>
-        <a href="Effwa.html" target="_blank" class="btn-preview" onclick="trackReport('Effwa Infra & Research')">↗</a>
+        <a href="Effwa.html" class="btn-report" onclick="trackReport('Effwa Infra & Research')">READ INSIGHT →</a>
+        <a href="Effwa.html" class="btn-preview" onclick="trackReport('Effwa Infra & Research')">↗</a>
       </div>
     </div>
 
@@ -1891,6 +1928,19 @@
   </div>
 </section>
 
+  <section class="subscribe-section" style="padding: 60px 40px; text-align: center; border-top: 0.5px solid var(--border); background: var(--navy2);">
+  <h3 style="font-family: 'Playfair Display', serif; font-size: 26px; color: var(--white); margin-bottom: 12px; font-weight: 600;">Stay Ahead of the Curve</h3>
+  <p style="font-size: 14px; color: var(--muted); margin-bottom: 30px; max-width: 450px; margin-left: auto; margin-right: auto; line-height: 1.6;">
+    Join now to get instantly notified on new SME deep-dive and updates.
+  </p>
+  
+  <form action="YOUR_PROVIDER_LINK_HERE" method="POST" style="display: flex; gap: 10px; justify-content: center; max-width: 450px; margin: 0 auto; flex-wrap: wrap;">
+    <input type="email" name="email" required placeholder="Enter your email address" style="flex: 1; min-width: 200px; padding: 12px 16px; background: var(--navy); border: 0.5px solid var(--border); color: var(--white); border-radius: 3px; outline: none; font-family: 'DM Sans', sans-serif; font-size: 13px;">
+    <button type="submit" style="background: var(--gold); color: var(--navy); border: none; padding: 0 24px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; border-radius: 3px; cursor: pointer; transition: background 0.2s;">
+      Subscribe
+    </button>
+  </form>
+</section>
 <footer>
   <p class="footer-disc">For informational purposes only. Not investment advice. SME stocks carry elevated risk due to limited trading liquidity, smaller scale, and evolving governance standards. Readers must independently verify all information and consult a SEBI-registered investment advisor before making any investment decision. The author may or may not hold positions in the securities discussed.</p>
   <div class="footer-brand">SME Gems · April 2026</div>
@@ -2004,5 +2054,9 @@ document.addEventListener('DOMContentLoaded', () => {
     updateGrid();
 });
 </script>
+  <div class="scroll-nav">
+  <button class="scroll-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Go to top">↑</button>
+  <button class="scroll-btn" onclick="window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'})" title="Go to bottom">↓</button>
+</div>
 </body>
 </html>
