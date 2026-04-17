@@ -2086,41 +2086,47 @@ document.addEventListener('DOMContentLoaded', () => {
     updateGrid();
 });
 </script>
-  <script>
+ <script>
 document.addEventListener('DOMContentLoaded', () => {
     const scrollNav = document.getElementById('scrollNav');
-    if (!scrollNav) return; 
+    if (!scrollNav) return;
     let isScrolling;
 
+    // Listen for scroll events
     window.addEventListener('scroll', () => {
         scrollNav.classList.add('is-visible');
         window.clearTimeout(isScrolling);
 
-        // Hide after 2.5 seconds of no scrolling (gives mobile users plenty of time to tap)
         isScrolling = setTimeout(() => {
-            const isTouchDevice = window.matchMedia('(hover: none)').matches;
-            if (isTouchDevice || !scrollNav.matches(':hover')) {
+            // Foolproof Mobile Check: If screen is mobile size OR it's not being hovered, hide it
+            if (window.innerWidth <= 700 || !scrollNav.matches(':hover')) {
                 scrollNav.classList.remove('is-visible');
             }
-        }, 2500); 
+        }, 2000); // Hides 2 seconds after scrolling stops
     }, { passive: true });
 
+    // Desktop hover rules
     scrollNav.addEventListener('mouseenter', () => {
-        window.clearTimeout(isScrolling);
-        scrollNav.classList.add('is-visible');
+        if (window.innerWidth > 700) {
+            window.clearTimeout(isScrolling);
+            scrollNav.classList.add('is-visible');
+        }
     });
 
     scrollNav.addEventListener('mouseleave', () => {
-        isScrolling = setTimeout(() => {
-            scrollNav.classList.remove('is-visible');
-        }, 1000);
+        if (window.innerWidth > 700) {
+            isScrolling = setTimeout(() => {
+                scrollNav.classList.remove('is-visible');
+            }, 1000);
+        }
     });
 });
 </script>
 
 <div class="scroll-nav" id="scrollNav">
-  <button class="scroll-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'});" title="Go to top">↑</button>
-  <button class="scroll-btn" onclick="window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});" title="Go to bottom">↓</button>
+  <button class="scroll-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); this.blur();" title="Go to top">↑</button>
+  <button class="scroll-btn" onclick="window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'}); this.blur();" title="Go to bottom">↓</button>
 </div>
+
 </body>
 </html>
