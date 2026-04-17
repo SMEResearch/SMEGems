@@ -170,6 +170,23 @@
   }
   .nav-cta:hover { background: var(--gold2) !important; }
 
+  /* ── OUTLINE BUTTON THEME ── */
+  .nav-cta-outline {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--gold) !important;
+    background: transparent;
+    border: 1px solid var(--gold);
+    padding: 5px 15px; /* Slightly adjusted to account for the 1px border */
+    border-radius: 3px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: all 0.2s !important;
+  }
+  .nav-cta-outline:hover { 
+    background: rgba(232, 160, 32, 0.1); /* Adds a faint gold glow on hover */
+  }
+
   /* ── HERO ── */
   .hero {
     position: relative;
@@ -636,10 +653,13 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* ── MOBILE NAV ── */
+/* ── MOBILE NAV ── */
   @media (max-width: 700px) {
     nav { padding: 0 20px; }
-    .nav-links a:not(.nav-cta) { display: none; }
+    .nav-brand { font-size: 13px; } /* Shrink logo slightly to make room */
+    .nav-links { gap: 14px; } /* Reduce gap between links for mobile */
+    .nav-links a { font-size: 11px; } /* Adjust font size to fit */
+    
     .hero { padding: 110px 20px 70px; }
     .reports-section { padding: 40px 20px; }
     .about-strip { padding: 40px 20px; }
@@ -841,7 +861,7 @@
   <div class="nav-brand">SME <span>Gems</span></div>
   <div class="nav-links">
     <a href="#reports">Insights</a>
-    <a href="#about">About</a>
+ <a href="#subscribe" class="nav-cta-outline">Subscribe</a>
     <a href="https://x.com/sachprat07" target="_blank" class="nav-cta">Follow ↗</a>
   </div>
 </nav>
@@ -1957,7 +1977,7 @@
   </div>
 </section>
 
-<section class="subscribe-section" style="padding: 60px 40px; text-align: center; border-top: 0.5px solid var(--border); background: var(--navy2);">
+<section class="subscribe-section" id="subscribe" style="padding: 60px 40px; text-align: center; border-top: 0.5px solid var(--border); background: var(--navy2);">
   <h3 style="font-family: 'Playfair Display', serif; font-size: 26px; color: var(--white); margin-bottom: 12px; font-weight: 600;">Stay Ahead of the Curve</h3>
   <p style="font-size: 14px; color: var(--muted); margin-bottom: 30px; max-width: 450px; margin-left: auto; margin-right: auto; line-height: 1.6;">
     Drop your email below to get instantly notified on new SME deep-dives and updates.
