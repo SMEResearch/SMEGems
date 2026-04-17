@@ -263,17 +263,6 @@
     animation: fadeUp 0.7s ease 0.4s forwards;
   }
 
-  .pill {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    color: var(--gold);
-    border: 0.5px solid rgba(232,160,32,0.35);
-    padding: 4px 14px;
-    border-radius: 2px;
-    background: rgba(232,160,32,0.05);
-  }
-
   .hero-stats {
     position: relative;
     display: inline-flex;
@@ -586,23 +575,34 @@
     gap: 7px;
     margin-top: 14px;
   }
+/* ── SECTOR TAGS (ABOUT SECTION) ── */
   .stag {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.06em;
-    padding: 5px 12px;
-    border-radius: 2px;
-    border: 0.5px solid var(--border);
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(11px, 1.2vw, 13px);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    padding: 6px 16px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
     color: var(--muted);
+    transition: all 0.2s ease;
   }
+  
   .stag.live {
     color: var(--gold);
-    border-color: rgba(232,160,32,0.3);
-    background: rgba(232,160,32,0.05);
+    border-color: rgba(232, 160, 32, 0.4);
+    background: rgba(232, 160, 32, 0.05);
   }
+  
+  /* Added a subtle hover state so they feel alive even though they aren't clickable filters yet */
+  .stag.live:hover {
+    background: rgba(232, 160, 32, 0.1);
+  }
+  
   .stag.coming {
-    color: rgba(244,240,232,0.2);
-    border-color: rgba(244,240,232,0.06);
+    color: rgba(244, 240, 232, 0.2);
+    border-color: rgba(244, 240, 232, 0.06);
+    background: transparent;
   }
 
   /* ── FOOTER ── */
@@ -725,9 +725,27 @@
     background: rgba(232,160,32,0.05);
   }
 
-  /* Make Pills Interactive */
-  .hero-pills .pill { cursor: pointer; transition: all 0.2s; user-select: none; }
-  .hero-pills .pill:hover { border-color: var(--gold); color: var(--gold); }
+/* ── INTERACTIVE PILLS / TAGS ── */
+  .hero-pills .pill { 
+    font-family: 'DM Sans', sans-serif; /* Switched to a cleaner, more legible font */
+    font-size: clamp(12px, 1.5vw, 14px); /* Dynamically scales between 12px (mobile) and 14px (desktop) */
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--gold);
+    border: 1px solid rgba(232, 160, 32, 0.4); /* 1px border renders crisper than 0.5px */
+    padding: 8px 20px; /* Much better tap-target size for mobile thumbs */
+    border-radius: 4px;
+    background: rgba(232, 160, 32, 0.05);
+    cursor: pointer; 
+    transition: all 0.2s ease; 
+    user-select: none; 
+  }
+  
+  .hero-pills .pill:hover { 
+    border-color: var(--gold); 
+    background: rgba(232, 160, 32, 0.1); /* Slight background lift on hover */
+  }
+  
   .hero-pills .pill.active {
     background: var(--gold);
     color: var(--navy);
@@ -1942,7 +1960,7 @@
   <section class="subscribe-section" style="padding: 60px 40px; text-align: center; border-top: 0.5px solid var(--border); background: var(--navy2);">
   <h3 style="font-family: 'Playfair Display', serif; font-size: 26px; color: var(--white); margin-bottom: 12px; font-weight: 600;">Stay Ahead of the Curve</h3>
   <p style="font-size: 14px; color: var(--muted); margin-bottom: 30px; max-width: 450px; margin-left: auto; margin-right: auto; line-height: 1.6;">
-    Join now to get instantly notified on new SME deep-dive and updates.
+    Drop your email below to get instantly notified on new SME deep-dive and updates.
   </p>
   
   <form action="YOUR_PROVIDER_LINK_HERE" method="POST" style="display: flex; gap: 10px; justify-content: center; max-width: 450px; margin: 0 auto; flex-wrap: wrap;">
