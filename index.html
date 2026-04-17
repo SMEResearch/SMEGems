@@ -2038,13 +2038,19 @@ document.addEventListener('DOMContentLoaded', () => {
     searchInput.addEventListener('input', updateGrid);
     sortSelect.addEventListener('change', updateGrid);
 
-    // Pill Click Logic
+// Pill Click Logic
     allPills.forEach(pill => {
         pill.addEventListener('click', (e) => {
             allPills.forEach(p => p.classList.remove('active'));
             e.target.classList.add('active');
             activeFilter = e.target.innerText;
             updateGrid();
+            
+            // NEW: Smoothly scroll down to the reports section
+            document.getElementById('reports').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
         });
     });
 
