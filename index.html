@@ -45,15 +45,34 @@
     --border: rgba(244,240,232,0.1);
   }
 
-  /* ── FLOATING SCROLL ARROWS ── */
-.scroll-nav {
+/* ── FLOATING SCROLL ARROWS (HOVER TRACK) ── */
+.right-hover-track {
   position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 80px; /* The invisible hover detection zone along the right edge */
+  z-index: 99;
+}
+
+.scroll-nav {
+  position: absolute;
   bottom: 40px;
   right: 40px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  z-index: 99;
+  opacity: 0; /* Hidden by default */
+  transform: translateX(20px); /* Pushed slightly right for a slide-in effect */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none; /* Prevents accidental clicks when invisible */
+}
+
+/* When the mouse enters the right 80px of the screen, show the buttons */
+.right-hover-track:hover .scroll-nav {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto; /* Makes them clickable again */
 }
 
 .scroll-btn {
@@ -78,8 +97,22 @@
   background: rgba(232, 160, 32, 0.1); 
 }
 
+/* Mobile handling: Touch screens don't have "hover". */
 @media (max-width: 700px) {
-  .scroll-nav { bottom: 20px; right: 20px; }
+  .right-hover-track {
+    width: 60px; 
+  }
+  .scroll-nav { 
+    bottom: 20px; 
+    right: 20px; 
+    opacity: 0.3; /* Leave them faintly visible on mobile */
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+  /* Light up fully when interacting on mobile */
+  .right-hover-track:active .scroll-nav {
+    opacity: 1;
+  }
 }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -2054,9 +2087,11 @@ document.addEventListener('DOMContentLoaded', () => {
     updateGrid();
 });
 </script>
+<div class="right-hover-track">
   <div class="scroll-nav">
-  <button class="scroll-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Go to top">↑</button>
-  <button class="scroll-btn" onclick="window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'})" title="Go to bottom">↓</button>
+    <button class="scroll-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Go to top">↑</button>
+    <button class="scroll-btn" onclick="window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'})" title="Go to bottom">↓</button>
+  </div>
 </div>
 </body>
 </html>
