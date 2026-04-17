@@ -2065,6 +2065,50 @@ document.addEventListener('DOMContentLoaded', () => {
     updateGrid();
 });
 </script>
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const scrollNav = document.getElementById('scrollNav');
+    let isScrolling;
+
+    // Listen for scroll events
+    window.addEventListener('scroll', () => {
+        // Show the buttons when scrolling starts
+        scrollNav.classList.add('is-visible');
+
+        // Clear the timeout throughout the scroll
+        window.clearTimeout(isScrolling);
+
+        // Set a timeout to hide the buttons 1.5 seconds after scrolling stops
+        isScrolling = setTimeout(() => {
+            // Only hide them if the user isn't actively hovering over them
+            if (!scrollNav.matches(':hover')) {
+                scrollNav.classList.remove('is-visible');
+            }
+        }, 1500); 
+    }, false);
+
+    // If the user hovers over the buttons, keep them visible
+    scrollNav.addEventListener('mouseenter', () => {
+        window.clearTimeout(isScrolling);
+        scrollNav.classList.add('is-visible');
+    });
+
+    // If the mouse leaves the buttons, hide them after 1 second
+    scrollNav.addEventListener('mouseleave', () => {
+        isScrolling = setTimeout(() => {
+            scrollNav.classList.remove('is-visible');
+        }, 1000);
+    });
+});
+</script>
+
+<div class="scroll-nav" id="scrollNav">
+  <button class="scroll-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Go to top">↑</button>
+  <button class="scroll-btn" onclick="window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'})" title="Go to bottom">↓</button>
+</div>
+
+</body>
+</html>
   <div class="scroll-nav" id="scrollNav">
   <button class="scroll-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Go to top">↑</button>
   <button class="scroll-btn" onclick="window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'})" title="Go to bottom">↓</button>
