@@ -120,7 +120,8 @@ tr:hover td{background:rgba(255,255,255,0.02)}
 .chart-bar:hover .tip{opacity:1}
 
 @media(max-width: 480px){
-  .chart-wrap { gap: 2px; }
+  .chart-wrap { gap: 1px; }          /* Reduce the gap between bars */
+  .chart-bar { min-width: 2px; }     /* Allow flexbox to shrink the bars */
   .badge { white-space: normal; text-align: center; display: inline-block; }
 }
 
