@@ -2,6 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+  <script>
+  // Check if the user has the passkey from the main page
+  if (!sessionStorage.getItem('validGemsUser')) {
+      // If no passkey is found, instantly redirect them to the main directory
+      window.location.replace("https://smeresearch.github.io/SMEGems/");
+  }
+</script>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=3.0,user-scalable=yes">
 <title>FlySBS Aviation — Research Deck</title>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
