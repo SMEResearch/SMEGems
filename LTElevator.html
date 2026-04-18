@@ -2,6 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script>
+  // Check if the user has the passkey from the main page
+  if (!sessionStorage.getItem('validGemsUser')) {
+      // If no passkey is found, instantly redirect them to the main directory
+      window.location.replace("https://smeresearch.github.io/SMEGems/");
+  }
+</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>L.T. Elevator Ltd - SME Gems Deck</title>
     
