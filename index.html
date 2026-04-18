@@ -2146,6 +2146,10 @@ document.addEventListener('DOMContentLoaded', () => {
   <button class="scroll-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); this.blur();" title="Go to top">↑</button>
   <button class="scroll-btn" onclick="window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'}); this.blur();" title="Go to bottom">↓</button>
 </div>
+  <script>
+  // This grants the user a temporary passkey for their current browser session
+  sessionStorage.setItem('validGemsUser', 'true');
+  </script>
 
 </body>
 </html>
