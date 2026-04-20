@@ -137,6 +137,7 @@
   }
   .nav-brand span { color: var(--gold); }
   .nav-links { display: flex; gap: 28px; align-items: center; }
+  
   .nav-links a {
     font-size: 12px;
     font-weight: 400;
@@ -147,19 +148,84 @@
   }
   .nav-links a:hover { color: var(--white); }
 
-  /* ── TEXT LINK THEME ── */
-  .nav-text-link {
+  /* ── DROPDOWN MENU THEME ── */
+  .nav-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  .nav-drop-btn {
+    background: transparent;
+    border: none;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
     font-size: 11px;
     font-weight: 500;
-    color: var(--white) !important;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    transition: color 0.2s !important;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 0;
+    transition: color 0.2s;
   }
-  .nav-text-link:hover { 
-    color: var(--gold) !important; 
+  .nav-drop-btn:hover { color: var(--gold); }
+  
+  .dropdown-content {
+    position: absolute;
+    top: 100%;
+    right: -10px; /* Aligns slightly better with the button edge */
+    margin-top: 15px;
+    background: rgba(10, 29, 48, 0.95);
+    border: 0.5px solid var(--border);
+    border-radius: 4px;
+    min-width: 170px;
+    display: flex;
+    flex-direction: column;
+    z-index: 200;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.2s ease;
   }
+  .nav-dropdown.active .dropdown-content {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  
+  .fsm-header {
+    background: rgba(232, 160, 32, 0.1);
+    color: var(--gold);
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 8px 12px;
+    text-align: center;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .fsm-link {
+    color: var(--muted) !important;
+    text-decoration: none;
+    font-size: 11px !important;
+    font-weight: 500;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 0.5px solid var(--border);
+    transition: all 0.2s !important;
+    letter-spacing: 0.04em !important;
+    white-space: nowrap;
+  }
+  .fsm-link:last-child { border-bottom: none; }
+  .fsm-link:hover { color: var(--gold) !important; background: rgba(244, 240, 232, 0.03); }
+  .fsm-icon { font-size: 14px; }
 
+  /* ── BUTTON THEMES ── */
   .nav-cta {
     font-size: 11px;
     font-weight: 500;
@@ -674,8 +740,8 @@
     nav { padding: 0 12px; }
     .nav-brand { font-size: 12px; } 
     .nav-links { gap: 8px; } 
-    .nav-links a { font-size: 10px; } 
-    .nav-cta, .nav-cta-outline, .nav-text-link { padding: 4px 8px; font-size: 9px !important; } 
+    .nav-drop-btn { font-size: 10px; }
+    .nav-cta, .nav-cta-outline { padding: 4px 8px; font-size: 9px !important; } 
     
     .hero { padding: 110px 20px 70px; }
     .reports-section { padding: 40px 20px; }
@@ -863,8 +929,20 @@
 <nav>
   <div class="nav-brand">SME <span>Gems</span></div>
   <div class="nav-links">
-    <a href="#" class="nav-text-link gate-trigger" data-target="https://smegems.substack.com/">Conf Calls</a>
-    <a href="#" class="nav-text-link gate-trigger" data-target="https://smegems.substack.com/">Investor Meets</a>
+    
+    <div class="nav-dropdown" id="exclusiveDropdown">
+      <button class="nav-drop-btn">☰ Exclusives</button>
+      <div class="dropdown-content">
+        <div class="fsm-header">Premium Archive</div>
+        <a href="#" class="fsm-link gate-trigger" data-target="https://smegems.substack.com/">
+          <span class="fsm-icon">🎧</span> Conf Calls
+        </a>
+        <a href="#" class="fsm-link gate-trigger" data-target="https://smegems.substack.com/">
+          <span class="fsm-icon">🤝</span> Investor Meets
+        </a>
+      </div>
+    </div>
+
     <a href="https://x.com/sachprat07" target="_blank" class="nav-cta-outline">Follow ↗</a>
     <a href="#subscribe" class="nav-cta">Join</a>
   </div>
@@ -2149,6 +2227,27 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <script>
+// DROPDOWN MENU LOGIC
+document.addEventListener('DOMContentLoaded', () => {
+    const dropdown = document.getElementById('exclusiveDropdown');
+    const dropBtn = dropdown.querySelector('.nav-drop-btn');
+    
+    // Toggle dropdown on button click
+    dropBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        dropdown.classList.toggle('active');
+    });
+    
+    // Close dropdown if user clicks outside of it
+    document.addEventListener('click', (e) => {
+        if (!dropdown.contains(e.target)) {
+            dropdown.classList.remove('active');
+        }
+    });
+});
+</script>
+
+<script>
 // GATE MODAL LOGIC
 document.addEventListener('DOMContentLoaded', () => {
     const gateTriggers = document.querySelectorAll('.gate-trigger');
@@ -2173,6 +2272,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.location.href = pendingUrl; 
             } else {
                 modal.classList.add('active'); 
+                
+                // Hide dropdown menu if open
+                const dropdown = document.getElementById('exclusiveDropdown');
+                if (dropdown) dropdown.classList.remove('active');
             }
         });
     });
