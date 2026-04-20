@@ -153,7 +153,7 @@
     position: relative;
     display: inline-block;
   }
-.nav-drop-btn {
+  .nav-drop-btn {
     background: transparent;
     border: 1px solid var(--gold);
     color: var(--gold);
@@ -167,16 +167,17 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 5px 15px; /* Matches the Follow button perfectly */
+    padding: 5px 15px;
     transition: all 0.2s;
   }
   .nav-drop-btn:hover { 
     background: rgba(232, 160, 32, 0.1); 
   }
+  
   .dropdown-content {
     position: absolute;
     top: 100%;
-    right: -10px; /* Aligns slightly better with the button edge */
+    right: -10px;
     margin-top: 15px;
     background: rgba(10, 29, 48, 0.95);
     border: 0.5px solid var(--border);
@@ -198,17 +199,6 @@
     transform: translateY(0);
   }
   
-  .fsm-header {
-    background: rgba(232, 160, 32, 0.1);
-    color: var(--gold);
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    padding: 8px 12px;
-    text-align: center;
-    border-bottom: 0.5px solid var(--border);
-  }
   .fsm-link {
     color: var(--muted) !important;
     text-decoration: none;
@@ -573,6 +563,58 @@
   }
   .btn-preview:hover { border-color: var(--gold); color: var(--gold); }
 
+  /* ── VAULT SECTION ── */
+  .exclusives-section { padding: 60px 40px; }
+  .exclusives-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  
+  .ex-card {
+    background: rgba(244,240,232,0.02);
+    border: 0.5px solid var(--border);
+    border-radius: 6px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .ex-card:hover { 
+    border-color: rgba(244,240,232,0.2); 
+    transform: translateY(-2px);
+  }
+  
+  .ex-card.premium-card {
+    background: rgba(232,160,32,0.03);
+    border-color: rgba(232,160,32,0.2);
+  }
+  .ex-card.premium-card:hover { 
+    border-color: rgba(232,160,32,0.5); 
+  }
+  
+  .ex-icon { font-size: 32px; margin-bottom: 16px; }
+  .ex-title { font-family: 'Playfair Display', serif; font-size: 24px; color: var(--white); margin-bottom: 12px; }
+  .ex-desc { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 32px; flex-grow: 1; }
+  
+  .ex-btn {
+    font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--white); border: 1px solid var(--border); padding: 10px 20px; border-radius: 4px; text-decoration: none; transition: all 0.2s;
+  }
+  .ex-btn:hover { background: rgba(244,240,232,0.05); color: var(--white); }
+  
+  .ex-btn-gold {
+    font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--navy); background: var(--gold); padding: 10px 20px; border-radius: 4px; text-decoration: none; transition: all 0.2s; border: 1px solid var(--gold);
+  }
+  .ex-btn-gold:hover { background: var(--gold2); }
+
+  @media (max-width: 800px) {
+    .exclusives-grid { grid-template-columns: 1fr; }
+    .exclusives-section { padding: 40px 20px; }
+  }
+
   /* ── ABOUT STRIP ── */
   .about-strip {
     padding: 52px 40px;
@@ -747,6 +789,7 @@
     
     .hero { padding: 110px 20px 70px; }
     .reports-section { padding: 40px 20px; }
+    .exclusives-section { padding: 40px 20px; }
     .about-strip { padding: 40px 20px; }
     footer { padding: 20px; }
     .section-divider { margin: 0 20px; }
@@ -933,12 +976,12 @@
   <div class="nav-links">
     
     <div class="nav-dropdown" id="exclusiveDropdown">
-      <button class="nav-drop-btn">☰ Exclusives</button>
+      <button class="nav-drop-btn">☰ Vault</button>
       <div class="dropdown-content">
-        <a href="#" class="fsm-link gate-trigger" data-target="https://smegems.substack.com/">
+        <a href="#" class="fsm-link gate-trigger" data-target="https://smegems.substack.com/s/sme-concalls">
           <span class="fsm-icon">🎧</span> Concalls
         </a>
-        <a href="#" class="fsm-link gate-trigger" data-target="https://smegems.substack.com/">
+        <a href="https://smegems.substack.com/s/investor-meets" class="fsm-link" target="_blank">
           <span class="fsm-icon">🤝</span> Investor Meets
         </a>
       </div>
@@ -2018,6 +2061,33 @@
   </div>
 </section>
 
+<div class="section-divider"></div>
+
+<section class="exclusives-section" id="exclusives">
+  <div class="sec-header">
+    <h2 class="sec-title">Beyond the Reports</h2>
+    <span class="sec-meta">Vault</span>
+  </div>
+
+  <div class="exclusives-grid">
+    
+    <div class="ex-card">
+      <div class="ex-icon">🎧</div>
+      <h3 class="ex-title">SME Concalls</h3>
+      <p class="ex-desc">Listen to the pulse of the SME platform. Access our curated archive of management commentary, Q&A sessions, and earnings call recordings for hidden champions.</p>
+      <a href="#" class="ex-btn gate-trigger" data-target="https://smegems.substack.com/s/sme-concalls">Access Free Archive ↗</a>
+    </div>
+
+    <div class="ex-card premium-card">
+      <div class="ex-icon" style="color: var(--gold);">🤝</div>
+      <h3 class="ex-title">Investor Meets</h3>
+      <p class="ex-desc">Step into the inner circle. Unlock exclusive notes, management interactions, and on-ground intelligence from private investor meets, available only to premium subscribers.</p>
+      <a href="https://smegems.substack.com/s/investor-meets" target="_blank" class="ex-btn-gold">Unlock on Substack ↗</a>
+    </div>
+
+  </div>
+</section>
+
 <section class="about-strip" id="about">
   <div class="about-block">
     <div class="about-label">About the series</div>
@@ -2078,15 +2148,15 @@
 <div class="gate-modal" id="gateModal">
   <div class="gate-content">
     <button class="gate-close" id="gateClose">✕</button>
-    <div class="gate-eyebrow">Subscriber Exclusive</div>
-    <h3 class="gate-title">Unlock Access</h3>
-    <p class="gate-desc">Join the email list to access our archive of SME conference calls and notes on investor, IPO meets & more.</p>
+    <div class="gate-eyebrow">Free Archive</div>
+    <h3 class="gate-title">Unlock SME Concalls</h3>
+    <p class="gate-desc">Join the free email list to access our curated archive of management commentary and earnings call recordings.</p>
     
     <div style="margin: 20px 0;">
       <iframe src="https://smegems.substack.com/embed?background=0a1d30&text=f4f0e8" width="100%" height="150" style="border: 1px solid rgba(244,240,232,0.1); border-radius: 4px;" frameborder="0" scrolling="no"></iframe>
     </div>
 
-    <button class="gate-continue" id="gateContinue">I've subscribed, take me to the portal →</button>
+    <button class="gate-continue" id="gateContinue">I've subscribed, take me to the archive →</button>
   </div>
 </div>
 
@@ -2102,12 +2172,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let activeFilter = 'All Sectors'; 
 
-    // Store original order to allow "Default Sort"
     cards.forEach((card, index) => {
         card.dataset.index = index;
     });
 
-    // Add "All Sectors" pill (prevents duplicates if code re-runs)
     if (!document.querySelector('.hero-pills .pill.active')) {
         const allPill = document.createElement('span');
         allPill.className = 'pill active';
@@ -2121,7 +2189,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const sortValue = sortSelect.value;
         const filterTerm = activeFilter.toLowerCase().replace('&amp;', '&').trim();
 
-        // Step A: Filter logic
         let visibleCards = cards.filter(card => {
             const cardText = card.innerText.toLowerCase().replace(/&amp;/g, '&').replace(/\n/g, ' ');
             const cardBadge = card.querySelector('.card-badge').innerText.toLowerCase();
@@ -2136,7 +2203,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return matchesSearch && matchesFilter;
         });
 
-        // Step B: Sort logic
         if (sortValue === 'name-asc') {
             visibleCards.sort((a, b) => a.querySelector('.card-name').innerText.localeCompare(b.querySelector('.card-name').innerText));
         } else if (sortValue === 'name-desc') {
@@ -2155,7 +2221,6 @@ document.addEventListener('DOMContentLoaded', () => {
             visibleCards.sort((a, b) => parseInt(a.dataset.index) - parseInt(b.dataset.index));
         }
 
-        // Step C: Render DOM
         grid.innerHTML = '';
         if (visibleCards.length === 0) {
             grid.innerHTML = '<p style="color: var(--muted); grid-column: 1/-1; text-align: center; padding: 40px; font-family: \'DM Sans\', sans-serif;">No companies match your criteria.</p>';
@@ -2164,11 +2229,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Event Listeners
     searchInput.addEventListener('input', updateGrid);
     sortSelect.addEventListener('change', updateGrid);
 
-    // Pill Click Logic
     allPills.forEach(pill => {
         pill.addEventListener('click', (e) => {
             allPills.forEach(p => p.classList.remove('active'));
@@ -2183,24 +2246,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Bottom Sector Tags Click Logic
     const bottomTags = document.querySelectorAll('.stag.live');
     bottomTags.forEach(tag => {
         tag.addEventListener('click', (e) => {
-            // Un-highlight top pills
             allPills.forEach(p => p.classList.remove('active'));
-            
-            // Set the new filter
             activeFilter = e.target.innerText;
             
-            // Try to highlight the matching top pill
             allPills.forEach(p => {
                 if (activeFilter.includes(p.innerText) || p.innerText.includes(activeFilter)) {
                     p.classList.add('active');
                 }
             });
 
-            // Update grid and scroll up smoothly
             updateGrid();
             document.getElementById('reports').scrollIntoView({ 
                 behavior: 'smooth', 
@@ -2209,7 +2266,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // View Toggle Logic
     btnGrid.addEventListener('click', () => {
         grid.classList.remove('list-view');
         btnGrid.classList.add('active');
@@ -2222,7 +2278,6 @@ document.addEventListener('DOMContentLoaded', () => {
         btnGrid.classList.remove('active');
     });
 
-    // Initial run to ensure correct state on page load
     updateGrid();
 });
 </script>
@@ -2233,13 +2288,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const dropdown = document.getElementById('exclusiveDropdown');
     const dropBtn = dropdown.querySelector('.nav-drop-btn');
     
-    // Toggle dropdown on button click
     dropBtn.addEventListener('click', (e) => {
         e.preventDefault();
         dropdown.classList.toggle('active');
     });
     
-    // Close dropdown if user clicks outside of it
     document.addEventListener('click', (e) => {
         if (!dropdown.contains(e.target)) {
             dropdown.classList.remove('active');
@@ -2274,7 +2327,6 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 modal.classList.add('active'); 
                 
-                // Hide dropdown menu if open
                 const dropdown = document.getElementById('exclusiveDropdown');
                 if (dropdown) dropdown.classList.remove('active');
             }
@@ -2336,7 +2388,6 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 
 <script>
-  // This grants the user a temporary passkey for their current browser session
   sessionStorage.setItem('validGemsUser', 'true');
 </script>
 
