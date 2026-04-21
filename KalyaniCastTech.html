@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalyani Cast-Tech — Investor Research 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#060d12;--panel:#091318;--card:rgba(12,24,32,0.7);--card2:#0e1e28;--border:#1a3040;--border2:#264050;--teal:#2dd4a8;--teal-dim:rgba(45,212,168,0.1);--gold:#f0c050;--coral:#e8605c;--sky:#58b4e8;--text:#eef4f8;--body:#8ca0b0;--muted:#5c7888;--dim:#3c5868;--font-sans:'Outfit',sans-serif;--font-mono:'IBM Plex Mono',monospace;--font-head:'Space Grotesk',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100dvh;width:100vw;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--font-sans);-webkit-font-smoothing:antialiased}
+#scroll-progress{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--teal),var(--gold),var(--sky));z-index:10000;width:0%;transition:width 0.1s ease-out}
+#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.18}
+#shell{display:flex;height:100dvh;position:relative;z-index:1;width:100%}
+
+/* NEW SIDEBAR STYLES */
+#sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100dvh; background: rgba(9, 19, 24, 0.98); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 10000; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); padding: 24px 0; box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
+#sidebar.open { left: 0; }
+#sidebar-logo { font-family: var(--font-head); font-size: 22px; font-weight: 800; color: var(--teal); letter-spacing: 2px; margin-bottom: 24px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
+#close-sidebar { background: transparent; border: none; color: var(--muted); font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: color 0.2s; }
+#close-sidebar:hover { color: var(--coral); }
+#sidebar-list { flex: 1; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; padding: 0 16px; }
+#sidebar-list::-webkit-scrollbar { width: 4px; }
+#sidebar-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+.side-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 6px; cursor: pointer; color: var(--body); font-family: var(--font-sans); font-size: 14px; font-weight: 500; transition: all 0.2s; border: 1px solid transparent; }
+.side-item:hover { background: rgba(255,255,255,0.03); color: var(--text); transform: translateX(4px); }
+.side-item.active { background: rgba(45,212,168,0.08); color: var(--teal); border-color: rgba(45,212,168,0.2); }
+.side-num { font-family: var(--font-mono); font-size: 11px; font-weight: 700; opacity: 0.6; }
+.side-item.active .side-num { opacity: 1; }
+
+#sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(2px); z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+#sidebar-overlay.show { opacity: 1; pointer-events: auto; }
+
+/* TOPBAR UPDATES */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden; position: relative; z-index: 10; width: 100%;}
+#topbar{background:rgba(6,13,18,.95);border-bottom:1px solid var(--border);padding:0 28px;height:48px;display:flex;align-items:center;gap:14px;z-index:90;flex-shrink:0; backdrop-filter: blur(10px);}
+#menu-btn { background: transparent; border: 1px solid var(--border); color: var(--text); width: 32px; height: 32px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
+#menu-btn:hover { border-color: var(--teal); color: var(--teal); background: rgba(45,212,168,0.05); }
+
+.tb-bc{font-family:var(--font-mono);font-weight:600;font-size:11px;color:var(--body);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0.12em;text-transform:uppercase}
+.tb-bc span{color:var(--teal)}
+.tb-right{display:flex;align-items:center;gap:8px;flex-shrink:0;background:rgba(45,212,168,0.08);padding:4px 12px;border-radius:4px;border:1px solid rgba(45,212,168,0.2)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 6px var(--teal);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(0.85)}}
+.live-label{font-family:var(--font-mono);font-size:10px;color:var(--teal);font-weight:700;letter-spacing:1px}
+.pg-counter{font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:1px}.pg-counter span{color:var(--teal);font-weight:700}
+
+#content-scroll-area{flex:1;overflow-y:auto;overflow-x:hidden;scroll-behavior:smooth;padding:32px 44px;position:relative;z-index:2;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;-webkit-overflow-scrolling:touch}
+#content-scroll-area::-webkit-scrollbar{width:5px}
+#content-scroll-area::-webkit-scrollbar-thumb{background:var(--border2);border-radius:5px}
+
+#active-section{max-width:1060px;margin:0 auto;width:100%; padding-bottom: 100px;}
+.section-wrapper { margin-bottom: 100px; padding-top: 10px; min-height: 80vh; }
+
+.pg-eye{font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--teal);margin-bottom:12px;display:flex;align-items:center;gap:12px}.pg-eye::after{content:'';height:1px;width:50px;background:var(--teal)}
+.pg-h1{font-family:var(--font-head);font-size:clamp(30px,4.5vw,48px);font-weight:800;line-height:1.08;color:var(--text);margin-bottom:12px;letter-spacing:-0.5px}.pg-h1 em{color:var(--teal);font-style:normal}
+.pg-sub{font-family:var(--font-sans);font-size:15px;color:var(--body);margin-bottom:24px;line-height:1.72;font-weight:400}
+.sec-h{font-family:var(--font-head);font-size:20px;font-weight:700;letter-spacing:0.5px;color:var(--text);margin:0 0 20px;display:flex;align-items:center;gap:12px}.sec-h::after{content:'';height:1px;flex:1;background:var(--border2);opacity:0.5}
+
+.cover-kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:9px;margin-bottom:0}
+.cover-kpis .kpi{padding:13px 11px;background:rgba(14,30,40,0.5);border:1px solid var(--border);border-radius:5px}
+.cover-kpis .kpi-lbl{font-size:8.5px;letter-spacing:0.5px;margin-bottom:6px;color:var(--muted)}
+.cover-kpis .kpi-val{font-size:16px;white-space:nowrap;font-weight:700;color:var(--text)}
+.cover-kpis .kpi-note{font-size:9px;margin-top:6px;color:var(--body)}
+
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:12px;margin-bottom:24px}
+.kpi{background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:20px;position:relative;overflow:hidden;transition:all .2s ease}
+.kpi:hover{border-color:var(--border2);transform:translateY(-2px)}
+.kpi::after{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;background:var(--dim);transition:all 0.3s}
+.kpi:hover::after{background:var(--teal)}
+.kpi.t::after{background:var(--teal)}.kpi.g::after{background:var(--gold)}.kpi.k::after{background:var(--sky)}.kpi.r::after{background:var(--coral)}
+.kpi-lbl{font-family:var(--font-mono);font-weight:600;font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--body);margin-bottom:9px}
+.kpi-val{font-family:var(--font-mono);font-size:24px;font-weight:700;color:var(--text);line-height:1;letter-spacing:-0.5px}
+.kpi-val.t{color:var(--teal)}.kpi-val.g{color:var(--gold)}.kpi-val.k{color:var(--sky)}.kpi-val.r{color:var(--coral)}
+.kpi-note{font-family:var(--font-sans);font-weight:500;font-size:11px;color:var(--body);margin-top:9px}
+
+.ccard{background:rgba(14,30,40,0.4);border:1px solid var(--border);border-radius:5px;padding:24px;margin-bottom:12px;transition:all .2s ease}
+.ccard:hover{border-color:var(--border2);background:rgba(14,30,40,0.6)}
+.ccard-h{font-family:var(--font-head);font-size:17px;font-weight:700;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:9px}
+.ccard p,.ccard-body{font-family:var(--font-sans);font-size:14px;line-height:1.75;color:var(--body)}
+
+.hl{border:1px solid var(--border);border-left:4px solid var(--teal);background:rgba(14,30,40,0.4);padding:14px 18px;border-radius:0 5px 5px 0;font-family:var(--font-sans);font-size:14px;color:var(--text);line-height:1.75;margin-bottom:12px}
+.hl.warn{border-left-color:var(--coral);background:rgba(232,96,92,0.04)}
+.hl.ok{border-left-color:var(--teal);background:rgba(45,212,168,0.04)}
+.hl.gold{border-left-color:var(--gold);background:rgba(240,192,80,0.04)}
+.hl.sky{border-left-color:var(--sky);background:rgba(88,180,232,0.04)}
+.hl.sub{border-left-color:var(--dim);background:rgba(255,255,255,0.02)}
+
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;border-radius:4px;border:1px solid var(--border);margin-bottom:20px;background:#040a0f}
+table{width:100%;border-collapse:collapse}
+thead tr{background:#0e1e28;border-bottom:1px solid var(--border2)}
+th{font-family:var(--font-mono);font-weight:600;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--body);padding:12px 16px;text-align:right;white-space:nowrap}
+th:first-child{text-align:left}
+td{padding:11px 16px;text-align:right;border-bottom:1px solid var(--border);color:var(--body);font-family:var(--font-mono);font-size:12px}
+td:first-child{text-align:left;color:var(--text);font-family:var(--font-sans);font-size:13.5px;font-weight:500}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,0.02)}
+.tg{color:var(--teal)!important}.tgo{color:var(--gold)!important}.ts{color:var(--sky)!important}.tr-c{color:var(--coral)!important}
+
+.tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.tag{font-family:var(--font-mono);font-size:10px;padding:4px 10px;border-radius:3px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;border:1px solid var(--border);background:var(--card2);color:var(--body)}
+.tag.t{color:var(--teal);border-color:rgba(45,212,168,0.3)}.tag.g{color:var(--gold);border-color:rgba(240,192,80,0.3)}.tag.k{color:var(--sky);border-color:rgba(88,180,232,0.3)}
+
+.volt-meter{background:#081218;border:1px solid var(--border);border-radius:7px;padding:22px 18px;text-align:center;transition:all 0.2s ease}
+.volt-meter:hover{transform:translateY(-2px);border-color:var(--border2)}
+.vm-lbl{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-weight:600}
+.vm-val{font-family:var(--font-mono);font-size:30px;font-weight:700;line-height:1;color:var(--text)}
+.volt-meter.t .vm-val{color:var(--teal)}.volt-meter.g .vm-val{color:var(--gold)}.volt-meter.k .vm-val{color:var(--sky)}
+.vm-sub{font-family:var(--font-mono);font-size:10px;font-weight:500;color:var(--body);margin-top:10px}
+
+.mgmt-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.mgmt{background:#081218;border:1px solid var(--border);border-radius:5px;padding:20px}
+.mgmt-role{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:6px;font-weight:600}
+.mgmt-name{font-family:var(--font-head);font-size:19px;font-weight:700;color:var(--text);margin-bottom:7px}
+.mgmt-tag{font-family:var(--font-mono);font-weight:500;font-size:10px;color:var(--body);background:rgba(255,255,255,0.04);padding:3px 6px;border-radius:3px;display:inline-block;margin-bottom:10px;border:1px solid var(--border)}
+.mgmt-bio{font-family:var(--font-sans);font-size:14px;line-height:1.7;color:var(--body)}
+
+.chart-wrap{background:#081218;border:1px solid var(--border);border-radius:5px;padding:20px;margin-bottom:20px;position:relative;width:100%;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+canvas.chart{display:block}
+
+.notice{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-left:3px solid var(--coral);border-radius:5px;padding:20px;font-family:var(--font-sans);font-size:13.5px;color:var(--body);line-height:1.76}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:20px;min-width:0}.g2>div{min-width:0}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;min-width:0}
+
+.cover{background:rgba(14,30,40,0.4);border:1px solid var(--border2);border-radius:7px;padding:40px;margin-bottom:28px}
+.video-embed{width:100%;aspect-ratio:16/9;border-radius:5px;border:1px solid var(--border2);background:#000}
+
+@media(max-width:1000px){.g3{grid-template-columns:1fr 1fr}.cover-kpis{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:768px){#topbar{padding:0 14px}.tb-bc{display:none}#content-scroll-area{padding:18px 16px 32px}.cover{padding:20px}.g2,.mgmt-grid,.g3{grid-template-columns:1fr}.kpi-row{grid-template-columns:1fr 1fr}.cover-kpis{grid-template-columns:1fr 1fr}.pg-h1{font-size:26px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+<div id="scroll-progress"></div>
+
+<div id="shell">
+  
+  <div id="sidebar-overlay"></div>
+
+  <div id="sidebar">
+    <div id="sidebar-logo">
+      KALYANI
+      <button id="close-sidebar" onclick="closeSidebar()">✕</button>
+    </div>
+    <div id="sidebar-list"></div>
+  </div>
+  
+  <div id="main">
+    <div id="topbar">
+      <button id="menu-btn" onclick="openSidebar(event)" title="Open Menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+      <div class="tb-bc">KALYANI CAST-TECH LTD</div>
+      <div class="pg-counter" id="pg-counter"><span>01</span> / 14</div>
+      <div class="tb-right">
+        <div class="live-dot"></div>
+        <div class="live-label">DEBT FREE</div>
+      </div>
+    </div>
+    <div id="content-scroll-area">
+      <div id="active-section">
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Scroll Progress Logic
+const C = document.getElementById('content-scroll-area');
+C.addEventListener('scroll', () => {
+  const s = C.scrollTop, h = C.scrollHeight - C.clientHeight;
+  document.getElementById("scroll-progress").style.width = (h > 0 ? (s / h) * 100 : 0) + "%";
+});
+
+// Canvas Background Animation
+const cv = document.getElementById('bg-canvas'), cx = cv.getContext('2d');
+let w, h; const ps = [];
+function rsz() { w = cv.width = innerWidth; h = cv.height = innerHeight; }
+addEventListener('resize', rsz); rsz();
+class P {
+  constructor() { this.r() }
+  r() { this.x = Math.random() * w; this.y = Math.random() * h; this.s = Math.random() * 2.5 + 1; this.sx = (Math.random() - .5) * .25; this.sy = Math.random() * .12 + .04; this.a = Math.random() * .25 + .05 }
+  u() { this.x += this.sx; this.y += this.sy; if (this.y > h + 10) { this.y = -10; this.x = Math.random() * w } if (this.x < -10 || this.x > w + 10) this.sx *= -1 }
+  d(c) { c.beginPath(); c.arc(this.x, this.y, this.s, 0, Math.PI * 2); c.fillStyle = `rgba(45,212,168,${this.a})`; c.fill() }
+}
+for (let i = 0; i < 35; i++) ps.push(new P());
+function anim() {
+  cx.clearRect(0, 0, w, h);
+  ps.forEach(p => { p.u(); p.d(cx) });
+  for (let i = 0; i < ps.length; i++)
+    for (let j = i + 1; j < ps.length; j++) {
+      const dx = ps[i].x - ps[j].x, dy = ps[i].y - ps[j].y, d = Math.sqrt(dx * dx + dy * dy);
+      if (d < 110) { cx.beginPath(); cx.strokeStyle = `rgba(45,212,168,${.05 * (1 - d / 110)})`; cx.lineWidth = .5; cx.moveTo(ps[i].x, ps[i].y); cx.lineTo(ps[j].x, ps[j].y); cx.stroke() }
+    }
+  requestAnimationFrame(anim)
+}
+anim();
+
+// THE DATA 
+const S = [
+{id:'cover', num:'01', title:'Executive Summary', render:()=>`
+  <div class="cover">
+    <div class="pg-eye">SME Gems — Hidden Champions of the SME Platform</div>
+    <div class="pg-h1">Kalyani Cast-Tech<br><em>Forging India's Container Revolution</em></div>
+    <div class="pg-sub" style="max-width:850px">Founded 2012 · India's largest domestic container manufacturer · Architect of double-stack dwarf containers · Only approved Indian foundry for container corner castings (Lloyd's Register UK) · Listed BSE SME Nov 2023 · Expanding into wagon manufacturing, refrigeration containers & Gati Shakti cargo terminal</div>
+    <div class="cover-kpis">
+      <div class="kpi t"><div class="kpi-lbl">Market Cap</div><div class="kpi-val t">₹503Cr</div><div class="kpi-note">CMP ~₹700</div></div>
+      <div class="kpi g"><div class="kpi-lbl">TTM Revenue</div><div class="kpi-val g">₹161Cr</div><div class="kpi-note">+40% YoY</div></div>
+      <div class="kpi g"><div class="kpi-lbl">TTM PAT</div><div class="kpi-val g">₹16Cr</div><div class="kpi-note">197% 5Y CAGR</div></div>
+      <div class="kpi k"><div class="kpi-lbl">ROCE / ROE</div><div class="kpi-val k">30% / 24%</div><div class="kpi-note">FY25</div></div>
+      <div class="kpi t"><div class="kpi-lbl">P/E (TTM)</div><div class="kpi-val t">~31.4x</div><div class="kpi-note">Growth co.</div></div>
+      <div class="kpi g"><div class="kpi-lbl">Order Book</div><div class="kpi-val g">₹140Cr</div><div class="kpi-note">H1 FY26</div></div>
+    </div>
+  </div>
+  <div class="sec-h">Company Snapshot</div>
+  <p style="font-family:var(--font-sans);font-size:15px;color:var(--body);line-height:1.78;max-width:880px;margin-bottom:20px">
+    Kalyani Cast-Tech Limited (KCTL) was incorporated in 2012 by Naresh Kumar, an IIT Madras M.Tech graduate and former Indian Railway Service of Mechanical Engineers (IRSME) officer with 17+ years of Class-A service. The company started as a steel foundry in Rewari, Haryana, manufacturing casting components for Indian Railways. In 2021, recognizing the massive gap in India's container ecosystem, KCTL diversified into container manufacturing — at a time when others were exiting the space. Today it is India's largest domestic container manufacturer with ~6,000 TEU installed capacity, expanding to 16,000 TEUs.
+  </p>
+  <div class="sec-h">Key Customers</div>
+  <div class="tags">
+    <span class="tag t">CONCOR</span><span class="tag t">Indian Railways</span><span class="tag t">DP World</span><span class="tag k">Western Carriers</span><span class="tag k">Pristine Group</span><span class="tag g">Jindal Stainless</span><span class="tag">Glasswing</span><span class="tag">Coach Builders Pvt Ltd</span>
+  </div>
+  <div class="sec-h" style="margin-top:28px">Awards & Certifications</div>
+  <div class="hl ok"><strong>Awards:</strong> ET Economic Times "MSME of the Year 2024" in Manufacturing (awarded Mar 20, 2025) · CNBC TV18 / HSBC "SME Champion Award" for Industrial Excellence & Make in India</div>
+  <div class="hl"><strong>Approvals:</strong> ISO 9001:2008 certified · Class A foundry as per IS 12117:1996 · Only approved Indian foundry authorized to manufacture container corner castings — approved by Lloyd's Register UK · 5+ patents held by founder Naresh Kumar</div>
+`},
+{id:'history', num:'02', title:'Company History & Products', render:()=>`
+  <div class="sec-h">The Journey — From Foundry to Logistics Platform</div>
+  <div class="ccard" style="border-top:3px solid var(--teal)">
+    <div class="ccard-h">Key Milestones</div>
+    <div class="ccard-body">
+      <strong style="color:var(--text)">2008:</strong> Naresh Kumar resigns from Indian Railways after 17 years as IRSME Class-A officer. Gains deep domain expertise running CONCOR and Pipavav Railway Corp infrastructure.<br><br>
+      <strong style="color:var(--text)">Sep 2012:</strong> Kalyani Cast-Tech incorporated in Delhi. Vision: integrated manufacturing for steel/iron castings.<br><br>
+      <strong style="color:var(--text)">2014:</strong> Steel foundry commissioned at Mamaria Thether, Rewari, Haryana (3.5 acres, 6,000 sqm). Established as a Class A foundry producing critical components like MG Couplers, CI Brake Blocks, WDG4 Adapters, Bearing Housings, Corner Castings, and Hub Traction Motors.<br><br>
+      <strong style="color:var(--text)">2018-19:</strong> Recognizing the domestic container manufacturing gap, the company begins intensive R&D, designing proprietary double-stack containers at a time when peers were actively exiting the sector.<br><br>
+      <strong style="color:var(--text)">Dec 2021:</strong> First dedicated container manufacturing plant inaugurated at Rewari.<br><br>
+      <strong style="color:var(--text)">Jun 2022:</strong> Converted to Public Limited Company.<br><br>
+      <strong style="color:var(--text)">Nov 2023:</strong> Blockbuster IPO on BSE SME at ₹139. Listed at ₹264 (+90%). Raised ₹30 Cr to fuel capital expansion.<br><br>
+      <strong style="color:var(--text)">FY23:</strong> Breakout export sales to Russia, demonstrating international compliance and fabrication capability.<br><br>
+      <strong style="color:var(--text)">2025-26:</strong> Mega 150-acre expansion underway. Wagon factory construction initiated. IceBattery cold-chain MoU signed with Japan. India's first SS salt container trials completed. MOA officially amended to add rail rolling stock and freight terminal operations. NA Layout Plan approved by Town Planning Authority, Kutch (Apr 21, 2026) — enabling operationalization of the Multimodal Logistics Park & Container Wagon Manufacturing Unit.
+    </div>
+  </div>
+  <div class="hl sky"><strong>100% Client Retention:</strong> KCTL has maintained perfect retention across blue-chip clients like DP World, Indian Railways, CONCOR, Pristine, and Western Carriers — a powerful signal of manufacturing quality and delivery reliability.</div>
+`},
+{id:'ipo', num:'03', title:'IPO & Fund Utilization', render:()=>`
+  <div class="sec-h">IPO Journey</div>
+  <div class="pg-sub">Kalyani Cast-Tech came public via BSE SME in November 2023 — a fresh issue raising ₹30.11 Cr</div>
+  <div class="g2" style="margin-bottom:24px">
+    <div>
+      <div class="kpi-row" style="grid-template-columns:1fr 1fr">
+        <div class="kpi t"><div class="kpi-lbl">IPO Price</div><div class="kpi-val t">₹139</div><div class="kpi-note">Face Value ₹10</div></div>
+        <div class="kpi g"><div class="kpi-lbl">Listing Price</div><div class="kpi-val g">₹264</div><div class="kpi-note">+90% listing gain</div></div>
+        <div class="kpi k"><div class="kpi-lbl">Issue Size</div><div class="kpi-val k">₹30Cr</div><div class="kpi-note">21.66L shares</div></div>
+        <div class="kpi"><div class="kpi-lbl">CMP Apr'26</div><div class="kpi-val">₹700</div><div class="kpi-note">+404% from IPO</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="ccard" style="border-top:3px solid var(--teal)">
+        <div class="ccard-h">📋 IPO Timeline</div>
+        <div class="ccard-body">
+          <strong style="color:var(--text)">Open:</strong> November 8, 2023<br>
+          <strong style="color:var(--text)">Close:</strong> November 10, 2023<br>
+          <strong style="color:var(--text)">Allotment:</strong> November 13, 2023<br>
+          <strong style="color:var(--text)">Listing:</strong> November 17, 2023 (BSE SME)<br>
+          <strong style="color:var(--text)">Lot Size:</strong> 1,000 shares (₹1,39,000 min)<br>
+          <strong style="color:var(--text)">Lead Manager:</strong> Gretex Corporate Services<br>
+          <strong style="color:var(--text)">Registrar:</strong> Bigshare Services Pvt Ltd
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sec-h">Fund Utilization</div>
+  <div class="hl"><strong>Net IPO Proceeds:</strong> ~₹25.08 Cr (net of market maker reservation)</div>
+  <div class="g2">
+    <div class="ccard">
+      <div class="ccard-h">💼 Working Capital</div>
+      <div class="ccard-body">₹23.75 Cr allocated — the bulk of proceeds went directly into funding the growing container manufacturing operations, raw material procurement, and scaling production capacity to meet surging demand from CTOs and Indian Railways.</div>
+    </div>
+    <div class="ccard">
+      <div class="ccard-h">🏢 General Corporate Purpose</div>
+      <div class="ccard-body">Remaining funds deployed for general corporate purposes — including foundry modernization, business development initiatives, and building the organizational framework for the expansion into new product lines and geographies.</div>
+    </div>
+  </div>
+  <div class="hl ok" style="margin-top:16px"><strong>Post-IPO Capital Efficiency:</strong> The company has since funded its massive 150-acre expansion (Phase 1: ₹100 Cr capex) largely from internal accruals and advances, with ~80% of wagon machinery orders placed without taking debt. Management has indicated willingness to explore equity/JV/debt for the ₹400-500 Cr total capex over 4-5 years, with 15-20% expected via internal accruals.</div>
+`},
+{id:'business', num:'04', title:'Business Segments', render:()=>`
+  <div class="sec-h">Three Verticals Powering the Logistics Revolution</div>
+  <div class="pg-sub">From castings to containers to wagons — a vertically integrated logistics manufacturing platform</div>
+  <div class="ccard" style="border-top:4px solid var(--teal)">
+    <div class="ccard-h">📦 Container Manufacturing — Primary Revenue Driver</div>
+    <div class="ccard-body">
+      India's largest domestic container manufacturer. Products include ISO containers (20', 25', 40', 42'), Double Stack Containers, Dwarf Containers (Naresh Kumar's patented innovation for electrified rail routes), Cuboid Containers, special containers for parcel cargo, and containers for two & three wheelers.<br><br>
+      <strong style="color:var(--text)">Current capacity:</strong> ~6,000 TEUs installed → expanding to 16,000 TEUs with new plant.<br>
+      <strong style="color:var(--text)">Implied FY25 volume:</strong> ~5,100 TEUs (₹133 Cr ÷ ~₹2.6 lakh/TEU)<br>
+      <strong style="color:var(--text)">Cumulative production:</strong> 13,000+ units delivered to date
+    </div>
+  </div>
+  <div class="g2" style="margin-bottom:16px">
+    <div class="ccard" style="border-top:4px solid var(--sky)">
+      <div class="ccard-h">🏭 Steel Foundry — Backward Integration</div>
+      <div class="ccard-body">
+        Class A foundry (IS 12117:1996) manufacturing MG Coupler Components, CI Brake Blocks, Adapters for WDG4 Locomotives, Bearing Housing for Electric Locos, Corner Castings for containers, Hub Traction Motors. The only Indian foundry approved by Lloyd's Register UK for container corner castings — a critical moat.
+      </div>
+    </div>
+    <div class="ccard" style="border-top:4px solid var(--gold)">
+      <div class="ccard-h">🚂 Wagon Manufacturing — Future Growth Engine</div>
+      <div class="ccard-body">
+        New business vertical entering FY27. Factory construction underway on 150-acre facility. Phase 1: ~2,400 wagon capacity, scaling to 7,500-8,000 units/year over 4-5 years. Special container-transportation wagon design approved in principle by RDSO. G105 certification (AAR standards) enabling export capabilities.
+      </div>
+    </div>
+  </div>
+  <div class="hl sky"><strong>Unique Integrated Model:</strong> Container factory + Wagon factory + Steel foundry (backward integration) + Gati Shakti Cargo Rail Terminal (IPA received, DPR submitted to Western Railways) — all on a single campus. This creates unmatched logistics economics: lower empty repositioning, rail-ready boxes, double-stack dispatch capability. Hard for rivals to replicate.</div>
+`},
+{id:'financials', num:'05', title:'Financial Performance', render:()=>`
+  <div class="sec-h">Profit & Loss Trajectory</div>
+  <div class="pg-sub">From ₹13 Cr revenue in FY20 to ₹161 Cr TTM — 61% CAGR over 5 years</div>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Period</th><th>Sales</th><th>Op. Profit</th><th>OPM %</th><th>PAT</th><th>EPS (₹)</th></tr></thead>
+      <tbody>
+        <tr><td>FY20</td><td>₹13 Cr</td><td>₹1 Cr</td><td>7%</td><td>₹0.13 Cr</td><td>0.13</td></tr>
+        <tr><td>FY21</td><td>₹11 Cr</td><td>₹1 Cr</td><td>8%</td><td>₹0.3 Cr</td><td>0.52</td></tr>
+        <tr><td>FY22</td><td>₹49 Cr</td><td>₹2 Cr</td><td>5%</td><td>₹1 Cr</td><td>2.33</td></tr>
+        <tr><td>FY23</td><td class="tg">₹63 Cr</td><td class="tg">₹12 Cr</td><td class="tg">19%</td><td class="tg">₹8 Cr</td><td class="tg">16.05</td></tr>
+        <tr><td>FY24</td><td class="tg">₹94 Cr</td><td>₹14 Cr</td><td>14%</td><td class="tg">₹10 Cr</td><td>13.37</td></tr>
+        <tr><td>FY25</td><td class="tg">₹139 Cr</td><td class="tg">₹20 Cr</td><td>14%</td><td class="tg">₹14 Cr</td><td class="tg">19.83</td></tr>
+        <tr style="background:rgba(45,212,168,0.04)"><td><strong>TTM</strong></td><td class="tgo"><strong>₹161 Cr</strong></td><td class="tgo"><strong>₹20 Cr</strong></td><td><strong>12%</strong></td><td class="tgo"><strong>₹16 Cr</strong></td><td class="tgo"><strong>21.95</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="sec-h">Revenue & Profit Chart</div>
+  <div class="chart-wrap"><canvas id="revChart" class="chart"></canvas></div>
+  <div class="sec-h">Balance Sheet Highlights</div>
+  <div class="kpi-row">
+    <div class="kpi g"><div class="kpi-lbl">Borrowings</div><div class="kpi-val g">₹0 Cr</div><div class="kpi-note">Sep'25 · Debt Free</div></div>
+    <div class="kpi t"><div class="kpi-lbl">Book Value</div><div class="kpi-val t">₹103</div><div class="kpi-note">Per share</div></div>
+    <div class="kpi k"><div class="kpi-lbl">Fixed Assets</div><div class="kpi-val k">₹18Cr</div><div class="kpi-note">Rising with capex</div></div>
+    <div class="kpi"><div class="kpi-lbl">Cash from Ops</div><div class="kpi-val">₹8Cr</div><div class="kpi-note">FY25</div></div>
+  </div>
+  <div class="hl ok"><strong>Growth Metrics:</strong> 5-year Sales CAGR: 61% · 5-year Profit CAGR: 197% · 3-year ROE: 31.5% · Company is almost debt-free with reducing leverage each year.</div>
+`},
+{id:'peers', num:'06', title:'Peer Comparison', render:()=>`
+  <div class="sec-h">Peer Comparison</div>
+  <div class="pg-sub">Kalyani Cast-Tech valuation vs listed Railway / Wagon manufacturing peers</div>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Company</th><th>CMP (₹)</th><th>MCap (Cr)</th><th>P/E</th><th>ROCE</th><th>ROE</th></tr></thead>
+      <tbody>
+        <tr style="background:rgba(255,255,255,0.03)">
+          <td style="color:var(--text);font-weight:700">Kalyani Cast-Tech</td><td class="tg">700</td><td>₹503</td><td class="tg">31.4x</td><td class="tg">30.1%</td><td class="tg">24.7%</td>
+        </tr>
+        <tr><td>Jupiter Wagons</td><td>257</td><td>₹10,967</td><td>45.5x</td><td>21.5%</td><td>17.0%</td></tr>
+        <tr><td>Titagarh Rail Sys</td><td>615</td><td>₹8,281</td><td>45.3x</td><td>16.6%</td><td>11.8%</td></tr>
+        <tr><td>Texmaco Rail</td><td>89.7</td><td>₹3,648</td><td>21.9x</td><td>11.2%</td><td>6.4%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="hl sky"><strong>Valuation Perspective:</strong> KCTL is successfully pivoting from pure castings into specialized container and wagon manufacturing. While established railway peers trade at significant premiums (~45x P/E), KCTL currently trades at a more reasonable multiple (~31x P/E) despite delivering top-tier capital efficiency (ROCE >30%) that surpasses even the largest players like Jupiter Wagons.</div>
+`},
+{id:'management', num:'07', title:'Management & Shareholders', render:()=>`
+  <div class="sec-h">The Founder — A Railwayman Turned Entrepreneur</div>
+  <div class="mgmt" style="margin-bottom:16px">
+    <div class="mgmt-role">Chairman & Managing Director · Promoter</div>
+    <div class="mgmt-name">NARESH KUMAR</div>
+    <div class="mgmt-tag">M.Tech Mechanical · IIT Madras · Ex-IRSME · 5+ Patents · 17yr Indian Railways</div>
+    <div class="mgmt-bio">The visionary behind KCTL. Served Indian Railways for 17 years as a Class-A IRSME officer. As CEO of a major railway wagon & coach unit, he oversaw manufacturing of wagons, coaches, overhead cranes, and road rollers. At CONCOR (Container Corporation of India) and Pipavav Railway Corporation, he managed procurement, O&M of container handling cranes, electrical installations, and rolling stock. Inventor of the "Double Stack Dwarf Container" concept — enabling double-stack container movement on India's electrified routes where OHE clearances limit standard containers. Holds 5+ patents. After resigning from Railways in 2008, he built Kalyani from a ₹6 Cr initial investment to a ₹140 Cr turnover company with a ₹500 Cr market cap. Awarded ET "MSME of the Year 2024" in Manufacturing (Mar 2025) and CNBC TV18/HSBC "SME Champion Award" for Industrial Excellence.</div>
+  </div>
+  <div class="mgmt-grid">
+    <div class="mgmt">
+      <div class="mgmt-role">Promoter & Director</div>
+      <div class="mgmt-name">JAI PRAKASH BANGANI</div>
+      <div class="mgmt-tag">NBFC Principal · Strategic & Financial Advisor</div>
+      <div class="mgmt-bio">Runs his own NBFC firm based in Kolkata. Plays a strategic advisory role — helps the company in financial planning, capital allocation, and corporate strategy. His financial services expertise complements Naresh Kumar's engineering and manufacturing focus.</div>
+    </div>
+    <div class="mgmt">
+      <div class="mgmt-role">Promoter & Director</div>
+      <div class="mgmt-name">JAVED ASLAM</div>
+      <div class="mgmt-tag">Civil Engineer · Ex-Chairman HFDC</div>
+      <div class="mgmt-bio">Javed is a well-seasoned Civil Engineer having his own business of real estate in India and abroad. He has served as Chairman of Haryana Forest Development Corporation. He acts in an advisory capacity, providing guidance on strategic and important issues.</div>
+    </div>
+  </div>
+  <div class="sec-h">Promoter Holding Pattern</div>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Category</th><th>Dec'23</th><th>Mar'24</th><th>Sep'24</th><th>Dec'24</th><th>Mar'25</th><th>Sep'25</th><th>Dec'25</th></tr></thead>
+      <tbody>
+        <tr><td>Promoters</td><td>69.84%</td><td>69.84%</td><td>69.87%</td><td>65.77%</td><td>63.32%</td><td>59.47%</td><td class="tr-c">59.47%</td></tr>
+        <tr><td>FII+DII</td><td>3.91%</td><td>0.49%</td><td>0.01%</td><td>0.71%</td><td>0.69%</td><td>0.44%</td><td>0.48%</td></tr>
+        <tr><td>Public</td><td>26.25%</td><td>29.68%</td><td>30.12%</td><td>33.51%</td><td>35.98%</td><td class="tg">40.07%</td><td class="tg">40.04%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="hl gold"><strong>Girish Gulati HUF Entry (Sep 5, 2025):</strong> Picked up 3.8% via block deal at ~₹522 (2,72,500 shares) and eventually built to 5.05%. In Mar 2026, there was a marginal open market sale of 3,750 shares (5.05% → 4.99%), likely for portfolio rebalancing. The core position remains intact. The stake came via orchestrated promoter-side block sales to bring in a non-promoter investor — a trait common across SMEs; at times aligned strategically to bring better set of investors onboard.</div>
+  <div class="hl warn"><strong>Promoter Dilution — Context Matters:</strong> Promoter holding declined from ~70% to ~59.5% over two years. However, all recent promoter stake sales occurred <em>prior</em> to the transformational CMAS policy announcement, with shares absorbed by known investors (like Girish Gulati HUF). While future equity dilution may be necessary to fund the massive ₹400-500 Cr capex, immediate further promoter offloading is considered unlikely.</div>
+`},
+{id:'tailwinds', num:'08', title:'Container & DFC Tailwinds', render:()=>`
+  <div class="sec-h">The Container Manufacturing Opportunity</div>
+  <div class="pg-sub">Budget 2026-27 is a game-changer: ₹10,000 Cr scheme for domestic container manufacturing over 5 years</div>
+  <div class="kpi-row">
+    <div class="kpi t"><div class="kpi-lbl">Budget Allocation</div><div class="kpi-val t">₹10,000Cr</div><div class="kpi-note">5-year scheme</div></div>
+    <div class="kpi g"><div class="kpi-lbl">VGF Subsidy</div><div class="kpi-val g">$400-800</div><div class="kpi-note">Per container</div></div>
+    <div class="kpi r"><div class="kpi-lbl">India Prod.</div><div class="kpi-val r">30K</div><div class="kpi-note">Containers/year</div></div>
+    <div class="kpi k"><div class="kpi-lbl">China Prod.</div><div class="kpi-val k">50L</div><div class="kpi-note">Containers/year</div></div>
+  </div>
+  <div class="hl ok"><strong>Kalyani's Position:</strong> As India's largest domestic container manufacturer with installed capacity of ~6,000 TEUs (expanding to 16,000), KCTL is a prime beneficiary. Even with a conservative 15% market share of the 10L TEU target, Kalyani would produce 1.5L TEUs — a 10x jump from current capacity. The scheme is expected to unlock a market worth ₹80,000 Cr and create 50,000+ jobs.</div>
+  
+  <div class="g2" style="margin-bottom:24px">
+    <div class="ccard" style="border-top:3px solid var(--sky); margin-bottom:0">
+      <div class="ccard-h">💰 CMAS Pricing Parity Economics</div>
+      <div class="ccard-body">
+        Historically, a standard ISO container cost ~₹1.6 lakhs in China versus ~₹2.4 lakhs in India (an ₹80,000 or ~$900 gap). The new Container Manufacturing Assistance Scheme (CMAS) provides Viability Gap Funding (VGF) of $400–$800 per container. This effectively bridges the cost differential, allowing domestic manufacturers to achieve pricing parity with Chinese imports for the first time. The ₹2,000 Cr annual incentive pool provides massive headroom for existing players to scale.
+      </div>
+    </div>
+    <div class="ccard" style="border-top:3px solid var(--gold); margin-bottom:0">
+      <div class="ccard-h">🚢 Export & Shipping Drivers</div>
+      <div class="ccard-body">
+        China produces ~50 lakh containers annually out of necessity to support $4 Trillion in exports. As India's exports ($400 Bn) scale alongside the launch of the Bharat Container Shipping Line (which alone requires ~10L TEUs), captive demand for domestic ISO containers will surge. This directly substitutes India's current reliance on 20 lakh imported empty containers per year.
+      </div>
+    </div>
+  </div>
+  
+  <div class="sec-h">Dedicated Freight Corridor Impact</div>
+  <div class="g2">
+    <div class="ccard" style="border-top:3px solid var(--teal)">
+      <div class="ccard-h">🛤️ DFC Boost for Containers</div>
+      <div class="ccard-body">
+        India's Dedicated Freight Corridors (Western & Eastern) are transforming goods movement. The DFC enables faster, heavier freight trains — and double-stack container movement is the centerpiece.<br><br>
+        <strong style="color:var(--text)">National Rail Plan:</strong> Raise rail freight share to ~45% by 2030 (from ~27% today)<br>
+        <strong style="color:var(--text)">East-West DFC:</strong> Budget 2026 announced 2,052 km new East-West corridor<br>
+        <strong style="color:var(--text)">KCTL advantage:</strong> Dwarf containers are India-specific — enable double-stack on electrified routes where OHE limits standard height
+      </div>
+    </div>
+    <div class="ccard" style="border-top:3px solid var(--gold)">
+      <div class="ccard-h">🏗️ Gati Shakti Integration</div>
+      <div class="ccard-body">
+        Multi-modal logistics integration is designed to reduce India's overall logistics cost to 9% of GDP. Gati Shakti Cargo Rail Terminals play a key role in this ecosystem, acting as the critical loading/unloading nexus connecting road to rail seamlessly for domestic manufacturing output.
+      </div>
+    </div>
+  </div>
+`},
+{id:'catalysts', num:'09', title:'New Product Lines & Catalysts', render:()=>`
+  <div class="sec-h">FY27-28 Revenue Catalysts</div>
+  <div class="pg-sub">Multiple new business lines coming online — each a potential revenue multiplier</div>
+  <div class="ccard" style="border-top:4px solid var(--teal)">
+    <div class="ccard-h">🧊 Stainless Steel Salt Containers — India's First</div>
+    <div class="ccard-body">
+      Kalyani fabricated India's first stainless steel container for salt transportation in partnership with Jindal Stainless and Indian Railways. The 20-ft prototype — built per RDSO specifications using 304-grade stainless steel — successfully completed loading/unloading trials at Bhimasar, Gandhidham, Gujarat on Feb 10, 2026.<br><br>
+      <strong style="color:var(--text)">Why it matters:</strong> Salt transportation is highly corrosive. Conventional containers fail within 2-3 years; SS containers last 15-20 years (6-7x longer). Eliminates tarpaulin covers, prevents contamination. A new addressable market in bulk commodity containers.
+    </div>
+  </div>
+  <div class="g2" style="margin-bottom:16px">
+    <div class="ccard" style="border-top:4px solid var(--sky)">
+      <div class="ccard-h">❄️ IceBattery Reefer Containers</div>
+      <div class="ccard-body">
+        MoU signed Feb 11, 2026 with Japanese company Innovation Thru Energy Co. Ltd for development, manufacturing, sale & marketing of ISO IceBattery Refer Containers — globally.<br><br>
+        Japan provides patented IceBattery® technology (green cold chain without diesel/power), Kalyani does manufacturing. ITE already has CONCOR partnership for 40-ft IceBattery containers on DFC. Revenue expected in ~9 months from MoU date (Q4 FY26 / Q1 FY27).
+      </div>
+    </div>
+    <div class="ccard" style="border-top:4px solid var(--gold)">
+      <div class="ccard-h">🚂 Wagon Manufacturing</div>
+      <div class="ccard-body">
+        Factory construction on 150-acre facility underway. Phase 1: ~2,400 units. Ultimate capacity: 7,500-8,000 wagons/year.<br><br>
+        Special design for container-transportation wagons — approved in principle by RDSO. Management expects post-FY27: containers will be 30-35% of revenue while wagons will be 60-65%. The revenue mix shift could create a quantum jump in topline.
+      </div>
+    </div>
+  </div>
+  <div class="ccard" style="border-top:4px solid var(--coral)">
+    <div class="ccard-h">🏗️ Gati Shakti Cargo Rail Terminal</div>
+    <div class="ccard-body">
+      In-Principle Approval (IPA) received from Railways. Detailed Project Report (DPR) submitted to Western Railway. 800m in-plant rail line clearances are gating items for wagon output. This terminal creates an integrated manufacturing + dispatch campus — containers & wagons manufactured and loaded on-site. Dramatically lowers logistics costs for the company itself and customers.
+    </div>
+  </div>
+  <div class="ccard" style="border-top:4px solid var(--teal)">
+    <div class="ccard-h">✅ NA Layout Plan Approved — April 21, 2026</div>
+    <div class="ccard-body">
+      <strong style="color:var(--teal)">MAJOR MILESTONE:</strong> The company received approval of its proposed Non-Agricultural (NA) Layout Plan from the Town Planning Authority / Town Controller Planner, Kutch, Gujarat. The approved layout plan pertains to the development of the <strong style="color:var(--text)">Multimodal Logistics Park and Container Wagon Manufacturing Unit</strong> on land at Village Shivlakha, Taluka Bhachau, District Kutch, Gujarat — admeasuring approximately <strong style="color:var(--text)">114 acres</strong>.<br><br>
+      With factory construction nearing completion, this approval enables the company to apply for essential utilities and statutory approvals including <strong style="color:var(--text)">power connection, factory license, pollution control clearances, and eligible industrial incentives</strong>. This is the final regulatory gating item before operationalization of the mega expansion project.
+    </div>
+  </div>
+  <div class="hl ok"><strong>Revenue Trajectory:</strong> Management vision is ₹1,000 Cr revenue in 3-5 years. With wagon manufacturing (higher realizations than containers), reefer containers (premium product), SS salt containers (new market), and the Gati Shakti terminal operational — the path to this target becomes credible from FY27-28 onwards.</div>
+`},
+{id:'dubai', num:'10', title:'Export & International Plans', render:()=>`
+  <div class="sec-h">International Expansion Roadmap</div>
+  <div class="g2" style="margin-bottom:14px">
+    <div class="ccard" style="border-top:3px solid var(--gold)">
+      <div class="ccard-h">🌍 Export Capabilities</div>
+      <div class="ccard-body">
+        <strong style="color:var(--text)">FY23 exports:</strong> Revenue from container sales to Russia proven.<br><br>
+        <strong style="color:var(--text)">G105 Certification:</strong> AAR standards compliance — formally enables wagon and container exports globally. Management confirmed export openness in the Q2 FY26 concall.<br><br>
+        <strong style="color:var(--text)">Port proximity:</strong> Strategic advantage for export logistics (highlighted by management).<br><br>
+        <strong style="color:var(--text)">ASIX Global Inc.:</strong> Canada-based Business & Marketing Associates listed on company website — international BD infrastructure.<br><br>
+        <strong style="color:var(--text)">JV exploration:</strong> Technology transfer and market entry partnerships being explored for specialized wagons.
+      </div>
+    </div>
+    <div class="ccard" style="border-top:3px solid var(--sky)">
+      <div class="ccard-h">🏗️ Dubai / Middle East Angle</div>
+      <div class="ccard-body">
+        <strong style="color:var(--text)">DP World as client:</strong> Dubai-based logistics giant is already a marquee customer — presenting a natural pathway into Middle East port markets.<br><br>
+        <strong style="color:var(--text)">IceBattery global MoU:</strong> Explicitly covers "domestic and global" markets — directly opening doors to the massive GCC cold chain logistics sector.<br><br>
+        <strong style="color:var(--text)">MOA Amendment (Dec 2025):</strong> Broadened scope to rail rolling stock, maintenance, freight terminals, and container services internationally.
+      </div>
+    </div>
+  </div>
+  <div class="sec-h">Delays & Realistic Risks</div>
+  <div class="hl warn"><strong>Domestic First:</strong> Near-term focus is squarely on domestic scaling (150-acre expansion, wagon facility, Gati Shakti terminal). International expansion is aspirational right now. Export revenue currently remains negligible.</div>
+  <div class="hl warn"><strong>Approval Dependencies:</strong> Wagon exports require complete G105 certification. Container exports need CSC certification and acceptance by established international leasing channels. These hurdles are non-trivial.</div>
+  <div class="hl warn"><strong>China Dominance:</strong> CIMC and CXIC hold 90%+ global container market share. India's edge relies entirely on specialized products (dwarf, reefer, SS), not standard commodity ISO boxes.</div>
+  <div class="hl sub"><strong>Timeline:</strong> International revenues likely push to CY2027-28 at the earliest. Concall confirmed wagon facility commencement pushed to H2 next fiscal — suggesting execution delays are already visible.</div>
+`},
+{id:'price', num:'11', title:'Stock Price Action', render:()=>`
+  <div class="sec-h">1-Year Price Chart (BSE SME)</div>
+  <div class="pg-sub">From IPO at ₹139 (Nov 2023) → ₹700 CMP → new highs post NA Layout approval</div>
+  <div class="chart-wrap"><canvas id="priceChart" class="chart"></canvas></div>
+  <div class="kpi-row">
+    <div class="kpi t"><div class="kpi-lbl">52-Week High</div><div class="kpi-val t">₹700</div><div class="kpi-note">Apr 2026</div></div>
+    <div class="kpi r"><div class="kpi-lbl">52-Week Low</div><div class="kpi-val r">₹351</div><div class="kpi-note">Apr 2025</div></div>
+    <div class="kpi"><div class="kpi-lbl">CMP (Apr 21)</div><div class="kpi-val">₹700</div><div class="kpi-note">Live</div></div>
+    <div class="kpi g"><div class="kpi-lbl">IPO Return</div><div class="kpi-val g">+404%</div><div class="kpi-note">From ₹139</div></div>
+  </div>
+  <div class="hl"><strong>Price Momentum:</strong> The stock surged to ₹700 on April 21, 2026 following the company's announcement that it received approval for its Non-Agricultural (NA) Layout Plan from the Town Planning Authority, Kutch, Gujarat. This approval is a critical milestone — it enables the company to apply for power connection, factory license, pollution control clearances, and eligible industrial incentives for its 114-acre Multimodal Logistics Park and Container Wagon Manufacturing Unit at Village Shivlakha, Taluka Bhachau, District Kutch. With factory construction nearing completion, this regulatory clearance marks the transition from capex phase to operationalization.</div>
+  <div class="hl sub"><strong>Liquidity Note:</strong> Being a BSE SME stock, daily volumes are typically 5,000-25,000 shares with occasional spikes to 30,000-45,000 on block deals. Delivery percentage is consistently high (70-95%), suggesting accumulation rather than trading activity. The stock has ~2,070 shareholders as of Dec 2025.</div>
+`},
+ {
+    id:'video', num:'12', title:'Container In Action',
+    render: () => `
+      <div class="sec-h">Container In Action</div>
+      <div style="background:#081218;border:1px solid var(--border);border-radius:7px;padding:24px;margin-bottom:20px;text-align:center">
+        <video id="action-video" class="video-embed" muted loop playsinline controls preload="metadata">
+          <source src="https://cdn.jsdelivr.net/gh/SMEResearch/SMEGems@main/Kalyani.mp4" type="video/mp4">
+          Your browser does not support the video element.
+        </video>
+      </div>
+  <div class="ccard" style="border-top:3px solid var(--sky)">
+    <div class="ccard-h">Pioneering Stainless Steel Freight Solutions</div>
+    <div class="ccard-body">
+      <strong>Successful trial of salt handling in stainless steel containers at Bhimasar – Gandhidham (Dated Feb 10, 2026).</strong><br><br>
+      This innovative container design ensures exceptional corrosion resistance and a significantly longer service life compared to traditional boxes. By eliminating the need for manual cleaning and reducing material wastage, it drastically improves turnaround time, setting a new benchmark in bulk freight handling.
+    </div>
+  </div>
+`},
+{id:'risks', num:'13', title:'Risks & Watchlist', render:()=>`
+  <div class="sec-h">Honest Risk Assessment</div>
+  <div class="pg-sub">Every SME investment carries specific risks — here's what to watch</div>
+  <div class="hl warn"><strong>1. Execution Risk on Mega Capex:</strong> The 150-acre expansion is transformational but requires ₹400-500 Cr over 4-5 years for a company with ₹139 Cr FY25 revenue. While management has funded 80% of wagon machinery from internal accruals, any revenue disappointment could strain the expansion timeline. Equity dilution or debt may be necessary. The NA Layout Plan approval (Apr 2026) is a positive signal — but actual commissioning and revenue ramp remain ahead.</div>
+  <div class="hl warn"><strong>2. Approval Delays:</strong> Wagon manufacturing requires RDSO design approval, G105 certification, terminal DPR clearance from Western Railway, and in-plant rail line approvals. Government approval timelines are inherently uncertain. Concall confirmed wagon timeline slipped to H2 next fiscal.</div>
+  <div class="hl warn"><strong>3. Promoter Holding Dilution:</strong> From 69.84% (Dec'23) to 59.47% (Dec'25) — a 10% drop in 2 years. Further dilution below 55% could raise governance concerns. No dividends paid despite profitability — reinvestment is the priority but dividend signal matters for SME credibility.</div>
+  <div class="hl warn"><strong>4. SME Liquidity Risk:</strong> Daily volumes of 5,000-25,000 shares mean large positions are difficult to build or exit quickly. The stock trades only on BSE SME with ~2,070 shareholders. Any negative news can trigger sharp moves in a thin order book.</div>
+  <div class="hl warn"><strong>5. Debtor Days Rising:</strong> Debtor days increased from 46.9 to 69.2 — indicating slower collections as the company scales. Railway and government clients often have extended payment cycles. This could pressure working capital as revenues grow.</div>
+  <div class="hl warn"><strong>6. Single-Site Concentration:</strong> All manufacturing is at Rewari, Haryana. A single facility risk — any disruption (regulatory, weather, utility) affects 100% of production.</div>
+  <div class="hl warn" style="border-left-color: #f0c050; background: rgba(240, 192, 80, 0.05);"><strong>7. Raw Material Volatility (Steel Prices):</strong> Steel pricing directly impacts the business model. During the July 2025 concall, management clarified they do not immediately pass on minor steel price increases to customers because orders are executed over a 3-4 month window. This absorption can lead to temporary gross margin compression (as seen when margins previously dipped from 23% to 20%). Conversely, when steel prices drop, the topline growth can appear optically flat despite manufacturing higher volumes, as the realization per container decreases. Despite this; during the recent H1 FY26 results; they managed to register a 30% growth; owing to management acumen.</div>
+  <div class="hl warn" style="border-left-color: #e8605c; background: rgba(232, 96, 92, 0.04);"><strong>8. Key Man Risk:</strong> The company is highly dependent on CMD Naresh Kumar's technical patents, execution capabilities, and deep institutional relationships from his IRSME/CONCOR tenure. The other promoters are primarily passive financial backers, making this largely a "single-man show" — a significant risk factor common in SME investing.</div>
+  
+  <div class="sec-h" style="margin-top: 32px;">What to Monitor</div>
+  <div class="g3">
+    <div class="volt-meter t" style="border-color:rgba(45,212,168,0.4); background:rgba(45,212,168,0.05)">
+      <div class="vm-lbl">Half Yearly Rev</div>
+      <div class="vm-val">₹92Cr</div>
+      <div class="vm-sub" style="color:var(--teal); font-size:12px; font-weight:700; letter-spacing:0.5px; background:rgba(45,212,168,0.1); padding:4px; border-radius:3px; margin-top:12px;">TRACK FOR ₹180Cr+ FY26</div>
+    </div>
+    <div class="volt-meter k" style="border-color:rgba(45,212,168,0.4); background:rgba(45,212,168,0.05)"><div class="vm-lbl">NA Layout Plan</div><div class="vm-val" style="color:var(--teal)">APPROVED</div><div class="vm-sub" style="color:var(--teal); font-size:11px; font-weight:700">APR 21, 2026 ✓</div></div>
+    <div class="volt-meter g"><div class="vm-lbl">Promoter Holding</div><div class="vm-val">59.5%</div><div class="vm-sub">Watch for &lt;55%</div></div>
+  </div>
+`},
+{id:'disclaimer', num:'14', title:'Disclaimer', render:()=>`
+  <div class="sec-h">Disclaimer & Disclosures</div>
+  <div class="notice">
+    <strong style="color:var(--text)">This document is for informational and educational purposes only.</strong> It does not constitute investment advice, recommendation, or an offer to buy/sell securities. The information is based on publicly available data, BSE filings, company presentations, concall transcripts, and news sources available as of April 2026.<br><br>
+    <strong style="color:var(--text)">Risks:</strong> Investing in SME stocks carries significant risks including liquidity risk, execution risk, regulatory risk, and the potential for total loss of capital. Past performance does not guarantee future results. Financial data may contain errors or may be outdated by the time you read this.<br><br>
+    <strong style="color:var(--text)">No Warranty:</strong> The author makes no warranty regarding the accuracy, completeness, or timeliness of information presented. All financial figures should be independently verified from primary sources.<br><br>
+    <strong style="color:var(--text)">SEBI Compliance:</strong> This is not a SEBI-registered research report. The author may or may not hold positions in the securities discussed. Readers should conduct their own due diligence and/or consult a SEBI-registered investment advisor before making any investment decisions.<br><br>
+    <strong style="color:var(--text)">Sources:</strong> Exchanges, Concalls, Transcripts, Investor Presentations, IPO RHP, Media Interviews and sources.<br><br>
+    <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border);display:flex;align-items:center;gap:12px">
+      <a href="https://x.com/sachprat07" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:8px;color:var(--body);text-decoration:none;font-family:var(--font-mono);font-size:13px;transition:color 0.2s" onmouseover="this.style.color='var(--teal)'" onmouseout="this.style.color='var(--body)'">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        @sachprat07
+      </a>
+    </div>
+  </div>
+`}
+];
+
+const ts = S.length;
+let ci = 0;
+
+// Initialize Content and Render Everything For Native Scrolling
+const allSecContainer = document.getElementById('active-section');
+allSecContainer.innerHTML = S.map((s, i) => `
+  <div id="sec-${i}" class="section-wrapper">
+    ${s.render()}
+  </div>
+`).join('');
+
+// Draw Charts after injection
+setTimeout(() => {
+  dRC();
+  dPC();
+}, 200);
+
+// Observer to track which section is currently visible to update Sidebar/Counter
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const idx = parseInt(entry.target.id.replace('sec-', ''));
+      ci = idx;
+      updateNavState();
+      
+      // DELAYED VIDEO AUTOPLAY LOGIC
+      if (S[idx].id === 'video') {
+        const vid = document.getElementById('action-video');
+        if (vid) {
+          vid.muted = true; 
+          const startPlayback = () => {
+            setTimeout(() => {
+              let p = vid.play();
+              if (p !== undefined) p.catch(e => console.log("Autoplay prevented:", e));
+            }, 1500); 
+          };
+          if (vid.readyState >= 3) {
+            startPlayback();
+          } else {
+            vid.addEventListener('canplay', startPlayback, { once: true });
+          }
+        }
+      } else {
+        const vid = document.getElementById('action-video');
+        if (vid && !vid.paused) {
+          vid.pause();
+        }
+      }
+    }
+  });
+}, { threshold: 0.15, rootMargin: "-20% 0px -40% 0px" });
+
+document.querySelectorAll('.section-wrapper').forEach(el => observer.observe(el));
+
+// Sidebar Toggle Logic
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('sidebar-overlay');
+
+function openSidebar(e) {
+  if(e) e.stopPropagation();
+  sidebar.classList.add('open');
+  overlay.classList.add('show');
+}
+
+function closeSidebar() {
+  sidebar.classList.remove('open');
+  overlay.classList.remove('show');
+}
+
+overlay.addEventListener('click', closeSidebar);
+
+// Build Sidebar List
+function buildSidebar() {
+  document.getElementById('sidebar-list').innerHTML = S.map((s, i) => 
+    `<div class="side-item ${i === ci ? 'active' : ''}" onclick="goToSection(${i})">
+      <span class="side-num">${s.num}</span>
+      <span>${s.title}</span>
+    </div>`
+  ).join('');
+}
+
+function updateNavState() {
+  document.getElementById('pg-counter').innerHTML = `<span>${String(ci + 1).padStart(2, '0')}</span> / ${ts}`;
+  buildSidebar();
+}
+
+function goToSection(i) {
+  closeSidebar();
+  document.getElementById('sec-' + i).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Initial sidebar build
+buildSidebar();
+
+// Chart Utilities
+function dpr() { return Math.min(devicePixelRatio || 1, 2); }
+function dRC() {
+  const v = document.getElementById('revChart');
+  if (!v) return;
+  let W = Math.max(v.parentElement.offsetWidth - 40, 460), H = 180;
+  if (W <= 0) { requestAnimationFrame(dRC); return; }
+  const d = dpr(); v.width = W * d; v.height = H * d; v.style.width = W + 'px'; v.style.height = H + 'px';
+  const c = v.getContext('2d'); c.scale(d, d);
+  const l = ['FY20', 'FY21', 'FY22', 'FY23', 'FY24', 'FY25', 'TTM'];
+  const r = [13, 11, 49, 63, 94, 139, 161], p = [.13, .3, 1, 8, 10, 14, 16];
+  const pd = { t: 14, r: 50, b: 26, l: 40 }, cw = W - pd.l - pd.r, ch = H - pd.t - pd.b, n = l.length, mx = 180, bw = Math.min(cw / (n * 2.5), 20);
+  c.clearRect(0, 0, W, H);
+  for (let i = 0; i <= 4; i++) {
+    const y = pd.t + ch * (1 - i / 4);
+    c.strokeStyle = 'rgba(45,212,168,0.07)'; c.lineWidth = 1; c.beginPath(); c.moveTo(pd.l, y); c.lineTo(pd.l + cw, y); c.stroke();
+    c.fillStyle = '#3c5868'; c.font = '700 10px "IBM Plex Mono",monospace'; c.textAlign = 'right'; c.fillText(Math.round(mx * i / 4), pd.l - 7, y + 4);
+  }
+  l.forEach((lb, i) => {
+    const gx = pd.l + i * (cw / n) + cw / (n * 2);
+    const rh = (r[i] / mx) * ch;
+    c.fillStyle = 'rgba(45,212,168,0.16)'; c.fillRect(gx - bw - 1, pd.t + ch - rh, bw, rh);
+    c.fillStyle = '#2dd4a8'; c.fillRect(gx - bw - 1, pd.t + ch - rh, bw, 2);
+    const ph = (p[i] / mx) * ch;
+    c.fillStyle = 'rgba(240,192,80,0.16)'; c.fillRect(gx + 2, pd.t + ch - ph, bw, ph);
+    c.fillStyle = '#f0c050'; c.fillRect(gx + 2, pd.t + ch - ph, bw, 2);
+    c.fillStyle = '#8ca0b0'; c.font = '700 10px "IBM Plex Mono",monospace'; c.textAlign = 'center'; c.fillText(lb, gx, H - pd.b + 14);
+  });
+  c.fillStyle = '#2dd4a8'; c.fillRect(W - 40, pd.t, 9, 9);
+  c.fillStyle = '#eef4f8'; c.font = '600 10px "Outfit",sans-serif'; c.textAlign = 'right'; c.fillText('Rev', W - 47, pd.t + 8);
+  c.fillStyle = '#f0c050'; c.fillRect(W - 40, pd.t + 18, 9, 9);
+  c.fillStyle = '#eef4f8'; c.fillText('PAT', W - 47, pd.t + 26);
+}
+
+const PD = [{ d: "Apr'25", c: 396 }, { d: '17A', c: 412 }, { d: "May", c: 399 }, { d: "Jun", c: 414 }, { d: "Jul", c: 530 }, { d: "Aug", c: 560 }, { d: "Sep", c: 522, ev: 'b', desc: 'Gulati Entry' }, { d: "Oct", c: 599, ev: 'p', desc: '52W High ₹625' }, { d: "Nov", c: 490 }, { d: "Dec", c: 460 }, { d: "Jan'26", c: 441 }, { d: '1Feb', c: 480, ev: 'g', desc: 'Budget ₹10KCr' }, { d: '11F', c: 510, ev: 'm', desc: 'IceBattery MoU' }, { d: "Mar", c: 500 }, { d: '20M', c: 522 }, { d: '2Apr', c: 538 }, { d: '21A', c: 700, ev: 'p', desc: 'NA Layout Approved' }];
+function dPC() {
+  const v = document.getElementById('priceChart');
+  if (!v) return;
+  let W = v.parentElement.offsetWidth - 40, H = 200;
+  if (W <= 0) { requestAnimationFrame(dPC); return; }
+  const d = dpr(); v.width = W * d; v.height = H * d; v.style.width = W + 'px'; v.style.height = H + 'px';
+  const c = v.getContext('2d'); c.scale(d, d);
+  const pd = { t: 16, r: 16, b: 32, l: 40 }, cw = W - pd.l - pd.r, ch = H - pd.t - pd.b;
+  const vs = PD.map(x => x.c), mn = Math.min(...vs) * .92, mx = Math.max(...vs) * 1.08;
+  const ec = { p: '#f0c050', b: '#58b4e8', g: '#2dd4a8', m: '#e8605c' };
+  function rn(hX = null) {
+    c.clearRect(0, 0, W, H);
+    for (let i = 0; i <= 4; i++) {
+      const y = pd.t + ch * (1 - i / 4);
+      c.strokeStyle = 'rgba(45,212,168,0.07)'; c.lineWidth = 1; c.beginPath(); c.moveTo(pd.l, y); c.lineTo(pd.l + cw, y); c.stroke();
+      c.fillStyle = '#3c5868'; c.font = '700 10px "IBM Plex Mono",monospace'; c.textAlign = 'right'; c.fillText('₹' + Math.round(mn + (mx - mn) * (i / 4)), pd.l - 7, y + 4);
+    }
+    const pts = PD.map((p, i) => ({ x: pd.l + (i / (PD.length - 1)) * cw, y: pd.t + ch * (1 - (p.c - mn) / (mx - mn)), d: p }));
+    c.beginPath(); pts.forEach((p, i) => i === 0 ? c.moveTo(p.x, p.y) : c.lineTo(p.x, p.y)); c.lineTo(pd.l + cw, pd.t + ch); c.lineTo(pd.l, pd.t + ch); c.closePath();
+    const g = c.createLinearGradient(0, pd.t, 0, pd.t + ch); g.addColorStop(0, 'rgba(45,212,168,0.1)'); g.addColorStop(1, 'rgba(45,212,168,0)');
+    c.fillStyle = g; c.fill();
+    c.beginPath(); c.strokeStyle = '#2dd4a8'; c.lineWidth = 2; c.lineJoin = 'round'; pts.forEach((p, i) => i === 0 ? c.moveTo(p.x, p.y) : c.lineTo(p.x, p.y)); c.stroke();
+    const st = W < 500 ? Math.ceil(PD.length / 4) : Math.ceil(PD.length / 6);
+    c.fillStyle = '#8ca0b0'; c.font = '700 9px "IBM Plex Mono",monospace'; c.textAlign = 'center'; pts.forEach((p, i) => { if (i % st === 0) c.fillText(p.d.d, p.x, H - pd.b + 16) });
+    pts.forEach(p => {
+      if (p.d.ev) {
+        const cl = ec[p.d.ev]; c.beginPath(); c.setLineDash([3, 4]); c.moveTo(p.x, p.y + 7); c.lineTo(p.x, pd.t + ch); c.strokeStyle = cl + '80'; c.lineWidth = 1; c.stroke(); c.setLineDash([]);
+        c.beginPath(); c.arc(p.x, p.y, 3.5, 0, Math.PI * 2); c.fillStyle = cl; c.fill(); c.beginPath(); c.arc(p.x, p.y, 10, 0, Math.PI * 2); c.fillStyle = cl + '25'; c.fill();
+      }
+    });
+    if (hX !== null && hX >= pd.l && hX <= pd.l + cw) {
+      let cl = pts[0], md = Math.abs(hX - pts[0].x);
+      pts.forEach(p => { let d2 = Math.abs(hX - p.x); if (d2 < md) { md = d2; cl = p } });
+      c.beginPath(); c.strokeStyle = '#3c5868'; c.lineWidth = 1; c.moveTo(cl.x, pd.t); c.lineTo(cl.x, pd.t + ch); c.stroke();
+      c.beginPath(); c.arc(cl.x, cl.y, 4.5, 0, Math.PI * 2); c.fillStyle = '#eef4f8'; c.fill();
+      const t = `${cl.d.d}: ₹${cl.d.c}`, ev = cl.d.desc || ''; c.font = '600 10px "IBM Plex Mono",monospace';
+      const tw = Math.max(c.measureText(t).width, ev ? c.measureText(ev).width : 0) + 16;
+      const th = ev ? 36 : 20; let tx = cl.x - tw / 2; if (tx < pd.l) tx = pd.l; if (tx + tw > pd.l + cw) tx = pd.l + cw - tw;
+      let ty = cl.y - th - 9; if (ty < pd.t) ty = cl.y + 12;
+      c.fillStyle = 'rgba(8,18,24,0.95)'; c.strokeStyle = cl.d.ev ? ec[cl.d.ev] : '#264050'; c.lineWidth = 1;
+      c.beginPath(); c.roundRect(tx, ty, tw, th, 3); c.fill(); c.stroke();
+      c.fillStyle = '#eef4f8'; c.textAlign = 'center';
+      c.fillText(t, tx + tw / 2, ty + 13);
+      if (ev) { c.fillStyle = ec[cl.d.ev]; c.fillText(ev, tx + tw / 2, ty + 26) }
+    }
+  }
+  rn(); v.onmousemove = e => { const r = v.getBoundingClientRect(); rn(e.clientX - r.left) }; v.onmouseleave = () => rn(null);
+  v.ontouchmove = e => { e.preventDefault(); const r = v.getBoundingClientRect(); rn(e.touches[0].clientX - r.left) }; v.ontouchend = () => rn(null)
+}
+window.addEventListener('resize', () => {
+  const as = document.getElementById('active-section').innerHTML;
+  if(as.includes('revChart')) dRC();
+  if(as.includes('priceChart')) dPC();
+});
+</script>
+</body>
+</html>
