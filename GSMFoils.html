@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>
+  // Check if the user has the passkey from the main page
+  if (!sessionStorage.getItem('validGemsUser')) {
+      // If no passkey is found, instantly redirect them to the main directory
+      window.location.replace("https://smeresearch.github.io/SMEGems/");
+  }
+</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSM Foils Ltd - SME Gems Update</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+    
+    <style>
+        /* --- PREMIUM BIO-TECH DARK THEME --- */
+        :root {
+            --bg-dark: #021a14;          
+            --bg-panel: rgba(6, 78, 59, 0.25); 
+            --accent-primary: #34d399;   
+            --accent-primary-dim: rgba(52, 211, 153, 0.15);
+            --accent-secondary: #10b981; 
+            --accent-secondary-dim: rgba(16, 185, 129, 0.15);
+            --accent-tertiary: #eab308;  
+            --text-main: #f8fafc;        
+            --text-muted: #94a3b8;       
+            --danger: #fb7185;           
+            --danger-dim: rgba(251, 113, 133, 0.1);
+            --border-color: rgba(52, 211, 153, 0.15);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            width: 100%; height: 100%;
+            overflow: hidden; 
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        h1, h2, h3, .heading-font { 
+            font-family: 'Outfit', sans-serif; 
+            letter-spacing: -0.5px;
+        }
+
+        #bg-canvas { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: 0; pointer-events: none; 
+        }
+
+        #app-container { 
+            display: flex; width: 100%; height: 100%; 
+            overflow: hidden; position: relative; z-index: 1; 
+        }
+
+        /* Mobile Header */
+        .mobile-header {
+            display: none; background: rgba(2, 26, 20, 0.95); backdrop-filter: blur(12px); 
+            padding: 1rem 1.5rem; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            position: fixed; top: 0; width: 100%; z-index: 99;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .menu-toggle { background: transparent; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer; transition: color 0.3s; }
+        .menu-toggle:hover { color: var(--accent-primary); }
+        .mobile-brand { font-size: 1.4rem; font-weight: 800; color: var(--text-main); font-family: 'Outfit', sans-serif; }
+        .mobile-brand span { color: var(--accent-primary); }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px; min-width: 280px; background: rgba(2, 26, 20, 0.85); backdrop-filter: blur(20px);
+            display: flex; flex-direction: column; padding: 2rem 0; border-right: 1px solid var(--border-color);
+            z-index: 100; overflow-y: auto; transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 5px 0 30px rgba(0,0,0,0.5);
+        }
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--accent-primary); border-radius: 4px; }
+
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 90; backdrop-filter: blur(3px); opacity: 0; transition: opacity 0.3s; }
+        .sidebar-overlay.active { display: block; opacity: 1; }
+
+        .brand-logo { padding: 0 1.5rem 1.5rem 1.5rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem; flex-shrink: 0; }
+        .brand-logo h2 { font-size: 2rem; font-weight: 800; color: var(--text-main); line-height: 1.1; font-family: 'Outfit', sans-serif; }
+        .brand-logo span { color: var(--accent-primary); font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; font-family: 'Inter', sans-serif;}
+
+        .nav-item {
+            padding: 0.8rem 1.5rem; color: var(--text-muted); cursor: pointer; transition: all 0.3s ease;
+            display: flex; align-items: center; gap: 12px; font-weight: 500; font-size: 0.9rem;
+            border-left: 3px solid transparent; flex-shrink: 0;
+            position: relative; overflow: hidden;
+        }
+        .nav-item::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 0; background: linear-gradient(90deg, var(--accent-primary-dim), transparent); transition: width 0.3s ease; z-index: -1; }
+        .nav-item:hover::before { width: 100%; }
+        .nav-item:hover { color: var(--text-main); padding-left: 2rem; }
+        .nav-item.active { color: var(--accent-primary); background: var(--accent-primary-dim); border-left-color: var(--accent-primary); font-weight: 700;}
+        .nav-item.active i { transform: scale(1.15); color: var(--accent-primary); }
+
+        /* Main Area */
+        .main-container {
+            flex: 1; padding: 2rem 4rem; overflow-y: auto; scroll-behavior: smooth; height: 100%; -webkit-overflow-scrolling: touch; 
+            background: radial-gradient(circle at top right, rgba(52, 211, 153, 0.08), transparent 60%);
+        }
+
+        .slide { display: none; max-width: 1200px; margin: 0 auto; padding-bottom: 5rem; position: relative; z-index: 2;}
+        .slide.active { display: block; }
+
+        .stagger { animation: slideUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; opacity: 0; }
+        .s1 { animation-delay: 0.1s; } .s2 { animation-delay: 0.2s; } .s3 { animation-delay: 0.3s; } .s4 { animation-delay: 0.4s; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .badge {
+            display: inline-flex; align-items: center; gap: 6px; background: var(--accent-primary-dim); color: var(--accent-primary);
+            padding: 0.4rem 1rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700;
+            letter-spacing: 1.5px; margin-bottom: 1rem; text-transform: uppercase; border: 1px solid rgba(52, 211, 153, 0.2);
+        }
+
+        /* New Pulse Highlight for Updated Concall Data */
+        .pulse-badge {
+            background: rgba(234, 179, 8, 0.15); border-color: rgba(234, 179, 8, 0.4); color: var(--accent-tertiary);
+            animation: pulse-glow 2s infinite;
+        }
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(234, 179, 8, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
+        }
+
+        .update-box {
+            background: linear-gradient(145deg, rgba(234, 179, 8, 0.05), rgba(0,0,0,0.4));
+            border-left: 3px solid var(--accent-tertiary);
+            padding: 1rem 1.5rem; border-radius: 0 8px 8px 0; margin: 1rem 0;
+        }
+
+        .title { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 0.8rem; line-height: 1.2; color: var(--text-main); }
+        .subtitle { font-size: 1.05rem; color: var(--text-muted); margin-bottom: 2rem; font-weight: 400; line-height: 1.5; }
+        .subtitle span { color: var(--accent-primary); font-weight: 600; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; }
+
+        /* Dark Frosted Cards */
+        .card {
+            background: var(--bg-panel); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color); border-radius: 12px; padding: 1.8rem; position: relative; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: all 0.3s ease;
+            overflow: hidden;
+            display: flex; flex-direction: column;
+        }
+        
+        .card:hover { border-color: rgba(52, 211, 153, 0.5); transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0,0,0,0.5), 0 0 20px rgba(52, 211, 153, 0.15); }
+        
+        .card.primary-border { border-top: 3px solid var(--accent-primary); }
+        .card.secondary-border { border-top: 3px solid var(--accent-secondary); }
+        .card.danger-border { border-top: 3px solid var(--danger); }
+        .card.tertiary-border { border-top: 3px solid var(--accent-tertiary); }
+
+        .metric-value { font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 800; color: var(--text-main); margin: 0.5rem 0; font-family: 'Outfit', sans-serif; letter-spacing: -0.5px;}
+        .metric-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+
+        /* Highlight Classes */
+        .highlight-primary { color: var(--accent-primary); font-weight: 600; }
+        .highlight-secondary { color: var(--accent-secondary); font-weight: 600; }
+        .highlight-yellow { color: var(--accent-tertiary); font-weight: 700; }
+
+        /* LIST CSS */
+        ul.custom-list { 
+            list-style: none; display: flex; flex-direction: column; gap: 1rem; padding: 0; margin: 0;
+        }
+        
+        ul.custom-list li { 
+            position: relative; padding-left: 1.5rem; line-height: 1.6; color: #cbd5e1; font-size: 0.95rem; width: 100%; 
+        }
+        
+        ul.custom-list li::before { 
+            content: '✦'; position: absolute; left: 0; color: var(--accent-primary); font-size: 0.9rem; top: 2px; 
+        }
+
+        ul.risk-list li::before { content: '✕'; color: var(--danger); font-weight: bold;}
+        ul.success-list li::before { content: '✓'; color: var(--accent-primary); font-weight: bold;}
+        ul.update-list li::before { content: '⚡'; color: var(--accent-tertiary); font-size: 1rem; top: 0px;}
+        
+        /* Tables */
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .table-custom { width: 100%; border-collapse: collapse; margin-top: 1rem; min-width: 400px; }
+        .table-custom th, .table-custom td { padding: 1rem 0.8rem; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 0.95rem; color: #e2e8f0; }
+        .table-custom th { color: var(--accent-primary); text-transform: uppercase; font-weight: 600; font-size: 0.8rem; letter-spacing: 1px; background: rgba(52, 211, 153, 0.05);}
+        .table-custom tr:hover td { background: rgba(52, 211, 153, 0.08); }
+
+        .chart-box { background: var(--bg-panel); backdrop-filter: blur(16px); padding: 1.5rem; border-radius: 12px; height: 400px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+
+        .valuation-callout {
+            border: 1px solid rgba(52, 211, 153, 0.3);
+            background: linear-gradient(145deg, rgba(52, 211, 153, 0.1), rgba(0,0,0,0.6));
+            border-radius: 12px; padding: 1.8rem; margin-top: 1.5rem; position: relative; overflow: hidden; 
+            box-shadow: inset 0 0 30px rgba(52, 211, 153, 0.05);
+        }
+        .valuation-callout p { font-size: 1.05rem; color: var(--text-main); line-height: 1.7; margin: 0; position: relative; z-index: 1; }
+
+        .footer-branding { text-align: center; margin-top: 4rem; padding: 2rem 0; border-top: 1px solid var(--border-color); }
+        .footer-branding a { color: var(--accent-primary); text-decoration: none; font-weight: 600; transition: color 0.3s; display: inline-flex; align-items: center; gap: 8px;}
+        .footer-branding a:hover { color: var(--text-main); }
+
+        /* BREAKPOINTS */
+        @media (max-width: 1200px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } .main-container { padding: 2rem; } }
+        @media (max-width: 992px) { .grid-3 { grid-template-columns: 1fr; } .grid-2 { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) {
+            .mobile-header { display: flex; }
+            .sidebar { position: fixed; left: -300px; top: 0; height: 100%; box-shadow: 5px 0 30px rgba(0,0,0,0.9); }
+            .sidebar.open { left: 0; }
+            .main-container { padding: 1.2rem; padding-top: 6rem; padding-bottom: 6rem; }
+            .chart-box { height: 300px; padding: 1rem; }
+            .card { padding: 1.5rem; }
+            .valuation-callout { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div id="app-container">
+
+    <div class="mobile-header">
+        <div class="mobile-brand">GSM <span>Foils</span></div>
+        <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    </div>
+
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <div class="sidebar">
+        <div class="brand-logo">
+            <h2>GSM</h2><span>FOILS LIMITED</span>
+        </div>
+        <div class="nav-item active" onclick="switchSlide('slide-1', this)"><i class="fas fa-capsules"></i> 01 Snapshot</div>
+        <div class="nav-item" onclick="switchSlide('slide-2', this)"><i class="fas fa-layer-group"></i> 02 Business Model</div>
+        <div class="nav-item" onclick="switchSlide('slide-3', this)"><i class="fas fa-industry"></i> 03 Capacity Pivot</div>
+        <div class="nav-item" onclick="switchSlide('slide-4', this)"><i class="fas fa-globe-americas"></i> 04 Export Horizon</div>
+        <div class="nav-item" onclick="switchSlide('slide-5', this)"><i class="fas fa-plus-circle"></i> 05 Product Basket</div>
+        <div class="nav-item" onclick="switchSlide('slide-6', this)"><i class="fas fa-chart-bar"></i> 06 Financials & Outlook</div>
+        <div class="nav-item" onclick="switchSlide('slide-7', this)"><i class="fas fa-chart-line"></i> 07 Valuation</div>
+        <div class="nav-item" onclick="switchSlide('slide-8', this)"><i class="fas fa-exclamation-triangle"></i> 08 Key Risks</div>
+        <div class="nav-item" onclick="switchSlide('slide-9', this)"><i class="fas fa-balance-scale"></i> 09 Thesis</div>
+        <div class="nav-item" onclick="switchSlide('slide-10', this)"><i class="fas fa-shield-alt"></i> 10 Disclaimer</div>
+    </div>
+
+    <div class="main-container" id="main-scroll">
+
+        <div id="slide-1" class="slide active">
+            <div class="badge stagger s1">SME GEMS • HIDDEN CHAMPIONS OF THE SME PLATFORM</div>
+            <h1 class="title stagger s1">GSM Foils Limited</h1>
+            <p class="subtitle stagger s2">India's Pharma Packaging Converter - Vasai to Ahmedabad. Capacity Doubled. Export Horizon Emerging.</p>
+
+            <div class="grid-4 stagger s2 mb-1">
+                <div class="card primary-border tilt-card">
+                    <div class="metric-label">Market Cap</div>
+                    <div class="metric-value highlight-primary">~₹271 Cr</div>
+                    <div class="metric-label" style="color:var(--text-muted); font-weight: 600;">CMP: ₹192</div>
+                </div>
+                <div class="card secondary-border tilt-card">
+                    <div class="metric-label">FY26 Revenue</div>
+                    <div class="metric-value">₹258.1 Cr</div>
+                    <div class="metric-label" style="color:var(--accent-primary); font-weight: 600;">+92.9% YoY</div>
+                </div>
+                <div class="card tertiary-border tilt-card">
+                    <div class="metric-label" style="color:var(--accent-tertiary);">FY27 Topline Target</div>
+                    <div class="metric-value highlight-yellow">₹450 Cr</div>
+                    <div class="metric-label" style="color:var(--text-muted); font-weight: 600;">₹60 Cr/mo run-rate by Mar'27</div>
+                </div>
+                <div class="card primary-border tilt-card">
+                    <div class="metric-label">FY26 EBITDA Growth</div>
+                    <div class="metric-value" style="color: #cbd5e1;">95.9%</div>
+                    <div class="metric-label" style="color:var(--accent-primary); font-weight: 600;">Margin: 11.5%</div>
+                </div>
+            </div>
+
+            <div class="card stagger s3 tilt-card" style="margin-top: 3rem;">
+                <h3 class="heading-font highlight-primary mb-1" style="font-size: 1.5rem;">Why GSM Foils?</h3>
+                <p style="color: var(--text-muted); line-height: 1.7; font-size: 1rem; margin-bottom: 1rem;">
+                    Pharma packaging is non-discretionary—medicines cannot ship without primary packaging. GSM converts aluminium jumbo rolls into blister and strip foils for India's pharma belt. <strong style="color: var(--text-main);">LME-linked formula pricing</strong> to clients means the conversion spread is structurally protected through all commodity cycles.
+                </p>
+                <p style="color: var(--text-muted); line-height: 1.7; font-size: 1rem; margin-bottom: 1.5rem;">
+                    A business growing <strong style="color: var(--accent-primary);">90%+ YoY</strong> with low debt (D/E 0.24x), now stepping into its next phase of scale following a massive FY26 earnings beat.
+                </p>
+                
+                <div class="update-box">
+                    <p style="font-size: 0.95rem; color: var(--text-main); margin: 0; line-height: 1.6;">
+                        <strong class="highlight-yellow">Concall Insight:</strong> Management emphasizes that their core competitive advantage is <em>not</em> technological exclusivity, but <strong>efficient working capital management and volume scale</strong>, allowing them to extend necessary credit to Indian pharma clients better than smaller unorganized peers.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-2" class="slide">
+            <div class="badge stagger s1">02 • BUSINESS MODEL</div>
+            <h1 class="title stagger s1">Asset-Light Conversion</h1>
+            <p class="subtitle stagger s1">Spread Business • Not Commodity Speculators</p>
+            
+            <div class="grid-2 stagger s2">
+                <div class="card primary-border tilt-card">
+                    <h3 class="heading-font highlight-primary mb-1">How They Make Money</h3>
+                    <p style="color: var(--text-muted); line-height: 1.6; font-size: 0.95rem; margin-bottom: 1.5rem;">
+                        GSM Foils is not taking a bet on aluminium prices. They operate purely on a conversion spread model.
+                    </p>
+                    <ul class="custom-list update-list">
+                        <li><strong>Pricing Formula:</strong> Client Price = LME Aluminium Price + Fixed Conversion Charge.</li>
+                        <li><strong>Agile Execution:</strong> They operate without long-term rigid contracts. Purchase Orders (POs) come in monthly, and <strong>conversion/execution takes just 2-3 days.</strong></li>
+                        <li><strong>The Moat:</strong> Speed of delivery, clean-room standards, and working capital capacity.</li>
+                    </ul>
+                </div>
+                <div class="card secondary-border tilt-card">
+                    <h3 class="heading-font highlight-secondary mb-1">Financial Characteristics</h3>
+                    <p style="color: var(--text-muted); line-height: 1.6; font-size: 0.95rem; margin-bottom: 1.5rem;">
+                        Understanding the underlying cash cycle is key to evaluating the business.
+                    </p>
+                    <ul class="custom-list">
+                        <li><strong>Working Capital Intensive:</strong> Buying raw materials requires cash upfront, while pharma clients demand credit periods (target 60-70 days).</li>
+                        <li><strong>ROCE Driver:</strong> Scale and asset turns are the primary drivers of return on capital, not gross margin expansion.</li>
+                        <li><strong>Stability:</strong> Pharma demand is inherently recession-resistant and non-cyclical.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-3" class="slide">
+            <div class="badge stagger s1 badge pulse-badge"><i class="fas fa-bolt"></i> 03 • CAPACITY UPDATE</div>
+            <h1 class="title stagger s1">The 2,000 MT Capacity Pivot</h1>
+            <p class="subtitle stagger s1">Strategic positioning inside India's largest manufacturing hubs</p>
+
+            <div class="card stagger s2 tilt-card">
+                <div class="grid-2">
+                    <div>
+                        <h3 class="heading-font highlight-primary mb-1">Unlocking Operating Leverage</h3>
+                        <p style="color: var(--text-muted); line-height: 1.7; font-size: 1rem;">
+                            GSM Foils has successfully doubled its total capacity to <strong style="color: var(--text-main);">2,00,000 MT</strong> (or roughly 2,000 MT/month depending on gauge) in FY26. This was achieved through the commissioning of their new, state-of-the-art facility in the Ahmedabad pharma cluster.
+                        </p>
+                        
+                        <div class="update-box mt-1">
+                            <strong class="highlight-yellow" style="display:block; margin-bottom: 5px;">Utilization Runway (Q4 FY26 Concall):</strong>
+                            <p style="font-size: 0.9rem; color: #e2e8f0; margin:0;">Ahmedabad is currently operating at only <strong>25-30% utilization</strong>. It contributed ~₹5–5.5 Cr in March alone. Full optimization by FY27 end will unlock ₹30-35 Cr monthly revenue from this unit alone.</p>
+                        </div>
+                    </div>
+                    <div>
+                        <ul class="custom-list update-list">
+                            <li><strong>Vasai (Mumbai) Plant:</strong> The legacy base serving Western India. Currently generating <strong>₹25–28 Cr monthly</strong>, operating near peak. Minor additions can unlock an extra 10-20% (~₹6-7 Cr/mo).</li>
+                            <li><strong>Ahmedabad (Sanand) Plant:</strong> The growth engine. Placed directly inside India's largest pharma hub. Drastic freight savings for Gujarat-based clients.</li>
+                            <li><strong>CAPEX Cycle Done:</strong> No immediate major CAPEX planned for the next 6 months to allow current volatility to settle.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-4" class="slide">
+            <div class="badge stagger s1">04 • EXPORT MOAT</div>
+            <h1 class="title stagger s1">US FDA & EU GMP Horizon</h1>
+            <p class="subtitle stagger s1">Transitioning from a domestic player to a global supplier</p>
+
+            <div class="grid-2 stagger s2">
+                <div class="card secondary-border tilt-card">
+                    <h3 class="heading-font highlight-secondary mb-1">Global Infrastructure</h3>
+                    <ul class="custom-list">
+                        <li><strong>Clean Room Class 1,00,000:</strong> The new Ahmedabad facility is built to strict global pharmaceutical compliance standards.</li>
+                        <li><strong>Regulatory Targeting:</strong> Actively pursuing certifications required for US FDA and EU GMP regulated markets.</li>
+                        <li><strong>Middle East & Africa:</strong> Export push already underway targeting high-volume emerging markets.</li>
+                    </ul>
+                </div>
+                <div class="card primary-border tilt-card">
+                    <h3 class="heading-font highlight-primary mb-1">Strategic Location</h3>
+                    <p style="color: var(--text-muted); line-height: 1.7; font-size: 1rem;">
+                        The choice of Ahmedabad is not just about domestic clients. The facility is logistically adjacent to <strong style="color: var(--text-main);">Mundra Port</strong>, India's largest private commercial port.<br><br>
+                        This severely reduces inland transit costs and times, creating a structural cost advantage when bidding for export contracts against inland competitors.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-5" class="slide">
+            <div class="badge stagger s1">05 • PRODUCT EXPANSION</div>
+            <h1 class="title stagger s1">Expanding the Basket</h1>
+            <p class="subtitle stagger s1">Alu-Alu Foil & Lamitubes: Maximizing Client Wallet Share</p>
+
+            <div class="card stagger s2 tilt-card">
+                <p style="color: var(--text-muted); line-height: 1.6; font-size: 1rem; margin-bottom: 2rem;">
+                    GSM Foils is leveraging its existing, sticky client relationships to cross-sell higher margin products. The <strong style="color: var(--accent-primary);">Alu Alu foil + Lamitubes basket adds 15-20% incremental revenue</strong> from the same client base at effectively zero new customer acquisition cost.
+                </p>
+                
+                <div class="grid-2">
+                    <div style="background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                        <h4 class="heading-font highlight-primary mb-1">Alu-Alu Foil</h4>
+                        <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">Cold-formed aluminium foil providing 100% barrier against moisture, oxygen, and light. Used for highly sensitive, premium API formulations. Carries a higher conversion margin than standard blister foil.</p>
+                    </div>
+                    <div style="background: rgba(52, 211, 153, 0.05); padding: 1.5rem; border-radius: 8px; border: 1px solid rgba(52, 211, 153, 0.15);">
+                        <h4 class="heading-font highlight-secondary mb-1">Lamitubes</h4>
+                        <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;">Laminated tubes for ointments and creams. <strong style="color: var(--text-main);">Crucial differentiator:</strong> Lamitubes are priced per piece rather than per kg, resulting in structurally better unit economics than the core foil business.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mt-2 stagger s3 tilt-card tertiary-border">
+                 <h3 class="heading-font highlight-tertiary mb-1" style="color: var(--accent-tertiary);">Future Integration Outlook</h3>
+                <p style="color: var(--text-muted); line-height: 1.6; font-size: 1rem; margin-bottom: 0;">
+                    Management is actively exploring <strong>forward integration</strong> (specialized printing/conversion units for local and export pharma) to be announced possibly toward the end of FY27. This is expected to yield <strong style="color: var(--text-main);">8-10% incremental margins</strong>. (Note: No backward integration is planned).
+                </p>
+            </div>
+        </div>
+
+        <div id="slide-6" class="slide">
+            <div class="badge pulse-badge stagger s1"><i class="fas fa-bullseye"></i> 06 • FY26 RESULTS & FY27 OUTLOOK</div>
+            <h1 class="title stagger s1">Financial Trajectory</h1>
+            <p class="subtitle stagger s1">Sustained High-Growth Fundamentals & Margin Resilience</p>
+
+            <div class="grid-3 stagger s2 mb-1">
+                <div class="card text-center tilt-card">
+                    <div class="metric-value highlight-primary">₹81.68 Cr</div>
+                    <div class="metric-label">Q4 FY26 Revenue</div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">Up 79.1% YoY. Full year revenue closed at ₹258.15 Cr (+92.9% YoY).</p>
+                </div>
+                <div class="card text-center tilt-card">
+                    <div class="metric-value highlight-secondary">₹6.27 Cr</div>
+                    <div class="metric-label">Q4 FY26 PAT</div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">Up 83.6% YoY. PAT margins actually improved by 20 bps to 7.7% in Q4.</p>
+                </div>
+                <div class="card text-center tilt-card">
+                    <div class="metric-value" style="color: var(--accent-tertiary);">11.5%</div>
+                    <div class="metric-label">Q4 EBITDA Margin</div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">Moderated by 120 bps due to raw material pricing pressure, but management expects to sustain 11.5% through FY27.</p>
+                </div>
+            </div>
+            
+            <div class="card mt-2 stagger s3 tilt-card tertiary-border">
+                <h3 class="heading-font highlight-yellow mb-1">FY27 Management Guidance</h3>
+                <p style="color: var(--text-main); line-height: 1.6; font-size: 1.05rem;">
+                    <strong>Aggressive Scaling:</strong> Anticipating a topline of <span class="highlight-yellow">₹400–₹450 Cr</span> with conservative/average business execution in FY27. They are targeting a combined monthly revenue run rate of <span class="highlight-primary">~₹60 Cr by March 2027</span>.
+                </p>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">
+                    Employee costs saw a QoQ bump due to aggressive recruitment in Feb/March to ramp up the Ahmedabad facility, positioning them well for this FY27 target.
+                </p>
+            </div>
+        </div>
+
+        <div id="slide-7" class="slide">
+            <div class="badge stagger s1">07 • VALUATION</div>
+            <h1 class="title stagger s1">Market Discovery & Valuations</h1>
+            <p class="subtitle stagger s1">Tracking the Price Correction & Re-Rating</p>
+
+            <div class="grid-2 stagger s2">
+                <div class="chart-box tilt-card">
+                    <canvas id="priceChart"></canvas>
+                </div>
+                
+                <div>
+                    <div class="card primary-border tilt-card mb-1">
+                        <div class="table-responsive">
+                            <table class="table-custom" style="margin-top: 0; min-width: auto;">
+                                <tbody>
+                                    <tr><td>Current Price</td><td style="font-size: 1.1rem; font-weight: bold; color: var(--text-main);">₹192</td></tr>
+                                    <tr><td>Market Cap</td><td class="highlight-primary" style="font-size: 1.1rem; font-weight: bold;">₹271 Cr</td></tr>
+                                    <tr><td>Trailing P/E</td><td class="highlight-secondary" style="font-size: 1.1rem; font-weight: bold;">~13.7x</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="valuation-callout">
+                        <p>
+                            At the current market cap of <strong>₹271 Cr</strong> and a CMP of <strong>₹192</strong>, GSM Foils trades at a P/E of <span class="highlight-primary">~13.7x</span> (based on FY26 EPS of ₹14.08).<br><br>
+                            <strong class="highlight-yellow">Previous Stance:</strong> We previously noted a severe mispricing when the stock was at ₹178 (~14x P/E), completely decoupled from its sales trajectory.<br><br>
+                            <strong class="highlight-yellow">Current Reality:</strong> Despite stellar Q4 FY26 results—where top-line grew 79% YoY (₹81.68 Cr) and full-year bottom-line grew 106%—the stock has retraced to ₹192 from its 52-week high of ₹255. This price action, combined with management's firm guidance of ₹400-450 Cr for FY27, creates a severe optical mispricing. If they hit their March 2027 exit run-rate of ₹60 Cr/mo, current valuations offer a deep margin of safety.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-8" class="slide">
+            <div class="badge stagger s1" style="background: rgba(251, 113, 133, 0.1); border-color: rgba(251, 113, 133, 0.3); color: var(--danger);">08 • KEY RISKS</div>
+            <h1 class="title stagger s1">Risks & Watchpoints</h1>
+            <p class="subtitle stagger s1">Evaluating the friction points in the growth thesis</p>
+
+            <div class="grid-2 stagger s2">
+                <div class="card danger-border tilt-card" style="border-top-width: 4px;">
+                    <h3 class="heading-font mb-1" style="color: var(--danger); font-size: 1.2rem;"><i class="fas fa-money-bill-wave"></i> Working Capital Strain Clarified</h3>
+                    <p style="color: var(--text-muted); line-height: 1.6; font-size: 0.95rem; margin-bottom: 0.8rem;">
+                        Scale-up consumed cash, and receivables spiked in March as pharma clients faced delayed export/LC payments due to global conflicts.
+                    </p>
+                    <ul class="custom-list update-list" style="margin-bottom: 0;">
+                        <li style="font-size: 0.85rem; line-height: 1.4;"><strong>Target Cycle:</strong> The normalized receivable cycle target remains 60-70 days (~₹60–70 Cr).</li>
+                        <li style="font-size: 0.85rem; line-height: 1.4; color: var(--accent-primary);"><strong>Recovery:</strong> Strong recovery noted—₹30–40 Cr was already realized in the first 10-15 days of April.</li>
+                        <li style="font-size: 0.85rem; line-height: 1.4;"><strong>Bridge Funding:</strong> Secured a ₹15 Cr debt facility from ICICI Bank during this phase to effectively manage cash flows without halting raw material procurement.</li>
+                    </ul>
+                </div>
+                
+                <div class="card danger-border tilt-card">
+                    <h3 class="heading-font mb-1" style="color: var(--danger); font-size: 1.2rem;"><i class="fas fa-chart-line"></i> LME & INR Sensitivity</h3>
+                    <p style="color: var(--text-muted); line-height: 1.6; font-size: 0.95rem;">
+                        The Iran-Israel conflict is disrupting global supply chains. This caused a severe <strong style="color: var(--text-main);">₹50/kg (~10%) jump in aluminum prices</strong> in March, which was the primary culprit for the Q4 EBITDA margin dropping 120 bps to 11.5%. Passing on sudden RM hikes remains an ongoing challenge, though competitors are feeling the exact same squeeze.
+                    </p>
+                </div>
+                
+                <div class="card danger-border tilt-card">
+                    <h3 class="heading-font mb-1" style="color: var(--danger); font-size: 1.2rem;"><i class="fas fa-industry"></i> Execution on Approvals</h3>
+                    <p style="color: var(--text-muted); line-height: 1.6; font-size: 0.95rem;">
+                        The high-margin export thesis relies entirely on securing stringent regulatory approvals (US FDA / EU GMP). Plant audits are rigorous, and rejection or delays would leave the expanded capacity relying solely on domestic pricing.
+                    </p>
+                </div>
+                
+                <div class="card danger-border tilt-card">
+                    <h3 class="heading-font mb-1" style="color: var(--danger); font-size: 1.2rem;"><i class="fas fa-users"></i> Customer Concentration</h3>
+                    <p style="color: var(--text-muted); line-height: 1.6; font-size: 0.95rem;">
+                        B2B packaging often relies heavily on a few anchor pharmaceutical clients. Loss of a top 5 client due to competitive undercutting or quality disputes would leave a material void.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-9" class="slide">
+            <div class="badge stagger s1" style="background: transparent; border-color: var(--text-muted); color: var(--text-muted);">09 • THESIS SUMMARY</div>
+            <h1 class="title stagger s1">Opportunity vs. Risk</h1>
+            <p class="subtitle stagger s1">A balanced view of the investment landscape (Post-Q4 FY26)</p>
+
+            <div class="grid-2 stagger s2">
+                <div class="card tilt-card" style="border-top: 3px solid var(--accent-primary);">
+                    <h3 class="heading-font mb-1" style="color: var(--accent-primary); font-size: 1.3rem;">Strengths & Catalysts</h3>
+                    <ul class="custom-list success-list">
+                        <li>FY26 Execution: Revenue ₹258.15 Cr (+92.9% YoY); PAT up 83.6% in Q4 alone.</li>
+                        <li>FY27 Guidance is highly aggressive: ₹400-450 Cr topline target.</li>
+                        <li>Ahmedabad utilization is only 25-30%, offering massive operational runway.</li>
+                        <li>Global companies diversifying away from conflict zones is creating vendor consolidation that favors reliable Indian manufacturers like GSM.</li>
+                        <li>Exploring forward integration (+8-10% margins) for late FY27. No equity dilution planned.</li>
+                        <li>Valuation re-rating opportunity (~13.7x P/E) offering deep margin of safety.</li>
+                    </ul>
+                </div>
+                <div class="card danger-border tilt-card">
+                    <h3 class="heading-font mb-1" style="color: var(--danger); font-size: 1.3rem;">Risks & Watch-points</h3>
+                    <ul class="custom-list risk-list">
+                        <li>High working capital intensity and reliance on clients' export LC timelines.</li>
+                        <li>Optical revenue impact and margin squeezes from LME aluminium price volatility.</li>
+                        <li>Export margin realization depends entirely on passing strict US FDA / EU GMP audits.</li>
+                        <li>Customer concentration risk inherent in B2B packaging models.</li>
+                        <li>General illiquidity and high volatility characteristic of the SME exchange platform.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="slide-10" class="slide">
+            <h1 class="title stagger s1">IMPORTANT DISCLAIMER</h1>
+            <p class="subtitle stagger s1">For Informational Purposes Only · Not Investment Advice</p>
+
+            <div class="card stagger s2" style="border-color: rgba(148, 163, 184, 0.2); background: rgba(148, 163, 184, 0.05);">
+                <p style="font-size: 0.9rem; line-height: 1.7; color: var(--text-muted);">
+                    This presentation is prepared solely for educational and informational purposes. It does not constitute personalised investment advice or a recommendation to buy, sell, or hold any security. Pharma packaging and aluminium foil SME stocks carry elevated risk due to: customer concentration, aluminium LME price volatility and INR sensitivity, working capital intensity during scale-up, limited NSE SME trading liquidity, and execution risk on plant ramp-up and export market qualification.<br><br>
+                    Past performance does not guarantee future results. Readers must independently verify all information and consult a SEBI-registered investment advisor before making any investment decisions. The author may or may not hold positions in the securities discussed.<br><br>
+                    <strong style="color: var(--text-main);">SOURCES:</strong> NSE Exchange Filings (GSMFOILS) · IPO Prospectus · Quarterly Results · Investor Presentations · Q4 FY26 Earnings Concall Transcripts · Recent Investor Meet Notes · Monitoring Agency Reports · Screener.in · Research Notes.
+                </p>
+            </div>
+
+            <div class="footer-branding stagger s3">
+                <p style="color: var(--text-muted); font-size: 0.9rem; letter-spacing: 1px; margin-bottom: 15px; font-family: 'Outfit', sans-serif;">SME GEMS Hidden Champions of the SME Platform | GSM Foils Limited | Post-Q4 FY26 Update</p>
+                <a href="https://x.com/sachprat07" target="_blank">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 16px; height: 16px; fill: currentColor;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+                    @sachprat07
+                </a>
+                <p style="font-size: 0.75rem; color: rgba(148, 163, 184, 0.4); margin-top: 20px;">This document is intended for informed investors and market participants. It is not a SEBI-registered research report. All financial data sourced from NSE/BSE exchange filings, concall transcripts, and publicly available research notes.</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    /* --- INITIALIZE VANILLA TILT --- */
+    VanillaTilt.init(document.querySelectorAll(".tilt-card"), {
+        max: 3, speed: 400, glare: true, "max-glare": 0.05, scale: 1.01
+    });
+
+    /* --- PHARMA/PILL/MOLECULAR BACKGROUND CANVAS (DARK THEME) --- */
+    const canvas = document.getElementById('bg-canvas');
+    const ctxCanvas = canvas.getContext('2d');
+    let width, height;
+    let particles = [];
+    
+    let mouse = { x: null, y: null, radius: 150 };
+    
+    window.addEventListener('mousemove', function(event) {
+        mouse.x = event.x; mouse.y = event.y;
+    });
+    window.addEventListener('mouseout', function() {
+        mouse.x = undefined; mouse.y = undefined;
+    });
+    window.addEventListener('touchmove', function(event) {
+        if (event.touches.length > 0) {
+            mouse.x = event.touches[0].clientX; mouse.y = event.touches[0].clientY;
+        }
+    }, { passive: true });
+    window.addEventListener('touchend', function() {
+        mouse.x = undefined; mouse.y = undefined;
+    });
+
+    function resizeCanvas() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        initParticles();
+    }
+    window.addEventListener('resize', resizeCanvas);
+    
+    class Particle {
+        constructor() {
+            this.x = Math.random() * width;
+            this.y = Math.random() * height;
+            this.vx = (Math.random() - 0.5) * 0.6;
+            this.vy = (Math.random() - 0.5) * 0.6;
+            this.size = Math.random() * 4 + 2;
+            this.type = Math.random() > 0.5 ? 'pill' : 'molecule';
+            
+            this.color = Math.random() > 0.5 ? 'rgba(52, 211, 153, 0.2)' : 'rgba(16, 185, 129, 0.2)';
+            this.rotation = Math.random() * Math.PI;
+            this.rotSpeed = (Math.random() - 0.5) * 0.05;
+        }
+        
+        update() {
+            this.x += this.vx; this.y += this.vy; this.rotation += this.rotSpeed;
+            if (this.x < -20 || this.x > width + 20) this.vx = -this.vx;
+            if (this.y < -20 || this.y > height + 20) this.vy = -this.vy;
+
+            if (mouse.x != null) {
+                let dx = mouse.x - this.x; let dy = mouse.y - this.y;
+                let dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < mouse.radius) {
+                    let force = (mouse.radius - dist) / mouse.radius;
+                    this.x -= (dx / dist) * force * 2; this.y -= (dy / dist) * force * 2;
+                }
+            }
+        }
+        
+        draw() {
+            ctxCanvas.save();
+            ctxCanvas.translate(this.x, this.y);
+            ctxCanvas.rotate(this.rotation);
+            
+            if (this.type === 'pill') {
+                ctxCanvas.beginPath();
+                ctxCanvas.roundRect(-this.size, -this.size/2, this.size*2, this.size, this.size/2);
+                ctxCanvas.fillStyle = this.color; ctxCanvas.fill();
+                ctxCanvas.beginPath();
+                ctxCanvas.moveTo(0, -this.size/2); ctxCanvas.lineTo(0, this.size/2);
+                ctxCanvas.strokeStyle = 'rgba(255,255,255,0.15)'; ctxCanvas.lineWidth = 1; ctxCanvas.stroke();
+            } else {
+                ctxCanvas.beginPath();
+                ctxCanvas.arc(0, 0, this.size/1.5, 0, Math.PI * 2);
+                ctxCanvas.fillStyle = 'rgba(148, 163, 184, 0.15)'; ctxCanvas.fill();
+            }
+            ctxCanvas.restore();
+        }
+    }
+
+    function initParticles() {
+        particles = [];
+        let numParticles = Math.floor((width * height) / 18000); 
+        for (let i = 0; i < numParticles; i++) { particles.push(new Particle()); }
+    }
+
+    function animateParticles() {
+        ctxCanvas.clearRect(0, 0, width, height);
+        for (let i = 0; i < particles.length; i++) {
+            particles[i].update(); particles[i].draw();
+            for (let j = i + 1; j < particles.length; j++) {
+                let dx = particles[i].x - particles[j].x;
+                let dy = particles[i].y - particles[j].y;
+                let dist = Math.sqrt(dx*dx + dy*dy);
+                if (dist < 100) {
+                    ctxCanvas.beginPath();
+                    ctxCanvas.strokeStyle = `rgba(52, 211, 153, ${0.1 * (1 - dist/100)})`; 
+                    ctxCanvas.lineWidth = 0.5;
+                    ctxCanvas.moveTo(particles[i].x, particles[i].y);
+                    ctxCanvas.lineTo(particles[j].x, particles[j].y);
+                    ctxCanvas.stroke();
+                }
+            }
+        }
+        requestAnimationFrame(animateParticles);
+    }
+
+    resizeCanvas(); animateParticles();
+
+    /* --- SLIDE NAVIGATION LOGIC --- */
+    function toggleSidebar() {
+        document.querySelector('.sidebar').classList.toggle('open');
+        document.querySelector('.sidebar-overlay').classList.toggle('active');
+    }
+
+    function switchSlide(slideId, el) {
+        const targetSlide = document.getElementById(slideId);
+        document.getElementById('main-scroll').scrollTo(0, 0);
+
+        document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        
+        void targetSlide.offsetWidth; 
+        
+        targetSlide.classList.add('active');
+        if (el) el.classList.add('active');
+        
+        if (window.innerWidth <= 768) {
+            document.querySelector('.sidebar').classList.remove('open');
+            document.querySelector('.sidebar-overlay').classList.remove('active');
+        }
+        if(slideId === 'slide-7') renderChart();
+    }
+
+    /* --- CHART JS LOGIC --- */
+    let priceChartInstance = null;
+
+    function renderChart() {
+        const chartCtx = document.getElementById('priceChart').getContext('2d');
+        if (priceChartInstance) priceChartInstance.destroy();
+
+        priceChartInstance = new Chart(chartCtx, {
+            type: 'line',
+            data: {
+                labels: ['May 25', 'Jul 25', 'Sep 25', 'Oct 25', 'Nov 25', 'Jan 26', 'Feb 26', 'Mar 26', 'Apr 26'],
+                datasets: [{
+                    label: 'GSMFOILS Price (₹)',
+                    data: [155.00, 210.00, 245.00, 211.00, 220.00, 195.00, 185.00, 178.00, 192.00],
+                    borderColor: '#34d399', backgroundColor: 'rgba(52, 211, 153, 0.1)',
+                    borderWidth: 3, pointBackgroundColor: '#10b981', pointBorderColor: '#021a14',
+                    pointBorderWidth: 2, pointRadius: 4, pointHoverRadius: 7, fill: true, tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                animation: { duration: 1500, easing: 'easeOutQuart' },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#021a14', titleColor: '#94a3b8', bodyColor: '#34d399',
+                        titleFont: { family: 'Inter', size: 13 }, bodyFont: { family: 'Outfit', size: 15, weight: 'bold' },
+                        borderColor: 'rgba(52, 211, 153, 0.3)', borderWidth: 1, padding: 12,
+                        callbacks: { label: function(context) { return '₹ ' + context.parsed.y; } }
+                    }
+                },
+                scales: {
+                    y: { grid: { color: 'rgba(52, 211, 153, 0.08)' }, ticks: { color: '#94a3b8', font: {family: 'Inter'} } },
+                    x: { grid: { display: false }, ticks: { color: '#94a3b8', font: {family: 'Inter', size: 11} } }
+                }
+            }
+        });
+    }
+
+    if(document.getElementById('slide-7').classList.contains('active')) renderChart();
+</script>
+</body>
+</html>
