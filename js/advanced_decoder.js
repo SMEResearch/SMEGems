@@ -256,91 +256,65 @@ class SMEGemsDecoder {
   // UI RENDERING
   // ═════════════════════════════════════════════════════════════════
 
-  renderDeck(container) {
-    container.innerHTML = `
-      <div class="deck-container">
-        <aside class="deck-sidebar">
-          <div class="sidebar-header">
-            <h2>SME Gems</h2>
-            <div class="report-title">Oriana Power</div>
-          </div>
-          <nav class="slide-nav">
-            ${this.slides.map((slide, index) => `
-              <button class="slide-nav-item ${index === 0 ? 'active' : ''}" 
-                      data-slide="${index}">
-                <span class="slide-number">${slide.id}</span>
-                <span class="slide-title">${slide.title}</span>
-              </button>
-            `).join('')}
-          </nav>
-          <div class="sidebar-footer">
-            <div class="protection-indicator">
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                <path d="M6 0L8 2H10V4L12 6L10 8V10H8L6 12L4 10H2V8L0 6L2 4V2H4L6 0Z"/>
-              </svg>
-              Protected Content
-            </div>
-          </div>
-        </aside>
-
-        <main class="deck-main">
-          <header class="deck-header">
-            <div class="slide-counter">
-              <span id="current-slide">1</span> / <span id="total-slides">${this.slides.length}</span>
-            </div>
-            <div class="deck-controls">
-              <button id="prev-btn" class="control-btn" disabled>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                  <path d="M10 2L4 8L10 14V2Z"/>
-                </svg>
-              </button>
-              <button id="next-btn" class="control-btn">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                  <path d="M6 2L12 8L6 14V2Z"/>
-                </svg>
-              </button>
-            </div>
-          </header>
-
-          <div class="slide-viewport">
-            <div id="slide-content" class="slide-content">
-              ${this.renderSlide(0)}
-            </div>
-          </div>
-
-          <div class="slide-progress">
-            <div class="progress-track">
-              <div class="progress-fill" style="width: ${(1 / this.slides.length) * 100}%"></div>
-            </div>
-          </div>
-        </main>
-      </div>
-    `;
-
-    this.attachEventListeners();
-  }
-
-  renderSlide(index) {
-    const slide = this.slides[index];
-    if (!slide) return '<div>Slide not found</div>';
-
-    const slideTypeClass = slide.type ? `slide-type-${slide.type}` : '';
+renderDeck(container) {
+  // For complex HTML content like Oriana, render the full document
+  container.innerHTML = '';
+  
+  // Create a full-page container for the original content
+  const fullPageContainer = document.createElement('div');
+  fullPageContainer.innerHTML = this.htmlContent;
+  
+  // Extract and apply any CSS from the content
+  const styleElements = fullPageContainer.querySelectorAll('style');
+  styleElements.forEach(style => {
+    document.head.appendChild(style.cloneNode(true));
+  });
+  
+  // Extract and apply any external stylesheets
+  const linkElements = fullPageContainer.querySelectorAll('link[rel="stylesheet"]');
+  linkElements.forEach(link => {
+    const newLink = document.createElement('link');
+    newLink.rel = 'stylesheet';
+    newLink.href = link.href;
+    document.head.appendChild(newLink);
+  });
+  
+  // Extract body content
+  const bodyContent = fullPageContainer.querySelector('body');
+  if (bodyContent) {
+    container.innerHTML = bodyContent.innerHTML;
     
-    return `
-      <div class="slide-inner ${slideTypeClass}">
-        <div class="slide-header">
-          <h1 class="slide-title">
-            <span class="slide-number">${slide.id}</span>
-            ${slide.title}
-          </h1>
-        </div>
-        <div class="slide-body">
-          ${slide.content}
-        </div>
-        ${index === this.slides.length - 1 ? this.renderWatermark() : ''}
-      </div>
-    `;
+    // Apply any body classes or styles
+    if (bodyContent.className) {
+      document.body.className = bodyContent.className;
+    }
+  } else {
+    container.innerHTML = this.htmlContent;
   }
+  
+  // Execute any scripts in the content
+  const scripts = container.querySelectorAll('script');
+  scripts.forEach(script => {
+    const newScript = document.createElement('script');
+    if (script.src) {
+      newScript.src = script.src;
+    } else {
+      newScript.textContent = script.textContent;
+    }
+    document.head.appendChild(newScript);
+  });
+  
+  // Hide the deck sidebar since we're showing original content
+  const sidebar = document.querySelector('.deck-sidebar');
+  if (sidebar) sidebar.style.display = 'none';
+  
+  // Make container full-screen
+  container.style.width = '100vw';
+  container.style.height = '100vh';
+  container.style.overflow = 'auto';
+  
+  console.log('✅ Full HTML content rendered with styling');
+}
 
   renderWatermark() {
     return `
