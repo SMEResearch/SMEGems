@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SME Gems</title>
+  <meta name="description" content="Hidden Champions of the SME Platform - Independent analysis of lesser-known companies with mainboard-quality fundamentals.">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💎</text></svg>">
+  
+  <!-- Preconnect for performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="/SMEGems/css/premium_deck.css">
+  
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/SMEGems/js/advanced_decoder.js" as="script">
+  
+  <!-- Security headers -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="Referrer-Policy" content="same-origin">
+  
+  <!-- Open Graph / Social Media -->
+  <meta property="og:title" content="SME Gems - Hidden Champions">
+  <meta property="og:description" content="Independent analysis of lesser-known companies with mainboard-quality fundamentals.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://smeresearch.github.io/SMEGems/">
+  
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="SME Gems - Hidden Champions">
+  <meta name="twitter:description" content="Independent analysis of lesser-known companies with mainboard-quality fundamentals.">
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loading">
+    <div class="loader"></div>
+    <p>Loading report...</p>
+    <div style="margin-top: 20px; font-size: 12px; color: #666; text-align: center;">
+      <div>SME Gems</div>
+      <div style="margin-top: 4px;">Secure content delivery</div>
+    </div>
+  </div>
+
+  <!-- Main Application Root -->
+  <div id="deck-root"></div>
+
+  <!-- Application Scripts -->
+  <script>
+    // Minimal configuration that can be updated without touching the main JS
+    window.SMEGEMS_CONFIG = {
+      version: '1.0.0',
+      environment: 'production',
+      debug: false,
+      features: {
+        analytics: true,
+        protection: true,
+        watermark: true
+      }
+    };
+  </script>
+  <script src="/SMEGems/js/advanced_decoder.js"></script>
+
+  <!-- Error boundary for better UX -->
+  <script>
+    window.addEventListener('error', function(event) {
+      console.error('Application error:', event.error);
+      
+      const loading = document.getElementById('loading');
+      const root = document.getElementById('deck-root');
+      
+      if (loading) loading.style.display = 'none';
+      
+      if (root && !root.innerHTML.trim()) {
+        root.innerHTML = `
+          <div class="error-state">
+            <div class="error-icon">
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="24" cy="24" r="22"/>
+                <path d="m16 16 16 16M32 16 16 32"/>
+              </svg>
+            </div>
+            <h2 class="error-title">Something went wrong</h2>
+            <p class="error-message">Unable to load the requested report. Please try refreshing the page.</p>
+            <div style="margin-top: 24px;">
+              <button onclick="window.location.reload()" style="
+                background: #f4d03f;
+                color: #0a0b0d;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 6px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s ease;
+              " onmouseover="this.style.background='#f39c12'" onmouseout="this.style.background='#f4d03f'">
+                Refresh Page
+              </button>
+              <a href="/SMEGems/" style="
+                color: #f4d03f;
+                text-decoration: none;
+                margin-left: 16px;
+                font-weight: 500;
+              ">← Back to SME Gems</a>
+            </div>
+          </div>
+        `;
+      }
+    });
+
+    // Prevent common scraping attempts
+    window.addEventListener('beforeunload', function() {
+      // Clear any cached content
+      if (window.SMEGemsDecoder && window.SMEGemsDecoder.slides) {
+        window.SMEGemsDecoder.slides = [];
+      }
+    });
+  </script>
+</body>
+</html>
