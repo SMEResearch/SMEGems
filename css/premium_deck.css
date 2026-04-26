@@ -981,3 +981,25 @@ body {
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
 }
+/* Full content mode */
+.deck-container.full-content {
+  display: block;
+}
+
+.deck-container.full-content .deck-sidebar {
+  display: none;
+}
+
+.deck-container.full-content #deck-root {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* Ensure original styling takes precedence */
+#deck-root.full-oriana {
+  background: #020617 !important;
+  color: #f8fafc !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+}
