@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SME Gems Viewer</title>
+  <meta name="description" content="Premium financial report viewer for SME Gems analysis.">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💎</text></svg>">
+  
+  <!-- Preconnect for performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/premium_deck.css">
+  
+  <!-- Preload critical resources -->
+  <link rel="preload" href="js/advanced_decoder.js" as="script">
+  
+  <!-- Security headers -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="Referrer-Policy" content="same-origin">
+  
+  <!-- Robots directive for viewer page -->
+  <meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+  <!-- Enhanced Loading Screen -->
+  <div id="loading">
+    <div class="loader"></div>
+    <p>Loading report...</p>
+    <div style="margin-top: 24px; font-size: 12px; color: #adb5bd; text-align: center; max-width: 300px;">
+      <div style="font-weight: 500; color: #f4d03f; margin-bottom: 8px;">SME Gems Premium Viewer</div>
+      <div style="line-height: 1.4;">
+        Fetching encrypted content and assembling presentation. 
+        This may take a moment for large reports.
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Application Root -->
+  <div id="deck-root"></div>
+
+  <!-- Configuration -->
+  <script>
+    // Enhanced configuration for direct viewer access
+    window.SMEGEMS_CONFIG = {
+      version: '1.0.0',
+      environment: 'production',
+      debug: false,
+      features: {
+        analytics: true,
+        protection: true,
+        watermark: true,
+        fullscreen: true
+      },
+      ui: {
+        enableKeyboardShortcuts: true,
+        enableMiniMap: false,
+        enableSlideNotes: false
+      }
+    };
+
+    // URL parameter handling for direct access
+    // Supports: viewer.html?slug=Oriana&mode=presentation
+    const urlParams = new URLSearchParams(window.location.search);
+    const reportSlug = urlParams.get('slug') || urlParams.get('report');
+    const viewMode = urlParams.get('mode') || 'default';
+
+    if (reportSlug) {
+      document.title = `${reportSlug} • SME Gems`;
+    }
+  </script>
+
+  <!-- Application Scripts -->
+  <script src="js/advanced_decoder.js"></script>
+
+  <!-- Enhanced error handling and UX -->
+  <script>
+    // Global error handler
+    window.addEventListener('error', function(event) {
+      console.error('Application error:', event.error);
+      handleError('Application failed to load', event.error.message);
+    });
+
+    // Unhandled promise rejection handler
+    window.addEventListener('unhandledrejection', function(event) {
+      console.error('Unhandled promise rejection:', event.reason);
+      handleError('Network error', 'Failed to fetch report data');
+    });
+
+    function handleError(title, message) {
+      const loading = document.getElementById('loading');
+      const root = document.getElementById('deck-root');
+      
+      if (loading) loading.style.display = 'none';
+      
+      if (root && !root.innerHTML.trim()) {
+        root.innerHTML = createErrorHTML(title, message);
+      }
+    }
+
+    function createErrorHTML(title, message) {
+      const reportSlug = new URLSearchParams(window.location.search).get('slug') || 'Unknown';
+      
+      return `
+        <div class="error-state">
+          <div class="error-icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </div>
+          <h2 class="error-title">${title}</h2>
+          <p class="error-message">
+            ${message}
+            ${reportSlug !== 'Unknown' ? `<br><br><strong>Report:</strong> ${reportSlug}` : ''}
+          </p>
+          <div style="margin-top: 32px; display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+            <button onclick="window.location.reload()" style="
+              background: #f4d03f;
+              color: #0a0b0d;
+              border: none;
+              padding: 12px 24px;
+              border-radius: 6px;
+              font-weight: 600;
+              cursor: pointer;
+              transition: all 0.2s ease;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+            " onmouseover="this.style.background='#f39c12'" onmouseout="this.style.background='#f4d03f'">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 4v6h-6m-7 13A10 10 0 1 1 8 2l5 6"/>
+              </svg>
+              Retry
+            </button>
+            <a href="/SMEGems/" style="
+              color: #f4d03f;
+              text-decoration: none;
+              padding: 12px 24px;
+              border: 1px solid #f4d03f;
+              border-radius: 6px;
+              font-weight: 500;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              transition: all 0.2s ease;
+            " onmouseover="this.style.background='rgba(244,208,63,0.1)'" onmouseout="this.style.background='transparent'">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5m7-7l-7 7 7 7"/>
+              </svg>
+              Back to SME Gems
+            </a>
+          </div>
+          <div style="margin-top: 24px; font-size: 12px; color: #6c757d; text-align: center;">
+            <details style="cursor: pointer;">
+              <summary>Technical Details</summary>
+              <div style="margin-top: 12px; text-align: left; background: #1a1e28; padding: 12px; border-radius: 4px; font-family: monospace; font-size: 11px;">
+                User Agent: ${navigator.userAgent}<br>
+                Timestamp: ${new Date().toISOString()}<br>
+                URL: ${window.location.href}
+              </div>
+            </details>
+          </div>
+        </div>
+      `;
+    }
+
+    // Performance monitoring
+    window.addEventListener('load', function() {
+      if ('performance' in window) {
+        const perfData = performance.getEntriesByType('navigation')[0];
+        console.log('Page load time:', Math.round(perfData.loadEventEnd - perfData.fetchStart), 'ms');
+      }
+    });
+
+    // Viewport size optimization
+    function optimizeForViewport() {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+    
+    optimizeForViewport();
+    window.addEventListener('resize', optimizeForViewport);
+
+    // Prevent common content extraction attempts
+    document.addEventListener('DOMContentLoaded', function() {
+      // Disable certain developer features in production
+      if (window.SMEGEMS_CONFIG && window.SMEGEMS_CONFIG.environment === 'production') {
+        // Override console methods to prevent easy debugging
+        const originalLog = console.log;
+        console.log = function(...args) {
+          if (args[0] && typeof args[0] === 'string' && args[0].includes('decoded')) {
+            return; // Suppress content logging
+          }
+          originalLog.apply(console, args);
+        };
+      }
+    });
+  </script>
+</body>
+</html>
