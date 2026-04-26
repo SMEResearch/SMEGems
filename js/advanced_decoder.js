@@ -1,5 +1,5 @@
 /**
- * SMEGems Advanced Deck Viewer 
+ * SMEGems Advanced Deck Viewer  
  * Beautiful financial data presentation with anti-scraping protection
  */
 
