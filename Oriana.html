@@ -7,22 +7,14 @@
 </head>
 <body>
     <div style="
-        position: fixed;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: #020617;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        color: #f8fafc;
-        font-family: sans-serif;
-        z-index: 9999;
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: #020617; display: flex; align-items: center;
+        justify-content: center; flex-direction: column;
+        color: #f8fafc; font-family: sans-serif; z-index: 9999;
     " id="loading-screen">
         <div style="
-            width: 40px; height: 40px;
-            border: 3px solid #333;
-            border-top-color: #10b981;
-            border-radius: 50%;
+            width: 40px; height: 40px; border: 3px solid #333;
+            border-top-color: #10b981; border-radius: 50%;
             animation: spin 1s linear infinite;
         "></div>
         <p style="margin-top: 20px; opacity: 0.8;">Loading Oriana Power Analysis...</p>
@@ -30,11 +22,9 @@
 
     <style>
         @keyframes spin { to { transform: rotate(360deg); } }
-        body { margin: 0; padding: 0; }
     </style>
 
     <script>
-        // Fetch and decode Oriana content from Supabase
         async function loadOrianaContent() {
             try {
                 console.log('🔄 Fetching Oriana content...');
@@ -46,25 +36,14 @@
                     }
                 });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-
                 const chunks = await response.json();
                 console.log(`📦 Retrieved ${chunks.length} chunks`);
 
-                if (chunks.length === 0) {
-                    throw new Error('No content chunks found for Oriana');
-                }
-
-                // Reassemble content
+                // Decode content
                 chunks.sort((a, b) => a.chunk_index - b.chunk_index);
                 const fullBase64 = chunks.map(c => c.encoded_data).join('');
-
-                // Decode from Base64
                 const encodedData = Uint8Array.from(atob(fullBase64), c => c.charCodeAt(0));
 
-                // XOR decode with key
                 const key = "SMEGems2024!@#$";
                 const keyBytes = new TextEncoder().encode(key);
                 const decoded = new Uint8Array(encodedData.length);
@@ -76,51 +55,89 @@
                 const htmlContent = new TextDecoder().decode(decoded);
                 console.log('✅ Content decoded successfully');
 
-                // Parse the full HTML document
+                // Parse the HTML
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(htmlContent, 'text/html');
 
-                // Replace current document with decoded content
-                document.head.innerHTML = doc.head.innerHTML;
-                document.body.innerHTML = doc.body.innerHTML;
+                // IMPORTANT: Wait for external resources to load before showing content
+                const loadingScreen = document.getElementById('loading-screen');
                 
-                // Copy any body attributes
-                Array.from(doc.body.attributes).forEach(attr => {
-                    document.body.setAttribute(attr.name, attr.value);
+                // Pre-load all external stylesheets and fonts
+                const externalLinks = doc.querySelectorAll('link[rel="stylesheet"], link[href*="fonts.googleapis.com"]');
+                const linkPromises = Array.from(externalLinks).map(link => {
+                    return new Promise((resolve, reject) => {
+                        const newLink = document.createElement('link');
+                        newLink.rel = link.rel;
+                        newLink.href = link.href;
+                        newLink.onload = resolve;
+                        newLink.onerror = resolve; // Don't fail on missing fonts
+                        document.head.appendChild(newLink);
+                        // Timeout after 5 seconds
+                        setTimeout(resolve, 5000);
+                    });
                 });
 
-                console.log('🎉 Oriana content loaded successfully!');
+                // Pre-load external scripts
+                const externalScripts = doc.querySelectorAll('script[src]');
+                const scriptPromises = Array.from(externalScripts).map(script => {
+                    return new Promise((resolve, reject) => {
+                        const newScript = document.createElement('script');
+                        newScript.src = script.src;
+                        newScript.onload = resolve;
+                        newScript.onerror = resolve; // Don't fail on missing scripts
+                        document.head.appendChild(newScript);
+                        setTimeout(resolve, 5000);
+                    });
+                });
 
-                // Initialize any scripts that might need re-running
+                console.log('⏳ Loading external resources...');
+                
+                // Wait for all external resources
+                await Promise.all([...linkPromises, ...scriptPromises]);
+                
+                console.log('📚 External resources loaded');
+
+                // Now replace the content
+                document.head.innerHTML = doc.head.innerHTML;
+                
+                // Add a small delay to ensure CSS is processed
                 setTimeout(() => {
-                    if (typeof initBackground === 'function') initBackground();
-                    if (typeof initCharts === 'function') initCharts();
+                    document.body.innerHTML = doc.body.innerHTML;
+                    
+                    // Copy body attributes
+                    Array.from(doc.body.attributes).forEach(attr => {
+                        document.body.setAttribute(attr.name, attr.value);
+                    });
+
+                    console.log('🎉 Oriana content loaded with styling!');
+
+                    // Initialize scripts after everything is loaded
+                    setTimeout(() => {
+                        if (typeof initBackground === 'function') {
+                            try { initBackground(); } catch(e) { console.log('Background init:', e); }
+                        }
+                        if (typeof initCharts === 'function') {
+                            try { initCharts(); } catch(e) { console.log('Charts init:', e); }
+                        }
+                    }, 500);
+
                 }, 100);
 
             } catch (error) {
                 console.error('❌ Error loading content:', error);
-                
                 document.getElementById('loading-screen').innerHTML = `
                     <div style="text-align: center; max-width: 400px;">
                         <h2 style="color: #ef4444; margin-bottom: 1rem;">Unable to Load Content</h2>
-                        <p style="margin-bottom: 1.5rem; line-height: 1.6; opacity: 0.8;">
-                            The Oriana analysis could not be loaded from the secure database.
-                        </p>
+                        <p style="margin-bottom: 1.5rem; opacity: 0.8;">Error: ${error.message}</p>
                         <button onclick="window.location.reload()" style="
                             background: #10b981; color: white; border: none;
-                            padding: 12px 24px; border-radius: 6px;
-                            cursor: pointer; font-weight: 500;
+                            padding: 12px 24px; border-radius: 6px; cursor: pointer;
                         ">Try Again</button>
-                        <a href="/SMEGems/" style="
-                            display: inline-block; margin-left: 16px;
-                            color: #10b981; text-decoration: none;
-                        ">← Back to SME Gems</a>
                     </div>
                 `;
             }
         }
 
-        // Start loading when page loads
         document.addEventListener('DOMContentLoaded', loadOrianaContent);
     </script>
 </body>
