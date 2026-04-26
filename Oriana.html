@@ -1,21 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Oriana Power • SME Gems</title>
-  <link rel="stylesheet" href="css/premium_deck.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oriana Power - SME Gems</title>
 </head>
 <body>
-  <div id="loading">
-    <div class="loader"></div>
-    <p>Loading Oriana Power analysis...</p>
-  </div>
-  <div id="deck-root"></div>
-  <script>
-    // Force the slug to be 'Oriana' for this page
-    window.SMEGEMS_SLUG = 'Oriana';
-  </script>
-  <script src="js/advanced_decoder.js"></script>
+    <div style="
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: #020617;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        color: #f8fafc;
+        font-family: sans-serif;
+        z-index: 9999;
+    " id="loading-screen">
+        <div style="
+            width: 40px; height: 40px;
+            border: 3px solid #333;
+            border-top-color: #10b981;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        "></div>
+        <p style="margin-top: 20px; opacity: 0.8;">Loading Oriana Power Analysis...</p>
+    </div>
+
+    <style>
+        @keyframes spin { to { transform: rotate(360deg); } }
+        body { margin: 0; padding: 0; }
+    </style>
+
+    <script>
+        // Fetch and decode Oriana content from Supabase
+        async function loadOrianaContent() {
+            try {
+                console.log('🔄 Fetching Oriana content...');
+                
+                const response = await fetch('https://ybbgmrftdyhigxyytgmn.supabase.co/rest/v1/content_chunks?slug=eq.Oriana&order=chunk_index.asc', {
+                    headers: {
+                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InliYmdtcmZ0ZHloaWd4eXl0Z21uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNTU1MTUsImV4cCI6MjA5MjczMTUxNX0.dyNu4LDeFda_2VDoR_GFKV6CgBoNS83s3ldl_dBuYEE',
+                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InliYmdtcmZ0ZHloaWd4eXl0Z21uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNTU1MTUsImV4cCI6MjA5MjczMTUxNX0.dyNu4LDeFda_2VDoR_GFKV6CgBoNS83s3ldl_dBuYEE'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const chunks = await response.json();
+                console.log(`📦 Retrieved ${chunks.length} chunks`);
+
+                if (chunks.length === 0) {
+                    throw new Error('No content chunks found for Oriana');
+                }
+
+                // Reassemble content
+                chunks.sort((a, b) => a.chunk_index - b.chunk_index);
+                const fullBase64 = chunks.map(c => c.encoded_data).join('');
+
+                // Decode from Base64
+                const encodedData = Uint8Array.from(atob(fullBase64), c => c.charCodeAt(0));
+
+                // XOR decode with key
+                const key = "SMEGems2024!@#$";
+                const keyBytes = new TextEncoder().encode(key);
+                const decoded = new Uint8Array(encodedData.length);
+
+                for (let i = 0; i < encodedData.length; i++) {
+                    decoded[i] = encodedData[i] ^ keyBytes[i % keyBytes.length];
+                }
+
+                const htmlContent = new TextDecoder().decode(decoded);
+                console.log('✅ Content decoded successfully');
+
+                // Parse the full HTML document
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlContent, 'text/html');
+
+                // Replace current document with decoded content
+                document.head.innerHTML = doc.head.innerHTML;
+                document.body.innerHTML = doc.body.innerHTML;
+                
+                // Copy any body attributes
+                Array.from(doc.body.attributes).forEach(attr => {
+                    document.body.setAttribute(attr.name, attr.value);
+                });
+
+                console.log('🎉 Oriana content loaded successfully!');
+
+                // Initialize any scripts that might need re-running
+                setTimeout(() => {
+                    if (typeof initBackground === 'function') initBackground();
+                    if (typeof initCharts === 'function') initCharts();
+                }, 100);
+
+            } catch (error) {
+                console.error('❌ Error loading content:', error);
+                
+                document.getElementById('loading-screen').innerHTML = `
+                    <div style="text-align: center; max-width: 400px;">
+                        <h2 style="color: #ef4444; margin-bottom: 1rem;">Unable to Load Content</h2>
+                        <p style="margin-bottom: 1.5rem; line-height: 1.6; opacity: 0.8;">
+                            The Oriana analysis could not be loaded from the secure database.
+                        </p>
+                        <button onclick="window.location.reload()" style="
+                            background: #10b981; color: white; border: none;
+                            padding: 12px 24px; border-radius: 6px;
+                            cursor: pointer; font-weight: 500;
+                        ">Try Again</button>
+                        <a href="/SMEGems/" style="
+                            display: inline-block; margin-left: 16px;
+                            color: #10b981; text-decoration: none;
+                        ">← Back to SME Gems</a>
+                    </div>
+                `;
+            }
+        }
+
+        // Start loading when page loads
+        document.addEventListener('DOMContentLoaded', loadOrianaContent);
+    </script>
 </body>
 </html>
