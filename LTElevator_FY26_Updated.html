@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L.T. Elevator Ltd — Investment Deck</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --crimson: #c8102e;
+            --crimson-dim: rgba(200,16,46,0.10);
+            --crimson-glow: rgba(200,16,46,0.25);
+            --amber: #e8a838;
+            --amber-dim: rgba(232,168,56,0.10);
+            --cream: #faf3e8;
+            --bone: #f0e6d6;
+            --charcoal: #1a1a1e;
+            --ink: #0e0e10;
+            --slate: #2a2a30;
+            --muted: #8a8078;
+            --text: #f0ebe4;
+            --success: #2ec4b6;
+            --danger: #e63946;
+            --grad: linear-gradient(135deg, var(--crimson), var(--amber));
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        /* Themed Background */
+        html, body { 
+            width: 100%; height: 100%; overflow: hidden; 
+            background-color: var(--ink); 
+            background-image: 
+                linear-gradient(rgba(240, 235, 228, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(240, 235, 228, 0.02) 1px, transparent 1px);
+            background-size: 30px 30px;
+            background-position: center center;
+            color: var(--text); font-family: 'Sora', sans-serif; 
+        }
+
+        /* CUSTOM SCROLLBARS */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--ink); border-left: 1px solid rgba(200,16,46,0.1); }
+        ::-webkit-scrollbar-thumb { background: rgba(200,16,46,0.4); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--crimson); }
+        * { scrollbar-width: thin; scrollbar-color: rgba(200,16,46,0.4) var(--ink); }
+
+        /* Ambient Glowing Orbs */
+        .ambient-glow { position: fixed; border-radius: 50%; filter: blur(120px); z-index: 0; pointer-events: none; opacity: 0.5; }
+        .glow-1 { top: -15%; left: -10%; width: 50vw; height: 50vw; background: var(--crimson-glow); }
+        .glow-2 { bottom: -10%; right: -5%; width: 45vw; height: 45vw; background: var(--amber-dim); }
+        .glow-3 { top: 40%; left: 40%; width: 30vw; height: 30vw; background: rgba(200, 16, 46, 0.08); }
+
+        #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+        #deck { position: relative; z-index: 1; width: 100%; height: 100%; overflow: hidden; touch-action: pan-y pinch-zoom; }
+        
+        /* Fixed Layout Cutoff */
+        .slide {
+            position: absolute; inset: 0; opacity: 0; visibility: hidden;
+            transition: opacity 0.6s cubic-bezier(.4,0,.2,1), transform 0.6s cubic-bezier(.4,0,.2,1);
+            transform: translateX(60px);
+            display: flex; align-items: flex-start;
+            justify-content: center;
+            padding: 4rem; overflow-y: auto; scroll-behavior: smooth;
+        }
+        .slide.active { opacity: 1; visibility: visible; transform: translateX(0); }
+        .slide.exit-left { opacity: 0; visibility: visible; transform: translateX(-60px); }
+        
+        /* Increased padding-bottom so content clears the slide counter */
+        .slide-inner { max-width: 1100px; width: 100%; margin: auto 0; padding-bottom: 5rem; }
+
+        #progress-bar { position: fixed; top: 0; left: 0; height: 3px; z-index: 100; background: var(--grad); transition: width 0.4s ease; box-shadow: 0 0 12px var(--crimson-glow); }
+
+        #nav-dots { position: fixed; right: 1.5rem; top: 50%; transform: translateY(-50%); z-index: 90; display: flex; flex-direction: column; gap: 10px; }
+        .nav-dot { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--muted); background: transparent; cursor: pointer; transition: all 0.3s; position: relative; }
+        .nav-dot:hover { border-color: var(--amber); transform: scale(1.3); }
+        .nav-dot.active { background: var(--crimson); border-color: var(--crimson); box-shadow: 0 0 10px var(--crimson-glow); }
+        .nav-dot .dot-label { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); background: var(--charcoal); color: var(--text); padding: 4px 10px; border-radius: 4px; font-size: 0.65rem; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s; font-weight: 600; border: 1px solid rgba(200,16,46,0.15); }
+        .nav-dot:hover .dot-label { opacity: 1; }
+
+        .nav-arrow { position: fixed; z-index: 90; background: rgba(26,26,30,0.7); backdrop-filter: blur(8px); border: 1px solid rgba(200,16,46,0.12); color: var(--muted); cursor: pointer; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s; font-size: 1rem; }
+        .nav-arrow:hover { color: var(--crimson); border-color: var(--crimson-glow); background: rgba(200,16,46,0.08); }
+        .nav-arrow.disabled { opacity: 0.2; pointer-events: none; }
+        #arrow-prev { bottom: 2rem; left: 2rem; }
+        #arrow-next { bottom: 2rem; right: 5rem; }
+
+        /* Slide Counter: Added blurred pill background to prevent text overlap unreadability */
+        #slide-counter { 
+            position: fixed; bottom: 2.3rem; left: 50%; transform: translateX(-50%); z-index: 90; 
+            font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); font-weight: 600; 
+            background: rgba(14, 14, 16, 0.75); backdrop-filter: blur(6px); padding: 4px 14px; border-radius: 20px; border: 1px solid rgba(200,16,46,0.15);
+        }
+        #slide-counter span { color: var(--crimson); font-weight: 700; }
+
+        /* COVER */
+        .cover-slide .slide-inner { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 80vh; }
+        .cover-logo { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 2.5rem; animation: fadeDown 1s ease 0.3s forwards; opacity: 0; }
+        .cover-wordmark {
+            font-family: 'Sora', sans-serif; font-weight: 800; font-size: clamp(2.5rem, 5vw, 4.5rem);
+            letter-spacing: 12px; text-transform: uppercase; line-height: 1;
+            background: linear-gradient(135deg, #fff 0%, #c8102e 40%, #e8a838 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 30px rgba(200,16,46,0.25));
+        }
+        .cover-wordmark .dot { -webkit-text-fill-color: var(--crimson); font-size: 0.7em; }
+        .cover-tagline { font-size: 0.7rem; letter-spacing: 6px; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+        .cover-divider { width: 60px; height: 2px; background: var(--grad); margin: 6px 0; border-radius: 2px; }
+        @keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        .cover-title { font-family: 'Playfair Display', serif; font-size: clamp(3rem, 7vw, 6rem); font-weight: 900; line-height: 1.05; margin-bottom: 1.5rem; animation: fadeUp 1s ease 0.6s forwards; opacity: 0; }
+        .cover-title .red { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .cover-sub { font-size: 1.1rem; color: var(--muted); max-width: 600px; line-height: 1.7; margin-bottom: 2.5rem; animation: fadeUp 1s ease 0.9s forwards; opacity: 0; }
+        .cover-pills { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; animation: fadeUp 1s ease 1.2s forwards; opacity: 0; }
+        .cover-pill { padding: 8px 18px; border-radius: 24px; font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; border: 1px solid rgba(200,16,46,0.2); background: rgba(200,16,46,0.06); color: var(--crimson); }
+        .cover-pill.amber { border-color: rgba(232,168,56,0.2); background: rgba(232,168,56,0.06); color: var(--amber); }
+        .cover-cta { margin-top: 3rem; animation: fadeUp 1s ease 1.5s forwards; opacity: 0; cursor: pointer; display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s; }
+        .cover-cta:hover { color: var(--crimson); }
+        .cover-cta i { animation: bounce 2s ease infinite; }
+        @keyframes bounce { 0%,100% { transform: translateX(0); } 50% { transform: translateX(6px); } }
+
+        /* CONTENT */
+        .badge { display: inline-block; padding: 5px 14px; border-radius: 2px; font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1rem; background: var(--crimson-dim); color: var(--crimson); border: 1px solid rgba(200,16,46,0.2); }
+        .badge.amber { background: var(--amber-dim); color: var(--amber); border-color: rgba(232,168,56,0.2); }
+        .stitle { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 800; margin-bottom: 0.6rem; line-height: 1.15; }
+        .ssub { font-size: 0.95rem; color: var(--muted); margin-bottom: 1.8rem; line-height: 1.6; border-left: 3px solid transparent; padding-left: 1rem; border-image: var(--grad) 1; }
+        .ssub strong { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; }
+
+        .card { background: rgba(26,26,30,0.75); backdrop-filter: blur(12px); border: 1px solid rgba(200,16,46,0.08); border-radius: 8px; padding: 1.4rem; position: relative; transition: all 0.35s; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--grad); opacity: 0; transition: opacity 0.3s; }
+        .card:hover { border-color: rgba(200,16,46,0.2); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.45); }
+        .card:hover::before { opacity: 1; }
+        .card.amber-top::before { background: linear-gradient(90deg, var(--amber), var(--crimson)); }
+        
+        .card-title { font-family: 'Sora', sans-serif; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.8rem; }
+        .card-title.red { color: var(--crimson); }
+        .card-title.amber { color: var(--amber); }
+        .card-title.green { color: var(--success); }
+
+        .metric-card { text-align: center; }
+        .metric-card .metric-num { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 2.5vw, 2.2rem); font-weight: 900; margin: 0.4rem 0; }
+        .metric-card .metric-num.grad { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .metric-card .metric-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
+        .metric-card .metric-sub { font-size: 0.72rem; margin-top: 4px; font-weight: 600; }
+
+        /* FLIP CARDS */
+        .flip-container { perspective: 1000px; height: 280px; cursor: pointer; }
+        .flip-card { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(.4,0,.2,1); }
+        /* Toggles 180deg flip on hover OR when manually locked */
+        .flip-container:hover .flip-card, .flip-container.locked .flip-card { transform: rotateY(180deg); } 
+        
+        .flip-front, .flip-back { position: absolute; inset: 0; backface-visibility: hidden; border-radius: 8px; padding: 1.5rem; display: flex; flex-direction: column; justify-content: center; }
+        .flip-front { background: rgba(26,26,30,0.8); border: 1px solid rgba(200,16,46,0.1); }
+        .flip-back { background: linear-gradient(135deg, rgba(200,16,46,0.12), rgba(26,26,30,0.8)); border: 1px solid rgba(200,16,46,0.2); transform: rotateY(180deg); }
+        
+        /* Updated dynamic styling for flip hint matching slide 6 gradient theme */
+        .flip-hint-text {
+            font-size: 0.85rem;
+            border-left: 3px solid transparent;
+            padding-left: 0.8rem;
+            border-image: var(--grad) 1;
+            margin-top: auto;
+        }
+        .flip-hint-text strong {
+            background: var(--grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* ACCORDION / MILESTONES */
+        .accordion-item { border: 1px solid rgba(200,16,46,0.08); border-radius: 6px; margin-bottom: 8px; overflow: hidden; transition: all 0.3s; }
+        .accordion-item:hover { border-color: rgba(200,16,46,0.15); }
+        .accordion-header { padding: 1rem 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: rgba(26,26,30,0.6); transition: background 0.3s; font-weight: 600; font-size: 0.9rem; }
+        .accordion-header:hover { background: rgba(200,16,46,0.04); }
+        .accordion-header i { transition: transform 0.3s; color: var(--crimson); font-size: 0.8rem; }
+        .accordion-item.open .accordion-header i { transform: rotate(180deg); }
+        .accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s; padding: 0 1.2rem; background: rgba(14,14,16,0.4); }
+        .accordion-item.open .accordion-body { max-height: 500px; padding: 1rem 1.2rem; }
+        
+        /* Locked state for Milestones */
+        .accordion-item.locked { border-color: rgba(232,168,56,0.4); }
+        .accordion-item.locked .accordion-header { background: rgba(232,168,56,0.08); }
+        .accordion-item.locked .accordion-header i.fa-chevron-down { color: var(--amber); }
+
+        ul.cl { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; }
+        ul.cl li { position: relative; padding-left: 1.4rem; line-height: 1.6; color: #ccc5bb; font-size: 0.88rem; }
+        ul.cl li::before { content: '\25B8'; position: absolute; left: 0; color: var(--crimson); font-size: 0.8rem; top: 2px; }
+        ul.cl.amber li::before { color: var(--amber); }
+        ul.cl.green li::before { color: var(--success); }
+        ul.cl.risk li::before { content: '\26A0'; color: var(--danger); font-size: 0.7rem; }
+        
+        .flip-back ul.cl { gap: 0.7rem; }
+        .flip-back ul.cl li { font-size: 0.88rem; line-height: 1.6; }
+
+        .table-custom { width: 100%; border-collapse: collapse; margin-top: 0.8rem; }
+        .table-custom th, .table-custom td { padding: 0.8rem; text-align: left; border-bottom: 1px solid rgba(200,16,46,0.06); font-size: 0.88rem; }
+        .table-custom th { color: var(--crimson); text-transform: uppercase; font-size: 0.72rem; letter-spacing: 1.5px; font-weight: 700; }
+        .table-custom tr:hover td { background: rgba(200,16,46,0.04); }
+
+        .chart-box { background: rgba(26,26,30,0.7); padding: 1.2rem; border-radius: 8px; height: 380px; border: 1px solid rgba(200,16,46,0.08); }
+        .callout { border-left: 3px solid; border-image: var(--grad) 1; padding: 1.2rem 1.4rem; background: linear-gradient(135deg, rgba(200,16,46,0.05), rgba(232,168,56,0.03)); border-radius: 0 8px 8px 0; margin-top: 1.2rem; }
+        .callout p { font-size: 0.95rem; line-height: 1.7; }
+        .pill { display: inline-flex; align-items: center; gap: 5px; background: var(--crimson-dim); border: 1px solid rgba(200,16,46,0.15); border-radius: 16px; padding: 3px 12px; font-size: 0.72rem; font-weight: 700; color: var(--crimson); }
+        .pill.green { background: rgba(46,196,182,0.10); border-color: rgba(46,196,182,0.2); color: var(--success); }
+
+        .footer-brand { text-align: center; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid rgba(200,16,46,0.08); }
+        .footer-brand a { color: var(--crimson); text-decoration: none; font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 8px; transition: color 0.3s; }
+        .footer-brand a:hover { color: var(--text); }
+
+        @media (max-width: 1100px) { .grid-4 { grid-template-columns: repeat(2,1fr); } .slide { padding: 2rem; } }
+        /* Increased padding-bottom for mobile to completely clear the pill counter */
+        @media (max-width: 768px) { .grid-3, .grid-2 { grid-template-columns: 1fr; } .slide { padding: 1.5rem 1.2rem; padding-bottom: 6rem; align-items: flex-start; } #nav-dots { display: none; } #arrow-prev { left: 1rem; bottom: 1.2rem; } #arrow-next { right: 1rem; bottom: 1.2rem; } .cover-title { font-size: 2.5rem; } .flip-container { height: 260px; } }
+    </style>
+</head>
+<body>
+<div class="ambient-glow glow-1"></div>
+<div class="ambient-glow glow-2"></div>
+<div class="ambient-glow glow-3"></div>
+
+<canvas id="bg-canvas"></canvas>
+<div id="progress-bar"></div>
+<div id="nav-dots"></div>
+<button class="nav-arrow" id="arrow-prev" onclick="go(-1)"><i class="fas fa-chevron-left"></i></button>
+<button class="nav-arrow" id="arrow-next" onclick="go(1)"><i class="fas fa-chevron-right"></i></button>
+<div id="slide-counter"></div>
+
+<div id="deck">
+
+    <div class="slide cover-slide active" data-label="Cover">
+        <div class="slide-inner">
+            <div class="cover-logo">
+                <div class="cover-wordmark">L<span class="dot">.</span>T<span class="dot">.</span> Elevator</div>
+                <div class="cover-divider"></div>
+                <div class="cover-tagline">EST. 2008 &bull; Kolkata</div>
+            </div>
+            <h1 class="cover-title">India's Only Listed<br><span class="red">Pure-Play Elevator Maker</span></h1>
+            <p class="cover-sub">Three engines — B2B Elevators, Automated Parking, D2C Home Elevators — one vertically integrated factory. Now expanding to Malaysia & Australia.</p>
+            <div class="cover-pills">
+                <div class="cover-pill">&#8377;354 Cr MCap</div>
+                <div class="cover-pill">FY26 PAT &#8377;17 Cr</div>
+                <div class="cover-pill amber">&#8377;250+ Cr Orders</div>
+                <div class="cover-pill amber">~97% Revenue Growth FY26</div>
+            </div>
+            <div class="cover-cta" onclick="go(1)">Explore the Deck <i class="fas fa-arrow-right"></i></div>
+        </div>
+    </div>
+
+    <div class="slide" data-label="Snapshot">
+        <div class="slide-inner">
+            <div class="badge">01 &bull; Company Snapshot</div>
+            <h2 class="stitle">Guidance Delivered. And Then Some.</h2>
+            <p class="ssub">At IPO, management guided ~50–70% revenue growth for FY26. Audited consolidated result: <strong>₹111 Cr (+97% YoY) — with ₹17 Cr PAT at 15.2% net margin. Topline came in well ahead of the guided range.</strong></p>
+            <div class="grid-4" style="margin-bottom:1.4rem;">
+                <div class="card metric-card"><div class="metric-label">FY26 Topline (Consol.)</div><div class="metric-num grad">&#8377;111 Cr</div><div class="pill green" style="margin:4px auto 0;"><i class="fas fa-arrow-up" style="font-size:0.6rem;"></i> ~97% YoY</div></div>
+                <div class="card metric-card"><div class="metric-label">FY26 PAT (Consol.)</div><div class="metric-num">&#8377;17 Cr</div><div class="metric-sub" style="color:var(--success);">15.2% Net Margin</div></div>
+                <div class="card metric-card"><div class="metric-label">Market Cap</div><div class="metric-num" style="color:var(--amber);">&#8377;354 Cr</div><div class="metric-sub" style="color:var(--muted);">CMP &#8377;185</div></div>
+                <div class="card metric-card"><div class="metric-label">Order Book</div><div class="metric-num">&#8377;250 Cr+</div><div class="metric-sub" style="color:var(--success);">Executable Pipeline</div></div>
+            </div>
+            <div class="card">
+                <div class="card-title red">The Story So Far</div>
+                <p style="color:var(--muted);line-height:1.7;font-size:0.92rem;">Promoted by Arvind, Usha & Yash Gupta, L.T. Elevator leverages 17 years of engineering DNA. The company operates core B2B elevators, a growing B2G automated parking subsidiary (LT ParkSmart) — which completed <strong style="color:var(--amber);">Phase 1 of the largest multi-level car parking project in the North East (₹43 Cr total)</strong>, inaugurated by the Chief Minister of Meghalaya, with Phase 2 now underway — and is integrating Ricardo Elevators, a D2C home elevator brand. FY26 marks the first year revenue crossed ₹100 Cr, with 21 offices across India and overseas expansion into <strong style="color:var(--amber);">Malaysia & Australia</strong> underway. Ricardo merger in process; financials consolidate from FY27.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide" data-label="Journey">
+        <div class="slide-inner">
+            <div class="badge">02 &bull; Company Journey</div>
+            <h2 class="stitle">From a Kolkata Workshop to ₹100 Cr</h2>
+            <p class="ssub" style="margin-bottom: 1.2rem;"><strong>Click to reveal</strong></p>
+            
+            <div class="accordion-item open"><div class="accordion-header" onmouseenter="hoverAccordion(this)" onclick="clickAccordion(this)"><span>2008 — Founded in Kolkata</span><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><p style="color:var(--muted);font-size:0.88rem;line-height:1.7;">Incorporated in Kolkata. Began elevator design, manufacturing, and installation from the ground up with a focus on engineering excellence.</p></div></div>
+            <div class="accordion-item"><div class="accordion-header" onmouseenter="hoverAccordion(this)" onclick="clickAccordion(this)"><span>2018–2020 — Scale & Certification</span><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><p style="color:var(--muted);font-size:0.88rem;line-height:1.7;">ISO 9001:2008 certified. Expanded to 20+ branch offices. Crossed 8,000+ AMC installations. Park Smart Solutions launched as a wholly-owned subsidiary for automated parking.</p></div></div>
+            <div class="accordion-item"><div class="accordion-header" onmouseenter="hoverAccordion(this)" onclick="clickAccordion(this)"><span>Sep 2025 — IPO at &#8377;78 (183x Oversubscribed)</span><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><p style="color:var(--muted);font-size:0.88rem;line-height:1.7;">Listed on BSE SME platform raising &#8377;39 Cr for capacity expansion and working capital. Listed at a 74.5% premium. Massive retail and institutional demand.</p></div></div>
+            <div class="accordion-item"><div class="accordion-header" onmouseenter="hoverAccordion(this)" onclick="clickAccordion(this)"><span>Nov 2025 — Blockbuster H1 FY26</span><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><p style="color:var(--muted);font-size:0.88rem;line-height:1.7;">Revenue +140% YoY to &#8377;47 Cr. PAT +597% YoY to &#8377;6.45 Cr. EBITDA margins expanded to 21.3%.</p></div></div>
+            <div class="accordion-item"><div class="accordion-header" onmouseenter="hoverAccordion(this)" onclick="clickAccordion(this)"><span style="color:var(--amber);">FY26 — First ₹100 Cr Year (Audited May 2026)</span><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><p style="color:var(--muted);font-size:0.88rem;line-height:1.7;">Audited consolidated topline ₹111 Cr — ~97% YoY growth, well ahead of the ~50-70% guided at IPO. PAT ₹17 Cr at 15.2% net margin. First year in company history to cross ₹100 Cr. Ricardo merger in process; financials consolidate from FY27. Phase 1 of the largest NE multi-level car parking (₹43 Cr total project) delivered and inaugurated by CM of Meghalaya; Phase 2 underway. International expansion commenced in Malaysia & Australia. 21 offices across India.</p></div></div>
+        </div>
+    </div>
+
+    <div class="slide" data-label="Scorecard">
+        <div class="slide-inner">
+            <div class="badge amber">03 &bull; Guidance vs. Reality</div>
+            <h2 class="stitle">What They Said. What They Delivered.</h2>
+            <p class="ssub">A rare SME that <strong>beats its own IPO guidance</strong> in the first full year of listing.</p>
+            <div class="grid-2" style="margin-bottom:1.2rem;">
+                <div class="card amber-top">
+                    <div class="card-title amber">IPO Guidance (Sep 2025)</div>
+                    <ul class="cl amber" style="font-size:0.86rem;">
+                        <li>FY26 topline target: ~50–70% revenue growth over FY25</li>
+                        <li>Maintain 13-15% net margins on B2B/B2G business</li>
+                        <li>Ricardo to contribute meaningfully from FY27 onwards — merger process to complete during FY27</li>
+                        <li>H2 historically contributes ~60% of annual revenue</li>
+                        <li>New factory go-live: Q4 FY27 — 2.5x installed capacity</li>
+                    </ul>
+                </div>
+                <div class="card" style="border-top:3px solid var(--success);">
+                    <div class="card-title green">FY26 Audited Delivery</div>
+                    <ul class="cl" style="font-size:0.86rem;">
+                        <li><strong style="color:var(--success);">&#10003;</strong> &#8377;111 Cr consolidated — ~97% YoY growth, well ahead of guided range</li>
+                        <li><strong style="color:var(--success);">&#10003;</strong> 15.2% PAT margin — within guided band</li>
+                        <li><strong style="color:var(--success);">&#10003;</strong> H1 ₹47 Cr, H2 ₹64 Cr — seasonal H2-heavy pattern held</li>
+                        <li>Ricardo merger underway; FY27 consolidation on track</li>
+                        <li>Land acquired; new factory construction on schedule (Q4 FY27)</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="callout">
+                <p>Management guided ~50–70% growth at IPO — a conservative number given the order book. They delivered ~97% topline growth, the first ₹100 Cr year in company history, with <strong style="color:var(--crimson);">15.2% PAT margin</strong> on an audited consolidated basis. Execution credibility heading into the Ricardo integration year is firmly established.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide" data-label="Verticals">
+        <div class="slide-inner">
+            <div class="badge">04 &bull; Business Verticals</div>
+            <h2 class="stitle">Three Engines, One Factory</h2>
+            <div class="grid-3" style="margin-top: 2rem;">
+                
+                <div class="flip-container" onclick="this.classList.toggle('locked')">
+                    <div class="flip-card">
+                        <div class="flip-front" style="border-color:rgba(200,16,46,0.15);">
+                            <div class="card-title red" style="font-size:1rem;">01. B2B Elevators</div>
+                            <p style="color:var(--muted);font-size:0.85rem;">Core business — passenger, goods, hospital lifts.</p>
+                            <div class="flip-hint-text"><strong>Click to reveal</strong></div>
+                        </div>
+                        <div class="flip-back">
+                            <ul class="cl">
+                                <li>800 units/yr capacity (62% utilization).</li>
+                                <li>Strong East India base; now 50%+ orders from outside.</li>
+                                <li>8,000+ AMC installations — recurring revenue.</li>
+                                <li>Expanding to metros and Tier-2 cities.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-container" onclick="this.classList.toggle('locked')">
+                    <div class="flip-card">
+                        <div class="flip-front" style="border-color:rgba(46,196,182,0.15);">
+                            <div class="card-title green" style="font-size:1rem;">02. Park Smart (B2G)</div>
+                            <p style="color:var(--muted);font-size:0.85rem;">Automated multi-level parking systems.</p>
+                            <div class="flip-hint-text"><strong>Click to reveal</strong></div>
+                        </div>
+                        <div class="flip-back" style="background: linear-gradient(135deg, rgba(46,196,182,0.12), rgba(26,26,30,0.8)); border-color: rgba(46,196,182,0.2);">
+                            <ul class="cl green">
+                                <li>1,600 units/yr capacity (71% utilization).</li>
+                                <li><strong style="color:var(--amber);">Phase 1 of ₹43 Cr Shillong project</strong> — largest multi-level car parking in the North East.</li>
+                                <li>Inaugurated by CM of Meghalaya; Phase 2 underway in FY27.</li>
+                                <li>Actively pursuing larger B2G tickets; evaluating rotary parking patent acquisition.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flip-container" onclick="this.classList.toggle('locked')">
+                    <div class="flip-card">
+                        <div class="flip-front" style="border-color:rgba(232,168,56,0.15);">
+                            <div class="card-title amber" style="font-size:1rem;">03. Ricardo (D2C Home)</div>
+                            <p style="color:var(--muted);font-size:0.85rem;">Home elevators — bungalows, duplexes, villas.</p>
+                            <div class="flip-hint-text"><strong>Click to reveal</strong></div>
+                        </div>
+                        <div class="flip-back" style="background: linear-gradient(135deg, rgba(232,168,56,0.12), rgba(26,26,30,0.8)); border-color: rgba(232,168,56,0.2);">
+                            <ul class="cl amber">
+                                <li>&#8377;10–11L ASP. &#8377;6 Cr/month order inflows.</li>
+                                <li>60 orders/month via 18 pan-India centers.</li>
+                                <li>Already receiving inquiries & executing projects.</li>
+                                <li>Full consolidation expected in FY27.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="slide" data-label="Financials">
+        <div class="slide-inner">
+            <div class="badge">05 &bull; Financial Performance</div>
+            <h2 class="stitle">Consistent Growth, Expanding Margins</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-title red">FY26 Full Year (Audited, Consolidated)</div>
+                    <ul class="cl">
+                        <li><strong>Revenue:</strong> &#8377;111.3 Cr <span class="pill green" style="font-size:0.68rem;padding:2px 8px;">~97% YoY</span></li>
+                        <li><strong>EBITDA:</strong> &#8377;26.7 Cr <span class="pill green" style="font-size:0.68rem;padding:2px 8px;">23.9% Margin</span></li>
+                        <li><strong>PAT:</strong> &#8377;17 Cr <span class="pill green" style="font-size:0.68rem;padding:2px 8px;">15.2% Margin</span></li>
+                        <li><strong>H1 ₹47 Cr + H2 ₹64 Cr</strong> — H2-heavy seasonal pattern confirmed</li>
+                        <li style="color:var(--muted);font-size:0.82rem;">Note: PAT margin dipped marginally vs FY25 (15.8%) due to lumpy H2 FY25 margin base. Full-year FY26 vs FY25 is the right comparison lens.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-title red">Multi-Year Trajectory</div>
+                    <table class="table-custom">
+                        <thead><tr><th>Year</th><th>Revenue</th><th>PAT</th><th>PAT %</th></tr></thead>
+                        <tbody>
+                            <tr><td>FY23</td><td>&#8377;34 Cr</td><td>&#8377;3 Cr</td><td>8.8%</td></tr>
+                            <tr><td>FY24</td><td>&#8377;44 Cr</td><td>&#8377;5 Cr</td><td>11.4%</td></tr>
+                            <tr><td>FY25</td><td>&#8377;57 Cr</td><td>&#8377;9 Cr</td><td>15.8%</td></tr>
+                            <tr><td><strong style="color:var(--crimson);">FY26</strong></td><td><strong style="color:var(--crimson);">&#8377;111 Cr</strong></td><td><strong style="color:var(--crimson);">&#8377;17 Cr</strong></td><td><strong style="color:var(--crimson);">15.2%</strong></td></tr>
+                        </tbody>
+                    </table>
+                    <p style="font-size:0.78rem;color:var(--muted);margin-top:10px;">3-Year Revenue CAGR: 31% &bull; 3-Year PAT CAGR: ~75% &bull; First year to cross &#8377;100 Cr</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <div class="slide" data-label="Ricardo">
+        <div class="slide-inner">
+            <div class="badge amber">06 &bull; Ricardo — The D2C Opportunity</div>
+            <h2 class="stitle">Manufacturing Meets Direct-to-Consumer</h2>
+            <p class="ssub">Integration on track. <strong>Full consolidation expected in FY27.</strong></p>
+            <div class="grid-2">
+                <div class="card amber-top">
+                    <div class="card-title amber">Why Ricardo</div>
+                    <p style="font-size:0.83rem;color:var(--muted);margin-bottom:10px;">A digital-native brand acquiring 60+ orders monthly with just ₹10-12L/month in ad spend — a channel no large elevator company has cracked.</p>
+                    <ul class="cl amber" style="font-size:0.84rem;">
+                        <li>&#8377;6 Cr/month bookings from 2,500+ monthly leads.</li>
+                        <li>Customers pay 95%+ before dispatch — near-zero receivables.</li>
+                        <li>18 branded centres across India, scaling to 30.</li>
+                        <li>Production now transitioning to LT&#39;s factory — tighter margins, better quality.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-title red">The Strategic Logic</div>
+                    <ul class="cl" style="font-size:0.84rem;">
+                        <li><strong>Cash flow fix:</strong> Ricardo operates a positive working capital cycle — advance payments from B2C customers structurally offset the receivables drag in B2G/B2B.</li>
+                        <li><strong>National reach:</strong> Pan-India retail & distribution network across India through combined LT + Ricardo centres.</li>
+                        <li><strong>Margin uplift:</strong> Target net margin ~20% vs ~15% in B2B/B2G once at scale.</li>
+                        <li><strong>Low dilution:</strong> ₹3.5 Cr + 4L shares, just 2-3% of equity.</li>
+                    </ul>
+                    <div class="callout" style="margin-top:0.8rem;">
+                        <p>Ricardo's &#8377;6 Cr/month order run-rate (annualised &#8377;70+ Cr) with a 3–6 month delivery cycle is <strong style="color:var(--crimson);">expected to contribute meaningfully to FY27 revenue</strong> once consolidation completes — per press release. No specific FY27 revenue target has been guided.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide" data-label="Economics">
+        <div class="slide-inner">
+            <div class="badge">07 &bull; Unit Economics</div>
+            <h2 class="stitle">The B2C Margin Premium</h2>
+            <div class="grid-3">
+                <div class="card"><div class="card-title red">ASP & COGS</div><p style="font-size:0.85rem;color:var(--muted);line-height:1.65;">ASP &#8377;10-11L. COGS ~&#8377;6L (55-60%). In-house manufacturing widens the spread.</p></div>
+                <div class="card amber-top"><div class="card-title amber">Opex & Marketing</div><p style="font-size:0.85rem;color:var(--muted);line-height:1.65;">Digital marketing: 2-5% of ASP. Branch opex ~10%. Extreme operating leverage at scale.</p></div>
+                <div class="card"><div class="card-title red">Target Margins</div><p style="font-size:0.85rem;color:var(--muted);line-height:1.65;">B2B/B2G: 13-16% net. Home elevators: 20%+ target once at scale. Combined entity target: 18-22% net margin in FY28-29.</p></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide" data-label="Growth">
+        <div class="slide-inner">
+            <div class="badge">08 &bull; Growth Roadmap</div>
+            <h2 class="stitle">Executing &#8377;250 Cr+ Order Book</h2>
+            <p class="ssub"><strong>Domestic depth + International reach + New verticals</strong></p>
+            <div class="grid-3">
+                <div class="card"><div class="card-title red">Factory Capex</div><p style="font-size:0.84rem;color:var(--muted);line-height:1.65;">Land already acquired. Integrated facility targets Q4 FY27 go-live with 2.5x installed manufacturing capacity — supports the next phase of revenue scale.</p></div>
+                <div class="card amber-top"><div class="card-title amber">International</div><p style="font-size:0.84rem;color:var(--muted);line-height:1.65;">Strengthening presence across <strong style="color:var(--amber);">Malaysia, Australia</strong> and select international markets as part of long-term global growth strategy.</p></div>
+                <div class="card"><div class="card-title red">LT ParkSmart</div><p style="font-size:0.84rem;color:var(--muted);line-height:1.65;">Phase 1 of Shillong's largest multi-level car parking (₹43 Cr project) delivered; Phase 2 underway. Pursuing larger B2G tickets. Evaluating international rotary parking patent acquisition.</p></div>
+            </div>
+        </div>
+    </div>
+
+        <div class="slide" data-label="Valuation">
+        <div class="slide-inner">
+            <div class="badge">09 &bull; Valuation</div>
+            <h2 class="stitle">A Guidance Beater at ~21x Trailing Earnings</h2>
+            <div class="grid-2">
+                <div class="chart-box"><canvas id="priceChart"></canvas></div>
+                <div class="card">
+                    <div class="card-title red">The Re-rating Case</div>
+                    <ul class="cl" style="font-size:0.87rem;">
+                        <li><strong>FY26 actuals (consolidated):</strong> &#8377;111 Cr revenue &bull; &#8377;17 Cr PAT &bull; Trailing P/E ~<strong>21x</strong> at &#8377;185 CMP.</li>
+                        <li><strong>Ricardo:</strong> PAT positive and being merged into LT. Financials will start reflecting in LT's consolidated numbers from FY27 — no specific revenue target has been guided by the company.</li>
+                        <li><strong>FY27E (analyst estimate):</strong> Ricardo running at &#8377;6 Cr/month order inflows (annualised ₹70+ Cr run-rate) consolidating into LT + core LT organic growth. Blended topline path to &#8377;180-220 Cr.</li>
+                        <li><strong>FY27E PAT (analyst estimate):</strong> &#8377;27-32 Cr at maintained 14-15% blended margins.</li>
+                    </ul>
+                    <div class="callout">
+                        <p>At &#8377;354 Cr MCap against analyst-estimated <strong style="color:var(--crimson);">FY27E PAT of ~&#8377;27-32 Cr</strong>, the stock is priced at roughly <strong style="color:var(--crimson);">~11-13x forward earnings</strong> — these are not company-guided numbers but the analyst's own estimate based on disclosed run-rates and press release disclosures.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide" data-label="Scenarios">
+        <div class="slide-inner">
+            <div class="badge">10 &bull; Scenario Analysis</div>
+            <h2 class="stitle">Two Outcomes — No In-Between</h2>
+            <p class="ssub">Based on analyst-estimated FY27E forward earnings at &#8377;185 CMP / <strong>&#8377;354 Cr MCap.</strong> These are not company-guided targets.</p>
+            <div class="grid-2" style="margin-bottom:1.2rem;">
+                <div class="card" style="border-top:3px solid var(--success);">
+                    <div class="card-title" style="color:var(--success);">&#10003; If It Works</div>
+                    <ul class="cl" style="font-size:0.84rem;">
+                        <li>Ricardo merger completes in FY27 — &#8377;6 Cr/month order run-rate with 3-6 month delivery cycle starts meaningfully contributing to consolidated revenue (as guided in press release).</li>
+                        <li>New factory goes live Q4 FY27 — 2.5x capacity unlocked, removing the growth ceiling on core elevators.</li>
+                        <li>Core LT executes on its &#8377;250 Cr+ order book at sustained margins.</li>
+                        <li>International (Malaysia + Australia) seeds FY28 revenue visibility.</li>
+                        <li>Analyst-estimated FY27E PAT: &#8377;28-34 Cr at 14-15% blended margins.</li>
+                        <li>Market re-rates to 18-22x on proven multi-year execution + D2C premium.</li>
+                    </ul>
+                    <div style="margin-top:1rem;padding:0.8rem;background:rgba(46,196,182,0.06);border-radius:6px;text-align:center;">
+                        <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Implied MCap (18-22x FY27E PAT)</div>
+                        <div style="font-size:1.6rem;font-weight:800;color:var(--success);font-family:'Playfair Display',serif;">&#8377;500–750 Cr</div>
+                    </div>
+                </div>
+                <div class="card" style="border-top:3px solid var(--danger);">
+                    <div class="card-title" style="color:var(--danger);">&#9888; If It Doesn't Work</div>
+                    <ul class="cl risk" style="font-size:0.84rem;">
+                        <li>Ricardo merger hits legal or integration delays — revenue consolidation slips to FY28; market loses patience with the D2C story.</li>
+                        <li>New factory timeline slips — CapEx-heavy phase with no capacity payoff strains ROE and keeps OCF negative through FY27.</li>
+                        <li>Large B2G project wins don't materialise — order book executes slower than guided, H1 FY27 optics look weak.</li>
+                        <li>Margins compress further as Ricardo is absorbed at lower initial contribution margins.</li>
+                        <li>Analyst-estimated FY27E PAT: ~&#8377;20-22 Cr; market de-rates to 12-14x.</li>
+                    </ul>
+                    <div style="margin-top:1rem;padding:0.8rem;background:rgba(230,57,70,0.06);border-radius:6px;text-align:center;">
+                        <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Implied MCap (12-14x FY27E PAT)</div>
+                        <div style="font-size:1.6rem;font-weight:800;color:var(--danger);font-family:'Playfair Display',serif;">&#8377;240–310 Cr</div>
+                    </div>
+                </div>
+            </div>
+            <div class="callout">
+                <p>The downside scenario requires a <em>multi-year</em> execution failure by a management that just delivered ~97% topline growth — nearly double their guided range. The upside scenario only requires Ricardo to convert its existing &#8377;6 Cr/month order run-rate into revenue, and a factory that is already under construction to go live on time.</p>
+            </div>
+        </div>
+    </div>
+
+<div class="slide" data-label="Risks">
+        <div class="slide-inner">
+            <div class="badge" style="color:var(--danger);border-color:rgba(230,57,70,0.3);">11 &bull; Key Risks</div>
+            <h2 class="stitle">What Could Break the Thesis</h2>
+            <div class="grid-2">
+                <div class="card" style="border-color:rgba(230,57,70,0.15);"><div class="card-title" style="color:var(--danger);">1. Lumpy Business & Quarterly Optics</div><p style="font-size:0.84rem;color:var(--muted);line-height:1.6;">Revenue is H2-heavy and project-driven — large contracts book unevenly across quarters. PAT margin narrowed marginally (15.8% FY25 → 15.2% FY26) due to timing of margin recognition, not a structural shift. Company has flagged this directly. Risk: investors misread quarters and punish unfairly; or the margin compression turns out to be real.</p></div>
+                <div class="card" style="border-color:rgba(230,57,70,0.15);"><div class="card-title" style="color:var(--danger);">2. Negative OCF & Stretched Receivables</div><p style="font-size:0.84rem;color:var(--muted);line-height:1.6;">Consolidated OCF was -₹16.6 Cr in FY26. Trade receivables grew to ₹45.7 Cr as topline scaled. Ricardo's advance-payment B2C model is the structural fix — but it needs to consolidate first. Until then, working capital remains a quarterly watch item.</p></div>
+                <div class="card" style="border-color:rgba(230,57,70,0.15);"><div class="card-title" style="color:var(--danger);">3. Ricardo Merger — Timeline & Integration</div><p style="font-size:0.84rem;color:var(--muted);line-height:1.6;">Merger formally underway but not yet complete. Legal or process delays could push revenue consolidation to FY28. Separately, migrating Ricardo's production in-house carries quality and margin risk in the transition period.</p></div>
+                <div class="card" style="border-color:rgba(230,57,70,0.15);"><div class="card-title" style="color:var(--danger);">4. New Factory — Capacity on Clock</div><p style="font-size:0.84rem;color:var(--muted);line-height:1.6;">Q4 FY27 go-live target for the integrated facility (2.5x capacity). Any construction delay coinciding with the Ricardo integration makes FY27 a twin execution risk year. No disclosed schedule buffer.</p></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide" data-label="Watchlist">
+        <div class="slide-inner">
+            <div class="badge">12 &bull; What to Track</div>
+            <h2 class="stitle">Quarterly Checklist — FY27</h2>
+            <div class="card"><ul class="cl"><li><strong style="color:var(--amber);">Ricardo Consolidation:</strong> Merger completion during FY27 — watch for exchange filings confirming legal close. Once done, Ricardo's &#8377;6 Cr/month order run-rate (3-6 month delivery cycle) should start showing in quarterly revenue.</li><li><strong style="color:var(--danger);">OCF Trajectory (Critical):</strong> Consolidated OCF was -&#8377;16.6 Cr in FY26. Ricardo's advance-payment model is the structural fix. Watch receivables-to-revenue ratio each quarter — must improve by H2 FY27.</li><li><strong style="color:var(--amber);">Margin Direction:</strong> EBITDA held at 23.9% in FY26 — PAT at 15.2%. Any FY27 quarterly showing sub-13% PAT warrants scrutiny beyond seasonal explanation.</li><li><strong style="color:var(--amber);">Factory Progress:</strong> Q4 FY27 go-live — watch quarterly disclosures on construction milestones. This unlocks the 2.5x capacity needed to sustain post-FY27 growth.</li><li><strong style="color:var(--amber);">ParkSmart Pipeline:</strong> Management explicitly flagged pursuing larger B2G project tickets post-listing. Also evaluating acquisition of an international rotary car parking patent holder. Watch for ₹50 Cr+ announcements.</li><li><strong style="color:var(--amber);">International Revenue:</strong> Malaysia & Australia — first actual order wins vs pipeline claims. Likely FY28 story but any FY27 win is a positive signal.</li></ul></div>
+        </div>
+    </div>
+
+    <div class="slide" data-label="Thesis">
+        <div class="slide-inner">
+            <div class="badge" style="background:transparent;border-color:var(--muted);color:var(--muted);">13 &bull; Investment Thesis</div>
+            <h2 class="stitle">Why This Story Holds</h2>
+            <div class="grid-2">
+                <div class="card" style="border-top:3px solid var(--success);"><div class="card-title" style="color:var(--success);">Strengths & Upside</div><ul class="cl"><li>Only listed pure-play elevator manufacturer on Indian exchanges.</li><li>FY26 audited: &#8377;111 Cr consolidated revenue, &#8377;17 Cr PAT — ~97% topline growth, nearly double the guided range.</li><li>Ricardo is PAT positive; merger in process — FY27 is the first year of full consolidation into LT.</li><li>Triple engine: B2B Elevators + LT ParkSmart (B2G) + Ricardo (D2C Home Elevators).</li><li>&#8377;250 Cr+ executable order book. Phase 1 of NE's largest car parking delivered; Phase 2 underway. Malaysia & Australia expansion initiated.</li><li>New integrated facility (2.5x capacity) on track for Q4 FY27 — removes the growth ceiling.</li></ul></div>
+                <div class="card" style="border-top:3px solid var(--danger);"><div class="card-title" style="color:var(--danger);">Risks & Watch-points</div><ul class="cl risk"><li>H2-heavy, project-driven business — full-year view is the only meaningful frame.</li><li>PAT margin at 15.2% in FY26 — company-attributed to timing; watch FY27 trend.</li><li>Consolidated OCF -&#8377;16.6 Cr in FY26 — receivables-heavy phase needs Ricardo to structurally fix.</li><li>Ricardo merger still in process — legal close and integration both unproven.</li><li>New factory Q4 FY27 target — no disclosed schedule buffer on a twin-execution year.</li></ul></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide" data-label="Disclaimer">
+        <div class="slide-inner">
+            <h2 class="stitle">Disclaimer</h2>
+            <p class="ssub">L.T. Elevator Ltd &bull; BSE SME: 544518 &bull; May 2026 — Post FY26 Results Update</p>
+            <div class="card" style="border-color:rgba(230,57,70,0.12);"><p style="font-size:0.84rem;line-height:1.8;color:var(--muted);"><strong style="color:var(--text);">IMPORTANT NOTICE:</strong><br><br>This presentation is prepared solely for educational and informational purposes. It does not constitute personalised investment advice or a recommendation to buy, sell, or hold any security. SME stocks carry elevated risk due to limited trading liquidity, smaller scale, and evolving governance standards. All financial data is sourced from publicly available filings. Readers must independently verify all information and consult a SEBI-registered advisor. The author may or may not hold positions in the securities discussed.</p></div>
+            <div class="footer-brand"><p style="color:var(--muted);font-size:0.85rem;">Research & Analysis: <strong style="color:var(--crimson);">SME Gems</strong></p><p style="margin-top:12px;"><a href="https://x.com/sachprat07" target="_blank"><svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> @sachprat07</a></p></div>
+        </div>
+    </div>
+</div>
+
+<script>
+/* PARTICLES RE-THEMED */
+const canvas=document.getElementById('bg-canvas'),ctx=canvas.getContext('2d');let W,H,pts=[];
+const mouse={x:null,y:null,r:160};
+function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight;}
+addEventListener('resize',resize);resize();
+addEventListener('mousemove',e=>{mouse.x=e.x;mouse.y=e.y;});
+addEventListener('mouseout',()=>{mouse.x=mouse.y=null;});
+addEventListener('touchmove',e=>{if(e.touches[0]){mouse.x=e.touches[0].clientX;mouse.y=e.touches[0].clientY;}},{passive:true});
+addEventListener('touchend',()=>{mouse.x=mouse.y=null;});
+
+class P{
+    constructor(){this.reset();this.y=Math.random()*H;}
+    reset(){this.x=Math.random()*W;this.y=H+60;this.bx=this.x;this.s=Math.random()*18+12;this.vy=-(Math.random()*0.4+0.1);this.o=Math.random()*0.05+0.02;this.t=Math.floor(Math.random()*4);const c=['200,16,46','232,168,56','240,234,226','46,196,182'];this.c=c[Math.floor(Math.random()*c.length)];}
+    
+    draw(){
+        ctx.save();
+        ctx.translate(this.x,this.y);
+        ctx.strokeStyle=`rgba(${this.c},${this.o * 1.5})`; 
+        ctx.lineWidth=1;
+        ctx.beginPath();
+        const s=this.s;
+
+        // Themed elements: Elevators, Guide Rails, Upward Trends
+        if(this.t===0){
+            // Elevator car with hoist cable
+            ctx.strokeRect(-s/2,-s,s,s*1.2);
+            ctx.moveTo(0,-s);ctx.lineTo(0,-s*3);
+        }else if(this.t===1){
+            // Ascending arrow
+            ctx.moveTo(-s/2, s/2); ctx.lineTo(0, -s/2); ctx.lineTo(s/2, s/2);
+        }else if(this.t===2){
+            // Geometric nodes
+            ctx.strokeRect(-s/4,-s/4,s/2,s/2);
+            ctx.moveTo(-s/4,0); ctx.lineTo(-s,0);
+        }else{
+            // Vertical guide rails
+            ctx.moveTo(-s/2, -s*2); ctx.lineTo(-s/2, s*2);
+            ctx.moveTo(s/2, -s*2); ctx.lineTo(s/2, s*2);
+        }
+        
+        ctx.stroke();
+        ctx.restore();
+    }
+    
+    update(){
+        this.y+=this.vy;
+        if(this.y<-80)this.reset();
+        
+        if(mouse.x!=null){
+            let dx=mouse.x-this.x,dy=mouse.y-this.y,d=Math.sqrt(dx*dx+dy*dy);
+            if(d<mouse.r){
+                let f=(mouse.r-d)/mouse.r;
+                this.x-=(dx/d)*f*3;
+                this.y-=(dy/d)*f*3;
+            }else{
+                this.x+=(this.bx-this.x)*0.03;
+            }
+        }
+        this.draw();
+    }
+}
+
+function initP(){pts=[];let n=Math.floor(W*H/25000);for(let i=0;i<n;i++)pts.push(new P());}
+function animP(){ctx.clearRect(0,0,W,H);pts.forEach(p=>p.update());requestAnimationFrame(animP);}
+initP();animP();
+
+/* NAVIGATION */
+const slides=document.querySelectorAll('.slide'),total=slides.length;let cur=0;
+const dotsC=document.getElementById('nav-dots');
+slides.forEach((s,i)=>{const d=document.createElement('div');d.className='nav-dot'+(i===0?' active':'');d.onclick=()=>goTo(i);const l=document.createElement('span');l.className='dot-label';l.textContent=s.dataset.label||`Slide ${i+1}`;d.appendChild(l);dotsC.appendChild(d);});
+
+function goTo(n){
+    if(n<0||n>=total||n===cur)return;
+    const prev=cur;
+    slides[prev].classList.remove('active');
+    slides[prev].classList.add('exit-left');
+    cur=n;
+    slides[cur].classList.add('active');
+    setTimeout(()=>slides[prev].classList.remove('exit-left'),600);
+    updateUI();
+    if(cur===9)setTimeout(renderChart,400);
+}
+function go(dir){goTo(cur+dir);}
+function updateUI(){
+    document.querySelectorAll('.nav-dot').forEach((d,i)=>d.classList.toggle('active',i===cur));
+    document.getElementById('progress-bar').style.width=((cur/(total-1))*100)+'%';
+    document.getElementById('arrow-prev').classList.toggle('disabled',cur===0);
+    document.getElementById('arrow-next').classList.toggle('disabled',cur===total-1);
+    document.getElementById('slide-counter').innerHTML=`<span>${String(cur+1).padStart(2,'0')}</span> / ${String(total).padStart(2,'0')}`;
+}
+updateUI();
+
+/* KEYBOARD AND MODERATED TOUCH NAVIGATION */
+addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown')go(1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(-1);});
+let tx=0, ty=0;
+document.getElementById('deck').addEventListener('touchstart',e=>{
+    tx=e.touches[0].clientX;
+    ty=e.touches[0].clientY;
+},{passive:true});
+document.getElementById('deck').addEventListener('touchend',e=>{
+    let dx=e.changedTouches[0].clientX-tx;
+    let dy=e.changedTouches[0].clientY-ty;
+    // Swipe must be horizontal (>80px) AND the horizontal movement must be greater than vertical movement
+    if(Math.abs(dx) > 80 && Math.abs(dx) > Math.abs(dy)){
+        if(dx<0)go(1);else go(-1);
+    }
+},{passive:true});
+
+/* MILESTONE HOVER AND CLICK-TO-LOCK LOGIC */
+function hoverAccordion(header) {
+    const item = header.parentElement;
+    const hasLock = document.querySelector('.accordion-item.locked');
+    // If there is a locked item and we aren't hovering over it, prevent auto-opening
+    if (hasLock && hasLock !== item) return;
+    
+    if (!item.classList.contains('open')) {
+        document.querySelectorAll('.accordion-item:not(.locked)').forEach(i => i.classList.remove('open'));
+        item.classList.add('open');
+    }
+}
+function clickAccordion(header) {
+    const item = header.parentElement;
+    if (item.classList.contains('locked')) {
+        // Unlock it if already locked
+        item.classList.remove('locked');
+    } else {
+        // Remove locks and open states from everything else
+        document.querySelectorAll('.accordion-item').forEach(i => {
+            i.classList.remove('locked');
+            i.classList.remove('open');
+        });
+        // Lock this one open
+        item.classList.add('locked');
+        item.classList.add('open');
+    }
+}
+
+/* CHART */
+let ci=null;
+function renderChart(){
+    const el=document.getElementById('priceChart');if(!el)return;const c=el.getContext('2d');if(ci)ci.destroy();
+    const g=c.createLinearGradient(0,0,0,350);g.addColorStop(0,'rgba(200,16,46,0.18)');g.addColorStop(1,'rgba(200,16,46,0)');
+    ci=new Chart(c,{type:'line',data:{labels:['19 Sep','06 Oct','20 Oct','04 Nov','19 Nov','03 Dec','17 Dec','01 Jan','16 Jan','01 Feb','13 Feb','27 Feb','16 Mar','28 Mar','11 Apr','28 Apr','10 May'],datasets:[{label:'Price (₹)',data:[142.9,137.1,133.15,147.7,179.55,183.45,180.75,221,219.7,186.5,179.3,188.5,171.25,175,178,182,185],borderColor:'#c8102e',backgroundColor:g,borderWidth:2.5,pointBackgroundColor:'#e8a838',pointBorderColor:'#0e0e10',pointBorderWidth:2,pointRadius:3.5,pointHoverRadius:7,pointHoverBackgroundColor:'#c8102e',fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:1200,easing:'easeOutQuart'},plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a1a1e',titleColor:'#8a8078',bodyColor:'#c8102e',titleFont:{family:'Sora',size:11},bodyFont:{family:'Sora',size:13,weight:'bold'},borderColor:'rgba(200,16,46,0.2)',borderWidth:1,padding:10,callbacks:{label:c=>'₹ '+c.parsed.y}}},scales:{y:{grid:{color:'rgba(200,16,46,0.04)'},ticks:{color:'#8a8078',font:{family:'Sora'}}},x:{grid:{display:false},ticks:{color:'#8a8078',font:{family:'Sora',size:10},maxRotation:45}}}}});
+}
+</script>
+</body>
+</html>
