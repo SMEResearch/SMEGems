@@ -2,15 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script>
-  // Check if the user has the passkey from the main page
-  if (!sessionStorage.getItem('validGemsUser')) {
-      // If no passkey is found, instantly redirect them to the main directory
-      window.location.replace("https://smeresearch.github.io/SMEGems/");
-  }
-</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DSM Fresh Foods - SME Gems Deck</title>
+    <title>DSM Fresh Foods - SME Gems Deck (Revised)</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -18,7 +11,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
     
     <style>
-        /* --- FARM-TO-TABLE: OLIVE GREEN + TERRACOTTA DUAL-TONE --- */
         :root {
             --bg-dark: #0c0e08;       
             --bg-panel: rgba(18, 22, 12, 0.65); 
@@ -47,7 +39,6 @@
         #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
         #app-container { display: flex; width: 100%; height: 100%; overflow: hidden; position: relative; z-index: 1; }
 
-        /* Mobile Header */
         .mobile-header {
             display: none; background: rgba(12, 14, 8, 0.92); backdrop-filter: blur(10px); padding: 1rem 1.5rem;
             align-items: center; justify-content: space-between;
@@ -59,7 +50,6 @@
         .mobile-brand { font-size: 1.4rem; font-weight: 800; color: var(--text-main); font-family: 'Outfit', sans-serif; }
         .mobile-brand span { color: var(--accent-primary); }
 
-        /* Sidebar */
         .sidebar {
             width: 300px; min-width: 300px; background: rgba(12, 14, 8, 0.88); backdrop-filter: blur(20px);
             display: flex; flex-direction: column; padding: 2rem 0; border-right: 1px solid var(--border-color);
@@ -87,7 +77,6 @@
         .nav-item.active { color: var(--accent-primary); background: var(--accent-dim); border-left-color: var(--accent-primary); }
         .nav-item.active i { transform: scale(1.2); color: var(--accent-primary); }
 
-        /* Main Area */
         .main-container {
             flex: 1; padding: 3rem 4rem; overflow-y: auto; scroll-behavior: smooth; height: 100%; -webkit-overflow-scrolling: touch; 
         }
@@ -95,7 +84,6 @@
         .slide { display: none; max-width: 1200px; margin: 0 auto; padding-bottom: 5rem; position: relative; z-index: 2;}
         .slide.active { display: block; }
 
-        /* Animations */
         .stagger { animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; opacity: 0; }
         .s1 { animation-delay: 0.1s; } .s2 { animation-delay: 0.25s; } .s3 { animation-delay: 0.4s; } .s4 { animation-delay: 0.55s; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
@@ -116,20 +104,18 @@
         .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
         .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; }
 
-        /* 3D Glass Cards */
         .card {
             background: var(--bg-panel); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--border-color); border-radius: 12px; padding: 1.8rem; position: relative; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.2); transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            transform-style: preserve-3d; /* For Vanilla Tilt */
+            transform-style: preserve-3d;
         }
         .card:hover { border-color: var(--accent-primary); box-shadow: 0 15px 35px rgba(0,0,0,0.4), 0 0 20px rgba(132, 204, 22, 0.15); }
         .card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--text-muted); opacity: 0.3; transition: opacity 0.3s, background 0.3s; }
         .card.primary-border::before { background: var(--accent-primary); opacity: 1; }
         .card.orange-border::before { background: var(--accent-secondary); opacity: 1; }
         .card.danger-border::before { background: var(--danger); opacity: 1; }
-
-        /* Enhancing content inside cards for 3D effect */
+        .card.teal-border::before { background: #2dd4bf; opacity: 1; }
         .card > * { transform: translateZ(20px); }
 
         .metric-value { font-size: 2.4rem; font-weight: 800; color: var(--text-main); margin: 0.5rem 0; font-family: 'Outfit', sans-serif; }
@@ -137,6 +123,8 @@
 
         .highlight-primary { color: var(--accent-primary); font-weight: 600; }
         .highlight-orange { color: var(--accent-secondary); font-weight: 600; }
+        .highlight-teal { color: #2dd4bf; font-weight: 600; }
+        .highlight-red { color: var(--danger); font-weight: 600; }
 
         ul.custom-list { list-style: none; }
         ul.custom-list li { position: relative; padding-left: 1.8rem; margin-bottom: 1rem; line-height: 1.6; color: #cbd5e1; font-size: 0.95rem; transition: transform 0.2s; }
@@ -144,6 +132,7 @@
         ul.custom-list li::before { content: '\f058'; font-family: 'FontAwesome'; position: absolute; left: 0; color: var(--accent-primary); font-size: 1rem; top: 3px; }
         ul.risk-list li::before { content: '\f071'; color: var(--danger); }
         ul.orange-list li::before { content: '\f0a9'; color: var(--accent-secondary); }
+        ul.teal-list li::before { content: '\f0a9'; color: #2dd4bf; }
 
         .table-custom { width: 100%; border-collapse: collapse; margin-top: 1rem; }
         .table-custom th, .table-custom td { padding: 1rem 0.8rem; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; transition: background 0.2s;}
@@ -156,16 +145,52 @@
         .footer-branding a { color: var(--accent-primary); text-decoration: none; font-weight: 700; transition: color 0.3s, text-shadow 0.3s;}
         .footer-branding a:hover { color: var(--text-main); text-shadow: 0 0 10px rgba(132, 204, 22, 0.5); }
 
-        @media (max-width: 1024px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+        /* Sensitivity grid */
+        .sens-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 0; margin-top: 1rem; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; }
+        .sens-cell { padding: 0.7rem 0.9rem; font-size: 0.82rem; border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); }
+        .sens-cell:last-child, .sens-grid > *:nth-last-child(-n+4) { border-bottom: none; }
+        .sens-cell.hdr { color: var(--accent-primary); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; background: rgba(132,204,22,0.07); }
+        .sens-cell.base-col { background: rgba(132,204,22,0.12); color: var(--accent-primary); font-weight: 700; }
+        .sens-cell.bear-col { color: #f87171; }
+        .sens-cell.bull-col { color: #34d399; }
+
+        /* Catalyst timeline */
+        .catalyst-row { display: flex; gap: 1rem; margin-bottom: 1rem; align-items: flex-start; }
+        .cat-qtr { background: var(--accent-dim); color: var(--accent-primary); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.3rem 0.7rem; font-size: 0.75rem; font-weight: 700; white-space: nowrap; min-width: 80px; text-align: center; margin-top: 2px; }
+        .cat-body { flex: 1; }
+        .cat-title { font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
+        .cat-why { font-size: 0.8rem; color: var(--text-muted); margin-top: 3px; line-height: 1.5; }
+
+        /* Varuna roadmap */
+        .varuna-steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; margin-top: 1rem; }
+        .vs-card { border: 1px solid var(--border-color); border-radius: 10px; padding: 1.2rem; background: rgba(45,212,191,0.05); border-top: 3px solid #2dd4bf; }
+        .vs-yr { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: #2dd4bf; font-weight: 700; margin-bottom: 6px; }
+        .vs-rev { font-size: 1.8rem; font-weight: 800; color: var(--text-main); font-family: 'Outfit', sans-serif; }
+        .vs-detail { font-size: 0.78rem; color: var(--text-muted); margin-top: 6px; line-height: 1.5; }
+
+        /* Margin lever cards */
+        .lever-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+        .lever-card { border: 1px solid var(--border-color); border-radius: 10px; padding: 1.1rem; background: var(--bg-panel); }
+        .lever-num { font-size: 1.5rem; font-weight: 800; color: var(--accent-primary); font-family: 'Outfit', sans-serif; }
+        .lever-title { font-size: 0.85rem; font-weight: 600; color: var(--text-main); margin: 4px 0 4px; }
+        .lever-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
+        .lever-card.fwd { border-top: 3px solid var(--accent-secondary); }
+        .lever-card.fwd .lever-num { color: var(--accent-secondary); }
+
+        .mt-2 { margin-top: 1.5rem; }
+        .mb-1 { margin-bottom: 0.8rem; }
+
+        @media (max-width: 1024px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } .varuna-steps { grid-template-columns: 1fr; } }
         @media (max-width: 768px) {
             .mobile-header { display: flex; }
             .sidebar { position: fixed; left: -320px; top: 0; height: 100%; box-shadow: 5px 0 20px rgba(0,0,0,0.8); }
             .sidebar.open { left: 0; }
             .main-container { padding: 1.5rem; padding-top: 6rem; padding-bottom: 8rem; }
-            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; gap: 1.2rem; }
+            .grid-2, .grid-3, .grid-4, .lever-grid, .varuna-steps { grid-template-columns: 1fr; gap: 1.2rem; }
+            .sens-grid { grid-template-columns: 1.2fr 1fr 1fr 1fr; }
             .title { font-size: 2.2rem; } .metric-value { font-size: 2rem; }
             .chart-box { height: 300px; padding: 1rem; }
-            .card > * { transform: none; } /* Disable 3D depth on mobile for performance */
+            .card > * { transform: none; }
         }
     </style>
 </head>
@@ -190,6 +215,7 @@
         <div class="nav-item" onclick="switchSlide('slide-2', this)"><i class="fas fa-route"></i> 02 Journey</div>
         <div class="nav-item" onclick="switchSlide('slide-3', this)"><i class="fas fa-link"></i> 03 The Edge</div>
         <div class="nav-item" onclick="switchSlide('slide-4', this)"><i class="fas fa-chart-bar"></i> 04 Financials</div>
+        <div class="nav-item" onclick="switchSlide('slide-4b', this)"><i class="fas fa-water"></i> 04B Varuna Deep-Dive</div>
         <div class="nav-item" onclick="switchSlide('slide-5', this)"><i class="fas fa-shopping-basket"></i> 05 Acquisitions</div>
         <div class="nav-item" onclick="switchSlide('slide-6', this)"><i class="fas fa-seedling"></i> 06 Growth Map</div>
         <div class="nav-item" onclick="switchSlide('slide-7', this)"><i class="fas fa-chess-board"></i> 07 Peers</div>
@@ -202,24 +228,48 @@
 
     <div class="main-container" id="main-scroll">
 
+        <!-- SLIDE 1: SNAPSHOT — updated mcap/price, corrected CAGR to 52% -->
         <div id="slide-1" class="slide active">
             <div class="badge stagger s1">SME GEMS • HIDDEN CHAMPIONS OF THE SME PLATFORM</div>
             <h1 class="title stagger s1">Farm-to-Fork Platform. <br>Protein Economy.</h1>
             <p class="subtitle stagger s2">Operating under the <span>Zappfresh</span> brand. A food conglomerate in the making.</p>
 
             <div class="grid-4 stagger s2">
-                <div class="card primary-border tilt-card"><div class="metric-label">Market Cap</div><div class="metric-value">~₹248&nbsp;Cr</div><div class="metric-label" style="color:var(--text-muted)">Listed Oct 2025</div></div>
-                <div class="card primary-border tilt-card"><div class="metric-label">TTM Revenue</div><div class="metric-value">~₹160&nbsp;Cr</div><div class="metric-label" style="color:var(--success)">+43% Rev YoY</div></div>
-                <div class="card primary-border tilt-card"><div class="metric-label">H1 FY26 EBITDA</div><div class="metric-value">15.9%</div><div class="metric-label" style="color:var(--text-muted)">High Margin Ops</div></div>
-                <div class="card primary-border tilt-card"><div class="metric-label">TTM P/E</div><div class="metric-value">13.7x</div><div class="metric-label" style="color:var(--success)">Rev CAGR: 32%</div></div>
+                <div class="card primary-border tilt-card">
+                    <div class="metric-label">Market Cap</div>
+                    <div class="metric-value">~₹230&nbsp;Cr</div>
+                    <div class="metric-label" style="color:var(--text-muted)">CMP ₹103 · BSE SME</div>
+                </div>
+                <div class="card primary-border tilt-card">
+                    <div class="metric-label">TTM Revenue</div>
+                    <div class="metric-value">~₹160&nbsp;Cr</div>
+                    <div class="metric-label" style="color:var(--success)">+43% Rev YoY H1FY26</div>
+                </div>
+                <div class="card primary-border tilt-card">
+                    <div class="metric-label">H1 FY26 EBITDA</div>
+                    <div class="metric-value">15.9%</div>
+                    <div class="metric-label" style="color:var(--text-muted)">From 5.5% in FY23</div>
+                </div>
+                <div class="card primary-border tilt-card">
+                    <div class="metric-label">FY27E Fwd P/E</div>
+                    <div class="metric-value">~5x</div>
+                    <div class="metric-label" style="color:var(--success)">Rev CAGR FY23–25: 52%</div>
+                </div>
             </div>
 
-            <div class="card mt-2 stagger s3 tilt-card">
-                <h3 class="header-font highlight-primary mb-1">Executive Summary</h3>
-                <p style="color: var(--text-muted); line-height: 1.8;">Promoted by Deepanshu Manchanda & Priya Aggarwal, DSM Fresh Foods (BSE SME: 544568) is solving India's hygiene and traceability gap. Operating via a 50/50 B2C-B2B model, the company integrates farm-direct procurement, centralized processing, and D2C cold-chain logistics to generate exceptional ~16% EBITDA margins in the protein sector.</p>
+            <div class="grid-2 stagger s3">
+                <div class="card mt-2 tilt-card">
+                    <h3 class="header-font highlight-primary mb-1">Executive Summary</h3>
+                    <p style="color: var(--text-muted); line-height: 1.8;">Promoted by Deepanshu Manchanda & Priya Aggarwal, DSM Fresh Foods (BSE SME: 544568) is solving India's hygiene and traceability gap. Operating via a ~50/50 B2C-B2B model, the company integrates farm-direct procurement, centralized processing, and D2C cold-chain logistics to generate exceptional ~16% EBITDA margins in the protein sector — while unlisted D2C peers like Licious and FreshToHome burn cash at 5–15x the valuation.</p>
+                </div>
+                <div class="card mt-2 tilt-card orange-border">
+                    <h3 class="header-font highlight-orange mb-1">The Margin Inflection Story</h3>
+                    <p style="color: var(--text-muted); line-height: 1.8; font-size: 0.9rem;">EBITDA has expanded 1,040 bps in 3 years: <strong style="color:#fff">5.5% (FY23) → 10.3% (FY24) → 12.5% (FY25) → 15.9% (H1FY26)</strong>. Management guides 17–19% by FY28. Driven by 4 levers: procurement disintermediation, seafood mix scale, operating leverage on fixed infra, and B2B channel absorbing fixed costs.</p>
+                </div>
             </div>
         </div>
 
+        <!-- SLIDE 2: JOURNEY — unchanged -->
         <div id="slide-2" class="slide">
             <div class="badge stagger s1">02 • COMPANY JOURNEY</div>
             <h1 class="title stagger s1">From Delhi Meat Startup to Integrated Food Platform</h1>
@@ -230,7 +280,7 @@
                     <ul class="custom-list">
                         <li><strong>2015:</strong> Founded to solve meat hygiene in Delhi-NCR via online fresh delivery.</li>
                         <li><strong>2018:</strong> D2C platform scaled; cold-chain infrastructure built; direct farm procurement established.</li>
-                        <li><strong>2021:</strong> Post-COVID recovery; B2C repeat rate hits ~85-90%; poultry contract farming integrates supply chain.</li>
+                        <li><strong>2021:</strong> Post-COVID recovery; B2C repeat rate hits ~85–90%; poultry contract farming integrates supply chain.</li>
                     </ul>
                 </div>
                 <div class="card orange-border tilt-card">
@@ -240,15 +290,17 @@
                         <li><strong>Jul 2024:</strong> Acquired Bonsaro (Mumbai); opened HoReCa mix.</li>
                         <li><strong>Oct 2025:</strong> SME IPO raises ₹54 Cr at ₹100/share.</li>
                         <li><strong>Jan 2026:</strong> Acquired 76% of Avyom (Ambrozia); Meevaa brand launch.</li>
-                        <li><strong>Feb 2026:</strong> 300-farmer Seafood FPO alliance; 120-acre aqua farm MoU.</li>
+                        <li><strong>FY25:</strong> Incorporated Varuna Aquatech — seafood backward integration subsidiary.</li>
+                        <li><strong>Feb 2026:</strong> 300-farmer Seafood FPO alliance; 120-acre aqua farm MoU signed.</li>
                     </ul>
                 </div>
             </div>
             <div class="card mt-2 stagger s3 tilt-card" style="text-align: center; border-color: var(--accent-primary);">
-                <p style="font-size: 1.2rem; font-weight: bold;">2015: 1 city, 0 revenue → 2026: 4 cities, 4 plants, 2 brands, 160 Cr+ TTM.<br><span class="highlight-primary">3 acquisitions — all turned profitable within 12 months.</span></p>
+                <p style="font-size: 1.2rem; font-weight: bold;">2015: 1 city, 0 revenue → 2026: 4 cities, 4 plants, 2 brands, ₹160 Cr+ TTM.<br><span class="highlight-primary">3 acquisitions — all turned profitable within 12 months. Cadence: 1 acquisition/year.</span></p>
             </div>
         </div>
 
+        <!-- SLIDE 3: THE EDGE — added margin lever quantification -->
         <div id="slide-3" class="slide">
             <div class="badge stagger s1">03 • THE ZAPPFRESH EDGE</div>
             <h1 class="title stagger s1">End-to-End Supply Chain</h1>
@@ -257,31 +309,58 @@
             <div class="grid-3 stagger s2">
                 <div class="card primary-border tilt-card">
                     <h4 class="highlight-primary">01. Farm-Direct</h4>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">Hormone & antibiotic-free sourcing. Skipping the mandi generates 6-8% gross margin immediately.</p>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">Hormone & antibiotic-free sourcing from ~30 farmer partners. Skipping the mandi generates <strong style="color:var(--accent-primary)">6–8% gross margin</strong> capture at source vs. mandi peers.</p>
                 </div>
                 <div class="card primary-border tilt-card">
                     <h4 class="highlight-primary">02. Primary Processing</h4>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">Centralized slaughter & cleaning. Strict FSSAI-compliant food safety; temperature-controlled from cut 1.</p>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">Centralized slaughter & cleaning. 4 facilities: Delhi 1,800 TPA · Mumbai 1,000 TPA · Bangalore 500 TPA · Chandigarh 5,500 TPA. Total: <strong style="color:var(--accent-primary)">8,800 TPA</strong>.</p>
                 </div>
                 <div class="card primary-border tilt-card">
                     <h4 class="highlight-primary">03. Secondary Processing</h4>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">In-house cutting/packaging. 200+ SKUs standardized across B2C and HoReCa clients.</p>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">In-house cutting/packaging. 200+ SKUs standardized across B2C and HoReCa clients. Ambrozia's 30,000 sq.ft. facility hosts 4 automated export-grade lines.</p>
                 </div>
                 <div class="card primary-border tilt-card">
                     <h4 class="highlight-primary">04. Multi-Channel Dist.</h4>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">D2C app + B2B HoReCa (50% mix) + franchise stores. Bypassing wholesalers yields 12-14% extra margin.</p>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">D2C app + B2B HoReCa (48% mix) + ~20 franchise stores. Bypassing wholesalers yields <strong style="color:var(--accent-primary)">12–14% additional margin</strong> in distribution. ~90% of India's meat market is still unorganised.</p>
                 </div>
                 <div class="card orange-border tilt-card">
                     <h4 class="highlight-orange">05. Platform Expansion</h4>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">Meevaa Foods gives DSM a veg RTE brand. Zappfresh (meat) + Meevaa (veg) = one-stop protein destination.</p>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">Meevaa Foods gives DSM a veg RTE/RTC brand. Zappfresh (meat) + Meevaa (veg) = one-stop protein destination. RTE/RTC market growing at <strong style="color:var(--accent-secondary)">14% CAGR</strong> to USD 4 Bn by 2029.</p>
                 </div>
                 <div class="card primary-border tilt-card">
                     <h4 class="highlight-primary">06. Cold-Chain Last Mile</h4>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">1.4L online orders/month. ₹540 AOV with ~90% repeat rate. Trust is embedded in delivery.</p>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">1.4L online orders/month. ~90% repeat rate. 300+ HoReCa/institutional partners incl. Hyperpure (Zomato) and Zepto. D2C delivery in 90 min across major hubs.</p>
+                </div>
+            </div>
+
+            <div class="card mt-2 stagger s3 tilt-card">
+                <h3 class="header-font highlight-primary mb-1">The 4 Margin Levers — Quantified</h3>
+                <div class="lever-grid">
+                    <div class="lever-card">
+                        <div class="lever-num">+6–8%</div>
+                        <div class="lever-title">Procurement disintermediation</div>
+                        <div class="lever-desc">Farm-direct vs. mandi sourcing. Structurally higher gross margin than wet-market peers.</div>
+                    </div>
+                    <div class="lever-card">
+                        <div class="lever-num">~100–150 bps</div>
+                        <div class="lever-title">Seafood product mix shift</div>
+                        <div class="lever-desc">Seafood gross margin moving 16–17% → 23%. Mix targeted 21% → 30% by FY28. Blended EBITDA uplift.</div>
+                    </div>
+                    <div class="lever-card fwd">
+                        <div class="lever-num">200–300 bps</div>
+                        <div class="lever-title">Varuna aquaculture backward integration</div>
+                        <div class="lever-desc">FPO benchmark pricing displaces mandi intermediaries in freshwater seafood. Expected FY27 onwards.</div>
+                    </div>
+                    <div class="lever-card fwd">
+                        <div class="lever-num">~50 bps</div>
+                        <div class="lever-title">Marketing efficiency compounding</div>
+                        <div class="lever-desc">₹15 Cr IPO marketing spend dilutes mechanically as revenue scales. 90% repeat rate amplifies the effect.</div>
+                    </div>
                 </div>
             </div>
         </div>
 
+        <!-- SLIDE 4: FINANCIALS — corrected debtor days to 71, added full P&L table, CFO warning -->
         <div id="slide-4" class="slide">
             <div class="badge stagger s1">04 • FINANCIAL PERFORMANCE</div>
             <h1 class="title stagger s1">Margin Accretive Growth</h1>
@@ -293,26 +372,94 @@
                         <li><strong>Revenue:</strong> ₹95.9 Cr (+43% YoY)</li>
                         <li><strong>EBITDA:</strong> ₹15.3 Cr (15.9% Margin)</li>
                         <li><strong>PAT:</strong> ₹7.0 Cr (+189% YoY)</li>
-                        <li><strong>Gross Margin:</strong> 33.6%</li>
-                        <li><strong>ROCE:</strong> 31%</li>
-                        <li><strong>Working Capital:</strong> 69 Days</li>
+                        <li><strong>Gross Margin:</strong> 34%</li>
+                        <li><strong>ROCE (annualised):</strong> 31%</li>
+                        <li><strong>NWC Cycle:</strong> 84 days (rising with B2B scale — monitor)</li>
+                        <li><strong>Receivable Days:</strong> <span style="color:var(--danger)">71 days</span> (up from 47 in FY25 — watch closely)</li>
                     </ul>
                 </div>
                 <div class="card tilt-card">
-                    <h3 class="header-font highlight-primary mb-1">Growth Trajectory (FY23-FY25)</h3>
+                    <h3 class="header-font highlight-primary mb-1">Full P&L Trajectory</h3>
                     <table class="table-custom">
-                        <thead><tr><th>Metric</th><th>FY23</th><th>FY25</th><th>Growth</th></tr></thead>
+                        <thead><tr><th>Metric</th><th>FY23</th><th>FY24</th><th>FY25</th><th>FY26E</th><th>FY27E</th></tr></thead>
                         <tbody>
-                            <tr><td>Revenue</td><td>₹56 Cr</td><td>₹131 Cr</td><td style="color:var(--success); font-weight:bold;">+134%</td></tr>
-                            <tr><td>EBITDA%</td><td>5.5%</td><td>12.5%</td><td style="color:var(--success); font-weight:bold;">+700 bps</td></tr>
-                            <tr><td>PAT</td><td>₹2.7 Cr</td><td>₹9.0 Cr</td><td style="color:var(--success); font-weight:bold;">+233%</td></tr>
+                            <tr><td>Revenue (₹Cr)</td><td>56</td><td>90</td><td>131</td><td style="color:var(--accent-primary)">222</td><td style="color:var(--accent-primary)">422</td></tr>
+                            <tr><td>Rev Growth</td><td>—</td><td>61%</td><td>45%</td><td style="color:var(--accent-primary)">70%</td><td style="color:var(--accent-primary)">90%</td></tr>
+                            <tr><td>EBITDA%</td><td>5.5%</td><td>10.3%</td><td>12.5%</td><td style="color:var(--accent-primary)">16%</td><td style="color:var(--accent-primary)">17%</td></tr>
+                            <tr><td>PAT (₹Cr)</td><td>2.7</td><td>4.7</td><td>9.1</td><td style="color:var(--accent-primary)">16.7</td><td style="color:var(--accent-primary)">43.1</td></tr>
+                            <tr><td>EPS (₹)</td><td>2.69</td><td>4.54</td><td>5.53</td><td style="color:var(--accent-primary)">7.48</td><td style="color:var(--accent-primary)">19.33</td></tr>
+                            <tr><td>P/E on ₹103</td><td>38x</td><td>23x</td><td>19x</td><td style="color:var(--accent-primary)">14x</td><td style="color:var(--accent-primary); font-weight:bold;">~5x</td></tr>
                         </tbody>
                     </table>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 15px;">H1FY26 is accelerating on all metrics. Revenue up 43%, EBITDA margins near-doubling, and PAT tripling YoY.</p>
+                </div>
+            </div>
+
+            <div class="grid-2 mt-2 stagger s3">
+                <div class="card tilt-card">
+                    <h3 class="header-font highlight-primary mb-1">Balance Sheet Health</h3>
+                    <table class="table-custom">
+                        <thead><tr><th>Item</th><th>FY23</th><th>FY25</th><th>H1FY26</th></tr></thead>
+                        <tbody>
+                            <tr><td>Total Equity (₹Cr)</td><td>16.5</td><td>49.1</td><td>56.0</td></tr>
+                            <tr><td>Total Debt (₹Cr)</td><td>2.1</td><td>31.7</td><td style="color:var(--danger)">45.5</td></tr>
+                            <tr><td>D/E Ratio</td><td>0.1x</td><td>0.6x</td><td style="color:var(--danger)">0.8x</td></tr>
+                            <tr><td>Receivable Days</td><td>29</td><td>47</td><td style="color:var(--danger)">71</td></tr>
+                            <tr><td>NWC Days</td><td>12</td><td>61</td><td style="color:var(--danger)">84</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card danger-border tilt-card">
+                    <h3 class="header-font mb-1" style="color:var(--danger)"><i class="fas fa-exclamation-circle"></i> Principal Risk: Negative CFO</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.7;">Despite reported PAT positivity, <strong style="color:#fff">cash from operations was −₹16.7 Cr in FY25 and remains negative in H1FY26</strong>. CFO/EBITDA ratio: −79% (FY23) → −140% (FY24) → −102% (FY25) → −64% (H1FY26). This is the single most important metric to watch — if CFO does not turn positive by FY27, the investment multiple will compress. Receivable days have moved from 47 → 71 in one year as B2B credit terms extend. This is a watch item, not a red flag yet — but it demands quarterly monitoring.</p>
                 </div>
             </div>
         </div>
 
+        <!-- SLIDE 4B: VARUNA AQUATECH — new slide, full deep-dive from report -->
+        <div id="slide-4b" class="slide">
+            <div class="badge stagger s1 teal" style="background:rgba(45,212,191,0.1); color:#2dd4bf; border-color:rgba(45,212,191,0.3);">04B • VARUNA AQUATECH — THE HIDDEN COMPOUNDER</div>
+            <h1 class="title stagger s1">Seafood Backward Integration</h1>
+            <p class="subtitle stagger s2">DSM's single most important <span style="color:#2dd4bf">medium-term margin lever</span> — and the most underappreciated asset in the portfolio</p>
+
+            <div class="varuna-steps stagger s2">
+                <div class="vs-card">
+                    <div class="vs-yr">Year 1 (FY26–27)</div>
+                    <div class="vs-rev">₹55 Cr</div>
+                    <div class="vs-detail">500 acres · 2,000 tons · 10,000+ farmers<br>Clusters: NCR + Kanpur (120+50 acres Phase 1)<br>FPO: PVR Aqua Producer Co. Ltd. (300-member)</div>
+                </div>
+                <div class="vs-card">
+                    <div class="vs-yr">Year 3 Milestone</div>
+                    <div class="vs-rev">₹150 Cr</div>
+                    <div class="vs-detail">1,500 acres · 5,000 tons · 20,000+ farmers<br>Expansion across UP & high-potential states<br>Species: Carps + Pangasius, ICAR-aligned</div>
+                </div>
+                <div class="vs-card">
+                    <div class="vs-yr">Year 5 Ambition</div>
+                    <div class="vs-rev">₹300 Cr+</div>
+                    <div class="vs-detail">5,000 acres · 10,000+ tons · 35,000+ farmers<br>Cage-culture (lake-to-plate) augmentation<br>B2B institutional + export + private label rails</div>
+                </div>
+            </div>
+
+            <div class="grid-2 mt-2 stagger s3">
+                <div class="card teal-border tilt-card">
+                    <h3 class="header-font highlight-teal mb-1">Why This Matters for DSM Margins</h3>
+                    <ul class="custom-list teal-list">
+                        <li>FPO benchmark-linked pricing <strong style="color:#fff">eliminates mandi intermediaries</strong> entirely on freshwater fish procurement.</li>
+                        <li>Expected <strong style="color:#2dd4bf">200–300 bps gross margin uplift</strong> in the seafood vertical — DSM's fastest-growing category (targeted 21% → 30% of revenue by FY28).</li>
+                        <li>Scientific tie-ups with ICAR institutes and leading universities ensure yield optimisation and aligned harvest cycles.</li>
+                        <li>Optionality: B2B institutional fish supply, private-label seafood processing, and export-oriented fish trading become additional monetisation rails over time.</li>
+                    </ul>
+                </div>
+                <div class="card orange-border tilt-card">
+                    <h3 class="header-font highlight-orange mb-1">The Seafood Thesis at Group Level</h3>
+                    <p style="color: var(--text-muted); font-size: 0.88rem; line-height: 1.7;">Seafood already contributes 24% of FY25 revenue (₹31.5 Cr). As Varuna ramps, DSM transforms from a protein distributor into a vertically integrated aquaculture platform. The ₹300 Cr+ Year-5 Varuna revenue alone could exceed DSM's current entire group revenue — making this subsidiary potentially the most value-generative bet in the portfolio. It receives <strong style="color:#fff">minimal coverage in most retail research on DSM</strong>, creating an information asymmetry for investors who understand it.</p>
+                    <div style="margin-top:1rem; padding: 0.8rem; background: rgba(45,212,191,0.08); border-radius: 8px; border: 1px solid rgba(45,212,191,0.2);">
+                        <p style="font-size: 0.82rem; color: #2dd4bf; font-weight: 600;">Catalyst to watch: First commercial output from Varuna Kanpur cluster expected Q1 FY27. This is the single most important data point to validate the seafood margin uplift thesis.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: ACQUISITIONS — unchanged + small note on export status caveat -->
         <div id="slide-5" class="slide">
             <div class="badge stagger s1">05 • ACQUISITION PLAYBOOK</div>
             <h1 class="title stagger s1">3 Turnarounds in 3 Years</h1>
@@ -320,83 +467,129 @@
 
             <div class="grid-3 stagger s2">
                 <div class="card primary-border tilt-card">
-                    <h4 class="highlight-primary">Dr. Meat (Jul 2023)</h4>
+                    <h4 class="highlight-primary">Dr. Meat / Sukos (Jul 2023)</h4>
                     <p style="font-size: 0.8rem; color: var(--danger); margin: 10px 0;"><i class="fas fa-times-circle"></i> BEFORE: Loss-making, sub-optimal standalone model.</p>
-                    <p style="font-size: 0.8rem; color: var(--success);"><i class="fas fa-check-circle"></i> AFTER: 4x revenue in Year 1. Bangalore market established and turned profitable.</p>
+                    <p style="font-size: 0.8rem; color: var(--success);"><i class="fas fa-check-circle"></i> AFTER: ~4x revenue in Year 1. Bangalore market established and turned profitable. South India anchor.</p>
                 </div>
                 <div class="card primary-border tilt-card">
-                    <h4 class="highlight-primary">Bonsaro (Jul 2024)</h4>
+                    <h4 class="highlight-primary">Bonsaro / Majestic Aliments (Jul 2024)</h4>
                     <p style="font-size: 0.8rem; color: var(--danger); margin: 10px 0;"><i class="fas fa-times-circle"></i> BEFORE: Loss-making, limited scale, no B2B channels.</p>
-                    <p style="font-size: 0.8rem; color: var(--success);"><i class="fas fa-check-circle"></i> AFTER: ₹10 Cr revenue in Year 1. Mumbai entry secured via B2B/HoReCa.</p>
+                    <p style="font-size: 0.8rem; color: var(--success);"><i class="fas fa-check-circle"></i> AFTER: ~$1 mn (₹10 Cr) revenue in Year 1. Mumbai entry secured. Turned profitable and integrated.</p>
                 </div>
                 <div class="card orange-border tilt-card">
-                    <h4 class="highlight-orange">Ambrozia (Jan 2026)</h4>
-                    <p style="font-size: 0.8rem; color: var(--danger); margin: 10px 0;"><i class="fas fa-times-circle"></i> BEFORE: 4 automated lines idle, export-facility unmonetized.</p>
-                    <p style="font-size: 0.8rem; color: var(--success);"><i class="fas fa-check-circle"></i> AFTER: DSM acquires 76% (Avyom). Retained promoters (24%) ensures skin in the game.</p>
+                    <h4 class="highlight-orange">Ambrozia via Avyom (Jan 2026)</h4>
+                    <p style="font-size: 0.8rem; color: var(--danger); margin: 10px 0;"><i class="fas fa-times-circle"></i> BEFORE: 4 automated lines idle, export facility unmonetized. ~₹13 Cr FY25 revenue.</p>
+                    <p style="font-size: 0.8rem; color: var(--success);"><i class="fas fa-check-circle"></i> AFTER: DSM acquires 76% (₹8 Cr primary infusion). 30,000 sq.ft. FSSAI/HACCP export-grade facility. Foundation of Meevaa Foods.</p>
                 </div>
             </div>
 
             <div class="card mt-2 stagger s3 orange-border tilt-card">
-                <h3 class="header-font highlight-orange mb-1">Meevaa Foods (by Zappfresh)</h3>
-                <ul class="custom-list orange-list" style="column-count: 2;">
-                    <li>12 frozen veg SKUs (Breakfast, snacks, gravies).</li>
-                    <li>Shelf life: 1yr India / 2yr export.</li>
-                    <li>Canada, UK, UAE exports live.</li>
-                    <li>Jubilant Taco supply: 15L/month active.</li>
-                    <li>Hyperpure & Zepto channels active.</li>
-                </ul>
+                <h3 class="header-font highlight-orange mb-1">Meevaa Foods (by Zappfresh) — Current Status</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                    <ul class="custom-list orange-list">
+                        <li>150+ vegetarian SKUs (frozen soups to desserts); 12 launched so far.</li>
+                        <li>Shelf life: 1yr India / 2yr export.</li>
+                        <li>Jubilant Taco supply: 15L/month active.</li>
+                        <li>Hyperpure & Zepto channels active.</li>
+                    </ul>
+                    <div>
+                        <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.7;"><strong style="color:#fff">Export status:</strong> Canada, UK, UAE export channels reported active. Note — the analyst catalyst calendar flags first formal export shipments at Q3 FY27, so export scale-up may still be ramping. Track H2FY26 export revenue as confirmation.</p>
+                        <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.7; margin-top: 8px;"><strong style="color:#fff">Target:</strong> 16% of group revenue by FY28E (~₹108 Cr). Currently sub-scale — the next 12 months are the proof window.</p>
+                    </div>
+                </div>
             </div>
         </div>
 
+        <!-- SLIDE 6: GROWTH MAP — updated with FY28 & net margin caveat -->
         <div id="slide-6" class="slide">
             <div class="badge stagger s1">06 • GROWTH ROADMAP</div>
-            <h1 class="title stagger s1">Three Simultaneous Vectors</h1>
-            <p class="subtitle stagger s1">Seafood + Franchise Retail + Export = <span>Concurrent Firing Levers</span></p>
+            <h1 class="title stagger s1">Four Simultaneous Vectors</h1>
+            <p class="subtitle stagger s1">Seafood + Franchise Retail + Export + RTE/RTC = <span>Concurrent Firing Levers</span></p>
 
-            <div class="grid-3 stagger s2">
+            <div class="grid-4 stagger s2">
                 <div class="card primary-border tilt-card">
                     <h4 class="highlight-primary mb-1">1. Seafood Backward Integration</h4>
-                    <p style="font-size: 0.85rem; color: var(--text-muted);">300-farmer FPO alliance signed. MoU for 120-acre aquaculture farm in Kanpur (~2 Cr capex). Target: 200-300 bps gross margin uplift by displacing middlemen.</p>
+                    <p style="font-size: 0.82rem; color: var(--text-muted);">300-farmer FPO alliance. 120-acre Kanpur aquaculture farm (Phase 1). Year 1: ₹50–60 Cr. Year 5: ₹300 Cr+. Delivers 200–300 bps margin uplift. First output: Q1 FY27.</p>
                 </div>
                 <div class="card primary-border tilt-card">
                     <h4 class="highlight-primary mb-1">2. Franchise Retail</h4>
-                    <p style="font-size: 0.85rem; color: var(--text-muted);">Asset-light co-branded stores. 3-5 Lacs capex per store, partner operated. Targeting 400 stores in CY2026. Each store stocks Zappfresh + Meevaa.</p>
+                    <p style="font-size: 0.82rem; color: var(--text-muted);">Asset-light co-branded stores. ₹3–5 Lacs capex/store, 2–3 month payback. ~20 stores currently. 400-store CY2026 target is ambitious — track 100 stores by Sep 2026 as first milestone.</p>
                 </div>
                 <div class="card orange-border tilt-card">
                     <h4 class="highlight-orange mb-1">3. Exports & New Categories</h4>
-                    <p style="font-size: 0.85rem; color: var(--text-muted);">Ambrozia facility is FSSAI export-compliant for US/UK/EU. Spice brand acquisition in pipeline (~70 Cr revenue target). Vision to list subsidiaries independently.</p>
+                    <p style="font-size: 0.82rem; color: var(--text-muted);">Ambrozia is FSSAI export-compliant for US/EU/Canada/ME. Spice brand acquisition in pipeline (~₹70 Cr revenue). First formal export shipments targeted Q3 FY27. Exploratory talks with GM Foods.</p>
+                </div>
+                <div class="card teal-border tilt-card">
+                    <h4 class="highlight-teal mb-1">4. Geographic Expansion</h4>
+                    <p style="font-size: 0.82rem; color: var(--text-muted);">Post Delhi/Bangalore/Mumbai/Chandigarh, expansion into Odisha (Eastern hub: country chicken, Black Bengal mutton, eastern seafood), Tamil Nadu, and Telangana via IPO capex cold storage build.</p>
                 </div>
             </div>
             
-            <div class="card mt-2 stagger s3 tilt-card" style="text-align: center;">
-                <h3 class="header-font highlight-primary">FY27 Target: ₹400 Cr Revenue</h3>
-                <p style="color: var(--text-muted);">(₹300 Cr Core + ₹40 Cr Ambrozia + ₹60 Cr Meevaa/Spice). Long-term Net Margin Aspiration: 14-15%.</p>
+            <div class="card mt-2 stagger s3 tilt-card">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:center;">
+                    <div>
+                        <h3 class="header-font highlight-primary" style="margin-bottom:0.5rem;">Revenue Target: ₹400 Cr FY27 → ₹676 Cr FY28</h3>
+                        <p style="color: var(--text-muted); font-size:0.88rem; line-height:1.7;">FY27 breakdown: ~₹300 Cr core + ₹40 Cr Ambrozia + ₹60 Cr Meevaa/pipeline (includes exploratory spice deal — treat as upside optionality, not base case).<br><br>FY28 assumes 60% growth on FY27, driven by Varuna ramp, Meevaa scale, and export activation.</p>
+                    </div>
+                    <div>
+                        <div style="padding:1rem; background:rgba(132,204,22,0.07); border-radius:10px; border:1px solid var(--border-color);">
+                            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.5rem; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Net Margin Trajectory</p>
+                            <table class="table-custom" style="margin-top:0;">
+                                <tr><td style="font-size:0.82rem;">FY25 (actual)</td><td style="color:var(--success)">6.9%</td></tr>
+                                <tr><td style="font-size:0.82rem;">FY26E</td><td style="color:var(--success)">7.5%</td></tr>
+                                <tr><td style="font-size:0.82rem;">FY27E</td><td style="color:var(--success)">10.2%</td></tr>
+                                <tr><td style="font-size:0.82rem;">FY28E</td><td style="color:var(--success)">12.0%</td></tr>
+                                <tr><td style="font-size:0.82rem; color:var(--text-muted)">Mgmt aspiration</td><td style="color:var(--accent-secondary)">14–15% (LT)</td></tr>
+                            </table>
+                            <p style="font-size:0.75rem; color:var(--text-muted); margin-top:8px;">Analyst model caps at 12% by FY28. 14–15% is a long-term aspiration contingent on RTE/RTC margin mix shift and debt paydown.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
+        <!-- SLIDE 7: PEERS — kept HTML's original unlisted peers, added CFO column -->
         <div id="slide-7" class="slide">
             <div class="badge stagger s1">07 • PEER COMPARISON</div>
             <h1 class="title stagger s1">Valuation Benchmarks</h1>
+            <p class="subtitle stagger s1">Listed peers + unlisted D2C comps — the <span>most important comparison DSM wins</span></p>
 
             <div class="card primary-border stagger s2 tilt-card">
                 <div style="overflow-x: auto;">
                     <table class="table-custom">
-                        <thead><tr><th>Company</th><th>Mkt Cap</th><th>Revenue</th><th>Gross Mg</th><th>EBITDA Mg</th><th>Model/Channel</th></tr></thead>
+                        <thead><tr><th>Company</th><th>Mkt Cap</th><th>Revenue</th><th>Gross Mg</th><th>EBITDA Mg</th><th>CFO</th><th>Fwd P/E</th><th>Model</th></tr></thead>
                         <tbody>
-                            <tr style="background: rgba(132, 204, 22, 0.15); box-shadow: inset 0 0 10px rgba(132, 204, 22, 0.2);">
-                                <td><strong>DSM (Zappfresh)</strong></td><td>248 Cr</td><td>160 Cr TTM</td><td class="highlight-primary">33-35%</td><td class="highlight-primary">15-16%</td><td>D2C+HoReCa+Franchise</td>
+                            <tr style="background: rgba(132, 204, 22, 0.15);">
+                                <td><strong>DSM (Zappfresh)</strong></td><td>₹230 Cr</td><td>₹160 Cr TTM</td><td class="highlight-primary">33–35%</td><td class="highlight-primary">15–16%</td><td style="color:var(--danger); font-weight:700">Negative*</td><td class="highlight-primary">~5x FY27E</td><td>D2C+HoReCa+Franchise</td>
                             </tr>
-                            <tr><td>Chatha Foods (SME)</td><td>183 Cr</td><td>165 Cr TTM</td><td>28-30%</td><td>14-16%</td><td>Pure B2B QSR</td></tr>
-                            <tr><td>Tasty Bite (Main)</td><td>3,200 Cr</td><td>320 Cr</td><td>~40-45%</td><td>~18-20%</td><td>RTE Premium/Export</td></tr>
-                            <tr><td>Licious (Unlisted)</td><td>~3,500 Cr</td><td>~900 Cr</td><td>~30%</td><td style="color:var(--danger)">Negative</td><td>D2C Premium Online</td></tr>
-                            <tr><td>FreshToHome (Unlisted)</td><td>2,500 Cr</td><td>600 Cr</td><td>~25%</td><td style="color:var(--danger)">Negative</td><td>D2C Marketplace</td></tr>
+                            <tr>
+                                <td>Chatha Foods (SME)</td><td>₹183 Cr</td><td>₹165 Cr TTM</td><td>28–30%</td><td>14–16%</td><td style="color:var(--success)">Positive</td><td>34x</td><td>Pure B2B QSR (Domino's, Subway)</td>
+                            </tr>
+                            <tr>
+                                <td>HMA Agro (Listed)</td><td>₹1,231 Cr</td><td>High</td><td>Low</td><td>Declining</td><td>—</td><td>7x</td><td>Commodity buffalo-meat export</td>
+                            </tr>
+                            <tr>
+                                <td>Tasty Bite (Main Board)</td><td>₹3,200 Cr</td><td>₹320 Cr</td><td>~40–45%</td><td>~18–20%</td><td style="color:var(--success)">Positive</td><td>High</td><td>RTE Premium/Export</td>
+                            </tr>
+                            <tr>
+                                <td>Licious (Unlisted)</td><td>~₹3,500 Cr</td><td>~₹900 Cr</td><td>~30%</td><td style="color:var(--danger)">Negative</td><td style="color:var(--danger)">Very Negative</td><td>N/A</td><td>D2C Premium Online</td>
+                            </tr>
+                            <tr>
+                                <td>FreshToHome (Unlisted)</td><td>~₹2,500 Cr</td><td>~₹600 Cr</td><td>~25%</td><td style="color:var(--danger)">Negative</td><td style="color:var(--danger)">Very Negative</td><td>N/A</td><td>D2C Marketplace</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 10px; font-style: italic;">*Unlisted valuations approximate from last funding rounds.</p>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 10px; font-style: italic;">*Unlisted valuations approximate from last funding rounds. DSM CFO currently negative — the key differentiator vs. unlisted peers is EBITDA positivity and visible path to CFO normalisation by FY27.</p>
+            </div>
+
+            <div class="card mt-2 stagger s3 tilt-card" style="background: rgba(132, 204, 22, 0.05); border-color: var(--accent-primary);">
+                <h3 class="header-font highlight-primary mb-1">The Core Valuation Argument</h3>
+                <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.8;">Licious raises capital at ~₹3,500 Cr with negative EBITDA and no path to profitability. FreshToHome at ~₹2,500 Cr. DSM trades at <strong style="color: var(--accent-primary)">₹230 Cr with 16% EBITDA margins</strong>, a 52% 3-year revenue CAGR, and a proven acqui-hiring playbook. At ~5x FY27E earnings, the market is pricing in near-zero growth on a business that has never missed a turnaround target. That is the thesis in one sentence.</p>
             </div>
         </div>
 
+        <!-- SLIDE 8: VALUATION — chart unchanged, added sensitivity table, updated price to ₹103 -->
         <div id="slide-8" class="slide">
             <div class="badge stagger s1">08 • VALUATION OPPORTUNITY</div>
             <h1 class="title stagger s1">Price Discovery & Estimates</h1>
@@ -408,101 +601,191 @@
                     <h3 class="header-font highlight-primary mb-1">FY27 Earnings Scenarios</h3>
                     <table class="table-custom">
                         <tbody>
-                            <tr><th>FY27E Revenue</th><td class="highlight-primary">₹400 Cr (Base)</td><td class="highlight-primary" style="font-size: 1.1rem;">₹480 Cr (Bull)</td></tr>
-                            <tr><th>EBITDA Margin</th><td>15-17.5%</td><td>17-18%</td></tr>
-                            <tr><th>PAT Estimate</th><td>₹35-40 Cr</td><td>₹50-55 Cr</td></tr>
-                            <tr><th>Fair P/E Range</th><td>18-22x</td><td>22-26x</td></tr>
+                            <tr><th>FY27E Revenue</th><td class="highlight-primary">₹400–422 Cr (Base)</td><td class="highlight-primary" style="font-size: 1.05rem;">₹480 Cr (Bull)</td></tr>
+                            <tr><th>EBITDA Margin</th><td>15–17%</td><td>17–18%</td></tr>
+                            <tr><th>PAT Estimate</th><td>₹38–43 Cr</td><td>₹50–55 Cr</td></tr>
+                            <tr><th>EPS (₹)</th><td>₹17–19</td><td>₹22–25</td></tr>
                         </tbody>
                     </table>
                     
-                    <div style="border: 1.5px dashed rgba(148, 163, 184, 0.4); border-radius: 8px; padding: 1.5rem; margin-top: 1.5rem; text-align: center; background: rgba(0, 0, 0, 0.3);">
-                        <p style="font-size: 1.05rem; color: var(--text-main); line-height: 1.6; margin: 0; font-weight: 400;">
-                            At the current price of ₹111, DSM is trading at <span style="color: var(--accent-secondary); font-weight: 700; font-size: 1.15rem;">~15.5x forward P/E</span> (on FY26E PAT of ~₹16 Cr). While the stock has recovered from its lows, the market is still largely pricing the business for modest growth — underappreciating the imminent margin expansion from the seafood FPO, Meevaa Foods integration, export scaling, and the 400-store franchise rollout.<br><br><span style="color: var(--accent-primary); font-weight: 600;">On FY27E earnings (₹35-40 Cr PAT base case), the forward PE compresses to ~6-7x — offering significant upside if execution delivers.</span>
+                    <div style="border: 1.5px dashed rgba(148, 163, 184, 0.4); border-radius: 8px; padding: 1.2rem; margin-top: 1.2rem; background: rgba(0, 0, 0, 0.3);">
+                        <p style="font-size: 0.95rem; color: var(--text-main); line-height: 1.65; margin: 0;">
+                            At ₹103, DSM trades at <span style="color: var(--accent-secondary); font-weight: 700;">~14x FY26E earnings</span> and compresses to <span style="color: var(--accent-primary); font-weight: 700;">~5x FY27E earnings</span> — one of the lowest forward multiples in the listed food processing universe for a growing, margin-expanding business.<br><br>
+                            <span style="color: var(--accent-primary); font-weight: 600;">The market is pricing modest growth on a company with a 52% revenue CAGR. Execution on Varuna, Meevaa, and CFO normalisation is the re-rating catalyst.</span>
                         </p>
                     </div>
-
                 </div>
+            </div>
+
+            <div class="card mt-2 stagger s3 tilt-card">
+                <h3 class="header-font highlight-primary mb-1">Valuation Sensitivity — 1-Year Forward Target (₹/share)</h3>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.8rem;">Multiple anchor: 12–16x P/E reflects BSE-SME illiquidity discount vs. branded-food peers (Chatha 34x). PEG of 0.10–0.20x against ~150% projected PAT growth is conservative. Re-rating to 18–22x requires positive CFO confirmation.</p>
+                <div class="sens-grid">
+                    <div class="sens-cell hdr">FY27E PAT \ P/E</div>
+                    <div class="sens-cell hdr bear-col">12x (Bear)</div>
+                    <div class="sens-cell hdr base-col">14x (Base)</div>
+                    <div class="sens-cell hdr bull-col">16x (Bull)</div>
+
+                    <div class="sens-cell" style="color:var(--text-muted); font-size:0.8rem;">₹38.8 Cr (−10% discount)</div>
+                    <div class="sens-cell bear-col">₹208</div>
+                    <div class="sens-cell">₹243</div>
+                    <div class="sens-cell">₹278</div>
+
+                    <div class="sens-cell base-col" style="font-weight:600;">₹43.1 Cr (Base case)</div>
+                    <div class="sens-cell">₹232</div>
+                    <div class="sens-cell base-col">₹270</div>
+                    <div class="sens-cell base-col">₹309</div>
+
+                    <div class="sens-cell" style="color:var(--text-muted); font-size:0.8rem;">₹47.4 Cr (+10% premium)</div>
+                    <div class="sens-cell">₹255</div>
+                    <div class="sens-cell">₹297</div>
+                    <div class="sens-cell bull-col">₹340</div>
+                </div>
+                <p style="font-size:0.78rem; color:var(--accent-secondary); margin-top:0.8rem;">FY28-anchored long view: 12x on FY28E PAT of ₹81.1 Cr → implied ₹437/share (~324% from CMP ₹103). Base 1-yr target: ₹270 (bear) – ₹290 (PEG-adjusted bull). Upside: ~162–181%.</p>
             </div>
         </div>
 
+        <!-- SLIDE 9: KEY RISKS — corrected debtor days to 71, added avian flu, avian category risk, negative CFO severity -->
         <div id="slide-9" class="slide">
             <div class="badge stagger s1" style="border-color: var(--danger); color: var(--danger); background: rgba(239, 68, 68, 0.1);">09 • KEY RISKS</div>
             <h1 class="title stagger s1">What Could Break the Thesis</h1>
 
             <div class="grid-2 stagger s2">
                 <div class="card danger-border tilt-card">
-                    <h4 style="color: var(--danger); margin-bottom: 5px;"><i class="fas fa-exclamation-circle"></i> 1. Promoter Holding (28.1%)</h4>
-                    <p style="font-size: 0.85rem; color: var(--text-muted);">Screener flags this algorithmically. Real watch: does stake creep upward or dilute further? MD bought 10.8k shares open market in Jan 2026 (confidence signal).</p>
+                    <h4 style="color: var(--danger); margin-bottom: 5px;"><i class="fas fa-exclamation-circle"></i> 1. Persistent Negative CFO (Principal Risk)</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Cash from operations was −₹16.7 Cr in FY25 and remains negative. Receivable days are <strong style="color:#fff">already 71 days</strong> — well past the 60-day watch threshold. D/E has risen ~22x in 3 years to 0.8x. If CFO does not inflect positive by FY27, multiple compresses toward 12x and the re-rating thesis fails.</p>
                 </div>
                 <div class="card danger-border tilt-card">
-                    <h4 style="color: var(--danger); margin-bottom: 5px;"><i class="fas fa-exclamation-circle"></i> 2. Working Capital Build</h4>
-                    <p style="font-size: 0.85rem; color: var(--text-muted);">Negative OCF is common in high-growth B2B food (like Jubilant early on). DSM extends B2B credit. Monitor that receivables don't outpace revenue.</p>
+                    <h4 style="color: var(--danger); margin-bottom: 5px;"><i class="fas fa-exclamation-circle"></i> 2. Single-Category Concentration</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Chicken contributes ~55% of revenue. Avian influenza outbreaks can collapse supply and demand simultaneously — 2024 H5N1 episodes caused multi-week demand destruction. Q2 is structurally weak (Navratri, Shravan). One quality/food-safety incident can disproportionately damage trust in a fresh-protein brand.</p>
                 </div>
                 <div class="card danger-border tilt-card">
                     <h4 style="color: var(--danger); margin-bottom: 5px;"><i class="fas fa-exclamation-circle"></i> 3. Crude Oil Shock</h4>
-                    <p style="font-size: 0.85rem; color: var(--text-muted);">Brent at ~$101/bbl (Mar 2026). Triple hit: reefer truck logistics surge, cold storage energy costs rise, HoReCa clients squeeze margins.</p>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Elevated crude creates a triple hit: reefer truck logistics costs surge, cold storage energy bills rise, HoReCa clients squeeze their own margins and push back on pricing. Cold chain is one of the most energy-intensive last-mile models in food.</p>
                 </div>
                 <div class="card danger-border tilt-card">
-                    <h4 style="color: var(--danger); margin-bottom: 5px;"><i class="fas fa-exclamation-circle"></i> 4. Execution Bandwidth</h4>
-                    <p style="font-size: 0.85rem; color: var(--text-muted);">Seafood integration, Meevaa launch, 400 stores, Ambrozia scale-up are happening concurrently, unlike sequential past acquisitions.</p>
+                    <h4 style="color: var(--danger); margin-bottom: 5px;"><i class="fas fa-exclamation-circle"></i> 4. Execution Bandwidth & Acquisition Scale-Up</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Seafood integration, Meevaa launch, 400 stores, Ambrozia scale-up are happening concurrently — unlike the sequential past acquisitions. Management has signalled next deals could be ~10x prior sizes in non-meat snacking, which is uncharted operational territory.</p>
+                </div>
+                <div class="card danger-border tilt-card">
+                    <h4 style="color: var(--danger); margin-bottom: 5px;"><i class="fas fa-exclamation-circle"></i> 5. Promoter Holding (28.1%)</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Algorithmically flagged by screeners. Low promoter holding increases headline risk for institutional investors. Counter-signal: MD purchased 10,800 shares in the open market in Jan 2026 — aligning personal capital with thesis. Watch for further stake creep above 30% as a strong positive trigger.</p>
+                </div>
+                <div class="card danger-border tilt-card">
+                    <h4 style="color: var(--danger); margin-bottom: 5px;"><i class="fas fa-exclamation-circle"></i> 6. Export Regulatory & Alt-Protein Risk</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">US/EU/Canada/ME export compliance is stringent — FSSAI approvals are in place but market-entry timelines for institutional export are hard to predict. Long-tail demand risk from alt-protein/plant-based competition growing in Tier-1 cities. 3PL last-mile dependency is also a service quality and cost risk.</p>
                 </div>
             </div>
         </div>
 
+        <!-- SLIDE 10: WATCHLIST — corrected debtor days to 71, added catalyst calendar from report -->
         <div id="slide-10" class="slide">
             <div class="badge stagger s1">10 • WHAT TO TRACK</div>
             <h1 class="title stagger s1">Quarterly Execution Checklist</h1>
 
             <div class="card primary-border stagger s2 tilt-card">
+                <h3 class="header-font highlight-primary mb-1">Metrics to monitor every half-year</h3>
                 <ul class="custom-list">
-                    <li><strong>Debtor Days (Below 50?):</strong> H1FY26 at 47 days. Above 60 for two halves = escalate flag.</li>
-                    <li><strong>Promoter Creep:</strong> Any purchase >1L shares or crossing 30% is a strong signal via SAST.</li>
-                    <li><strong>Ambrozia/Meevaa Ramp:</strong> If H2FY26 shows 12-15+ Cr from new brands, the FY27 target is secured.</li>
-                    <li><strong>EBITDA Margins:</strong> Holding above 14% despite crude/integration costs? Above 16% = operating leverage validation.</li>
-                    <li><strong>Franchise Rollout:</strong> Reaching 100 stores by Sep 2026 confirms execution capacity.</li>
-                    <li><strong>Spice Brand Deal:</strong> If structured directly through DSM (not private), it validates governance.</li>
+                    <li><strong>Receivable / Debtor Days (Red line: 80+):</strong> Currently at <strong style="color:var(--danger)">71 days</strong> in H1FY26. Two consecutive halves above 80 days = escalate to serious flag. Normalisation below 55 days = strong positive signal.</li>
+                    <li><strong>CFO Inflection:</strong> Target is positive CFO by Q4 FY27. Any improvement in CFO/EBITDA ratio each half (currently −64%) validates the B2B credit normalisation thesis.</li>
+                    <li><strong>Promoter Creep:</strong> Any purchase above 1L shares or crossing 30% is a strong signal via SAST. Open-market purchases by promoters at this price are a high-conviction signal.</li>
+                    <li><strong>Ambrozia/Meevaa Ramp:</strong> H2FY26 showing ₹12–15 Cr from new brands = FY27 target secured. Watch Meevaa's D2C launch on Zappfresh platform (targeted Q1–Q2 FY27).</li>
+                    <li><strong>EBITDA Margins:</strong> Holding above 14% despite crude/integration costs confirms structural moat. Above 16% = operating leverage validation. Below 13% for 2 halves = thesis under stress.</li>
+                    <li><strong>Franchise Rollout:</strong> 100 stores by Sep 2026 = execution capacity confirmed. 400 is aspirational — don't discount the thesis if this falls short, but do track direction.</li>
+                    <li><strong>Varuna Kanpur Q1 FY27 Output:</strong> First commercial fish production from the Kanpur cluster is the single most important near-term catalyst. Validates the 200–300 bps seafood margin uplift thesis.</li>
+                    <li><strong>Spice Brand Deal:</strong> Only credit to DSM if structured directly through the listed entity. If off-balance-sheet or private vehicle, treat as a governance flag, not an upside.</li>
+                    <li><strong>First Export Shipments:</strong> Targeted Q3 FY27 from Avyom facility. Activates US/EU/Canada/ME revenue diversification and validates the Ambrozia acquisition rationale.</li>
                 </ul>
+            </div>
+
+            <div class="card mt-2 stagger s3 tilt-card orange-border">
+                <h3 class="header-font highlight-orange mb-1">Catalyst Calendar — FY27</h3>
+                <div class="catalyst-row">
+                    <div class="cat-qtr">Q1 FY27</div>
+                    <div class="cat-body">
+                        <div class="cat-title">First Varuna Kanpur cluster commercial output</div>
+                        <div class="cat-why">Validates the 200–300 bps seafood gross margin uplift. Most important data point of FY27.</div>
+                    </div>
+                </div>
+                <div class="catalyst-row">
+                    <div class="cat-qtr">Q1–Q2 FY27</div>
+                    <div class="cat-body">
+                        <div class="cat-title">Meevaa Foods D2C launch on Zappfresh platform</div>
+                        <div class="cat-why">First read on RTE/RTC traction, margin profile vs. core meat, and channel integration speed.</div>
+                    </div>
+                </div>
+                <div class="catalyst-row">
+                    <div class="cat-qtr">Q2 FY27</div>
+                    <div class="cat-body">
+                        <div class="cat-title">Cold-storage capex completion (Delhi + Mumbai + Odisha)</div>
+                        <div class="cat-why">Unlocks Eastern India expansion hub and eases capacity bottlenecks in existing markets.</div>
+                    </div>
+                </div>
+                <div class="catalyst-row">
+                    <div class="cat-qtr">Q3 FY27</div>
+                    <div class="cat-body">
+                        <div class="cat-title">First export shipments from Avyom facility</div>
+                        <div class="cat-why">Diversifies revenue across regulated international markets; validates Ambrozia acquisition ROI.</div>
+                    </div>
+                </div>
+                <div class="catalyst-row">
+                    <div class="cat-qtr">Q4 FY27</div>
+                    <div class="cat-body">
+                        <div class="cat-title">CFO inflection — target: positive at scale</div>
+                        <div class="cat-why">Removes the principal de-rating risk. Supports multiple expansion from 12–14x toward 16–18x.</div>
+                    </div>
+                </div>
             </div>
         </div>
 
+        <!-- SLIDE 11: THESIS — corrected CAGR, added Varuna, CFO risk, FY28 upside -->
         <div id="slide-11" class="slide">
             <div class="badge stagger s1" style="background: transparent; border-color: var(--text-main); color: var(--text-main);">11 • THESIS SUMMARY</div>
             <h1 class="title stagger s1">Opportunity vs. Risk</h1>
 
             <div class="grid-2 stagger s2">
-                <div class="card tilt-card" style="border-left: 4px solid var(--success);">
+                <div class="card tilt-card" style="border-left: 4px solid var(--success); border-radius:12px;">
                     <h3 class="header-font mb-1" style="color: var(--success);"><i class="fas fa-arrow-trend-up"></i> Strengths & Upside</h3>
                     <ul class="custom-list">
-                        <li>32% Rev / 97% PAT 3-yr CAGR.</li>
-                        <li>6-stage supply chain = structural margin moat.</li>
-                        <li>3 acquisitions turned profitable <12mo.</li>
-                        <li>Dual brand (Zappfresh/Meevaa) = one-stop HoReCa.</li>
-                        <li>Seafood backward integration = 200bps margin uplift.</li>
+                        <li><strong>52% Rev CAGR (FY23–25)</strong>, 110% EBITDA CAGR, 82% PAT CAGR — best-in-class SME growth cohort.</li>
+                        <li>Full-stack vertical integration: 6–8% margin at source + 12–14% in distribution = structural moat vs. mandi peers.</li>
+                        <li>3 acquisitions turned profitable within 12 months each. Proven playbook, repeatable model.</li>
+                        <li>Dual brand (Zappfresh/Meevaa) = one-stop HoReCa & D2C destination for meat + veg protein.</li>
+                        <li>Varuna Aquatech: potential ₹300 Cr+ subsidiary by Year 5 — massively underappreciated and underpriced by the market.</li>
+                        <li>~5x FY27E P/E at CMP ₹103 — market pricing zero growth on a compounding platform.</li>
+                        <li>FY28 optionality: 12x on ₹81 Cr PAT → ₹437/share implied (~324% upside). Conservative exit multiple.</li>
                     </ul>
                 </div>
-                <div class="card tilt-card" style="border-left: 4px solid var(--danger);">
+                <div class="card tilt-card" style="border-left: 4px solid var(--danger); border-radius:12px;">
                     <h3 class="header-font mb-1" style="color: var(--danger);"><i class="fas fa-arrow-trend-down"></i> Risks & Watch-points</h3>
                     <ul class="custom-list risk-list">
-                        <li>Borrowings rising: ~₹46 Cr (H1FY26).</li>
-                        <li>Crude oil pressure on cold chain costs.</li>
-                        <li>Debtor days rising (32 → 47).</li>
-                        <li>Thin SME float = high sentiment volatility.</li>
-                        <li>Ambitious ₹400 Cr FY27 guidance relies on perfect execution.</li>
+                        <li><strong>Negative CFO is the #1 risk.</strong> −₹16.7 Cr FY25, still negative H1FY26. D/E risen 22x to 0.8x. If not positive by FY27, multiple de-rates hard.</li>
+                        <li>Receivable days already at 71 — above prior internal watch threshold. B2B credit risk is real.</li>
+                        <li>Chicken = 55% revenue. Avian flu, religious seasonality, and food-safety incidents are binary event risks.</li>
+                        <li>Crude oil pressure on cold-chain costs — a direct, unhedged operating cost driver.</li>
+                        <li>Concurrent execution of 4 major initiatives (Varuna, Meevaa, stores, Ambrozia) with no sequential buffer.</li>
+                        <li>Thin SME float (promoter 28.1%) = high sentiment volatility. Price can halve on a bad quarter.</li>
+                        <li>Ambitious ₹400 Cr FY27 guidance includes unconfirmed spice deal in ₹60 Cr segment — base case should exclude it.</li>
                     </ul>
                 </div>
+            </div>
+
+            <div class="card mt-2 stagger s3 tilt-card" style="text-align:center; border-color: var(--accent-primary);">
+                <p style="font-size: 1.1rem; line-height: 1.8; color: var(--text-muted);">This is a <strong style="color:var(--accent-primary)">high-conviction, high-volatility SME bet</strong> on a vertically integrated food platform that is growing 3x faster than listed peers, trading at a fraction of unlisted peers' valuations, and sitting at an inflection point across four simultaneous growth vectors. The CFO normalisation and Varuna delivery in FY27 are the two binary outcomes that will determine whether this is a 2–3x from here or a value trap. <strong style="color:var(--text-main)">Size accordingly.</strong></p>
             </div>
         </div>
 
+        <!-- SLIDE 12: DISCLAIMER — unchanged -->
         <div id="slide-12" class="slide">
             <h1 class="title stagger s1">Disclaimer</h1>
-            <p class="subtitle stagger s1">DSM FRESH FOODS LIMITED · BSE SME: 544568 · March 2026</p>
+            <p class="subtitle stagger s1">DSM FRESH FOODS LIMITED · BSE SME: 544568 · May 2026 (Revised)</p>
 
             <div class="card stagger s2 tilt-card" style="border-color: var(--danger); background: rgba(239, 68, 68, 0.05);">
-                <p style="font-size: 0.85rem; line-height: 1.8; color: var(--text-main);"><strong>IMPORTANT NOTICE:</strong><br><br>This presentation is prepared solely for educational and informational purposes. It does not constitute personalised investment advice or a recommendation to buy, sell, or hold any security. SME stocks carry elevated risk due to limited trading liquidity, smaller scale, and evolving governance standards. All financial data is sourced from publicly available filings. Readers must independently verify all information and consult a SEBI-registered investment advisor before making any investment decision. The author may or may not hold positions in the securities discussed.</p>
+                <p style="font-size: 0.85rem; line-height: 1.8; color: var(--text-main);"><strong>IMPORTANT NOTICE:</strong><br><br>This presentation is prepared solely for educational and informational purposes. It does not constitute personalised investment advice or a recommendation to buy, sell, or hold any security. SME stocks carry elevated risk due to limited trading liquidity, smaller scale, and evolving governance standards. All financial data is sourced from publicly available filings and independent analyst research. Readers must independently verify all information and consult a SEBI-registered investment advisor before making any investment decision. The author may or may not hold positions in the securities discussed. Forward-looking projections (revenue, PAT, target price) are estimates based on publicly available guidance and analyst models, not guarantees of future performance.</p>
             </div>
 
             <div class="footer-branding stagger s3">
-                <p style="color: var(--text-muted);">Research & Analysis: <strong style="color: var(--accent-primary);">SME Gems</strong></p>
+                <p style="color: var(--text-muted);">Original Research: <strong style="color: var(--accent-primary);">SME Gems</strong> · Supplemented with: <strong style="color: var(--accent-secondary);">Blynked Pro Research</strong></p>
                 <p style="margin-top: 15px;"><a href="https://x.com/sachprat07" target="_blank"><i class="fa-brands fa-x-twitter"></i> @sachprat07</a></p>
             </div>
         </div>
@@ -512,104 +795,57 @@
 </div>
 
 <script>
-    /* --- INITIALIZE VANILLA TILT FOR 3D CARDS --- */
     VanillaTilt.init(document.querySelectorAll(".tilt-card"), {
-        max: 5,
-        speed: 400,
-        glare: true,
-        "max-glare": 0.15,
-        scale: 1.02
+        max: 5, speed: 400, glare: true, "max-glare": 0.15, scale: 1.02
     });
 
-    /* --- THEMATIC DSM FARM-TO-TABLE BACKGROUND CANVAS --- */
     const canvas = document.getElementById('bg-canvas');
     const ctxCanvas = canvas.getContext('2d');
     let width, height;
     let particles = [];
     let mouse = { x: null, y: null, radius: 180 };
 
-    // Wait for FontAwesome to load before starting animation to ensure icons render
-    document.fonts.ready.then(() => {
-        initParticles();
-        animateParticles();
-    });
+    document.fonts.ready.then(() => { initParticles(); animateParticles(); });
 
-    // For Desktop Mouse
-    window.addEventListener('mousemove', function(event) {
-        mouse.x = event.x;
-        mouse.y = event.y;
-    });
-    
-    window.addEventListener('mouseout', function() {
-        mouse.x = undefined;
-        mouse.y = undefined;
-    });
+    window.addEventListener('mousemove', function(e) { mouse.x = e.x; mouse.y = e.y; });
+    window.addEventListener('mouseout', function() { mouse.x = undefined; mouse.y = undefined; });
+    window.addEventListener('touchmove', function(e) {
+        if (e.touches.length > 0) { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; }
+    }, { passive: true });
+    window.addEventListener('touchend', function() { mouse.x = undefined; mouse.y = undefined; });
 
-    // For Mobile Touchscreens
-    window.addEventListener('touchmove', function(event) {
-        if (event.touches.length > 0) {
-            mouse.x = event.touches[0].clientX;
-            mouse.y = event.touches[0].clientY;
-        }
-    }, { passive: true }); // passive: true helps with mobile scrolling performance
-
-    window.addEventListener('touchend', function() {
-        mouse.x = undefined;
-        mouse.y = undefined;
-    });
-
-    function resizeCanvas() {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-    }
+    function resizeCanvas() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
-    // Thematic Icons: Leaf (Fresh), Drumstick (Meat), Fish (Seafood), Snowflake (Frozen), Seedling (Agri)
     const foodIcons = ['\uf06c', '\uf810', '\uf578', '\uf2dc', '\uf4d8'];
 
     class Particle {
         constructor() {
             this.x = Math.random() * width;
             this.y = Math.random() * height;
-            this.size = Math.random() * 25 + 15; 
-            this.baseX = this.x;
-            this.baseY = this.y;
+            this.size = Math.random() * 25 + 15;
+            this.baseX = this.x; this.baseY = this.y;
             this.density = (Math.random() * 30) + 1;
-            this.speedY = Math.random() * -0.5 - 0.1; 
-            this.speedX = (Math.random() - 0.5) * 0.4; 
-            // Bumped up opacity significantly
-            this.opacity = Math.random() * 0.08 + 0.03; 
-            this.color = Math.random() > 0.6 ? '224, 122, 58' : '132, 204, 22'; 
+            this.speedY = Math.random() * -0.5 - 0.1;
+            this.speedX = (Math.random() - 0.5) * 0.4;
+            this.opacity = Math.random() * 0.08 + 0.03;
+            this.color = Math.random() > 0.6 ? '224, 122, 58' : '132, 204, 22';
             this.icon = foodIcons[Math.floor(Math.random() * foodIcons.length)];
             this.rotation = Math.random() * 360;
             this.rotSpeed = (Math.random() - 0.5) * 1.5;
         }
         update() {
-            // Normal upward drift and gentle rotation
-            this.y += this.speedY;
-            this.x += this.speedX;
-            this.rotation += this.rotSpeed;
-            
-            // Mouse Interaction (Repel)
+            this.y += this.speedY; this.x += this.speedX; this.rotation += this.rotSpeed;
             if (mouse.x != null) {
-                let dx = mouse.x - this.x;
-                let dy = mouse.y - this.y;
-                let distance = Math.sqrt(dx * dx + dy * dy);
-                let forceDirectionX = dx / distance;
-                let forceDirectionY = dy / distance;
-                let maxDistance = mouse.radius;
-                let force = (maxDistance - distance) / maxDistance;
-                let directionX = forceDirectionX * force * this.density;
-                let directionY = forceDirectionY * force * this.density;
-
+                let dx = mouse.x - this.x, dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx*dx + dy*dy);
                 if (distance < mouse.radius) {
-                    this.x -= directionX;
-                    this.y -= directionY;
+                    let force = (mouse.radius - distance) / mouse.radius;
+                    this.x -= (dx/distance) * force * this.density;
+                    this.y -= (dy/distance) * force * this.density;
                 }
             }
-
-            // Loop boundaries
             if (this.y < -50) this.y = height + 50;
             if (this.x < -50) this.x = width + 50;
             if (this.x > width + 50) this.x = -50;
@@ -620,8 +856,7 @@
             ctxCanvas.rotate(this.rotation * Math.PI / 180);
             ctxCanvas.font = `900 ${this.size}px "Font Awesome 6 Free"`;
             ctxCanvas.fillStyle = `rgba(${this.color}, ${this.opacity})`;
-            ctxCanvas.textAlign = 'center';
-            ctxCanvas.textBaseline = 'middle';
+            ctxCanvas.textAlign = 'center'; ctxCanvas.textBaseline = 'middle';
             ctxCanvas.fillText(this.icon, 0, 0);
             ctxCanvas.restore();
         }
@@ -629,61 +864,40 @@
 
     function initParticles() {
         particles = [];
-        let numParticles = Math.floor((width * height) / 22000); 
-        for (let i = 0; i < numParticles; i++) particles.push(new Particle());
+        let n = Math.floor((width * height) / 22000);
+        for (let i = 0; i < n; i++) particles.push(new Particle());
     }
-
     function animateParticles() {
         ctxCanvas.clearRect(0, 0, width, height);
         particles.forEach(p => { p.update(); p.draw(); });
         requestAnimationFrame(animateParticles);
     }
 
-    /* --- GLOBAL CHART VARIABLE --- */
     let priceChartInstance = null;
 
-    /* --- SLIDE NAVIGATION LOGIC & CHART TRIGGER --- */
     function toggleSidebar() {
         document.querySelector('.sidebar').classList.toggle('open');
         document.querySelector('.sidebar-overlay').classList.toggle('active');
     }
 
     function switchSlide(slideId, el) {
-        const targetSlide = document.getElementById(slideId);
-        
-        // Reset scrolling
         document.getElementById('main-scroll').scrollTo(0, 0);
-
-        // Manage active classes
         document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        
-        // Trigger reflow to restart CSS animations
-        void targetSlide.offsetWidth; 
-        
-        targetSlide.classList.add('active');
+        const target = document.getElementById(slideId);
+        void target.offsetWidth;
+        target.classList.add('active');
         if (el) el.classList.add('active');
-        
         if (window.innerWidth <= 768) {
             document.querySelector('.sidebar').classList.remove('open');
             document.querySelector('.sidebar-overlay').classList.remove('active');
         }
-
-        // Trigger Chart Animation if switching to Slide 8
-        if(slideId === 'slide-8') {
-            renderChart();
-        }
+        if (slideId === 'slide-8') renderChart();
     }
 
-    /* --- CHART JS LOGIC (WITH RE-ANIMATION) --- */
     function renderChart() {
         const chartCtx = document.getElementById('priceChart').getContext('2d');
-        
-        // Destroy existing instance so it animates from scratch
-        if (priceChartInstance) {
-            priceChartInstance.destroy();
-        }
-
+        if (priceChartInstance) priceChartInstance.destroy();
         priceChartInstance = new Chart(chartCtx, {
             type: 'line',
             data: {
@@ -706,10 +920,7 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                animation: {
-                    duration: 2000,
-                    easing: 'easeOutQuart'
-                },
+                animation: { duration: 2000, easing: 'easeOutQuart' },
                 plugins: {
                     legend: { display: false },
                     tooltip: {
@@ -719,7 +930,7 @@
                         borderColor: 'rgba(132, 204, 22, 0.4)',
                         borderWidth: 1,
                         padding: 12,
-                        callbacks: { label: function(context) { return '₹ ' + context.parsed.y; } }
+                        callbacks: { label: function(ctx) { return '₹ ' + ctx.parsed.y; } }
                     }
                 },
                 scales: {
@@ -730,10 +941,7 @@
         });
     }
 
-    // Initialize chart on first load just in case someone refreshes while on slide 8
-    if(document.getElementById('slide-8').classList.contains('active')) {
-        renderChart();
-    }
+    if (document.getElementById('slide-8').classList.contains('active')) renderChart();
 </script>
 </body>
 </html>
