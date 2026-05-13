@@ -3,9 +3,7 @@
 <head>
 <meta charset="UTF-8">
   <script>
-  // Check if the user has the passkey from the main page
   if (!sessionStorage.getItem('validGemsUser')) {
-      // If no passkey is found, instantly redirect them to the main directory
       window.location.replace("https://smeresearch.github.io/SMEGems/");
   }
 </script>
@@ -15,7 +13,6 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  /* Dual-Tone Water/Infra Theme */
   --bg: #030A12; 
   --card: #0B1726; 
   --card2: #102136; 
@@ -52,7 +49,6 @@ html,body{height:100%;overflow:hidden;font-family:var(--sans);background:var(--b
 .pg-count{position:fixed;top:16px;right:24px;z-index:100;font-size:14px;color:var(--muted);letter-spacing:2px;font-weight:700}
 .pg-count span{color:var(--primary)}
 
-/* Typography */
 h1{font-family:var(--head);font-size:clamp(36px,6vw,60px);font-weight:700;line-height:1.15;background:linear-gradient(135deg,#FFFFFF,var(--primary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.5px;}
 h2{font-family:var(--head);font-size:clamp(26px,4vw,38px);font-weight:700;line-height:1.2;margin-bottom:20px;position:relative;padding-bottom:12px;display:inline-block;letter-spacing:-0.5px;}
 h2::before {content: '';position: absolute;inset: 0;background: linear-gradient(90deg, var(--primary), var(--secondary));-webkit-background-clip: text;-webkit-text-fill-color: transparent;z-index: 1;}
@@ -65,16 +61,10 @@ p,.txt{font-size:clamp(15px,1.8vw,18px);line-height:1.75;color:var(--muted)}
 
 .proj-note {font-size:13px; color:var(--dim); font-style:italic; margin-top:14px; padding-left:6px; border-left:3px solid var(--dim);}
 
-/* Grid System */
 .g{display:grid;gap:20px}.g2{grid-template-columns:1fr}.g3{grid-template-columns:1fr}.g4{grid-template-columns:repeat(2,1fr)}
-@media(min-width:768px){
-    .g2{grid-template-columns:repeat(2,1fr)}
-    .g3{grid-template-columns:repeat(3,1fr)}
-    .g4{grid-template-columns:repeat(4,1fr)}
-}
+@media(min-width:768px){.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}}
 .mb{margin-bottom:20px}.mt{margin-top:20px}
 
-/* Fixed Card CSS */
 .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;position:relative;transition:transform 0.3s,box-shadow 0.3s,border-color 0.3s;min-width:0;width:100%; display:flex; flex-direction:column;}
 .card:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,0,0,0.4);border-color:rgba(0,240,255,0.4)}
 .card-top{position:absolute;top:0;left:24px;right:24px;height:3px;background:linear-gradient(90deg,transparent,var(--primary),transparent)}
@@ -126,16 +116,11 @@ tr:hover td{background:rgba(255,255,255,0.02)}
 .chart-bar .tip{position:absolute;top:-32px;left:50%;transform:translateX(-50%);background:var(--card2);padding:4px 10px;border-radius:6px;font-size:12px;font-weight:600;color:var(--primary);white-space:nowrap;opacity:0;transition:opacity 0.2s;pointer-events:none;border:1px solid var(--border);z-index:5}
 .chart-bar:hover .tip{opacity:1}
 
-@media(max-width: 480px){
-  .chart-wrap { gap: 1px; }          /* Reduce the gap between bars */
-  .chart-bar { min-width: 2px; }     /* Allow flexbox to shrink the bars */
-  .badge { white-space: normal; text-align: center; display: inline-block; }
-}
+@media(max-width: 480px){.chart-wrap { gap: 1px; } .chart-bar { min-width: 2px; } .badge { white-space: normal; text-align: center; display: inline-block; }}
 
 .x-link{display:inline-flex;align-items:center;gap:8px;color:var(--muted);text-decoration:none;font-size:16px;transition:color 0.3s;font-weight:600}
 .x-link:hover{color:var(--primary)}.x-logo{width:20px;height:20px}
 
-/* Enhanced Disclaimer Styling */
 .disc{font-size:13px;color:var(--muted);line-height:1.75;padding:24px;border:1px solid rgba(255,255,255,0.1);border-radius:12px;background:rgba(255,255,255,0.03); text-align: justify;}
 .disc strong { color: var(--text); }
 
@@ -151,7 +136,7 @@ tr:hover td{background:rgba(255,255,255,0.02)}
 </head>
 <body>
 <div class="grain"></div>
-<div class="pg-count"><span id="pgCur">1</span> / <span id="pgTot">13</span></div>
+<div class="pg-count"><span id="pgCur">1</span> / <span id="pgTot">14</span></div>
 
 <div class="deck-wrap" id="deckWrap">
 <div class="deck-track" id="deckTrack">
@@ -268,6 +253,33 @@ tr:hover td{background:rgba(255,255,255,0.02)}
     <tr><td>EPS (₹)</td><td>9.28</td><td>4.38</td><td>12.23</td><td class="teal fw7">~17.0</td></tr></table>
     </div>
     <p class="proj-note">Note: Effwa successfully delivered ₹28.62 Cr PAT in FY26, landing squarely in the middle of our earlier ₹27-30 Cr target. A 10% dividend was also declared.</p>
+    </div>
+</div>
+</section>
+
+<section class="slide">
+<h2><span style="opacity: 0">Capital Efficiency & Cash Flow Quality</span></h2>
+<h3 class="reveal reveal-d1">A standout operational signal in the EPC space</h3>
+
+<div class="card card-glow mb reveal reveal-d1" style="border-color:rgba(16,185,129,0.3)"><div class="card-top" style="background:linear-gradient(90deg,transparent,var(--emerald),transparent)"></div>
+    <h3 style="color:var(--emerald)">The 1.03x CFO Conversion Ratio</h3>
+    <p class="txt" style="font-size:17px;">In the infrastructure and PSU-heavy water treatment sector, negative cash flow is the norm. Yet, Effwa reported a remarkable Cash Flow from Operations of <span class="emerald fw7">₹29.4 Cr</span> against a net profit of ₹28.6 Cr. This 1.03x conversion ratio proves their earnings are backed by hard cash, supported by disciplined collection mechanisms. Trade receivables were held tightly at ₹128.7 Cr, representing controlled growth despite a massive 36.8% surge in topline revenue.</p>
+</div>
+
+<div class="g g3 reveal reveal-d2">
+    <div class="card"><div class="card-top"></div>
+    <h3 style="color:var(--teal-l)">Strategic Working Capital</h3>
+    <p class="txt-sm">The balance sheet shows a strategic stretching of trade payables, which grew 58% to ₹25.9 Cr. By balancing payables against controlled receivables, Effwa generated internal accruals to fund expansion while keeping total borrowings at a highly manageable ~₹38 Cr.</p>
+    </div>
+    
+    <div class="card"><div class="card-top"></div>
+    <h3 style="color:var(--amber)">IPO Funds Utilized</h3>
+    <p class="txt-sm">With the initial IPO proceeds of ₹51.3 Cr now fully and successfully utilized across working capital and capital goods, Effwa has cleared its capital-starved phase and is structurally equipped to scale rapidly using its own internal engine.</p>
+    </div>
+    
+    <div class="card"><div class="card-top"></div>
+    <h3 style="color:var(--emerald)">Asset-Light CAPEX</h3>
+    <p class="txt-sm">The recent jump in Capital Work-in-Progress (₹19.8 Cr) is <span class="fw7">not</span> for heavy manufacturing. Management confirmed it is earmarked for a new 10,000+ sq ft prime office in Thane to support scaling engineering headcount, strictly maintaining their high-ROCE, asset-light DNA.</p>
     </div>
 </div>
 </section>
@@ -426,7 +438,7 @@ tr:hover td{background:rgba(255,255,255,0.02)}
 <h2><span style="opacity: 0">Final Investment Summary</span></h2>
 <div class="card card-glow mb reveal reveal-d1"><div class="card-top"></div>
 <h3 style="color:var(--emerald)">The Core Thesis</h3>
-<p class="txt" style="font-size: 17px;">Effwa Infra & Research successfully validated its investment thesis in FY26, <span class="teal fw7">delivering ₹28.62 Cr PAT and securing a massive ₹750+ Cr formal order book</span>. Driven by intense NGT/CPCB regulatory tailwinds, the industrial wastewater sector is structurally growing, and Effwa's 90%+ focus on ZLD perfectly captures this demand. With proprietary ZMD technology advancing toward a July 2027 commercial launch, Effwa possesses a distinct intellectual property moat unmatched by its listed SME peers. Supported by marquee clients (Tata Steel, SAIL, JSW), zero historical liquidated damages, and pristine financial health (EBITDA margins >16%, ROCE >30%), the company's fundamentals are elite.</p>
+<p class="txt" style="font-size: 17px;">Effwa Infra & Research successfully validated its investment thesis in FY26, <span class="teal fw7">delivering ₹28.62 Cr PAT and securing a massive ₹750+ Cr formal order book</span>. Driven by intense NGT/CPCB regulatory tailwinds, the industrial wastewater sector is structurally growing, and Effwa's 90%+ focus on ZLD perfectly captures this demand. With proprietary ZMD technology advancing toward a July 2027 commercial launch, Effwa possesses a distinct intellectual property moat unmatched by its listed SME peers. Supported by marquee clients (Tata Steel, SAIL, JSW), highly efficient cash flow conversion (1.03x CFO/PAT), and pristine financial health (EBITDA margins >16%, ROCE >30%), the company's fundamentals are elite.</p>
 <p class="txt mt" style="font-size: 17px;"><span class="teal fw7">Valuation Disconnect:</span> With a clear trajectory toward ~₹350 Cr+ revenue in FY27 and management guiding for 35-40% CAGR over the next 2-3 years, Effwa currently trades at <span class="teal fw7">~15.2x forward P/E</span>. For a company growing this rapidly with return ratios that surpass industry giants like WABAG, Effwa remains a textbook hidden champion poised for significant rerating ahead of its main board migration.</p>
 </div>
 
