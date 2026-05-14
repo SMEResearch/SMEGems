@@ -147,7 +147,7 @@
         .metric-card .metric-sub { font-size: 0.72rem; margin-top: 4px; font-weight: 600; }
 
         /* FLIP CARDS */
-        .flip-container { perspective: 1000px; height: 280px; cursor: pointer; }
+        .flip-container { perspective: 1000px; height: 320px; cursor: pointer; }
         .flip-card { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(.4,0,.2,1); }
         .flip-container:hover .flip-card, .flip-container.locked .flip-card { transform: rotateY(180deg); } 
         
@@ -173,14 +173,13 @@
         .accordion-item.locked .accordion-header i.fa-chevron-down { color: var(--amber); }
 
         ul.cl { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; }
-        ul.cl li { position: relative; padding-left: 1.4rem; line-height: 1.6; color: #ccc5bb; font-size: 0.88rem; }
+        ul.cl li { position: relative; padding-left: 1.4rem; line-height: 1.6; color: #ccc5bb; font-size: 0.84rem; }
         ul.cl li::before { content: '\25B8'; position: absolute; left: 0; color: var(--crimson); font-size: 0.8rem; top: 2px; }
         ul.cl.amber li::before { color: var(--amber); }
         ul.cl.green li::before { color: var(--success); }
         ul.cl.risk li::before { content: '\26A0'; color: var(--danger); font-size: 0.7rem; }
         
-        .flip-back ul.cl { gap: 0.7rem; }
-        .flip-back ul.cl li { font-size: 0.88rem; line-height: 1.6; }
+        .flip-back ul.cl { gap: 0.6rem; }
 
         .table-custom { width: 100%; border-collapse: collapse; margin-top: 0.8rem; }
         .table-custom th, .table-custom td { padding: 0.8rem; text-align: left; border-bottom: 1px solid rgba(200,16,46,0.06); font-size: 0.88rem; }
@@ -198,7 +197,7 @@
         .footer-brand a:hover { color: var(--text); }
 
         @media (max-width: 1100px) { .grid-4 { grid-template-columns: repeat(2,1fr); } .slide { padding: 2rem; } }
-        @media (max-width: 768px) { .grid-3, .grid-2 { grid-template-columns: 1fr; } .slide { padding: 1.5rem 1.2rem; padding-bottom: 6rem; align-items: flex-start; } #nav-dots { display: none; } #arrow-prev { left: 1rem; bottom: 1.2rem; } #arrow-next { right: 1rem; bottom: 1.2rem; } .cover-title { font-size: 2.5rem; } .flip-container { height: 260px; } }
+        @media (max-width: 768px) { .grid-3, .grid-2 { grid-template-columns: 1fr; } .slide { padding: 1.5rem 1.2rem; padding-bottom: 6rem; align-items: flex-start; } #nav-dots { display: none; } #arrow-prev { left: 1rem; bottom: 1.2rem; } #arrow-next { right: 1rem; bottom: 1.2rem; } .cover-title { font-size: 2.5rem; } .flip-container { height: 320px; } }
     </style>
 </head>
 <body>
@@ -223,7 +222,7 @@
                 <div class="cover-tagline">EST. 2008 &bull; Kolkata</div>
             </div>
             <h1 class="cover-title">India's Only Listed<br><span class="red">Pure-Play Elevator Maker</span></h1>
-            <p class="cover-sub">Three engines — B2B Elevators, Automated Parking, D2C Home Elevators. Target ~80%+ YoY FY27 Growth. Now aggressively expanding across SE Asia.</p>
+            <p class="cover-sub">Three engines — B2B Elevators, Automated Parking, D2C Home Elevators. Target ~80%+ YoY FY27 Growth. Expanding aggressively across SE Asia.</p>
             <div class="cover-pills">
                 <div class="cover-pill">&#8377;399 Cr MCap</div>
                 <div class="cover-pill">FY26 PAT &#8377;17 Cr</div>
@@ -237,8 +236,8 @@
     <div class="slide" data-label="Snapshot">
         <div class="slide-inner">
             <div class="badge">01 &bull; Company Snapshot</div>
-            <h2 class="stitle">IPO Guidance Was the Floor, Not the Ceiling.</h2>
-            <p class="ssub">At IPO, management guided ~50–70% growth. <strong>FY26 Topline came in at ₹111 Cr (+97% YoY). Management is now guiding for an incredible ~80%+ YoY growth in FY27.</strong></p>
+            <h2 class="stitle">IPO Guidance Was Just the Warm-Up.</h2>
+            <p class="ssub">At IPO, management guided ~50–70% growth for FY26. <strong>Having smashed that with 97% growth, management is now setting an aggressive new target of ~80%+ YoY growth for FY27.</strong></p>
             <div class="grid-4" style="margin-bottom:1.4rem;">
                 <div class="card metric-card"><div class="metric-label">FY26 Topline (Consol.)</div><div class="metric-num grad">&#8377;111 Cr</div><div class="pill green" style="margin:4px auto 0;"><i class="fas fa-arrow-up" style="font-size:0.6rem;"></i> ~97% YoY</div></div>
                 <div class="card metric-card"><div class="metric-label">FY27 Growth Target</div><div class="metric-num" style="color:var(--success);">~80%+</div><div class="metric-sub" style="color:var(--muted);">Rapid B2C & B2G Scale</div></div>
@@ -247,7 +246,7 @@
             </div>
             <div class="card">
                 <div class="card-title red">The Story So Far</div>
-                <p style="color:var(--muted);line-height:1.7;font-size:0.92rem;">Promoted by Arvind, Usha & Yash Gupta. LT Elevator operates core B2B elevators, a booming B2G automated parking subsidiary (LT ParkSmart), and is integrating Ricardo Elevators, a high-margin D2C home elevator brand (merger filing end-May '26). ParkSmart delivered <strong style="color:var(--amber);">Phase 1 of the NE's largest parking project (₹13 Cr billed); Phase 2 (₹30 Cr) executes in FY27</strong>. With 21 pan-India offices, exports ramping across <strong style="color:var(--amber);">Malaysia, Australia, and greater SE Asia</strong>, and a massive ₹25 Cr integrated facility coming Q4 FY27, LT is built for hyper-scale.</p>
+                <p style="color:var(--muted);line-height:1.7;font-size:0.92rem;">Promoted by Arvind, Usha & Yash Gupta. LT Elevator operates core B2B elevators, a booming B2G automated parking subsidiary (LT ParkSmart), and is integrating Ricardo Elevators, a high-margin D2C home brand. ParkSmart delivered <strong style="color:var(--amber);">Phase 1 of the NE's largest parking project</strong>. With 21 pan-India offices, exports ramping across <strong style="color:var(--amber);">Malaysia, Australia, and greater SE Asia</strong>, and active debottlenecking underway to push past current capacity limits before a new ₹25 Cr integrated facility comes online in Q4 FY27, LT is built for hyper-scale.</p>
             </div>
         </div>
     </div>
@@ -261,7 +260,7 @@
             <div class="accordion-item"><div class="accordion-header" onmouseenter="hoverAccordion(this)" onclick="clickAccordion(this)"><span>2008 — Founded in Kolkata</span><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><p style="color:var(--muted);font-size:0.88rem;line-height:1.7;">Incorporated in Kolkata. Began elevator design, manufacturing, and installation from the ground up with a focus on engineering excellence.</p></div></div>
             <div class="accordion-item"><div class="accordion-header" onmouseenter="hoverAccordion(this)" onclick="clickAccordion(this)"><span>Sep 2025 — IPO at &#8377;78 (183x Oversubscribed)</span><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><p style="color:var(--muted);font-size:0.88rem;line-height:1.7;">Listed on BSE SME platform raising &#8377;39 Cr for capacity expansion and working capital. Listed at a 74.5% premium.</p></div></div>
             <div class="accordion-item"><div class="accordion-header" onmouseenter="hoverAccordion(this)" onclick="clickAccordion(this)"><span>FY26 — First ₹100 Cr Year (Audited May 2026)</span><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><p style="color:var(--muted);font-size:0.88rem;line-height:1.7;">Audited consolidated topline ₹111 Cr (~97% YoY growth). PAT ₹17 Cr. Phase 1 of ₹43 Cr Shillong multi-level parking completed.</p></div></div>
-            <div class="accordion-item open locked"><div class="accordion-header" onmouseenter="hoverAccordion(this)" onclick="clickAccordion(this)"><span style="color:var(--amber);">FY27 & Beyond — The Hyper-Scale Phase</span><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><p style="color:var(--muted);font-size:0.88rem;line-height:1.7;">Management explicitly guides for ~80%+ YoY revenue growth. Ricardo merger completes (driving B2C mix to ~35%). A massive ₹25 Cr integrated factory goes live Q4 FY27, unlocking 2.5x capacity and ₹350-400 Cr annual topline potential. Potential international patent acquisition in rotary parking underway.</p></div></div>
+            <div class="accordion-item open locked"><div class="accordion-header" onmouseenter="hoverAccordion(this)" onclick="clickAccordion(this)"><span style="color:var(--amber);">FY27 & Beyond — The Hyper-Scale Phase</span><i class="fas fa-chevron-down"></i></div><div class="accordion-body"><p style="color:var(--muted);font-size:0.88rem;line-height:1.7;">Management explicitly guides for ~80%+ YoY revenue growth. Target FY27 mix: <strong>35% B2C, 32-35% B2G, 30% B2B, and 5% Exports</strong>. Active debottlenecking (outsourcing, extra machinery, rental shed) is in place to exceed the current ₹160 Cr capacity ceiling before the massive ₹25 Cr integrated factory goes live Q4 FY27, unlocking ₹350-400 Cr annual topline potential.</p></div></div>
         </div>
     </div>
 
@@ -286,7 +285,7 @@
                         <li><strong style="color:var(--success);">&#10003;</strong> &#8377;111 Cr actual — ~97% YoY, heavily beating guidance</li>
                         <li><strong style="color:var(--success);">&#10003;</strong> 15.2% PAT margin delivered</li>
                         <li><strong style="color:var(--success);">&#10003;</strong> Seasonality held, but guided to even out in FY27</li>
-                        <li><strong style="color:var(--success);">&#8593;</strong> <strong>FY27 Guidance: ~80%+ YoY growth target</strong></li>
+                        <li><strong style="color:var(--success);">&#8593;</strong> <strong>New FY27 Guidance: ~80%+ YoY growth target</strong></li>
                         <li><strong style="color:var(--success);">&#8593;</strong> New facility: ~₹25 Cr capex unlocking 2.5x capacity</li>
                     </ul>
                 </div>
@@ -309,10 +308,9 @@
                         </div>
                         <div class="flip-back">
                             <ul class="cl">
-                                <li>~30% of FY27 expected mix.</li>
-                                <li>Strong East India base; scaling pan-India.</li>
-                                <li>Escalation clauses in govt contracts protect against steel inflation.</li>
-                                <li>Expanding to 21 pan-India offices.</li>
+                                <li><strong>Target Mix:</strong> ~30% of FY27 revenue.</li>
+                                <li>Strong East India base; scaling pan-India to 21 offices.</li>
+                                <li><strong>Inflation Defense:</strong> Price hikes implemented April '26; escalation clauses in govt contracts protect against steel inflation.</li>
                             </ul>
                         </div>
                     </div>
@@ -327,9 +325,9 @@
                         </div>
                         <div class="flip-back" style="background: linear-gradient(135deg, rgba(46,196,182,0.12), rgba(26,26,30,0.8)); border-color: rgba(46,196,182,0.2);">
                             <ul class="cl green">
-                                <li><strong style="color:var(--amber);">Phase 1 Shillong (₹13 Cr) billed.</strong> Phase 2 (₹30 Cr) execution in FY27.</li>
-                                <li>Full completion of ₹33 Cr & ₹43 Cr govt orders expected in FY27.</li>
-                                <li>Actively pursuing international rotary parking patent acquisition (NDA signed, H1 FY27 closure target).</li>
+                                <li><strong>Target Mix:</strong> ~32-35% of FY27 revenue.</li>
+                                <li><strong>Shillong Portfolio (~₹70 Cr total):</strong> Comprises a ₹43Cr project (₹7Cr billed), a ₹13.5Cr project (₹3-4Cr billed), and a 30% JV.</li>
+                                <li><strong>Macro Reality:</strong> Govt payment cycles remain elongated at 3-4 months (March billings slipped to April).</li>
                             </ul>
                         </div>
                     </div>
@@ -344,10 +342,10 @@
                         </div>
                         <div class="flip-back" style="background: linear-gradient(135deg, rgba(232,168,56,0.12), rgba(26,26,30,0.8)); border-color: rgba(232,168,56,0.2);">
                             <ul class="cl amber">
-                                <li>Standalone Order Book: <strong>₹70–80 Cr</strong> (up from ₹45 Cr in Dec '25).</li>
-                                <li>Targeting ~35% of overall FY27 revenue mix.</li>
-                                <li>Targeting 100+ elevator orders per month by exit FY27.</li>
-                                <li>Fast 5-7 month execution cycle.</li>
+                                <li><strong>Standalone Orders:</strong> ₹70–80 Cr.</li>
+                                <li><strong>Target Mix:</strong> ~35% of FY27 revenue.</li>
+                                <li><strong>Cash Flow Engine:</strong> 30% booking advance, 20-25% on production, 40% on completion, 10% on install.</li>
+                                <li>Targeting 100+ elevator orders/month by exit FY27.</li>
                             </ul>
                         </div>
                     </div>
@@ -359,25 +357,24 @@
 
     <div class="slide" data-label="Ricardo">
         <div class="slide-inner">
-            <div class="badge amber">05 &bull; Ricardo — The D2C Opportunity</div>
-            <h2 class="stitle">Structural Margin & Cash Flow Fix</h2>
-            <p class="ssub">Merger filing end-May '26. Full consolidation in FY27 driving ~35% of total mix.</p>
+            <div class="badge amber">05 &bull; The Working Capital Buffer</div>
+            <h2 class="stitle">Navigating a Tough Macro Environment</h2>
+            <p class="ssub">Since Dec '25, wars and elevated crude prices have tightened global working capital. Ricardo is the counterweight.</p>
             <div class="grid-2">
                 <div class="card amber-top">
-                    <div class="card-title amber">Why Ricardo Wins</div>
+                    <div class="card-title amber">The Macro Reality</div>
                     <ul class="cl amber" style="font-size:0.84rem;">
-                        <li>&#8377;6 Cr/month bookings → &#8377;70+ Cr annualised run-rate.</li>
-                        <li><strong>Working Capital Fix:</strong> 50-55% advance received *before* production begins.</li>
-                        <li><strong>Superior Margins:</strong> B2C gross margins sit at 58-60% vs ~50% for standard B2B/B2G.</li>
-                        <li>Already executing via LT Elevator since Mar-Apr '26.</li>
+                        <li>The broader macro environment (crude spikes, geopolitical strain) has stretched traditional B2B and B2G payment cycles.</li>
+                        <li>Govt projects (ParkSmart) are currently seeing elongated 3-4 month post-invoice collection cycles, with some March FY26 billings slipping into April.</li>
+                        <li>Management is deploying escalation clauses, but working capital remains a pressure point across the SME sector.</li>
                     </ul>
                 </div>
                 <div class="card">
-                    <div class="card-title red">The Strategic Logic</div>
+                    <div class="card-title red">The B2C Defense (Ricardo)</div>
                     <ul class="cl" style="font-size:0.84rem;">
-                        <li><strong>Synergies:</strong> Integration in manufacturing, sourcing, and distribution slashes redundancies.</li>
-                        <li><strong>EBITDA Profile:</strong> While near-term blended EBITDA stays ~24-25% due to aggressive ad spend, the D2C segment acts as a heavy margin accretive engine long-term.</li>
-                        <li><strong>Low dilution:</strong> Negligible equity dilution; promoters retain strict majority.</li>
+                        <li>Ricardo structurally mitigates this macro drag. By driving <strong>~35% of FY27 revenue</strong> through D2C, LT secures a vital cash flow buffer.</li>
+                        <li><strong>The 30/25/40/10 Model:</strong> Customers pay 30% advance on booking, 20-25% at production start, 40% on completion, and 10% post-install.</li>
+                        <li><strong>Superior Margins:</strong> B2C gross margins sit at 58-60% vs ~50% for standard B2B/B2G, providing much-needed operational padding.</li>
                     </ul>
                 </div>
             </div>
@@ -387,11 +384,11 @@
     <div class="slide" data-label="Growth">
         <div class="slide-inner">
             <div class="badge">06 &bull; Growth Roadmap</div>
-            <h2 class="stitle">Breaking The Ceiling</h2>
-            <p class="ssub"><strong>Massive capex + SE Asia Expansion + Patent Acquisitions</strong></p>
+            <h2 class="stitle">Breaking The Capacity Ceiling</h2>
+            <p class="ssub"><strong>Aggressive Debottlenecking + SE Asia Expansion + Patent Acquisitions</strong></p>
             <div class="grid-3">
-                <div class="card"><div class="card-title red">Factory Capex (Q4 FY27)</div><p style="font-size:0.84rem;color:var(--muted);line-height:1.65;">Current facility caps at ~₹160 Cr. A new 6.5-acre site (2 hrs from Kolkata) is deploying <strong>~₹25 Cr total capex</strong>. Unlocks 2.5x capacity, supporting a <strong>₹350-400 Cr annual topline</strong> (sustainable till mid-FY29).</p></div>
-                <div class="card amber-top"><div class="card-title amber">Aggressive Exports</div><p style="font-size:0.84rem;color:var(--muted);line-height:1.65;">Malaysia & Australia already shipping. Deep pipeline forming in <strong>Thailand, Indonesia, Philippines, Vietnam & Cambodia</strong>. Export pricing commands a ~50% premium vs India.</p></div>
+                <div class="card"><div class="card-title red">Scaling Production</div><p style="font-size:0.84rem;color:var(--muted);line-height:1.65;">The current facility maxes out at ~₹160 Cr. To hit the ~80% growth target before the new Q4 FY27 factory goes live, management is aggressively debottlenecking via <strong>process outsourcing, supplementary machinery purchases, and renting an adjacent shed.</strong></p></div>
+                <div class="card amber-top"><div class="card-title amber">Aggressive Exports</div><p style="font-size:0.84rem;color:var(--muted);line-height:1.65;">Targeting <strong>5% of FY27 mix</strong>. Malaysia & Australia already shipping. Deep pipeline forming in Thailand, Indonesia, Philippines, Vietnam & Cambodia. Export pricing commands a ~50% premium vs India.</p></div>
                 <div class="card"><div class="card-title red">Tech Acquisitions</div><p style="font-size:0.84rem;color:var(--muted);line-height:1.65;">ParkSmart has an <strong>NDA in place</strong> to acquire an international patent-holding company in the rotary car parking space. Targets H1 FY27 closure to unlock global approvals & complete spectrum tech.</p></div>
             </div>
         </div>
@@ -408,12 +405,9 @@
                     <ul class="cl" style="font-size:0.87rem;">
                         <li><strong>FY26 actuals (consolidated):</strong> &#8377;111 Cr revenue &bull; &#8377;17 Cr PAT &bull; Trailing P/E ~<strong>23.4x</strong> at &#8377;207 CMP (&#8377;399 Cr MCap).</li>
                         <li><strong>FY27E Guidance:</strong> Management targeting ~80%+ YoY growth. Blended topline path squarely points to <strong>&#8377;200+ Cr</strong> in FY27.</li>
-                        <li><strong>Margin Profile:</strong> Sustainable EBITDA guided at ~24-25%. With B2C gross margins hitting 58-60%, cash generation strengthens.</li>
-                        <li><strong>FY27E PAT Path:</strong> Conservatively modelling maintained margins on &#8377;200 Cr revenue suggests significant forward EPS expansion.</li>
+                        <li><strong>Margin Profile:</strong> Sustainable EBITDA guided at ~24-25%. With B2C gross margins hitting 58-60%, cash generation strengthens despite heavy ad spend for the 21-office pan-India rollout.</li>
+                        <li><strong>Forward Multiples:</strong> If LT hits its 80% growth target with blended ~14-15% net margins, the stock is trading at an implied <strong>mid-teens forward P/E</strong>.</li>
                     </ul>
-                    <div class="callout">
-                        <p>At &#8377;399 Cr MCap, if LT hits its 80% growth target with blended ~14-15% net margins, the stock is trading at an implied <strong>mid-teens forward P/E</strong> — exceptionally cheap for a company building a high-margin D2C engine and expanding into SE Asia.</p>
-                    </div>
                 </div>
             </div>
         </div>
@@ -428,10 +422,10 @@
                 <div class="card" style="border-top:3px solid var(--success);">
                     <div class="card-title" style="color:var(--success);">&#10003; If It Works (The ~80% Target)</div>
                     <ul class="cl" style="font-size:0.84rem;">
-                        <li>Ricardo merger successfully brings ~35% of revenue via B2C, structurally fixing OCF via 50-55% advance payments.</li>
-                        <li>Shillong Phase 2 (₹30 Cr) and other large govt contracts bill on schedule.</li>
+                        <li>Ricardo merger successfully brings ~35% of revenue via B2C, structurally insulating OCF via the 30/25/40/10 advance model.</li>
+                        <li>Debottlenecking measures hold up, allowing revenue to scale past the ₹160 Cr ceiling.</li>
                         <li>New factory (₹25 Cr capex) goes live Q4 FY27 to seamlessly absorb FY28 order loads.</li>
-                        <li>Market re-rates to 25-30x on proven multi-year execution, pan-India D2C branding, and successful export ramp.</li>
+                        <li>Market re-rates to 25-30x on proven multi-year execution and pan-India D2C branding.</li>
                     </ul>
                     <div style="margin-top:1rem;padding:0.8rem;background:rgba(46,196,182,0.06);border-radius:6px;text-align:center;">
                         <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Implied Target MCap</div>
@@ -441,10 +435,10 @@
                 <div class="card" style="border-top:3px solid var(--danger);">
                     <div class="card-title" style="color:var(--danger);">&#9888; If It Doesn't Work</div>
                     <ul class="cl risk" style="font-size:0.84rem;">
+                        <li><strong>Macro Pressures:</strong> Global inflation and crude spikes further delay B2G payment cycles beyond 4 months, squeezing liquidity.</li>
                         <li>Ricardo merger stalls or D2C ad spends cannibalise EBITDA margins heavily near-term.</li>
-                        <li>Current facility maxes out at ₹160 Cr capacity before Q4 FY27, choking the guided ~80% growth rate.</li>
-                        <li>Government contract billing delays (Shillong Phase 2 slips into FY28).</li>
-                        <li>If FY27 growth flatlines or margins drop, market de-rates the stock as an overpromising micro-cap.</li>
+                        <li>Debottlenecking fails, capping revenue at ₹160 Cr before Q4 FY27, choking the guided ~80% growth rate.</li>
+                        <li>Market de-rates the stock as the macro environment overwhelms growth.</li>
                     </ul>
                     <div style="margin-top:1rem;padding:0.8rem;background:rgba(230,57,70,0.06);border-radius:6px;text-align:center;">
                         <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Implied Floor MCap</div>
@@ -462,8 +456,8 @@
             <div class="card"><ul class="cl">
                 <li><strong style="color:var(--amber);">Ricardo Merger Close:</strong> Expected filing end-May '26. Watch for exchange filings confirming legal close.</li>
                 <li><strong style="color:var(--amber);">International Patent Acquisition:</strong> NDA is signed for rotary car parking IP. Target closure is H1 FY27. This immediately expands ParkSmart's tech suite and export approvals.</li>
-                <li><strong style="color:var(--success);">OCF Improvement:</strong> Monitor the receivables ratio. As Ricardo scales to ~35% of the mix, its 50-55% advance payment structure MUST reflect in positive cash flows.</li>
-                <li><strong style="color:var(--amber);">Factory Commissioning:</strong> Track the ₹25 Cr capex buildout. Needs to go live by Q4 FY27 to handle the ₹350-400 Cr revenue phase.</li>
+                <li><strong style="color:var(--success);">OCF Amidst Macro Headwinds:</strong> Monitor the receivables ratio. With govt cycles stretched to 3-4 months, Ricardo's 30/25/40/10 advance payment structure MUST execute flawlessly to protect liquidity.</li>
+                <li><strong style="color:var(--amber);">Debottlenecking & Capex:</strong> Track how well the rented shed and outsourced processes handle the near-term volume surge, and ensure the ₹25 Cr capex buildout hits its Q4 FY27 deadline.</li>
             </ul></div>
         </div>
     </div>
@@ -604,7 +598,7 @@ function clickAccordion(header) {
     }
 }
 
-/* CHART - Updated with CMP 207 */
+/* CHART - CMP 207 */
 let ci=null;
 function renderChart(){
     const el=document.getElementById('priceChart');if(!el)return;const c=el.getContext('2d');if(ci)ci.destroy();
